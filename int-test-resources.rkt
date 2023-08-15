@@ -83,10 +83,10 @@
 (require "dev-driver.rkt")
 (define (drivers #:skip-define (skip #f) #:storage-class (storage-class "STANDARD"))
   (hash
-   'gcp2 (init-dev-driver 'gcp)
-   'gcp (init-gcp 'gcp (gcp-http-transport (getenv "GCP_ACCESS_TOKEN"))
-                  #:project "marv-224713"
-                  #:region "EUROPE-WEST2")
+   'gcp (init-dev-driver 'gcp)
+   ;  'gcp2 (init-gcp 'gcp (gcp-http-transport (getenv "GCP_ACCESS_TOKEN"))
+   ;                  #:project "marv-224713"
+   ;                  #:region "EUROPE-WEST2")
    ))
 
 (define (resources mkres #:skip-define (skip #f) #:storage-class (storage-class "STANDARD"))

@@ -5,7 +5,9 @@ RESF=int-test-resources.rkt
 
 rm $STATE
 
-source iac2.inc
+marv() {
+    racket command.rkt $*
+}
 
 set -e
 
@@ -13,17 +15,17 @@ set -e
 
 echo "Planning"
 echo "========"
-iac2 plan $RESF
+marv --plan $RESF
 echo "Executing"
 echo "========="
-iac2 apply $RESF
+marv --apply $RESF
 echo "Planning again"
 echo "=============="
-iac2 plan $RESF
+marv --plan $RESF
 # exit
-iac2 dump $RESF
+marv --dump $RESF
 
 echo "*** REMOVING ***"
-iac2 plan $RESF --param skip-define YES
-iac2 apply $RESF --param skip-define YES
-iac2 dump $RESF --param skip-define YES
+marv --plan --param skip-define YES $RESF 
+marv --apply --param skip-define YES $RESF 
+marv --dump --param skip-define YES $RESF 
