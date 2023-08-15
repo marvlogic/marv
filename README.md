@@ -9,7 +9,7 @@ the lifecycle of the resources to keep the infrastructure in sync with code.
 
 # Status
 
-__Barely usable:  only suitable for tinkering or non-prod situations__
+__Under active development:  only suitable for tinkering or non-prod situations__
 
 ## __Current__ Limitations
 
@@ -17,28 +17,23 @@ Tons of them! Rest assured I'll be working to resolve these and many others.
 
 The most important ones:
 
-- No DSL; you have to declare your resources using Racket structures.
+- No DSL; you have to declare resources using [Racket
+structures](examples/gcp/load-balancer.rkt).
 
 - Only supports GCP compute and storage APIs.
 
 - Barely any error checking, most of the time the only error checking is
 performed by GCP itself during an `apply` phase.
 
-- Example isn't documented enough.
+- Example isn't documented enough, and hard-coded to `europe-west2`
 
 - Only a local state file is supported.
 
 ## Excuses
 
 This is my first major project using Racket, so the structure of it is very much
-in-flux and subject to __significant__ change. 
-
-It's also been a learning experience in Racket programming, so there are a lot
-of areas in code that are, er - shall we say, /a bit on the rough side/. 
-
-That said, it was meant as a prototype to learn how to implement an IAC
-management system: inevitably, large chunks will get re-written.
-
+in-flux and subject to __significant__ change. Its a bit of a prototype &
+learning platform as much as anything else.
 
 # Installation
 
