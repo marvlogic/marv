@@ -2,8 +2,7 @@
 
 (require racket/contract)
 
-(require "resources.rkt")
-(require "values.rkt")
+(require marv/core/resources)
 
 (provide (struct-out driver)
          init-drivers

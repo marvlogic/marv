@@ -1,7 +1,7 @@
 #lang racket/base
 (require racket/hash)
 (require racket/contract)
-(require "resources.rkt")
+(require marv/core/resources)
 
 (provide load-state
          save-state

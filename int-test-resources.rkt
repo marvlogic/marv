@@ -1,9 +1,20 @@
 #lang racket/base
 
-(require "hash-utils.rkt")
-(require "resource-def.rkt")
+
+(require marv/utils/hash)
+(require marv/core/resource-def)
+(require marv/drivers/gcp/api)
+(require marv/drivers/dev)
 
 (provide drivers resources)
+
+(define (drivers #:skip-define (skip #f) #:storage-class (storage-class "STANDARD"))
+  (hash
+   'gcp (init-dev-driver 'gcp)
+   ;  'gcp2 (init-gcp 'gcp (gcp-http-transport (getenv "GCP_ACCESS_TOKEN"))
+   ;                  #:project "marv-224713"
+   ;                  #:region "EUROPE-WEST2")
+   ))
 
 (define ACCESS-TOKEN (getenv "GCP_ACCESS_TOKEN"))
 (define gcp-driver
@@ -78,16 +89,6 @@
 
 (define defaults
   #hasheq( (project . "marv-224713" ) ))
-
-(require "gcp-api.rkt")
-(require "dev-driver.rkt")
-(define (drivers #:skip-define (skip #f) #:storage-class (storage-class "STANDARD"))
-  (hash
-   'gcp (init-dev-driver 'gcp)
-   ;  'gcp2 (init-gcp 'gcp (gcp-http-transport (getenv "GCP_ACCESS_TOKEN"))
-   ;                  #:project "marv-224713"
-   ;                  #:region "EUROPE-WEST2")
-   ))
 
 (define (resources mkres #:skip-define (skip #f) #:storage-class (storage-class "STANDARD"))
   (define (resf type res) (hash-merge res (hash-set defaults '$type (ival type))))

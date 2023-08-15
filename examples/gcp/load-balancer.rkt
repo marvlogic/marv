@@ -1,9 +1,9 @@
 #lang racket/base
 
-(require "../../hash-utils.rkt")
-(require "../../resource-def.rkt")
-(require "../../gcp-api.rkt")
-(require "../../dev-driver.rkt")
+(require marv/utils/hash)
+(require marv/core/resource-def)
+(require marv/drivers/gcp/api)
+(require marv/drivers/dev)
 
 (provide drivers resources)
 

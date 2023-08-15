@@ -4,13 +4,13 @@
 (require net/http-easy)
 (require racket/contract)
 
-(require "hash-utils.rkt")
-(require "resources.rkt")
-(require "driver.rkt")
-(require "marv-globals.rkt")
+(require marv/utils/hash)
+(require marv/core/resources)
+(require marv/drivers/driver)
+(require marv/core/globals)
 
-(require "gcp-compute-api.rkt")
-(require "gcp-storage-api.rkt")
+(require marv/drivers/gcp/compute-api)
+(require marv/drivers/gcp/storage-api)
 
 
 ; TODO - common module

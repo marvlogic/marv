@@ -1,8 +1,8 @@
 #lang racket/base
 
-(require "hash-utils.rkt")
-(require "resource-def.rkt")
 (require racket/pretty)
+(require marv/utils/hash)
+(require marv/core/resource-def)
 
 (provide make-diff
          has-diff?

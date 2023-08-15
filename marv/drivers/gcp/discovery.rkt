@@ -6,8 +6,8 @@
 (require racket/list)
 (require racket/string)
 (require racket/dict)
-(require "hash-utils.rkt")
-(require "marv-globals.rkt")
+(require marv/utils/hash)
+(require marv/core/globals)
 
 (provide load-discovery
          api-for-type

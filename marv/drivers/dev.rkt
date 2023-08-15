@@ -1,9 +1,9 @@
 #lang racket/base
 (require racket/contract)
 
-(require "resources.rkt")
-(require "driver.rkt")
-(require "state.rkt")
+(require marv/core/resources)
+(require marv/drivers/driver)
+(require marv/core/state)
 
 (provide init-dev-driver)
 

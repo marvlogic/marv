@@ -6,13 +6,14 @@
 (require racket/pretty)
 (require racket/hash)
 (require racket/string)
-(require "state.rkt")
-(require "diff.rkt")
-(require "resource-def.rkt")
-(require "resources.rkt")
-(require "graph.rkt")
-(require "hash-utils.rkt")
-(require "driver.rkt")
+
+(require marv/core/state)
+(require marv/core/diff)
+(require marv/core/resource-def)
+(require marv/core/resources)
+(require marv/core/graph)
+(require marv/utils/hash)
+(require marv/drivers/driver)
 
 (provide import-resources
          plan-changes

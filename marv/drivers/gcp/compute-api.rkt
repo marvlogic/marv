@@ -1,10 +1,12 @@
 #lang racket/base
 
 (require racket/string)
-(require "hash-utils.rkt")
-(require "gcp-compute-types.rkt")
-(require "gcp-discovery.rkt")
 (require racket/pretty)
+
+(require marv/utils/hash)
+(require marv/drivers/gcp/compute-types)
+(require marv/drivers/gcp/discovery)
+
 (provide (prefix-out compute. init-api))
 
 (define DISCOVERY (make-parameter #f))

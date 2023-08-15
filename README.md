@@ -11,7 +11,7 @@ the lifecycle of the resources to keep the infrastructure in sync with code.
 
 __Under active development:  only suitable for tinkering or non-prod situations__
 
-## __Current__ Limitations
+## Current Limitations
 
 Tons of them! Rest assured I'll be working to resolve these and many others.
 
@@ -39,14 +39,13 @@ learning platform as much as anything else.
 
 Install Racket from: https://download.racket-lang.org
 
-NB not sure about Racket dependencies as yet. Might be:
+Install `marv` using `raco`:
 
-    raco pkg install graph-lib  \
-        http-easy-lib     \
-        racket-langserver \
-        sha               \
-        yaml              \
-        zstd               
+    # From the root of the cloned project:
+    raco pkg install --link marv/
+
+NB the `--link` flag tells `raco` to install by linking to the `marv/`
+directory, which allows local development.
 
 # Running the example
 
@@ -55,7 +54,7 @@ NB not sure about Racket dependencies as yet. Might be:
     export MARV_GCP_REGION=europe-west2
     export GCP_ACCESS_TOKEN=`gcloud auth print-access-token`
 
-    alias marv="racket command.rkt"
+    alias marv="racket marv/command.rkt"
     marv --plan examples/gcp/load-balancer.rkt 
     marv --apply examples/gcp/load-balancer.rkt 
 

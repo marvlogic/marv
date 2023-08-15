@@ -8,10 +8,10 @@
 (require racket/hash)
 (require racket/string)
 
-(require "driver.rkt")
-(require "resources.rkt")
-(require "values.rkt")
-(require "hash-utils.rkt")
+(require marv/drivers/driver)
+(require marv/core/resources)
+(require marv/core/values)
+(require marv/utils/hash)
 
 (provide init-module get-module
          resource-keys resource-ref

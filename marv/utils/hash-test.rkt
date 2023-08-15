@@ -1,6 +1,6 @@
 #lang racket/base
 
-(require rackunit "hash-utils.rkt")
+(require rackunit marv/utils/hash)
 
 (define driver1 #hasheq((project . "happy1") (region . "euwest1")))
 (define config1 #hasheq((project . "happy2") (region . "euwest2")))

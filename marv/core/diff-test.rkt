@@ -3,7 +3,9 @@
 (require rackunit
          racket/function
          racket/pretty
-         "diff.rkt" "resource-def.rkt" "hash-utils.rkt")
+         marv/core/diff
+         marv/core/resource-def
+         marv/utils/hash)
 
 'diff-test
 
