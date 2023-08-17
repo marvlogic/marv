@@ -5,15 +5,94 @@
 (require marv/drivers/gcp/api)
 (require marv/drivers/dev)
 
-(provide drivers resources)
-
 ; This resource specification is the marv equivalent of this:
 ;    https://cloud.google.com/load-balancing/docs/https/setting-up-reg-ext-https-lb#gcloud_6
 ;
-; It works but it's not meant to be a good example, as it needs refactoring!
+; It works but it needs refactoring and documentation
+
+; We need provide (export) these two functions to allow marv to discover
+; our resources
+
+(provide drivers resources)
+
+; this is an empty resources spec, which we switch to using an environment
+; variable when wanting to delete everything.
+
+(define (no-resources mkres #:node-size (node-size "f1-micro")) (list))
+
+; this is the actual resources definition. marv will call this function and
+; expect to get back a list of pairs:
+;
+; (id . resource-definition)
+;
+; note the named-parameter (node-size); named parameters can be set on the
+; command line (see marv --help)
+
+(define (all-resources mkres #:node-size (node-size "f1-micro"))
+
+  ; The 'mkres' parameter is a function passed from marv, you are expected to
+  ; call it like this to create each 'resource-definition':
+  ;
+  ; (mkres <driver-id> <resource-defn>)
+
+  ; resf is a helper function that adds the gcp-type and other defaults to the
+  ; resource definition. The GCP driver expects a $type field to be part of the
+  ; resources fields.
+
+  (define (resf type res) (hash-merge res (hash-set defaults '$type (ival type))))
+
+  ; gcp is a helper function that ties the resource definition together, so that
+  ; marv gets the correct format. It will also be performing a syntax-check in
+  ; future.
+
+  (define (gcp t r) (mkres 'gcp (resf t r)))
+
+  ; Now we define the list of resources that we want marv to manage. This
+  ; particular list is using 'quasi-quoting' which allows us to flip back and
+  ; forth between quoted list entries and calling racket functions ('gcp', in
+  ; this case). If this doesn't make sense, have a look at the Racket reference:
+
+  ; https://docs.racket-lang.org/reference/quasiquote.html
+
+  ; Note that the actual body for each of the resources is defined lower in the
+  ; file.
+
+  `((vpc . ,(gcp "compute.network" vpc))
+    (sn1 .  ,(gcp "compute.subnetwork" sn1))
+    (proxy-sn .  ,(gcp "compute.subnetwork" proxy-sn))
+    (fw-health . ,(gcp "compute.firewall" fw-health-check))
+    (fw-proxies . ,(gcp "compute.firewall" fw-proxies))
+    (instance-template . ,(gcp "compute.instanceTemplate" (instance-template node-size)))
+    (instance-group-manager-a . ,(gcp "compute.instanceGroupManager"
+                                      (instance-group-manager "example" 2 "europe-west2-a" 'instance-template.selfLink)))
+    ;    (instance-group-manager-c .
+    ;          ,(gcp "compute.instanceGroupManager"
+    ;               (instance-group-manager "example" 2 "europe-west2-c" 'instance-template.selfLink)))
+
+    ; ;    (lb-external-ip (gcp "compute.address" lb-external-ip))
+    (lb-basic-check . ,(gcp "compute.regionHealthCheck" lb-basic-check))
+    (region-backend-service . ,(gcp "compute.regionBackendService" region-backend-service))
+    (region-url-map . ,(gcp "compute.regionUrlMap" region-url-map))
+    (region-target-proxies . ,(gcp "compute.regionTargetHttpProxy" region-target-proxies))
+    (forwarding-rule . ,(gcp "compute.forwardingRule" forwarding-rule))
+    ))
+
+
+; bind the 'resources' function according to the PURGE environment variable.
+
+(define resources (if (getenv "PURGE") no-resources all-resources))
 
 (define (getenv-or-raise e)
   (or (getenv e) (raise (format "ERROR: ~a must be defined in environment" e))))
+
+; marv also needs to know which drivers to use by associating a driver-id to a
+; driver implementation. Drivers are what do the work to provision and manage
+; the actual resources.
+
+; Currently supports only GCP and dev drivers.
+;
+; Handy hint - comment out GCP and use the dev driver in its place when playing
+; around (but be careful about the state file if it contains real resources!)
 
 (define (drivers #:node-size (node-size "f1-micro"))
   (hash
@@ -22,6 +101,21 @@
                   #:project (hash-ref defaults 'project)
                   #:region (hash-ref defaults 'region)
                   )))
+
+; Using the dev-driver for debugging can be helpful, so you can comment out the
+; above two definitions and use these instead.
+
+; IF YOU ALREADY HAVE RESOURCES IN STATE, BE CAREFUL - USE A DIFFERENT STATE
+; FILE (or save a copy)
+
+;  'gcp (init-dev-driver 'dev)
+;  'gcp2 (init-gcp 'gcp (gcp-http-transport (getenv-or-raise "GCP_ACCESS_TOKEN"))
+;                 #:project (hash-ref defaults 'project)
+;                 #:region (hash-ref defaults 'region)
+;                 )))
+
+; These are the defaults that get merged into all resource definitions, in the
+; 'resf' function above.
 
 (define defaults
   (hash 'project (getenv-or-raise "MARV_GCP_PROJECT")
@@ -115,7 +209,7 @@
    `(
      (name . ,name)
      (zone . ,zone)
-     (namedPorts . ,(ival (list #hasheq((port . 40) (name . "http")))))
+     (namedPorts . ,(ival (list #hasheq((port . 80) (name . "http")))))
      (instanceTemplate . ,(iref template))
      (baseInstanceName . ,name)
      (targetSize . ,size)
@@ -160,32 +254,3 @@
      (loadBalancingScheme . "EXTERNAL_MANAGED")
      (network . ,(iref 'vpc.selfLink))
      (networkTier . "STANDARD"))))
-
-(define (no-resources mkres #:node-size (node-size "f1-micro")) (list))
-
-(define (stack mkres #:node-size (node-size "f1-micro"))
-
-  (define (resf type res) (hash-merge res (hash-set defaults '$type (ival type))))
-  (define (gcp t r) (mkres 'gcp (resf t r)))
-
-  `((vpc . ,(gcp "compute.network" vpc))
-    (sn1 .  ,(gcp "compute.subnetwork" sn1))
-    (proxy-sn .  ,(gcp "compute.subnetwork" proxy-sn))
-    (fw-health . ,(gcp "compute.firewall" fw-health-check))
-    (fw-proxies . ,(gcp "compute.firewall" fw-proxies))
-    (instance-template . ,(gcp "compute.instanceTemplate" (instance-template node-size)))
-    (instance-group-manager-a . ,(gcp "compute.instanceGroupManager"
-                                      (instance-group-manager "example" 2 "europe-west2-a" 'instance-template.selfLink)))
-    ;    (instance-group-manager-c .
-    ;          ,(gcp "compute.instanceGroupManager"
-    ;               (instance-group-manager "example" 2 "europe-west2-c" 'instance-template.selfLink)))
-
-    ;    (lb-external-ip (gcp "compute.address" lb-external-ip))
-    (lb-basic-check . ,(gcp "compute.regionHealthCheck" lb-basic-check))
-    (region-backend-service . ,(gcp "compute.regionBackendService" region-backend-service))
-    (region-url-map . ,(gcp "compute.regionUrlMap" region-url-map))
-    (region-target-proxies . ,(gcp "compute.regionTargetHttpProxy" region-target-proxies))
-    (forwarding-rule . ,(gcp "compute.forwardingRule" forwarding-rule))
-    ))
-
-(define resources (if (getenv "PURGE") no-resources stack))
