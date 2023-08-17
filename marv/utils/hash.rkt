@@ -72,11 +72,16 @@
     ( if (filter k (hash-ref hs k)) h (hash-remove h k))))
 
 (define (hash-match? hs matchf)
+
   (define (domatch h)
+    (define (sgl k val)
+      (or (matchf k val)
+          (cond [(hash? val) (domatch val)]
+                [(list? val) (ormap (lambda(v)(sgl k v)) val)]
+                [else #f])))
     (for/or ([key (in-list(hash-keys h))])
-      (define val (hash-ref h key))
-      (or (matchf key val)
-          (if (hash? val) (domatch val) #f))))
+      (sgl key (hash-ref h key))))
+
   (domatch hs))
 
 (define (hash-apply hs applyf)

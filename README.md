@@ -1,4 +1,3 @@
-
 # Introduction
 
 `marv` is a DevOps tool designed to help people manage their Infrastructure as Code.
@@ -61,7 +60,7 @@ directory, which allows local development.
     # Delete all resources
     PURGE=y marv --apply examples/gcp/load-balancer.rkt 
 
-The state is stored locally, in 'state.dat' by default. Use `-s` to change this.
+The state is stored locally in `state.dat` by default. Use `-s` to change this.
 
 Cached information is held in the `.marv` directory - this is mainly for holding
 downloaded GCP API schema information.

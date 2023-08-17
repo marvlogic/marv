@@ -30,20 +30,23 @@
   (make-immutable-hash
    `(
      (name . "blah")
-     (region . ,(ival (ref '$resources.bucket1.attr1)))
+     (region . ,(ival (ref 'bucket1.attr1)))
      )))
 
 (check-equal? (has-immutable-ref-to-replaced-resource? res1 acc-ops) #f)
 
-(define res2 (hash-set res1 'region (ival(ref '$resources.bucket2.attr1))))
+(define res2 (hash-set res1 'region (ival(ref 'bucket2.attr1))))
+(define list-nested-iref (hash-set res1 'region (list (iref 'bucket2.attr1))))
+
 (check-equal? (has-immutable-ref-to-replaced-resource? res1 acc-ops) #f)
 (check-equal? (has-immutable-ref-to-replaced-resource? res2 acc-ops) #t)
+(check-equal? (has-immutable-ref-to-replaced-resource? list-nested-iref acc-ops) #t)
 
-(define res3 (hash-set res1 'region (ival(ref '$resources.bucket3.attr1))))
+(define res3 (hash-set res1 'region (ival(ref 'bucket3.attr1))))
 (check-equal? (has-immutable-ref-to-updated-attr? res1 acc-ops) #f)
 (check-equal? (has-immutable-ref-to-updated-attr? res3 acc-ops) #t)
 
-(define res4 (hash-set res1 'region (ref '$resources.bucket3.attr1)))
+(define res4 (hash-set res1 'region (ref 'bucket3.attr1)))
 (check-equal? (has-ref-to-updated-attr? res1 acc-ops) #f)
 (check-equal? (has-ref-to-updated-attr? res4 acc-ops) #t)
 
