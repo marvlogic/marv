@@ -84,9 +84,7 @@
 
   [(PLAN-CHANGES)
    (define plan (plan-changes modl))
-   (map
-    (lambda (op) (displayln (format "~a -> ~a"  (car op) (cdr op))))
-    (plan-ordered-operations plan))]
+   (output-plan plan)]
 
   [(APPLY) (call-with-exception-handler
             (lambda(e)

@@ -1,6 +1,7 @@
 #lang racket/base
 
 (require racket/set)
+(require racket/dict)
 (require racket/function)
 (require racket/match)
 (require racket/pretty)
@@ -18,14 +19,15 @@
 (provide import-resources
          plan-changes
          apply-changes
+         output-plan
          (struct-out plan))
 
 (struct plan (resources desired-state ordered-operations) #:prefab)
 
 (struct op-base (reason) #:transparent)
 (struct op-create(op-base) #:transparent)
-(struct op-replace(op-base) #:transparent)
-(struct op-update(op-base) #:transparent)
+(struct op-replace(op-base diff) #:transparent)
+(struct op-update(op-base diff) #:transparent)
 (struct op-delete(op-base) #:transparent)
 
 (define (plan-changes mod #:refresh? (refresh? #t))
@@ -82,23 +84,22 @@
   (define plan (get-plan-for mod #:refresh (mk-refresh-func (driver-read mdrv))))
 
   (define (delete-replacements res-op)
-    (define-values (id op) (values (car res-op) (cdr res-op)))
-    (if (op-replace? op) (delete id) #f))
+    (match res-op
+      [(cons id (op-replace _ _)) (delete id)]
+      [_ void]))
 
   (define (process-op res-op)
     (match res-op
       [(cons id #f) void]
       [(cons id (op-create _)) (create id)]
-      [(cons id (op-replace _)) (create id)]
-      [(cons id (op-update _)) (update id)]
+      [(cons id (op-replace _ _)) (create id)]
+      [(cons id (op-update _ _)) (update id)]
       [(cons id (op-delete _)) (delete id)]
       [else (raise (format "Illegal op: ~a" res-op))]
       ))
 
-  (map delete-replacements (reverse(plan-ordered-operations plan)))
-
-  (map process-op (plan-ordered-operations plan))
-  #t)
+  (for-each delete-replacements (reverse(plan-ordered-operations plan)))
+  (for-each process-op (plan-ordered-operations plan)))
 
 (define (has-immutable-ref-to-replaced-resource? new acc-ops)
   (define (match? k v)
@@ -125,11 +126,11 @@
   (define diff (make-diff (hash-merge (resource-config munged) old-cfg) old-cfg))
   ; (pretty-print diff)
   (cond
-    [(has-immutable-diff? diff) (op-replace "immutable diff")]
-    [(has-immutable-ref-to-replaced-resource? new-cfg acc-ops) (op-replace "immutable ref to replaced resource")]
-    [(has-immutable-ref-to-updated-attr? new-cfg acc-ops) (op-replace "immutable ref to updated attribute")]
-    [(has-ref-to-updated-attr? new-cfg acc-ops) (op-update "ref to updated attribute")]
-    [(has-diff? diff) (op-update "updated attribute")]
+    [(has-immutable-diff? diff) (op-replace "immutable diff" diff)]
+    [(has-immutable-ref-to-replaced-resource? new-cfg acc-ops) (op-replace "immutable ref to replaced resource" diff)]
+    [(has-immutable-ref-to-updated-attr? new-cfg acc-ops) (op-replace "immutable ref to updated attribute" diff)]
+    [(has-ref-to-updated-attr? new-cfg acc-ops) (op-update "ref to updated attribute" diff)]
+    [(has-diff? diff) (op-update "updated attribute" diff)]
     [else #f]))
 
 (define (operation id old-state new-module acc-ops)
@@ -183,3 +184,35 @@
                (make-diff
                 (hash-ref state-meta-map rk) (hash-ref new-state-meta-map rk))))
    (set->list meta-keys)))
+
+(define (output-plan plan)
+
+  (define (report-op rid op)
+
+    (define (fmt-diff d)
+      (match d
+        [(changed new old) (format "~a -> ~a" (unpack-value old) (unpack-value new))]
+        [(added new) (format "~a (added)" (unpack-value new))]
+        [(removed old) (format "~a (removed)" (unpack-value old))]))
+
+    (define (report-diff d)
+      (define diffs (filter (lambda (p) (diff? (cdr p))) (hash->flatlist d)))
+      (dict-map diffs
+                (lambda (k v)
+                  (displayln (format "  ~a: ~a" k (fmt-diff v))))))
+
+    (define (header id msg) (displayln (format "~a -> ~a" id msg)))
+
+    (match op
+      [(op-create reason) (header rid reason )]
+      [(op-delete reason) (header rid reason)]
+      [(op-update reason diff) (header rid reason)
+                               (report-diff  diff)]
+      [(op-replace reason diff) (header rid (format "REPLACE: ~a" reason))
+                                (report-diff diff)]
+      [else void]
+      ))
+
+  (for-each
+   (lambda (op) (report-op (car op) (cdr op)))
+   (plan-ordered-operations plan)))

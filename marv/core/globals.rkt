@@ -10,7 +10,7 @@
 
 (define WORKDIR (make-parameter (list (current-directory) ".marv")))
 
-(define (marv-init) #f)
+(define (marv-init) null)
 
 (define (workspace-path fs) (apply build-path (flatten (list (WORKDIR) fs))))
 

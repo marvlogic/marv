@@ -7,6 +7,7 @@
 (provide make-diff
          has-diff?
          has-immutable-diff?
+         diff?
          (struct-out changed)
          (struct-out added)
          (struct-out removed))
