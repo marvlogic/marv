@@ -13,10 +13,9 @@
 
   (define/contract (create resource)
     (config/c . -> . config/c)
+    (displayln ". DONE")
     (hash-set* resource
-               'selfLink (format "dev:~a:~a" (hash-ref resource '$type) (hash-ref resource 'name)))
-    ; 'project "https://shouldnt-see-this"))
-    )
+               'selfLink (format "dev:~a:~a" (hash-ref resource '$type) (hash-ref resource 'name))))
 
   (define/contract (readr resource-state)
     (config/c . -> . config/c)
@@ -24,10 +23,12 @@
 
   (define/contract (update resource-state)
     (config/c . -> . config/c)
+    (displayln ". DONE")
     resource-state)
 
   (define/contract (delete resource-state)
     (config/c . -> . config/c)
+    (displayln ". DONE")
     resource-state)
 
   (define/contract (validate res)

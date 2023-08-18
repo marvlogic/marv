@@ -10,14 +10,14 @@
 ;
 ; It works but it needs refactoring and documentation
 
-; We need provide (export) these two functions to allow marv to discover
+; We need to provide these two functions to allow marv to discover
 ; our resources
 
 (provide drivers resources)
 
 ; marv needs to know which drivers to use by associating a driver-id to a driver
 ; implementation. Drivers are what do the work to provision and manage the
-; actual resources.
+; resources.
 
 ; Currently supports only GCP and dev drivers.
 
@@ -38,7 +38,7 @@
 ;                 #:region (hash-ref defaults 'region)
 ;                 )))
 
-; IF YOU ALREADY HAVE RESOURCES IN STATE, BE CAREFUL - USE A DIFFERENT STATE
+; NB IF YOU ALREADY HAVE RESOURCES IN STATE, BE CAREFUL - USE A DIFFERENT STATE
 ; FILE (or save a copy)
 
 
@@ -57,11 +57,11 @@
   ;
   ; (mkres <driver-id> <resource-defn>)
 
-  ; Drivers are discussed below.
+  ; <resource-defn> is a hash representation of the resource.
 
   ; resf is a helper function that adds the gcp-type and other defaults to the
   ; resource definition. The GCP driver expects a $type field to be part of the
-  ; resources fields.
+  ; resource's fields.
 
   (define (resf type res) (hash-merge res (hash-set defaults '$type (ival type))))
 
@@ -71,7 +71,7 @@
 
   (define (gcp t r) (mkres 'gcp (resf t r)))
 
-  ; We define the list of resources that we want marv to manage. This particular
+  ; Define the list of resources that we want marv to manage. This particular
   ; list is using 'quasi-quoting' which allows us to flip back and forth between
   ; quoted list entries and calling racket functions ('gcp', in this case). If
   ; this doesn't make sense, have a look at the Racket reference:
@@ -82,18 +82,18 @@
 
   `((vpc . ,(gcp "compute.network" vpc))
     (sn1 .  ,(gcp "compute.subnetwork" sn1))
-    ; (proxy-sn .  ,(gcp "compute.subnetwork" proxy-sn))
-    ; (fw-health . ,(gcp "compute.firewall" fw-health-check))
-    ; (fw-proxies . ,(gcp "compute.firewall" fw-proxies))
-    ; (instance-template . ,(gcp "compute.instanceTemplate" (instance-template node-size)))
-    ; (instance-group-manager1 . ,(gcp "compute.instanceGroupManager"
-    ;                                  (instance-group-manager "example" 2 "europe-west2-c" 'instance-template.selfLink)))
-    ; ; ;    (lb-external-ip (gcp "compute.address" lb-external-ip))
-    ; (lb-basic-check . ,(gcp "compute.regionHealthCheck" lb-basic-check))
-    ; (region-backend-service . ,(gcp "compute.regionBackendService" region-backend-service))
-    ; (region-url-map . ,(gcp "compute.regionUrlMap" region-url-map))
-    ; (region-target-proxies . ,(gcp "compute.regionTargetHttpProxy" region-target-proxies))
-    ; (forwarding-rule . ,(gcp "compute.forwardingRule" forwarding-rule))
+    (proxy-sn .  ,(gcp "compute.subnetwork" proxy-sn))
+    (fw-health . ,(gcp "compute.firewall" fw-health-check))
+    (fw-proxies . ,(gcp "compute.firewall" fw-proxies))
+    (instance-template . ,(gcp "compute.instanceTemplate" (instance-template node-size)))
+    (instance-group-manager1 . ,(gcp "compute.instanceGroupManager"
+                                     (instance-group-manager "example" 2 "europe-west2-c" 'instance-template.selfLink)))
+    ; ;    (lb-external-ip (gcp "compute.address" lb-external-ip))
+    (lb-basic-check . ,(gcp "compute.regionHealthCheck" lb-basic-check))
+    (region-backend-service . ,(gcp "compute.regionBackendService" region-backend-service))
+    (region-url-map . ,(gcp "compute.regionUrlMap" region-url-map))
+    (region-target-proxies . ,(gcp "compute.regionTargetHttpProxy" region-target-proxies))
+    (forwarding-rule . ,(gcp "compute.forwardingRule" forwarding-rule))
     ))
 
 (define (getenv-or-raise e)
