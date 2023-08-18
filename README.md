@@ -58,9 +58,10 @@ directory, which allows local development.
     marv --apply examples/gcp/load-balancer.rkt 
 
     # Delete all resources
-    PURGE=y marv --apply examples/gcp/load-balancer.rkt 
+    marv --purge --apply examples/gcp/load-balancer.rkt 
 
-The state is stored locally in `state.dat` by default. Use `-s` to change this.
+The state is stored locally in `load-balancer.state.dat` by default. Use `-s` to
+override this.
 
 Cached information is held in the `.marv` directory - this is mainly for holding
 downloaded GCP API schema information.
