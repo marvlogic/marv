@@ -3,16 +3,16 @@
 (require racket/cmdline)
 (require racket/pretty)
 (require racket/string)
+(require racket/path)
 
 (require marv/core/globals)
 (require marv/core/state)
-(require marv/core/diff)
 (require marv/core/resources)
 (require marv/core/resource-def)
 (require marv/core/lifecycle)
-(require marv/utils/hash)
 
 (define APPLY (make-parameter #f))
+(define PURGE (make-parameter #f))
 (define SHOW-STATE-IDS (make-parameter #f))
 (define DUMP-RESOURCES (make-parameter #f))
 (define LIST-RESOURCES (make-parameter #f))
@@ -25,12 +25,15 @@
 (define LIST-PARAMS (make-parameter #f))
 (define PARAMS (make-parameter (hash)))
 
-(define STATE-FILE (make-parameter "state.dat"))
+(define STATE-FILE (make-parameter #f))
 
 (define RESOURCES
   (command-line
    #:once-each
    [("-s" "--state") state-file "Name of statefile to use" (STATE-FILE state-file)]
+   [("--purge")  "Purge (DELETE) all resources" (PURGE #t)]
+
+   #:once-any
    [("--plan")  "Plan changes" (PLAN-CHANGES #t)]
    [("--apply")  "Apply resources" (APPLY #t)]
    [("--list") "Show the defined resources" (LIST-RESOURCES #t)]
@@ -49,9 +52,13 @@
 
 (marv-init)
 
+(when (not (STATE-FILE))
+  (STATE-FILE (path-replace-extension (file-name-from-path (string->path RESOURCES)) ".state.dat" )))
+
+(printf "Using state file: ~a\n" (STATE-FILE))
 (load-state (STATE-FILE))
 
-(init-module RESOURCES)
+(init-module RESOURCES (PURGE))
 
 (define modl (get-module (PARAMS)))
 

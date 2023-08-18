@@ -35,13 +35,14 @@
 (struct params (required accepted))
 
 
-(define RESOURCES (make-parameter (lambda() (list))))
+(define RESOURCES (make-parameter (lambda oo (list))))
 (define DRIVERS (make-parameter (lambda() (hash))))
 
-(define/contract (init-module f)
-  (string? . -> . void?)
+(define/contract (init-module f purge?)
+  (string? boolean? . -> . void?)
   (DRIVERS (dynamic-require f 'drivers))
-  (RESOURCES (dynamic-require f 'resources)))
+  (when (not purge?)
+    (RESOURCES (dynamic-require f 'resources))))
 
 (define/contract (get-module params)
   ((hash/c string? string?) . -> . rmodule/c)
