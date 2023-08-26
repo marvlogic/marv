@@ -12,11 +12,12 @@
 (define basic-lexer
   (lexer-srcloc
    ;    ["\n" (token 'NEWLINE lexeme)]
-   [whitespace (token lexeme #:skip? #t)]
-   [dotty-ident (token 'DOTTY-IDENT lexeme) ]
-   [identifier (token 'IDENTIFIER lexeme) ]
-   [(:= 1 (char-set "{}=:")) lexeme]
+   [(:or "for/each" "in" "<-") (token lexeme lexeme)]
+   [(:= 1 (char-set "[](){}=:,")) lexeme]
    [digits (token 'INTEGER (string->number lexeme))]
+   [whitespace (token lexeme #:skip? #t)]
+   [identifier (token 'IDENTIFIER lexeme) ]
+   [dotty-ident (token 'DOTTY-IDENT lexeme) ]
    ;    [(from/stop-before "rem" "\n") (token 'REM lexeme)]
    ;    [(:or "print" "goto" "end"
    ;  "+" ":" ";") (token lexeme lexeme)]
@@ -26,4 +27,5 @@
    [(:or (from/to "\"" "\"") (from/to "'" "'"))
     (token 'STRING
            (substring lexeme
-                      1 (sub1 (string-length lexeme))))]))
+                      1 (sub1 (string-length lexeme))))]
+   ))

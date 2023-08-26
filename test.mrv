@@ -1,0 +1,19 @@
+#lang marv/dsl/v1-parse
+
+x = 1
+y = gcp:compute.network
+{
+ name = "compute1"
+      size = "f1-micro"
+      labels =
+      { tag1 = "hello" tag2 = "there"}
+      }
+
+network=gcp:compute.network { name = "vpc1" }
+subnet={ region = "europe-west-2"}
+
+mylist = [ 1 2 3 4 { attr1=123 }]
+for/each (i in [1 2 3]) (j in mylist)
+{
+ subnet=gcp:compute.subnetwork subnet<-{name = i cidrRange=j}
+                               }
