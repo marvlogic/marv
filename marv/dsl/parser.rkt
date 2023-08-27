@@ -17,7 +17,7 @@ conf-ident: IDENTIFIER
 
 attr-decl: IDENTIFIER /"=" ( expression | IDENTIFIER )
 
-res-decl: IDENTIFIER /"=" driver-id /":" driver-attr config-expr
+res-decl: IDENTIFIER /"=" driver-id /":" driver-attr config-object
 driver-id: IDENTIFIER
 driver-attr: DOTTY-IDENT
 

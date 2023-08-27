@@ -4,7 +4,7 @@ x = 1
 kev = "kevin"
 z = 2
 
-co =  {
+vpc =  {
    name = "network"
    size = 2
    samekev = kev
@@ -13,11 +13,11 @@ co =  {
    }
  }
 
-# y = gcp:compute.network {
-#   name = "compute1"
-#   size = "f1-micro" 
-#   labels = { tag1 = "hello"; tag2 = "there"}
-# }
+y = gcp:compute.network {
+  name = "compute1"
+  size = "f1-micro" 
+  labels = { tag1 = "hello"; tag2 = "there"}
+}
 # 
 # network=gcp:compute.network { name = "vpc1" }
 # subnet={ region = "europe-west-2"}
