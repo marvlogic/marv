@@ -3,6 +3,7 @@
 marv-spec: decl*
 decl: var-decl | res-decl | for-each
 
+comment: COMMENT
 var-decl: IDENTIFIER /"=" expression
 expression: INTEGER | STRING | config-object | list
 config-object: /"{" attr-decl* /"}"

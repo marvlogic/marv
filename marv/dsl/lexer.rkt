@@ -16,9 +16,10 @@
    [(:= 1 (char-set "[](){}=:,")) lexeme]
    [digits (token 'INTEGER (string->number lexeme))]
    [whitespace (token lexeme #:skip? #t)]
+   [";" (token lexeme #:skip? #t)]
    [identifier (token 'IDENTIFIER lexeme) ]
    [dotty-ident (token 'DOTTY-IDENT lexeme) ]
-   ;    [(from/stop-before "rem" "\n") (token 'REM lexeme)]
+   ;  [(from/stop-before "#" "\n") (token 'COMMENT lexeme)]
    ;    [(:or "print" "goto" "end"
    ;  "+" ":" ";") (token lexeme lexeme)]
    ;    [(:or (:seq (:? digits) "." digits)

@@ -9,10 +9,10 @@
   ;   (syntax->datum
   ;    (literal-read-syntax #f in)))
 
+
   (define (read-syntax path port)
     (define parse-tree (parse path (make-tokenizer port path)))
     (strip-context
      #`(module marv-top racket/base
-         (define-syntax-rule (marv-spec all) (displayln all))
-         (define-syntax-rule (decl all) (displayln "decl!"))
+         (require marv/dsl/expander)
          #,parse-tree))))
