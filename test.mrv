@@ -1,13 +1,16 @@
 #lang marv/dsl/v1
 
 x = 1
-y = "kevin"
+kev = "kevin"
 z = 2
 
 co =  {
    name = "network"
    size = 2
-   yy = x
+   samekev = kev
+   yy = {
+    samekev = kev
+   }
  }
 
 # y = gcp:compute.network {

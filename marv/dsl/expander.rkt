@@ -46,8 +46,9 @@
 
   (define (m-attr-decl stx)
     (syntax-parse stx
+      ; [(_ att-name:string EXPR)
       [(_ att-name:string ((~literal expression) EXPR))
-       (syntax/loc stx '(att-name . EXPR))]
+       (syntax/loc stx `(att-name . ,(expression EXPR)))]
       [(_ att-name:string IDENT)
        (syntax/loc stx `(att-name . ,(hash-ref (VARS) IDENT)))]
       [else (raise "m-attr-decl")]))
