@@ -2,39 +2,63 @@
 
 (require (for-syntax racket/base syntax/parse))
 
+
+(define VARS (make-parameter (hash)))
+
+(define (set-var id v) (VARS (hash-set (VARS) id v)))
+
 (begin-for-syntax
-  (define (c-marv-spec stx)
-    (displayln stx)
+  (define (m-marv-spec stx)
     (syntax-parse stx
-      [(_ DECL ...) #'(begin DECL ...)]
+      [(_ DECL ...) #'(begin DECL ...
+                             (require racket/pretty)
+                             (pretty-print (VARS)))]
       [else (raise "nowt")]))
 
-  (define (c-decl stx)
-    (displayln stx)
+  (define (m-statement stx)
     (syntax-parse stx
-      [(_ SYM) #'(displayln SYM)]
+      [(_ stmt) #'stmt]
       [else (raise "nowt-decl")]))
 
-  (define (c-var-decl stx)
+  (define (m-decl stx)
     (syntax-parse stx
-      [(_ id EXPR) #'(displayln (format "name: ~a ~a" id EXPR))]
+      [(_ decl) #'decl]
+      [else (raise "nowt-decl")]))
+
+  (define (m-var-decl stx)
+    (syntax-parse stx
+      [(_ id EXPR) (syntax/loc stx (set-var id EXPR))]
       [else (raise "nowt-var-decl")]))
 
-  (define (c-expression stx)
-    (displayln stx)
+  (define (m-expression stx)
     (syntax-parse stx
-      [(_ val) #'val]
-      [else (raise "nowt-expression")]))
+      [(_ val:integer) (syntax/loc stx val)]
+      [(_ val:string) (syntax/loc stx val)]
+      [(_ other) (syntax/loc stx other)]
+      [else (raise (format "expression didn't match: ~a" stx))]
+      ))
 
-  ; (require racket/pretty)
-  ;  (marv-spec (decl 'xyz) (decl 'pdq))
-  ; (marv-spec (decl 'xyz) (decl 'pdq))
-  ; (pretty-print (marv-spec (decl 'xyz) (decl 'pdq)))
+  (define (m-config-object stx)
+    (syntax-parse stx
+      [(_ ATTR ...)
+       (syntax/loc stx (make-immutable-hash (list ATTR ...)))]
+      [else (raise "m-config-object")]))
+
+  (define (m-attr-decl stx)
+    (syntax-parse stx
+      [(_ att-name:string ((~literal expression) EXPR))
+       (syntax/loc stx '(att-name . EXPR))]
+      [(_ att-name:string IDENT)
+       (syntax/loc stx `(att-name . ,(hash-ref (VARS) IDENT)))]
+      [else (raise "m-attr-decl")]))
+
   )
 
-(define-syntax marv-spec c-marv-spec)
-(define-syntax decl c-decl)
-(define-syntax var-decl c-var-decl)
-(define-syntax expression c-expression)
-
-(provide marv-spec decl var-decl expression)
+(define-syntax marv-spec m-marv-spec)
+(define-syntax statement m-statement)
+(define-syntax decl m-decl)
+(define-syntax var-decl m-var-decl)
+(define-syntax expression m-expression)
+(define-syntax config-object m-config-object)
+(define-syntax attr-decl m-attr-decl)
+(provide marv-spec decl var-decl expression statement config-object attr-decl)

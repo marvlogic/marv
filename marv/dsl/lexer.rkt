@@ -19,7 +19,7 @@
    [";" (token lexeme #:skip? #t)]
    [identifier (token 'IDENTIFIER lexeme) ]
    [dotty-ident (token 'DOTTY-IDENT lexeme) ]
-   ;  [(from/stop-before "#" "\n") (token 'COMMENT lexeme)]
+   [(from/stop-before "#" "\n") (token lexeme #:skip? #t)]
    ;    [(:or "print" "goto" "end"
    ;  "+" ":" ";") (token lexeme lexeme)]
    ;    [(:or (:seq (:? digits) "." digits)

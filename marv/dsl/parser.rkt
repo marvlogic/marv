@@ -1,19 +1,21 @@
 #lang brag
 
-marv-spec: decl*
-decl: var-decl | res-decl | for-each
+marv-spec: statement*
+
+statement: decl | for-each
+decl: var-decl | res-decl
 
 comment: COMMENT
 var-decl: IDENTIFIER /"=" expression
 expression: INTEGER | STRING | config-object | list
 config-object: /"{" attr-decl* /"}"
+list: /"[" expression* /"]"
 
 config-expr: config-object | conf-ident | conf-merge
 conf-merge: config-expr /"<-" config-expr
 conf-ident: IDENTIFIER
 
-attr-decl: IDENTIFIER /"=" (IDENTIFIER | expression)
-list: /"[" expression* /"]"
+attr-decl: IDENTIFIER /"=" ( expression | IDENTIFIER )
 
 res-decl: IDENTIFIER /"=" driver-id /":" driver-attr config-expr
 driver-id: IDENTIFIER
