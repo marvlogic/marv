@@ -2,20 +2,17 @@
 
 (require (for-syntax racket/base syntax/parse))
 
-
 (define VARS (make-parameter (hash)))
-(define RES (make-parameter (hash)))
 
 (define (set-var id v) (VARS (hash-set (VARS) id v)))
-(define (set-res id drv attr v) (RES (hash-set (RES) id (hash-set* v '$driver drv '$attr attr))))
+(define (set-res id drv attr v) (set-var id (hash-set* v '$driver drv '$attr attr)))
 
 (begin-for-syntax
   (define (m-marv-spec stx)
     (syntax-parse stx
       [(_ DECL ...) #'(begin DECL ...
                              (require racket/pretty)
-                             (pretty-print (VARS))
-                             (pretty-print (RES)))]
+                             (pretty-print (VARS)))]
       [else (raise "nowt")]))
 
   (define (m-statement stx)
@@ -73,4 +70,5 @@
 (define-syntax expression m-expression)
 (define-syntax config-object m-config-object)
 (define-syntax attr-decl m-attr-decl)
+
 (provide marv-spec decl var-decl res-decl expression statement config-object attr-decl)
