@@ -18,7 +18,7 @@ built-in: env-read
 env-read: /"env" /"(" STRING /")"
 
 config-expr: config-object | config-ident | config-merge
-config-merge: config-expr /"<-" config-expr
+config-merge: config-expr ("<-" | "->") config-expr
 config-ident: IDENTIFIER
 
 attr-decl: IDENTIFIER /"=" [ "imm:" ] ( expression | reference | IDENTIFIER)

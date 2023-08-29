@@ -1,16 +1,18 @@
 #lang racket/base
 
 (require (for-syntax racket/base syntax/parse))
+(require racket/hash)
 
 (define VARS (make-parameter (hash)))
 
 (define (set-var id v) (VARS (hash-set (VARS) id v)))
 (define (get-var id) (hash-ref (VARS) id))
 (define (set-res id drv attr v) (set-var id (hash-set* v '$driver drv '$type attr)))
+(define (config-overlay left right) (hash-union left right #:combine (lambda (v0 _) v0)))
 
 (require marv/dsl/support)
-(require marv/utils/hash)
 (require marv/core/values)
+
 
 (define (resource-var? id)
   (define v (hash-ref (VARS) id))
@@ -94,7 +96,8 @@
 
   (define (m-config-merge stx)
     (syntax-parse stx
-      [(_ CFLEFT CFRIGHT) (syntax/loc stx (hash-merge CFLEFT CFRIGHT))]
+      [(_ LEFT "->" RIGHT) (syntax/loc stx (config-overlay LEFT RIGHT))]
+      [(_ LEFT "<-" RIGHT) (syntax/loc stx (config-overlay RIGHT LEFT))]
       [else (raise "m-config-merge")]))
 
   (define (m-config-ident stx)
