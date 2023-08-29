@@ -7,7 +7,7 @@ decl: var-decl | res-decl
 
 comment: COMMENT
 var-decl: IDENTIFIER /"=" expression
-expression: INTEGER | STRING | boolean | config-object | list | built-in
+expression: INTEGER | STRING | boolean | config-expr | list | built-in
 
 boolean: "true" | "false"
 
@@ -17,13 +17,14 @@ list: /"[" expression* /"]"
 built-in: env-read
 env-read: /"env" /"(" STRING /")"
 
-config-expr: config-object | conf-ident | conf-merge
-conf-merge: config-expr /"<-" config-expr
-conf-ident: IDENTIFIER
+config-expr: config-object | config-ident | config-merge
+config-merge: config-expr /"<-" config-expr
+config-ident: IDENTIFIER
 
-attr-decl: IDENTIFIER /"=" ( expression | IDENTIFIER )
+attr-decl: IDENTIFIER /"=" ( expression | reference | IDENTIFIER)
+reference: DOTTY-IDENT
 
-res-decl: IDENTIFIER /"=" driver-id /":" driver-attr config-object
+res-decl: IDENTIFIER /"=" driver-id /":" driver-attr config-expr
 driver-id: IDENTIFIER
 driver-attr: DOTTY-IDENT
 

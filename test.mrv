@@ -1,4 +1,4 @@
-#lang marv
+#lang marv #/dsl/alpha-parse
 
 x = 1
 kev = "kevin"
@@ -9,11 +9,19 @@ defaults = {
   region = env("MARV_GCP_REGION")
 }
 
-vpc1 = gcp:compute.network {
+vpc = gcp:compute.network {
      name = "vpc1"
      description = "vpc1"
      autoCreateSubnetworks = false
      routingConfig = { routingMode = "REGIONAL" }
+} <- defaults
+
+sn1 = gcp:compute.subnetwork {
+     name = "subnet1"
+     description = "primary subnet"
+     ipCidrRange =  "10.0.1.0/24" # ival
+     region = "europe-west2"
+     network = vpc.selfLink
 } <- defaults
 
 # 

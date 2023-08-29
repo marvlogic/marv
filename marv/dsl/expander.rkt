@@ -5,7 +5,12 @@
 (define VARS (make-parameter (hash)))
 
 (define (set-var id v) (VARS (hash-set (VARS) id v)))
+(define (get-var id) (hash-ref (VARS) id))
 (define (set-res id drv attr v) (set-var id (hash-set* v '$driver drv '$type attr)))
+
+(require marv/dsl/support)
+(require marv/utils/hash)
+(require marv/core/values)
 
 (define (resource-var? id)
   (define v (hash-ref (VARS) id))
@@ -13,13 +18,17 @@
 
 ; TODO - swap prefix usage to m- on the provided
 
-
 (begin-for-syntax
+  ; (define (m-marv-spec stx)
+  ;   (syntax->datum (m-marv-spec2 stx)))
+
   (define (m-marv-spec stx)
     (syntax-parse stx
       [(_ STMT ...)
        #'(begin
            (require marv/dsl/support)
+           (require marv/utils/hash)
+           (require racket/hash)
            STMT ...
            (define resources (gen-resources (VARS)))
            (define drivers (gen-drivers (VARS)))
@@ -50,7 +59,7 @@
 
   (define (m-env-read stx)
     (syntax-parse stx
-      [(_ env-var:string) #'(getenv env-var)]
+      [(_ env-var:string) (syntax/loc stx (getenv-or-raise env-var))]
       [else (raise "m-env-read")]))
 
   (define (m-expression stx)
@@ -69,16 +78,33 @@
   (define (m-config-object stx)
     (syntax-parse stx
       [(_ ATTR ...)
-       (syntax/loc stx (make-immutable-hash (list ATTR ...)))]
+       (syntax/loc stx (make-immutable-hasheq (list ATTR ...)))]
       [else (raise "m-config-object")]))
+
+  (define (m-config-expr stx)
+    (syntax-parse stx
+      [(_ CFEXPR) #'CFEXPR]
+      [else (raise "m-config-expr")]))
+
+  (define (m-config-merge stx)
+    (syntax-parse stx
+      [(_ CFLEFT CFRIGHT) (syntax/loc stx (hash-merge CFLEFT CFRIGHT))]
+      [else (raise "m-config-merge")]))
+
+  (define (m-config-ident stx)
+    (syntax-parse stx
+      [(_ CFIDENT) (syntax/loc stx (get-var CFIDENT))]
+      [else (raise "m-config-ident")]))
 
   (define (m-attr-decl stx)
     (syntax-parse stx
       ; [(_ att-name:string EXPR)
       [(_ att-name:string ((~literal expression) EXPR))
-       (syntax/loc stx `(att-name . ,(expression EXPR)))]
+       (syntax/loc stx `(,(string->symbol att-name) . ,(expression EXPR)))]
+      [(_ att-name:string ((~literal reference) REF))
+       (syntax/loc stx `(,(string->symbol att-name) . ,(ref (string->symbol REF))))]
       [(_ att-name:string IDENT)
-       (syntax/loc stx `(att-name . ,(hash-ref (VARS) IDENT)))]
+       (syntax/loc stx `(,(string->symbol att-name) . ,(get-var IDENT)))]
       [else (raise "m-attr-decl")]))
 
   (define (m-res-decl stx)
@@ -101,7 +127,11 @@
 (define-syntax built-in m-built-in)
 (define-syntax env-read m-env-read)
 (define-syntax boolean m-boolean)
+(define-syntax config-expr m-config-expr)
+(define-syntax config-merge m-config-merge)
+(define-syntax config-ident m-config-ident)
 
 (provide marv-spec decl var-decl res-decl
          expression statement config-object
+         config-expr config-merge config-ident
          attr-decl built-in env-read boolean)
