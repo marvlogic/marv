@@ -1,23 +1,21 @@
-#lang marv/dsl/v1
+#lang marv
 
 x = 1
 kev = "kevin"
 z = 2
 
-vpc =  {
-   name = "network"
-   size = 2
-   samekev = kev
-   yy = {
-    samekev = kev
-   }
- }
-
-y = gcp:compute.network {
-  name = "compute1"
-  size = "f1-micro" 
-  labels = { tag1 = "hello"; tag2 = "there"}
+defaults = {
+  project = env("MARV_GCP_PROJECT")
+  region = env("MARV_GCP_REGION")
 }
+
+vpc1 = gcp:compute.network {
+     name = "vpc1"
+     description = "vpc1"
+     autoCreateSubnetworks = false
+     routingConfig = { routingMode = "REGIONAL" }
+} <- defaults
+
 # 
 # network=gcp:compute.network { name = "vpc1" }
 # subnet={ region = "europe-west-2"}

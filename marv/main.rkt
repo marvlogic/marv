@@ -43,8 +43,12 @@
   (require racket/cmdline)
   (define who (box "world"))
   (command-line
-    #:program "my-program"
-    #:once-each
-    [("-n" "--name") name "Who to say hello to" (set-box! who name)]
-    #:args ()
-    (printf "hello ~a~n" (unbox who))))
+   #:program "my-program"
+   #:once-each
+   [("-n" "--name") name "Who to say hello to" (set-box! who name)]
+   #:args ()
+   (printf "hello ~a~n" (unbox who))))
+
+(module reader racket/base
+  (require (submod "dsl/alpha.rkt" reader))
+  (provide read-syntax))

@@ -7,9 +7,15 @@ decl: var-decl | res-decl
 
 comment: COMMENT
 var-decl: IDENTIFIER /"=" expression
-expression: INTEGER | STRING | config-object | list
+expression: INTEGER | STRING | boolean | config-object | list | built-in
+
+boolean: "true" | "false"
+
 config-object: /"{" attr-decl* /"}"
 list: /"[" expression* /"]"
+
+built-in: env-read
+env-read: /"env" /"(" STRING /")"
 
 config-expr: config-object | conf-ident | conf-merge
 conf-merge: config-expr /"<-" config-expr
