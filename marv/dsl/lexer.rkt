@@ -6,13 +6,14 @@
 
 (define-lex-abbrev digits (:+ (char-set "0123456789")))
 (define-lex-abbrev identifier (:seq (:= 1 alphabetic)
-                                    (:* (:or digits alphabetic))))
+                                    (:* (:or digits alphabetic (char-set "-_")))))
 (define-lex-abbrev dotty-ident (:seq (:= 1 identifier) (:+ (:seq "." identifier))))
 
 (define basic-lexer
   (lexer-srcloc
    ;    ["\n" (token 'NEWLINE lexeme)]
-   [(:or "for/each" "in" "<-" "env" "true" "false") (token lexeme lexeme)]
+   [(:or "for/each" "in" "->" "<-"
+         "imm:" "env" "true" "false") (token lexeme lexeme)]
    [(:= 1 (char-set "[](){}=:,")) lexeme]
    [digits (token 'INTEGER (string->number lexeme))]
    [whitespace (token lexeme #:skip? #t)]

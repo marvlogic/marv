@@ -81,6 +81,12 @@
        (syntax/loc stx (make-immutable-hasheq (list ATTR ...)))]
       [else (raise "m-config-object")]))
 
+  (define (m-alist stx)
+    (syntax-parse stx
+      [(_ EXPR ...)
+       (syntax/loc stx (list EXPR ...))]
+      [else (raise "m-alist")]))
+
   (define (m-config-expr stx)
     (syntax-parse stx
       [(_ CFEXPR) #'CFEXPR]
@@ -98,13 +104,20 @@
 
   (define (m-attr-decl stx)
     (syntax-parse stx
-      ; [(_ att-name:string EXPR)
       [(_ att-name:string ((~literal expression) EXPR))
        (syntax/loc stx `(,(string->symbol att-name) . ,(expression EXPR)))]
       [(_ att-name:string ((~literal reference) REF))
        (syntax/loc stx `(,(string->symbol att-name) . ,(ref (string->symbol REF))))]
       [(_ att-name:string IDENT)
        (syntax/loc stx `(,(string->symbol att-name) . ,(get-var IDENT)))]
+
+      ; TODO - immutable stuff in the syntax is just temporary until moved to the driver
+      [(_ att-name:string "imm:" ((~literal expression) EXPR))
+       (syntax/loc stx `(,(string->symbol att-name) . ,(ival (expression EXPR))))]
+      [(_ att-name:string "imm:" ((~literal reference) REF))
+       (syntax/loc stx `(,(string->symbol att-name) . ,(iref (string->symbol REF))))]
+      [(_ att-name:string "imm:" IDENT)
+       (syntax/loc stx `(,(string->symbol att-name) . ,(ival (get-var IDENT))))]
       [else (raise "m-attr-decl")]))
 
   (define (m-res-decl stx)
@@ -123,6 +136,7 @@
 (define-syntax res-decl m-res-decl)
 (define-syntax expression m-expression)
 (define-syntax config-object m-config-object)
+(define-syntax alist m-alist)
 (define-syntax attr-decl m-attr-decl)
 (define-syntax built-in m-built-in)
 (define-syntax env-read m-env-read)
@@ -132,6 +146,6 @@
 (define-syntax config-ident m-config-ident)
 
 (provide marv-spec decl var-decl res-decl
-         expression statement config-object
+         expression statement config-object alist
          config-expr config-merge config-ident
          attr-decl built-in env-read boolean)
