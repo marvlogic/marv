@@ -50,5 +50,5 @@
    (printf "hello ~a~n" (unbox who))))
 
 (module reader racket/base
-  (require (submod "dsl/alpha.rkt" reader))
+  (require (submod marv/alpha/main reader))
   (provide read-syntax))

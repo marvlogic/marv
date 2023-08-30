@@ -14,5 +14,5 @@
     (define parse-tree (parse path (make-tokenizer port path)))
     (strip-context
      #`(module marv-top racket/base
-         (require marv/dsl/expander)
+         (require marv/alpha/expander)
          #,parse-tree))))

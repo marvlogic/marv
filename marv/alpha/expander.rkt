@@ -10,7 +10,7 @@
 (define (set-res id drv attr v) (set-var id (hash-set* v '$driver drv '$type attr)))
 (define (config-overlay left right) (hash-union left right #:combine (lambda (v0 _) v0)))
 
-(require marv/dsl/support)
+(require marv/alpha/support)
 (require marv/core/values)
 
 
@@ -28,7 +28,7 @@
     (syntax-parse stx
       [(_ STMT ...)
        #'(begin
-           (require marv/dsl/support)
+           (require marv/alpha/support)
            (require marv/utils/hash)
            (require racket/hash)
            STMT ...
