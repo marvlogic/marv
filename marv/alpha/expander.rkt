@@ -1,18 +1,37 @@
 #lang racket/base
 
-(require (for-syntax racket/base syntax/parse))
 (require racket/hash)
+(require (for-syntax racket/base syntax/parse))
 
 (define VARS (make-parameter (hash)))
 
-(define (set-var id v) (VARS (hash-set (VARS) id v)))
+(define (error:excn msg)
+  (raise (format "ERROR: ~a\n at ~a:~a" msg 1 2))) ;(syntax-source stx) (syntax-line stx)))
+
+(define (set-var id v)
+  (when (hash-has-key? (VARS) id) (error:excn (format "~a is already defined" id)))
+  (VARS (hash-set (VARS) id v)))
+
 (define (get-var id) (hash-ref (VARS) id))
-(define (set-res id drv attr v) (set-var id (hash-set* v '$driver drv '$type attr)))
-(define (config-overlay left right) (hash-union left right #:combine (lambda (v0 _) v0)))
+(define (set-res drv attr v) (hash-set* v '$driver drv '$type attr))
+(define (config-overlay left right) #'(hash-union (string->symbol left) (string->symbol right) #:combine (lambda (v0 _) v0)))
+
+(define (hash-nref hs ks)
+  (for/fold ([h hs])
+            ([k (in-list ks)])
+    (hash-ref h k)))
+
+(define (handle-ref tgt . ks)
+  (cond [(hash-has-key? tgt '$driver) (ref '$test1)]
+        [else (hash-nref tgt (map syntax-e ks))]))
+
+; (define (handle-deref r) #`(hash-nref #,(car r) #,(cdr r)))
+
+(define (loop-res-name name loop-ident)
+  (format "~a.~a" name (get-var loop-ident)))
 
 (require marv/alpha/support)
 (require marv/core/values)
-
 
 (define (resource-var? id)
   (define v (hash-ref (VARS) id))
@@ -29,40 +48,48 @@
       [(_ STMT ...)
        #'(begin
            (require marv/alpha/support)
-           (require marv/utils/hash)
            (require racket/hash)
+           (require racket/pretty)
            STMT ...
            (define resources (gen-resources (VARS)))
            (define drivers (gen-drivers (VARS)))
            (provide resources drivers)
-           (require racket/pretty)
-           (pretty-print (VARS)))]
+           ;(pretty-print (VARS))
+           )]
       [else (raise "nowt")]))
 
   (define (m-statement stx)
+    (displayln 'm-statement)
     (syntax-parse stx
-      [(_ STMT) #'STMT]
+      [(_ STMT) (syntax/loc stx STMT)]
       [else (raise "nowt-stmt")]))
 
   (define (m-decl stx)
+    (displayln 'm-decl)
     (syntax-parse stx
-      [(_ DECL) #'DECL]
+      [(_ DECL) (syntax/loc stx DECL)]
       [else (raise "nowt-decl")]))
 
   (define (m-var-decl stx)
+    (displayln 'm-var-decl)
     (syntax-parse stx
-      [(_ id EXPR) (syntax/loc stx (set-var id EXPR))]
+      [(_ id:expr EXPR) (syntax/loc stx (define id EXPR))]
       [else (raise "nowt-var-decl")]))
 
   (define (m-built-in stx)
     (syntax-parse stx
-      [(_ BUILTIN) #'BUILTIN]
+      [(_ BUILTIN) (syntax/loc stx BUILTIN)]
       [else (raise "nowt-builtin")]))
 
   (define (m-env-read stx)
     (syntax-parse stx
       [(_ env-var:string) (syntax/loc stx (getenv-or-raise env-var))]
       [else (raise "m-env-read")]))
+
+  (define (m-pprint stx)
+    (displayln 'm-pprint)
+    (syntax-parse stx
+      [(_ ident:expr) (syntax/loc stx (displayln ident))]))
 
   (define (m-expression stx)
     (syntax-parse stx
@@ -102,33 +129,67 @@
 
   (define (m-config-ident stx)
     (syntax-parse stx
-      [(_ CFIDENT) (syntax/loc stx (get-var CFIDENT))]
+      [(_ CFIDENT) (syntax/loc stx CFIDENT)]
       [else (raise "m-config-ident")]))
 
   (define (m-attr-decl stx)
+    (displayln 'm-attr-decl)
+    (displayln stx)
     (syntax-parse stx
-      [(_ att-name:string ((~literal expression) EXPR))
-       (syntax/loc stx `(,(string->symbol att-name) . ,(expression EXPR)))]
-      [(_ att-name:string ((~literal reference) REF))
-       (syntax/loc stx `(,(string->symbol att-name) . ,(ref (string->symbol REF))))]
-      [(_ att-name:string IDENT)
-       (syntax/loc stx `(,(string->symbol att-name) . ,(get-var IDENT)))]
+      [(_ att-name:expr ((~literal expression) EXPR))
+       (syntax/loc stx `(att-name . ,(expression EXPR)))]
+      [(_ att-name:expr ((~literal reference) REF))
+       (syntax/loc stx `(att-name . ,(reference REF)))]
+      [(_ att-name:expr IDENT)
+       (syntax/loc stx `(att-name . ,(get-var IDENT)))]
 
       ; TODO - immutable stuff in the syntax is just temporary until moved to the driver
-      [(_ att-name:string "imm:" ((~literal expression) EXPR))
-       (syntax/loc stx `(,(string->symbol att-name) . ,(ival (expression EXPR))))]
-      [(_ att-name:string "imm:" ((~literal reference) REF))
-       (syntax/loc stx `(,(string->symbol att-name) . ,(iref (string->symbol REF))))]
-      [(_ att-name:string "imm:" IDENT)
-       (syntax/loc stx `(,(string->symbol att-name) . ,(ival (get-var IDENT))))]
+      [(_ att-name:expr "imm:" ((~literal expression) EXPR))
+       (syntax/loc stx `(att-name . ,(ival (expression EXPR))))]
+      [(_ att-name:expr "imm:" ((~literal reference) REF))
+       (syntax/loc stx `(att-name . ,(iref (string->symbol REF))))]
+      [(_ att-name:expr "imm:" IDENT)
+       (syntax/loc stx `(att-name . ,(ival (get-var IDENT))))]
       [else (raise "m-attr-decl")]))
+
+  (define (m-reference stx)
+    (displayln 'm-reference)
+    (displayln stx)
+    (syntax-parse stx
+      [(_ (tgt:id key ...)) (syntax/loc stx (handle-ref tgt #'key ...))]
+      ; [(_ (tgt:id key)) (syntax/loc stx (handle-ref tgt (syntax-e #'key)))]
+      ; [(_ (tgt:id key)) (syntax/loc stx (hash-ref tgt (syntax-e #'key)))]
+      ; [(_ (tgt:id key)) #'(hash-ref tgt (syntax-e #'key))]
+      ))
 
   (define (m-res-decl stx)
     (syntax-parse stx
-      [(_ name:string ((~literal driver-id) did:string)
+      [(_ name:expr
+          ((~literal driver-id) did:expr)
+          ((~literal driver-attr) dad:expr) cfg)
+       (syntax/loc stx (define name (set-res did dad cfg)))]
+
+      [(_ name:string
+          ((~literal loop-ident) lid:string)
+          ((~literal driver-id) did:string)
           ((~literal driver-attr) dad:string) cfg)
-       (syntax/loc stx (set-res name did dad cfg))]
+       (syntax/loc stx (set-res (loop-res-name name lid) did dad cfg))]
       [else (raise (format "res-decl didn't match: ~a" stx))]))
+
+  (define (m-for-list stx)
+    (displayln "for-list")
+    (syntax-parse stx
+      [(_ LOOPVAR "{" STMT ... "}")
+       (syntax/loc stx `(for/list LOOPVAR (STMT ...)))]
+      [else (raise (format "for-list didn't match: ~a" stx))])
+    )
+
+  (define (m-loop-var stx)
+    (displayln "loop-var")
+    (displayln stx)
+    (syntax-parse stx
+      [(_ IDENT:string LIST) (syntax/loc stx `[ ,(string->symbol IDENT) ,LIST])]
+      [else (raise (format "loop-var didn't match: ~a" stx))]))
 
   )
 
@@ -138,17 +199,23 @@
 (define-syntax var-decl m-var-decl)
 (define-syntax res-decl m-res-decl)
 (define-syntax expression m-expression)
+(define-syntax reference m-reference)
 (define-syntax config-object m-config-object)
 (define-syntax alist m-alist)
 (define-syntax attr-decl m-attr-decl)
 (define-syntax built-in m-built-in)
 (define-syntax env-read m-env-read)
+(define-syntax pprint m-pprint)
 (define-syntax boolean m-boolean)
 (define-syntax config-expr m-config-expr)
 (define-syntax config-merge m-config-merge)
 (define-syntax config-ident m-config-ident)
+(define-syntax for-list m-for-list)
+(define-syntax loop-var m-loop-var)
 
 (provide marv-spec decl var-decl res-decl
-         expression statement config-object alist
+         expression reference statement config-object alist
          config-expr config-merge config-ident
-         attr-decl built-in env-read boolean)
+         for-list loop-var
+         attr-decl built-in env-read pprint
+         boolean)

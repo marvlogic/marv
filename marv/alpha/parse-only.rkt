@@ -3,7 +3,7 @@
 (module reader racket/base
 
   (require syntax/strip-context)
-  (require (rename-in (submod "alpha.rkt" reader)
+  (require (rename-in (submod marv/alpha/main reader)
                       (read-syntax marv-read-syntax)))
 
   ; (provide read)

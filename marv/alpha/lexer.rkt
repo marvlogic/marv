@@ -1,6 +1,7 @@
 #lang racket/base
 
 (require brag/support)
+(require racket/string)
 
 (provide basic-lexer)
 
@@ -12,14 +13,14 @@
 (define basic-lexer
   (lexer-srcloc
    ;    ["\n" (token 'NEWLINE lexeme)]
-   [(:or "for/each" "in" "->" "<-"
+   [(:or "for/list" "in" "->" "<-" "pprint"
          "imm:" "env" "true" "false") (token lexeme lexeme)]
    [(:= 1 (char-set "[](){}=:,")) lexeme]
    [digits (token 'INTEGER (string->number lexeme))]
    [whitespace (token lexeme #:skip? #t)]
    [";" (token lexeme #:skip? #t)]
-   [identifier (token 'IDENTIFIER lexeme) ]
-   [dotty-ident (token 'DOTTY-IDENT lexeme) ]
+   [identifier (token 'IDENTIFIER (string->symbol lexeme)) ]
+   [dotty-ident (token 'DOTTY-IDENT (map string->symbol (string-split lexeme "."))) ]
    [(from/stop-before "#" "\n") (token lexeme #:skip? #t)]
    ;    [(:or "print" "goto" "end"
    ;  "+" ":" ";") (token lexeme lexeme)]

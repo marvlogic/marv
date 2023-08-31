@@ -2,9 +2,10 @@
 
 marv-spec: statement*
 
-statement: decl | for-each
+statement: decl | for-list | pprint
 decl: var-decl | res-decl
 
+pprint: /"pprint" IDENTIFIER
 comment: COMMENT
 var-decl: IDENTIFIER /"=" expression
 expression: INTEGER | STRING | boolean | config-expr | alist | built-in
@@ -24,10 +25,12 @@ config-ident: IDENTIFIER
 attr-decl: IDENTIFIER /"=" [ "imm:" ] ( expression | reference | IDENTIFIER)
 reference: DOTTY-IDENT
 
-res-decl: IDENTIFIER /"=" driver-id /":" driver-attr config-expr
+res-decl: IDENTIFIER [ /"[" loop-ident /"]" ] /"=" driver-id /":" driver-attr config-expr
 driver-id: IDENTIFIER
 driver-attr: DOTTY-IDENT
 
-for-each: /"for/each" loop-var+ "{" marv-spec /"}"
+loop-ident: IDENTIFIER
+
+for-list: /"for/list" loop-var "{" statement+ "}"
 loop-var: /"(" IDENTIFIER /"in" (list-ident | alist) /")"
 list-ident: IDENTIFIER

@@ -15,4 +15,5 @@
     (strip-context
      #`(module marv-top racket/base
          (require marv/alpha/expander)
+         (require racket/pretty)
          #,parse-tree))))
