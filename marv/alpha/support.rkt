@@ -14,7 +14,7 @@
   (define (xform kv)
     (define id (car kv))
     (define res (cdr kv))
-    (cons (string->symbol id) (mkres (string->symbol(hash-ref res '$driver)) res)))
+    (cons id (mkres (hash-ref res '$driver) res)))
   (map xform resources))
 
 (define (gen-drivers decls-hs) tmp-drivers)

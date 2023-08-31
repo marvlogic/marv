@@ -1,6 +1,7 @@
 #lang racket/base
 
 (require racket/hash)
+(require racket/string)
 (require (for-syntax racket/base syntax/parse))
 
 (define VARS (make-parameter (hash)))
@@ -12,18 +13,26 @@
   (when (hash-has-key? (VARS) id) (error:excn (format "~a is already defined" id)))
   (VARS (hash-set (VARS) id v)))
 
+; todo - out
 (define (get-var id) (hash-ref (VARS) id))
-(define (set-res drv attr v) (hash-set* v '$driver drv '$type attr))
-(define (config-overlay left right) #'(hash-union (string->symbol left) (string->symbol right) #:combine (lambda (v0 _) v0)))
+
+(define (def-res id drv attr v)
+  (define r (hash-set* v '$driver drv '$type (string-join (map symbol->string attr) ".")))
+  (set-var id r)
+  r)
+
+(define (config-overlay left right) (hash-union left right #:combine (lambda (v0 _) v0)))
 
 (define (hash-nref hs ks)
   (for/fold ([h hs])
             ([k (in-list ks)])
     (hash-ref h k)))
 
-(define (handle-ref tgt . ks)
-  (cond [(hash-has-key? tgt '$driver) (ref '$test1)]
-        [else (hash-nref tgt (map syntax-e ks))]))
+(define (handle-ref id tgt . ks)
+  (define ksx (map syntax-e ks))
+  (define p (string->symbol (string-join (map symbol->string (cons id ksx)) ".")))
+  (cond [(hash-has-key? tgt '$driver) (ref p)]
+        [else (hash-nref tgt ksx)]))
 
 ; (define (handle-deref r) #`(hash-nref #,(car r) #,(cdr r)))
 
@@ -54,24 +63,21 @@
            (define resources (gen-resources (VARS)))
            (define drivers (gen-drivers (VARS)))
            (provide resources drivers)
-           ;(pretty-print (VARS))
+           (pretty-print (VARS))
            )]
       [else (raise "nowt")]))
 
   (define (m-statement stx)
-    (displayln 'm-statement)
     (syntax-parse stx
       [(_ STMT) (syntax/loc stx STMT)]
       [else (raise "nowt-stmt")]))
 
   (define (m-decl stx)
-    (displayln 'm-decl)
     (syntax-parse stx
       [(_ DECL) (syntax/loc stx DECL)]
       [else (raise "nowt-decl")]))
 
   (define (m-var-decl stx)
-    (displayln 'm-var-decl)
     (syntax-parse stx
       [(_ id:expr EXPR) (syntax/loc stx (define id EXPR))]
       [else (raise "nowt-var-decl")]))
@@ -87,7 +93,6 @@
       [else (raise "m-env-read")]))
 
   (define (m-pprint stx)
-    (displayln 'm-pprint)
     (syntax-parse stx
       [(_ ident:expr) (syntax/loc stx (displayln ident))]))
 
@@ -147,7 +152,7 @@
       [(_ att-name:expr "imm:" ((~literal expression) EXPR))
        (syntax/loc stx `(att-name . ,(ival (expression EXPR))))]
       [(_ att-name:expr "imm:" ((~literal reference) REF))
-       (syntax/loc stx `(att-name . ,(iref (string->symbol REF))))]
+       (syntax/loc stx `(att-name . ,(ival (reference REF))))]
       [(_ att-name:expr "imm:" IDENT)
        (syntax/loc stx `(att-name . ,(ival (get-var IDENT))))]
       [else (raise "m-attr-decl")]))
@@ -156,7 +161,7 @@
     (displayln 'm-reference)
     (displayln stx)
     (syntax-parse stx
-      [(_ (tgt:id key ...)) (syntax/loc stx (handle-ref tgt #'key ...))]
+      [(_ (tgt:id key ...)) (syntax/loc stx (handle-ref 'tgt tgt #'key ...))]
       ; [(_ (tgt:id key)) (syntax/loc stx (handle-ref tgt (syntax-e #'key)))]
       ; [(_ (tgt:id key)) (syntax/loc stx (hash-ref tgt (syntax-e #'key)))]
       ; [(_ (tgt:id key)) #'(hash-ref tgt (syntax-e #'key))]
@@ -167,7 +172,7 @@
       [(_ name:expr
           ((~literal driver-id) did:expr)
           ((~literal driver-attr) dad:expr) cfg)
-       (syntax/loc stx (define name (set-res did dad cfg)))]
+       (syntax/loc stx (define name (def-res 'name 'did 'dad cfg)))]
 
       [(_ name:string
           ((~literal loop-ident) lid:string)
