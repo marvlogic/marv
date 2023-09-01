@@ -1,0 +1,34 @@
+#lang racket/base
+
+(require brag/support)
+(require racket/string)
+
+(provide basic-lexer)
+
+(define-lex-abbrev digits (:+ (char-set "0123456789")))
+(define-lex-abbrev identifier (:seq (:= 1 alphabetic)
+                                    (:* (:or digits alphabetic (char-set "-_")))))
+(define-lex-abbrev dotty-ident (:seq (:= 1 identifier) (:+ (:seq "." identifier))))
+
+(define basic-lexer
+  (lexer-srcloc
+   ;    ["\n" (token 'NEWLINE lexeme)]
+   [(:or "for/list" "in" "->" "<-" "pprint"
+         "imm:" "env" "true" "false") (token lexeme lexeme)]
+   [(:= 1 (char-set "[](){}=:,")) lexeme]
+   [digits (token 'INTEGER (string->number lexeme))]
+   [whitespace (token lexeme #:skip? #t)]
+   [";" (token lexeme #:skip? #t)]
+   [identifier (token 'IDENTIFIER (string->symbol lexeme)) ]
+   [dotty-ident (token 'DOTTY-IDENT (map string->symbol (string-split lexeme "."))) ]
+   [(from/stop-before "#" "\n") (token lexeme #:skip? #t)]
+   ;    [(:or "print" "goto" "end"
+   ;  "+" ":" ";") (token lexeme lexeme)]
+   ;    [(:or (:seq (:? digits) "." digits)
+   ;  (:seq digits "."))
+   ; (token 'DECIMAL (string->number lexeme))]
+   [(:or (from/to "\"" "\"") (from/to "'" "'"))
+    (token 'STRING
+           (substring lexeme
+                      1 (sub1 (string-length lexeme))))]
+   ))

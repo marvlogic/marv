@@ -1,0 +1,15 @@
+#lang marv
+
+# defaults = {
+#   project = env("MARV_GCP_PROJECT")
+#   region = env("MARV_GCP_REGION")
+# }
+
+test(param1 param2) = {
+  project = param1
+  region = param2
+}
+
+defaults = test("happy" "europe")
+
+pprint defaults
