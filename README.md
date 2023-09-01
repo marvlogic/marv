@@ -47,6 +47,48 @@ Install `marv` using `raco`:
     # From the root of the cloned project:
     raco pkg install
 
+# Command line usage
+```
+alias marv="racket command.rkt"
+marv -h
+usage: command.rkt [ <option> ... ] <module-file>
+
+<option> is one of
+
+  -s <state-file>, --state <state-file>
+     Name of statefile to use
+  --purge
+     Purge (DELETE) all resources
+/ --plan
+|    Plan changes
+| --apply
+|    Apply resources
+| --list
+|    Show the defined resources
+| --state-ids
+|    List resource IDs from state
+| --dump
+|    Dump full output of resources from state
+| --import <ids>
+|    Import the already existing resource IDs into state
+| --state-rm <id>
+|    Remove item from state
+| --list-params
+\    Lists parameters accepted by module
+* --param <param> <value>
+     Set <param> to <value>
+  --help, -h
+     Show this help
+  --
+     Do not treat any remaining argument as a switch (at this level)
+
+ *   Asterisks indicate options allowed multiple times.
+ /|\ Brackets indicate mutually exclusive options.
+
+ Multiple single-letter switches can be combined after
+ one `-`. For example, `-h-` is the same as `-h --`.
+ ```
+    
 # Marv's DSL (marv-speak)
 
 Have a read of the [example](examples/gcp/load-balancer.mrv), which is fairly
@@ -55,7 +97,9 @@ well documented.
 The detailed marv language specification is written in
 [brag](https://docs.racket-lang.org/brag/index.html) and is [defined here](alpha/parser.rkt).
 
-As well as Marv-speak, you can also declare your [resources in Racket](examples/gcp/load-balancer.rkt).
+As well as Marv-speak, you can also declare your resources [in
+Racket](examples/gcp/load-balancer.rkt). (The racket example isn't as documented
+as I'd like).
 
 The two examples are interchangeable - they declare the exact same resources, so
 you can `marv --apply` one or the other and they will create the same GCP
@@ -68,7 +112,10 @@ command line (for now).
 
     # GCP project must already exist
     export MARV_GCP_PROJECT=...
-    export MARV_GCP_REGION=europe-west2
+
+    # Note that this is dependent on the value in example's instance-group-manager, if
+    # you change this then change the example's value as well
+    export MARV_GCP_REGION=europe-west1
 
     # Take care that you refresh the token regularly - it expires after 1 hour
     # and may leave a partial-application if it expires during a run

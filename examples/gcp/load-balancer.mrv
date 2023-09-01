@@ -22,8 +22,13 @@ google-source-range = [ "130.211.0.0/22" "35.191.0.0/16" ]
 # resources are declared using the syntax:
 #    <res-id> = <driver-id>:<type> CONFIG-EXPRESSION
 
-# <res-id> is immutable - you can't change a resources ident without destroying
+# <res-id> is immutable - you can't change a resource's ident without destroying
 # and recreating it.
+
+# <driver-id> - two drivers are supported for now: gcp and dev, and they are
+# currently hard-coded into marv. 
+
+# <type> - driver-specific resource type 
 
 # A CONFIG-EXPRESSION can be a CONFIG-OBJECT or, as in this case, it can be a
 # merge of CONFIG-OBJECTS. There are two merge operations:
@@ -142,8 +147,11 @@ f-instance-group-manager(name size zone template) = defaults <- {
      targetSize = size
 }
 
+# NB this zone is hard-coded and needs to correspond with the 'MARV_GCP_REGION'
+# env-variable (until MARV-speak gets string-manipulation functions)
+
 instance-group-manager1 = gcp:compute.instanceGroupManager 
-     f-instance-group-manager("example" 2 "europe-west2-c" instance-template.selfLink)
+     f-instance-group-manager("example" 2 "europe-west1-b" instance-template.selfLink)
 
 ################################################################################
 # The rest of the example is straight-forward declarations
