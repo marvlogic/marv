@@ -109,8 +109,8 @@
 (define vpc
   (make-immutable-hasheq
    `(
-     (name . ,(ival "vpc2"))
-     (description . "vpc2")
+     (name . ,(ival "example-vpc"))
+     (description . "example-vpc")
      (autoCreateSubnetworks . #f)
      (routingConfig . #hasheq((routingMode . "REGIONAL")))
      )))

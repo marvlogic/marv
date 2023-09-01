@@ -1,5 +1,6 @@
 #lang marv
 
+################################################################################
 # A marv specification is set of declarations; some declarations are values
 # whereas others actually declare resources.
 
@@ -13,9 +14,11 @@ defaults = {
      region = env("MARV_GCP_REGION")
 }
 
+################################################################################
 # lists are space separated (this variable is used later)
 google-source-range = [ "130.211.0.0/22" "35.191.0.0/16" ]
 
+################################################################################
 # resources are declared using the syntax:
 #    <res-id> = <driver-id>:<type> CONFIG-EXPRESSION
 
@@ -32,21 +35,22 @@ google-source-range = [ "130.211.0.0/22" "35.191.0.0/16" ]
 #
 # a and b can be literal objects, variables or expressions that create objects.
 
-
 vpc = gcp:compute.network defaults <- {
 
      # imm: declares that this attribute is immutable; if it changes, then the
      # resource will need to be recreated.  (this is a work-around because
      # marv's GCP driver doesn't know which attributes are immutable in GCP)
      
-     name = imm:"vpc2"
-     description = "vpc2"
+     name = imm:"example-vpc"
+     description = "example-vpc"
      autoCreateSubnetworks = false
 
      # nested CONFIG-EXPRESSIONS are allowed
      routingConfig = { routingMode = "REGIONAL" }
 }
 
+
+################################################################################
 # the result of a CONFIG-EXPRESSION is another CONFIG-OBJECT which can also be
 # assigned to a variable and re-used.
 
@@ -102,7 +106,10 @@ node-disks = [ {
     }
 } ]
 
-# variables can be parameterised; let's call them 'functions' :) 
+################################################################################
+# variables can be parameterised; let's call the parameterised-variable things
+# 'functions' :) 
+
 # the parameters can be referenced inside the CONFIG-OBJECTS
 
 f-instance-template(machine-type) = defaults <- {
@@ -123,6 +130,7 @@ f-instance-template(machine-type) = defaults <- {
 
 instance-template = gcp:compute.instanceTemplate f-instance-template("f1-micro")
 
+################################################################################
 # Multiple parameters are space-separated
 
 f-instance-group-manager(name size zone template) = defaults <- {
@@ -137,6 +145,8 @@ f-instance-group-manager(name size zone template) = defaults <- {
 instance-group-manager1 = gcp:compute.instanceGroupManager 
      f-instance-group-manager("example" 2 "europe-west2-c" instance-template.selfLink)
 
+################################################################################
+# The rest of the example is straight-forward declarations
 
 lb-basic-check = gcp:compute.regionHealthCheck defaults <- {
    name = "lb-basic-check"
@@ -159,7 +169,7 @@ region-url-map = gcp:compute.regionUrlMap defaults <- {
    defaultService = imm: region-backend-service.selfLink
 }
 
-region-target-proxies = gcp:compute.regionTargetHttpProxy  defaults <- {
+region-target-proxies = gcp:compute.regionTargetHttpProxy defaults <- {
    name = "proxy"
    urlMap = imm: region-url-map.selfLink
 }
