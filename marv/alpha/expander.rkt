@@ -63,7 +63,7 @@
            (define resources (gen-resources (VARS)))
            (define drivers (gen-drivers (VARS)))
            (provide resources drivers)
-           (pretty-print (VARS))
+           ;  (pretty-print (VARS))
            )]
       [else (raise "nowt")]))
 
@@ -138,8 +138,6 @@
       [else (raise "m-config-ident")]))
 
   (define (m-attr-decl stx)
-    (displayln 'm-attr-decl)
-    (displayln stx)
     (syntax-parse stx
       [(_ att-name:expr ((~literal expression) EXPR))
        (syntax/loc stx `(att-name . ,(expression EXPR)))]
@@ -158,8 +156,6 @@
       [else (raise "m-attr-decl")]))
 
   (define (m-reference stx)
-    (displayln 'm-reference)
-    (displayln stx)
     (syntax-parse stx
       [(_ (tgt:id key ...)) (syntax/loc stx (handle-ref 'tgt tgt #'key ...))]
       ; [(_ (tgt:id key)) (syntax/loc stx (handle-ref tgt (syntax-e #'key)))]
@@ -182,7 +178,6 @@
       [else (raise (format "res-decl didn't match: ~a" stx))]))
 
   (define (m-for-list stx)
-    (displayln "for-list")
     (syntax-parse stx
       [(_ LOOPVAR "{" STMT ... "}")
        (syntax/loc stx `(for/list LOOPVAR (STMT ...)))]
@@ -190,8 +185,6 @@
     )
 
   (define (m-loop-var stx)
-    (displayln "loop-var")
-    (displayln stx)
     (syntax-parse stx
       [(_ IDENT:string LIST) (syntax/loc stx `[ ,(string->symbol IDENT) ,LIST])]
       [else (raise (format "loop-var didn't match: ~a" stx))]))

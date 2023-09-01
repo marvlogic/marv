@@ -1,28 +1,28 @@
-#lang marv #/dsl/alpha-parse
+#lang marv #/alpha/parse-only
 
 defaults = {
   project = env("MARV_GCP_PROJECT")
   region = env("MARV_GCP_REGION")
 }
 
-vpc = gcp:compute.network defaults -> {
+vpc = gcp:compute.network defaults <- {
      name = imm:"vpc2"
      description = "vpc2"
      autoCreateSubnetworks = false
      routingConfig = { routingMode = "REGIONAL" }
 }
 
-base-subnet = defaults -> {
+base-subnet = defaults <- {
   network = imm: vpc.selfLink
 }
 
-sn1 = gcp:compute.subnetwork base-subnet -> {
+sn1 = gcp:compute.subnetwork base-subnet <- {
      name = "subnet1"
      description = "primary subnet"
      ipCidrRange =  imm: "10.0.1.0/24"
 }
 
-proxy-sn = gcp:compute.subnetwork base-subnet -> {
+proxy-sn = gcp:compute.subnetwork base-subnet <- {
      name = "proxy-only-subnet"
      description = "subnet for proxy"
      ipCidrRange = imm: "10.0.3.0/24"
@@ -31,7 +31,7 @@ proxy-sn = gcp:compute.subnetwork base-subnet -> {
      role = "ACTIVE"
 }
 
-fw-health-check = gcp:compute.firewall defaults -> {
+fw-health-check = gcp:compute.firewall defaults <- {
      name = "fw-allow-health-check"
      network = imm: vpc.selfLink
      sourceRanges = [ "130.211.0.0/22" "35.191.0.0/16" ]
@@ -40,7 +40,7 @@ fw-health-check = gcp:compute.firewall defaults -> {
      direction = "INGRESS"
 }
 
-fw-proxies = gcp:compute.firewall defaults -> {
+fw-proxies = gcp:compute.firewall defaults <- {
      name = "fw-allow-proxies"
      network = imm: vpc.selfLink
      sourceRanges = proxy-sn.ipCidrRange

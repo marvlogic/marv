@@ -7,14 +7,14 @@
     (filter (lambda (kv)
               (and (hash? (cdr kv)) (hash-has-key? (cdr kv) '$driver)))
             (hash->list decls-hs)))
-  (displayln rs)
+  ; (displayln rs)
   (lambda (mkres) (xform-resources mkres rs)))
 
 (define (xform-resources mkres resources)
   (define (xform kv)
     (define id (car kv))
     (define res (cdr kv))
-    (cons id (mkres (hash-ref res '$driver) res)))
+    (cons id (mkres (hash-ref res '$driver) (hash-remove res '$driver))))
   (map xform resources))
 
 (define (gen-drivers decls-hs) tmp-drivers)
