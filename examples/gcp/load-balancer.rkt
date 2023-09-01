@@ -87,7 +87,7 @@
     (fw-proxies . ,(gcp "compute.firewall" fw-proxies))
     (instance-template . ,(gcp "compute.instanceTemplate" (instance-template node-size)))
     (instance-group-manager1 . ,(gcp "compute.instanceGroupManager"
-                                     (instance-group-manager "example" 2 "europe-west2-c" 'instance-template.selfLink)))
+                                     (instance-group-manager "example" 2 "europe-west1-b" 'instance-template.selfLink)))
     ; ;    (lb-external-ip (gcp "compute.address" lb-external-ip))
     (lb-basic-check . ,(gcp "compute.regionHealthCheck" lb-basic-check))
     (region-backend-service . ,(gcp "compute.regionBackendService" region-backend-service))
@@ -121,7 +121,7 @@
      (name . "subnet1")
      (description . "primary subnet")
      (ipCidrRange . ,(ival "10.0.1.0/24"))
-     (region . "europe-west2")
+     (region . "europe-west1")
      (network . ,(iref 'vpc.selfLink))
      ; TODO - fingerprint issue
      ;  (tags . #hasheq((x . "y")))
@@ -133,7 +133,7 @@
      (name . "proxy-only-subnet")
      (description . "subnet for proxy")
      (ipCidrRange . ,(ival "10.0.3.0/24"))
-     (region . "europe-west2")
+     (region . "europe-west1")
      (network . ,(iref 'vpc.selfLink))
      (purpose . "REGIONAL_MANAGED_PROXY")
      (role . "ACTIVE")
@@ -173,7 +173,7 @@
      .  #hasheq(
          (sourceImage . "projects/debian-cloud/global/images/family/debian-12")
          (diskSizeGb . "10")
-         ;  (diskType . "zones/europe-west2-a/diskTypes/pd-standard")
+         ;  (diskType . "zones/europe-west1-a/diskTypes/pd-standard")
          )))))
 
 (define (instance-template node-size)

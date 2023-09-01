@@ -21,22 +21,21 @@ Tons of them! Rest assured I'll be working to resolve these and many others.
 The most important ones:
 
 - A new DSL, in alpha quality. Subject to change. Lacking in features, such as
-loops.
+loops and modules.
 
 - Only supports GCP compute and storage APIs.
 
 - Barely any error checking, most of the time the only error checking is
-performed by GCP itself during an `apply` phase.
+performed by GCP itself during an `apply` phase. Parser errors are likely to be
+obtuse.
 
-- The [Racket example](examples/gcp/load-balancer.rkt) isn't documented enough, and hard-coded to `europe-west2`
+- The [Racket example](examples/gcp/load-balancer.rkt) isn't documented enough, 
+and hard-coded to `europe-west1`
 
 - Only supports local state files
 
-## Excuses
-
-This is my first major project using Racket, so the structure of it is very much
-in-flux and subject to __significant__ change. Its a bit of a prototype &
-learning platform as much as anything else.
+This is my first major project using Racket, which I'm still learning, so the
+structure of it is very much in-flux and subject to __significant__ change. 
 
 # Installation
 
@@ -107,6 +106,9 @@ resources.
 
 The only difference is that the `mrv` file doesn't accept parameters via the
 command line (for now).
+
+NB the example relies on the europe-west1 region; you need to change the
+environment variable and the example file itself to use another region.
 
 # Running the example
 
