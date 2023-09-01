@@ -2,7 +2,7 @@
 
 marv-spec: statement*
 
-statement: decl | for-list | pprint
+statement: decl | pprint
 decl: var-decl | res-decl | conf-func-decl
 
 pprint: /"pprint" expression
@@ -36,6 +36,6 @@ driver-attr: DOTTY-IDENT
 
 loop-ident: IDENTIFIER
 
-for-list: /"for/list" loop-var "{" statement+ "}"
-loop-var: /"(" IDENTIFIER /"in" (list-ident | alist) /")"
-list-ident: IDENTIFIER
+# for-list: /"for/list" loop-var "{" statement+ "}"
+# loop-var: /"(" IDENTIFIER /"in" (list-ident | alist) /")"
+# list-ident: IDENTIFIER
