@@ -3,22 +3,27 @@
 marv-spec: statement*
 
 statement: decl | for-list | pprint
-decl: var-decl | res-decl
+decl: var-decl | res-decl | conf-func-decl
 
-pprint: /"pprint" IDENTIFIER
+pprint: /"pprint" expression
 comment: COMMENT
 var-decl: IDENTIFIER /"=" expression
-expression: INTEGER | STRING | boolean | config-expr | alist | built-in
+conf-func-decl: IDENTIFIER /"(" IDENTIFIER+ /")" /"=" config-expr
+conf-func-param: IDENTIFIER
+
+expression: INTEGER | STRING | reference | conf-func-call | boolean | config-expr | alist | built-in
 
 boolean: "true" | "false"
 
 config-object: /"{" attr-decl* /"}"
 alist: /"[" expression* /"]"
 
+conf-func-call: IDENTIFIER /"(" expression+ /")"
+
 built-in: env-read
 env-read: /"env" /"(" STRING /")"
 
-config-expr: config-object | config-ident | config-merge
+config-expr: config-object | config-ident | config-merge | conf-func-call
 config-merge: config-expr ("<-" | "->") config-expr
 config-ident: IDENTIFIER
 

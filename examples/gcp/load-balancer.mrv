@@ -1,52 +1,176 @@
-#lang marv #/alpha/parse-only
+#lang marv
+
+# A marv specification is set of declarations; some declarations are values
+# whereas others actually declare resources.
+
+# defaults is a CONFIG-OBJECT, which is basically a set of <attr> = <value>
+# pairs. CONFIG-OBJECTs are the building blocks for declaring resources, 
+# which we'll get to shortly
 
 defaults = {
-  project = env("MARV_GCP_PROJECT")
-  region = env("MARV_GCP_REGION")
+     # env is a built-in function to read environment variables
+     project = env("MARV_GCP_PROJECT")
+     region = env("MARV_GCP_REGION")
 }
 
+# lists are space separated (this variable is used later)
+google-source-range = [ "130.211.0.0/22" "35.191.0.0/16" ]
+
+# resources are declared using the syntax:
+#    <res-id> = <driver-id>:<type> CONFIG-EXPRESSION
+
+# <res-id> is immutable - you can't change a resources ident without destroying
+# and recreating it.
+
+# A CONFIG-EXPRESSION can be a CONFIG-OBJECT or, as in this case, it can be a
+# merge of CONFIG-OBJECTS. There are two merge operations:
+#
+#   a -> b   # a is merged over b, with a's attributes taking priority
+#   a <- b   # b is merged over a, with b's attributes taking priority
+#
+# (the object with priority is on the 'greater-than' side of the <- or ->)
+#
+# a and b can be literal objects, variables or expressions that create objects.
+
+
 vpc = gcp:compute.network defaults <- {
+
+     # imm: declares that this attribute is immutable; if it changes, then the
+     # resource will need to be recreated.  (this is a work-around because
+     # marv's GCP driver doesn't know which attributes are immutable in GCP)
+     
      name = imm:"vpc2"
      description = "vpc2"
      autoCreateSubnetworks = false
+
+     # nested CONFIG-EXPRESSIONS are allowed
      routingConfig = { routingMode = "REGIONAL" }
 }
 
-base-subnet = defaults <- {
-  network = imm: vpc.selfLink
+# the result of a CONFIG-EXPRESSION is another CONFIG-OBJECT which can also be
+# assigned to a variable and re-used.
+
+vpc-defaults = defaults <- {
+
+     # this is a reference to the vpc resource's 'selfLink' value - any resource
+     # that uses this CONFIG-OBJECT will get its 'network' attribute from the
+     # 'vpc' resource. Because it's immutable if the VPC is recreated then the
+     # resource will be too.
+     
+     network = imm: vpc.selfLink
 }
 
-sn1 = gcp:compute.subnetwork base-subnet <- {
+sn1 = gcp:compute.subnetwork vpc-defaults <- {
      name = "subnet1"
      description = "primary subnet"
      ipCidrRange =  imm: "10.0.1.0/24"
 }
 
-proxy-sn = gcp:compute.subnetwork base-subnet <- {
+proxy-sn = gcp:compute.subnetwork vpc-defaults <- {
      name = "proxy-only-subnet"
      description = "subnet for proxy"
      ipCidrRange = imm: "10.0.3.0/24"
-
      purpose = "REGIONAL_MANAGED_PROXY"
      role = "ACTIVE"
 }
 
-fw-health-check = gcp:compute.firewall defaults <- {
+fw-health-check = gcp:compute.firewall vpc-defaults <- {
      name = "fw-allow-health-check"
-     network = imm: vpc.selfLink
-     sourceRanges = [ "130.211.0.0/22" "35.191.0.0/16" ]
+     sourceRanges = google-source-range
      targetTags =  [ "load-balanced-backend" ]
      allowed = [ { IPProtocol = "tcp" } ]
      direction = "INGRESS"
 }
 
-fw-proxies = gcp:compute.firewall defaults <- {
+fw-proxies = gcp:compute.firewall vpc-defaults <- {
      name = "fw-allow-proxies"
-     network = imm: vpc.selfLink
-     sourceRanges = proxy-sn.ipCidrRange
+     sourceRanges = [ proxy-sn.ipCidrRange ]
      targetTags =  [ "load-balanced-backend" ]
      allowed = [ { IPProtocol = "tcp" ports = [ "80" ] }
                  { IPProtocol = "tcp" ports = [ "443" ] }
                  { IPProtocol = "tcp" ports = [ "8080" ] } ]
      direction = "INGRESS"
+}
+
+node-disks = [ {
+     boot = true
+     autoDelete = true
+     initializeParams = {
+          sourceImage = "projects/debian-cloud/global/images/family/debian-12"
+          diskSizeGb = "10"
+          # diskType = "zones/europe-west2-a/diskTypes/pd-standard"
+    }
+} ]
+
+# variables can be parameterised; let's call them 'functions' :) 
+# the parameters can be referenced inside the CONFIG-OBJECTS
+
+f-instance-template(machine-type) = defaults <- {
+   name =  "l7-xlb-backend-template"
+   properties = {
+     machineType = machine-type
+     tags = { items = [ "load-balanced-backend" ] }
+     networkInterfaces = [ 
+          {
+               network = imm:vpc.selfLink
+               subnetwork = imm:sn1.selfLink
+               accessConfigs = [ { type = "ONE_TO_ONE_NAT" } ] 
+          } 
+     ]
+     disks = node-disks
+   }
+}
+
+instance-template = gcp:compute.instanceTemplate f-instance-template("f1-micro")
+
+# Multiple parameters are space-separated
+
+f-instance-group-manager(name size zone template) = defaults <- {
+     name = imm: name
+     zone = imm: zone
+     namedPorts = imm:[ {port = 80 name = "http" }]
+     instanceTemplate = imm: template
+     baseInstanceName = name
+     targetSize = size
+}
+
+instance-group-manager1 = gcp:compute.instanceGroupManager 
+     f-instance-group-manager("example" 2 "europe-west2-c" instance-template.selfLink)
+
+
+lb-basic-check = gcp:compute.regionHealthCheck defaults <- {
+   name = "lb-basic-check"
+   type = "HTTP"
+   httpHealthCheck = { portSpecification = "USE_SERVING_PORT" }
+}
+
+region-backend-service = gcp:compute.regionBackendService defaults <- {
+     name = "backend-service"
+     backends = {
+          group = imm: instance-group-manager1.selfLink
+          balancingMode = "UTILIZATION"
+     }
+     healthChecks = [ lb-basic-check.selfLink ]
+     loadBalancingScheme = "EXTERNAL_MANAGED"
+}
+
+region-url-map = gcp:compute.regionUrlMap defaults <- {
+   name = "urlmap"
+   defaultService = imm: region-backend-service.selfLink
+}
+
+region-target-proxies = gcp:compute.regionTargetHttpProxy  defaults <- {
+   name = "proxy"
+   urlMap = imm: region-url-map.selfLink
+}
+
+forwarding-rule = gcp:compute.forwardingRule defaults <- {
+   name = "forwarding-rule"
+   ipAddress = "10.0.1.99" # backend SN1
+   ipProtocol = "TCP"
+   portRange = "80-80"
+   target = imm: region-target-proxies.selfLink
+   loadBalancingScheme = "EXTERNAL_MANAGED"
+   network = imm: vpc.selfLink
+   networkTier = "STANDARD"
 }

@@ -83,7 +83,7 @@
   `((vpc . ,(gcp "compute.network" vpc))
     (sn1 .  ,(gcp "compute.subnetwork" sn1))
     (proxy-sn .  ,(gcp "compute.subnetwork" proxy-sn))
-    (fw-health . ,(gcp "compute.firewall" fw-health-check))
+    (fw-health-check . ,(gcp "compute.firewall" fw-health-check))
     (fw-proxies . ,(gcp "compute.firewall" fw-proxies))
     (instance-template . ,(gcp "compute.instanceTemplate" (instance-template node-size)))
     (instance-group-manager1 . ,(gcp "compute.instanceGroupManager"
@@ -109,8 +109,8 @@
 (define vpc
   (make-immutable-hasheq
    `(
-     (name . ,(ival "vpc1"))
-     (description . "vpc1")
+     (name . ,(ival "vpc2"))
+     (description . "vpc2")
      (autoCreateSubnetworks . #f)
      (routingConfig . #hasheq((routingMode . "REGIONAL")))
      )))

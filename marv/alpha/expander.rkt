@@ -82,6 +82,27 @@
       [(_ id:expr EXPR) (syntax/loc stx (define id EXPR))]
       [else (raise "nowt-var-decl")]))
 
+  (define (m-conf-func-decl stx)
+    (syntax-parse stx
+      [(_ id:expr param ... CONF-OBJ)
+       (syntax/loc stx
+         (define (id param ...) CONF-OBJ))]
+      [else (raise "conf-func-decl")]))
+
+  (define (m-conf-func-call stx)
+    (syntax-parse stx
+      [(_ func:id param ...)
+       (syntax/loc stx (func param ...))]
+      [else (raise "conf-func-call")]))
+
+  ; (define (m-conf-func-param stx)
+  ;   (syntax-parse stx
+  ;     [(_ id:expr)
+  ;      (syntax/loc stx
+  ;        (define id EXPR))]
+  ;     [else (raise "nowt-var-decl")]))
+
+
   (define (m-built-in stx)
     (syntax-parse stx
       [(_ BUILTIN) (syntax/loc stx BUILTIN)]
@@ -143,6 +164,8 @@
        (syntax/loc stx `(att-name . ,(expression EXPR)))]
       [(_ att-name:expr ((~literal reference) REF))
        (syntax/loc stx `(att-name . ,(reference REF)))]
+      [(_ att-name:expr ident:id)
+       (syntax/loc stx `(att-name . ,ident))]
       [(_ att-name:expr IDENT)
        (syntax/loc stx `(att-name . ,(get-var IDENT)))]
 
@@ -151,6 +174,8 @@
        (syntax/loc stx `(att-name . ,(ival (expression EXPR))))]
       [(_ att-name:expr "imm:" ((~literal reference) REF))
        (syntax/loc stx `(att-name . ,(ival (reference REF))))]
+      [(_ att-name:expr "imm:" ident:id)
+       (syntax/loc stx `(att-name . ,(ival ident)))]
       [(_ att-name:expr "imm:" IDENT)
        (syntax/loc stx `(att-name . ,(ival (get-var IDENT))))]
       [else (raise "m-attr-decl")]))
@@ -195,7 +220,9 @@
 (define-syntax statement m-statement)
 (define-syntax decl m-decl)
 (define-syntax var-decl m-var-decl)
+(define-syntax conf-func-decl m-conf-func-decl)
 (define-syntax res-decl m-res-decl)
+(define-syntax conf-func-call m-conf-func-call)
 (define-syntax expression m-expression)
 (define-syntax reference m-reference)
 (define-syntax config-object m-config-object)
@@ -211,7 +238,7 @@
 (define-syntax for-list m-for-list)
 (define-syntax loop-var m-loop-var)
 
-(provide marv-spec decl var-decl res-decl
+(provide marv-spec decl var-decl res-decl conf-func-call conf-func-decl
          expression reference statement config-object alist
          config-expr config-merge config-ident
          for-list loop-var
