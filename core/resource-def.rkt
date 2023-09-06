@@ -7,6 +7,7 @@
 (require racket/list)
 (require racket/hash)
 (require racket/string)
+(require racket/path)
 
 (require marv/drivers/driver)
 (require marv/core/resources)
@@ -40,9 +41,10 @@
 
 (define/contract (init-module f purge?)
   (string? boolean? . -> . void?)
-  (DRIVERS (dynamic-require f 'drivers))
+  (define rel-mod (find-relative-path (current-directory) f) )
+  (DRIVERS (dynamic-require rel-mod 'drivers))
   (when (not purge?)
-    (RESOURCES (dynamic-require f 'resources))))
+    (RESOURCES (dynamic-require rel-mod 'resources))))
 
 (define/contract (get-module params)
   ((hash/c string? string?) . -> . rmodule/c)

@@ -37,7 +37,7 @@ and hard-coded to `europe-west1`
 This is my first major project using Racket, which I'm still learning, so the
 structure of it is very much in-flux and subject to __significant__ change. 
 
-# Installation
+# Installation - Linux & Mac
 
 Install Racket from: https://download.racket-lang.org
 
@@ -46,9 +46,29 @@ Install `marv` using `raco`:
     # From the root of the cloned project:
     raco pkg install
 
+# Docker Image
+
+Marv is available as a pre-built docker image:
+
+    docker pull happyrat/marv:latest
+
+The image contains the [Google cloud SDK](https://cloud.google.com/sdk) i.e the
+`gcloud` command is available. You will need to `gcloud auth login` from inside
+the container, or arrange authentication via some other method.
+
+To build the image locally:
+
+    ./build.sh [TAG]  # TAG defaults to 'latest'
+
+`marv` is available as an installed command when running in the container e.g.:
+
+    marv --plan /usr/lib/marv/examples/gcp/load-balancer.mrv
+
+etc...
+
 # Command line usage
 ```
-alias marv="racket command.rkt"
+alias marv="racket command.rkt" # (not needed in docker container)
 marv -h
 usage: command.rkt [ <option> ... ] <module-file>
 

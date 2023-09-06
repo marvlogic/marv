@@ -3,6 +3,8 @@
 (define deps '("graph-lib"
                "http-easy-lib"
                "rackunit-lib"
+               "sha"
+               "brag"
                "base"))
 (define build-deps '("scribble-lib" "racket-doc" "rackunit-lib"))
 (define scribblings '(("scribblings/marv.scrbl" ())))
