@@ -11,13 +11,16 @@
 
 (provide load-discovery
          api-for-type
+         api-for-type-op
          api-http-method
          api-resource-url
+         api-required-params
          api-resource
          api-response-type)
 
 (struct disc-doc (root))
 (struct disc-api (root type-api))
+
 
 (define ROOT-DISCOVERY "https://discovery.googleapis.com/discovery/v1/apis")
 (define/contract (load-discovery int-id disc-id)
@@ -38,6 +41,26 @@
   (disc-doc? symbol? symbol? . -> . disc-api?)
   (disc-api (disc-doc-root discovery)
             (hash-ref (hash-nref (disc-doc-root discovery) (list 'resources type 'methods)) op)))
+
+; TODO - name for type-op stuff?
+(define/contract (api-for-type-op discovery type-op)
+  (disc-doc? symbol? . -> . disc-api?)
+  (hash-ref (api-types discovery) type-op))
+
+(define (api-types discovery)
+  (make-immutable-hasheq
+   (for/fold ([acc '()])
+             ([res (hash-values (hash-ref (disc-doc-root discovery) 'resources))])
+     (append acc
+             (for/fold ([ac2 '()])
+                       ([meth (hash-values (hash-ref res 'methods))])
+               (cons (cons (string->symbol (hash-ref meth 'id))
+                           (disc-api (disc-doc-root discovery) meth)) ac2))))))
+
+; (define/contract (api-by-type-op discovery type-op)
+;   (disc-doc? symbol? . -> . disc-api?)
+;   (disc-api (disc-doc-root discovery)
+
 
 (define/contract (api-http-method api)
   (disc-api? . -> . symbol?)
@@ -63,6 +86,10 @@
     (format "~a~a" (hash-ref (disc-api-root api) 'baseUrl)
             (flat-path api)))
   (dict-format-string aliased-resource url))
+
+(define/contract (api-required-params api)
+  (disc-api? . -> . list?)
+  (hash-keys (hash-ref (disc-api-type-api api) 'parameters)))
 
 (define (flat-path api)
   (define type-api (disc-api-type-api api))
@@ -100,3 +127,5 @@
   (pretty-print
    (make-immutable-hash (map (lambda(k) (cons k k))
                              (hash-keys (hash-ref (disc-doc-root doc) 'resources))))))
+
+(define comp (load-discovery "gcp" "compute:beta"))

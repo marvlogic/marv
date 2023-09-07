@@ -31,6 +31,7 @@
 
   (define/contract (mk-resource res)
     (hash? . -> . config/c)
+    (define valid ((google-api-fn res 'validate) res))
     (cond [(hash-has-key? res 'project) res]
           [ else (raise (format "no project for resource: ~a" res))]))
 

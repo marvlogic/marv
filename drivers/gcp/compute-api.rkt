@@ -6,6 +6,7 @@
 (require marv/utils/hash)
 (require marv/drivers/gcp/compute-types)
 (require marv/drivers/gcp/discovery)
+(require marv/drivers/gcp/crud)
 
 (provide (prefix-out compute. init-api))
 
@@ -19,13 +20,23 @@
   ; (define (read-request resource http) (http 'GET (hash-ref resource 'selfLink) '()))
   (define (update-request resource http) (generic-request compute-type-map 'patch resource http))
   (define (delete-request resource http) (generic-request compute-type-map 'delete resource http))
-  (hash 'create create-request
+  (hash 'validate validate-res
+        'create create-request
         'read read-request
         'update update-request
         'delete delete-request))
 
 ; TODO - gcp-common module
 (define (gcp-type r) (hash-ref r '$type))
+
+(define (validate-res resource)
+  (define type (string->symbol(cadr (string-split (gcp-type resource) "."))))
+  (define api (api-for-type-op (DISCOVERY) (compute-type-map type crud-create)))
+  (validate-parameters-for-api (api-for-type-op (DISCOVERY) (compute-type-map type crud-create)) resource)
+  #t)
+
+(define (validate-parameters-for-api api resource)
+  (displayln (api-required-params api)))
 
 (define (generic-request type-map api-method resource http)
   (define type (string->symbol(cadr (string-split (gcp-type resource) "."))))
