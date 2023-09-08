@@ -42,11 +42,13 @@
   (disc-api (disc-doc-root discovery)
             (hash-ref (hash-nref (disc-doc-root discovery) (list 'resources type 'methods)) op)))
 
-; TODO - name for type-op stuff?
+; TODO - better name for type-op stuff?
 (define/contract (api-for-type-op discovery type-op)
   (disc-doc? symbol? . -> . disc-api?)
+  ; todo - cache this, or store in disc struct
   (hash-ref (api-types discovery) type-op))
 
+; TODO - is append a code smell?
 (define (api-types discovery)
   (make-immutable-hasheq
    (for/fold ([acc '()])
@@ -78,8 +80,8 @@
    (hash-nref (disc-api-type-api api) '(request $ref)
               (last (hash-ref (disc-api-type-api api) 'parameterOrder)))))
 
-(define/contract (api-resource-url api type resource)
-  (disc-api? symbol? hash? . -> . string?)
+(define/contract (api-resource-url api resource)
+  (disc-api? hash? . -> . string?)
   (define aliased-resource (make-immutable-caseless-string-hash (hash-set resource (ref-type api) (hash-ref resource 'name))))
   ; (pretty-print (dict-keys aliased-resource))
   (define url
@@ -89,7 +91,8 @@
 
 (define/contract (api-required-params api)
   (disc-api? . -> . list?)
-  (hash-keys (hash-ref (disc-api-type-api api) 'parameters)))
+  (define params (hash-ref (disc-api-type-api api) 'parameters))
+  (filter (lambda (k) (hash-nref params (list k 'required) #f)) (hash-keys params)))
 
 (define (flat-path api)
   (define type-api (disc-api-type-api api))
@@ -107,10 +110,6 @@
       params
       (lambda (_ v) (and (hash-ref v 'required #f) (equal? "query" (hash-ref v 'location)))))))
    "&"))
-
-; (define d (load-discovery "google-storage-api.json"))
-; (define a (api-for-type d 'buckets 'insert))
-; (api-query-params a)
 
 (define/contract (api-resource api resource)
   (disc-api? hash? . -> . hash?)

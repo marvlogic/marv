@@ -1,15 +1,16 @@
 #lang racket/base
 
 (provide (struct-out crud)
-         type-to-crud-op)
+         get-crud-for-type)
 
 (struct crud (create read update delete) #:prefab)
 
 (define (std-crud resid)
-  (define (op opid) (string->symbol (format "compute.~a.~a" (symbol->string resid) opid)))
+  (define (op opid) (string->symbol (format "~a.~a" resid opid)))
   (crud (op "insert") (op "get") (op "patch") (op "delete")))
 
-(define (type-to-crud-op type-map type op)
+(define (get-crud-for-type type-map type)
   (define gcp-type (hash-ref type-map type))
-  (op (cond [(symbol? gcp-type) (std-crud gcp-type)]
-            [else gcp-type])))
+  (cond [(symbol? gcp-type) (std-crud gcp-type)]
+        [(crud? gcp-type) gcp-type]
+        [else raise (format "~a does not have correct CRUD struct" gcp-type)]))

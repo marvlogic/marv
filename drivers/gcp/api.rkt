@@ -7,7 +7,6 @@
 (require marv/utils/hash)
 (require marv/core/resources)
 (require marv/drivers/driver)
-(require marv/core/globals)
 
 (require marv/drivers/gcp/compute-api)
 (require marv/drivers/gcp/storage-api)
