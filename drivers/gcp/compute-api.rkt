@@ -29,28 +29,36 @@
 (define (gcp-type r) (string->symbol(hash-ref r '$type)))
 
 (define (validate-res resource)
+
   (define type (gcp-type resource))
   (define api (api-for-type-op (DISCOVERY) (crud-create(compute-type-map type))))
-  (validate-parameters-for-api api resource)
-  #t)
 
-(define (validate-parameters-for-api api resource)
-  (define req-params (api-required-params api))
-  (for/first ([p req-params] #:unless (hash-has-key? resource p))
-    (raise (format "Resource did not have required field(s) (~a) ~a" p req-params))))
+  (define (validate-parameters-for-api)
+    (define req-params (api-required-params api))
+    (for/first ([p req-params] #:unless (hash-has-key? resource p))
+      (raise (format "Resource did not have required field(s) (~a) ~a" p req-params))))
+
+  (validate-parameters-for-api)
+  resource)
+
 
 (define (generic-request crud-fn resource http)
   (define type-op (crud-fn (compute-type-map (gcp-type resource))))
-  (define api (api-for-type-op (DISCOVERY) type-op))
-  (define response
-    (http (api-http-method api)
-          (api-resource-url api resource)
-          (api-resource api resource)))
-  (hash-merge
-   resource
-   (if (expect-operation-response? api)
-       (handle-operation-response crud-fn response http)
-       (handle-delete crud-fn response))))
+  (cond
+    [(null? type-op) resource]
+    [(symbol? type-op)
+     (define api (api-for-type-op (DISCOVERY) type-op))
+     (define response
+       (http (api-http-method api)
+             (api-resource-url api resource)
+             (api-resource api resource)))
+     (hash-merge
+      resource
+      (if (expect-operation-response? api)
+          (handle-operation-response crud-fn response http)
+          (handle-delete crud-fn response)))]
+    [else raise (format "type has no usable CRUD for ~a : ~a" crud-fn type-op )]
+    ))
 
 (define (handle-delete crud-fn response) (if (eq? crud-delete crud-fn) (hash) response))
 

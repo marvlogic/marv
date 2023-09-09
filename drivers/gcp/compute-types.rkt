@@ -5,17 +5,21 @@
 (provide compute-type-map)
 
 ; Returns id of resource operation e.g. compute.instance.get
-(define (compute-type-map type) (get-crud-for-type type-map type))
+(define (compute-type-map type) (crud-for-type type-map type))
 
 ; TODO - find way to auto-generate this (heuristics?)
 (define type-map
   (make-immutable-hasheq
    `(
      (compute.perInstanceConfig . ,(crud 'compute.instanceGroupManagers.patchPerInstanceConfigs
-                                         'compute.instanceGroupManagers.listPerInstanceConfigs
-                                         'compute.instanceGroupManagers.patchPerInstanceConfig
+                                         null
+                                         'compute.instanceGroupManagers.patchPerInstanceConfigs
                                          'compute.instanceGroupManagers.deletePerInstanceConfigs))
 
+     (compute.migInstance . ,(crud 'compute.instanceGroupManagers.createInstances
+                                   null
+                                   null
+                                   'compute.instanceGroupManagers.deleteInstances))
      (compute.acceleratorType . compute.acceleratorTypes)
      (compute.address . compute.addresses)
      (compute.autoscaler . compute.autoscalers)

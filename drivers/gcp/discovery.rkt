@@ -21,16 +21,16 @@
 (struct disc-doc (root))
 (struct disc-api (root type-api))
 
-
 (define ROOT-DISCOVERY "https://discovery.googleapis.com/discovery/v1/apis")
+
 (define/contract (load-discovery int-id disc-id)
   (string? string? . -> . disc-doc?)
-  (define disc-url (dict-ref (get-root-discovery) disc-id))
+  (define disc-url (dict-ref (get-root-discovery int-id) disc-id))
   (with-workspace-file int-id disc-id
     #:thunk (lambda() (disc-doc(read-json))) #:url disc-url))
 
-(define (get-root-discovery)
-  (with-workspace-file "gcp-discovery-index.json"
+(define (get-root-discovery int-id)
+  (with-workspace-file int-id "discovery-index.json"
     #:thunk (lambda ()
               (map
                (lambda (disc-ent) (cons (dict-ref disc-ent 'id) (dict-ref disc-ent 'discoveryRestUrl)))
@@ -82,7 +82,10 @@
 
 (define/contract (api-resource-url api resource)
   (disc-api? hash? . -> . string?)
-  (define aliased-resource (make-immutable-caseless-string-hash (hash-set resource (ref-type api) (hash-ref resource 'name))))
+  (define aliased-resource
+    (make-immutable-caseless-string-hash
+     (hash-set resource
+               (ref-type api) (hash-ref resource 'name))))
   ; (pretty-print (dict-keys aliased-resource))
   (define url
     (format "~a~a" (hash-ref (disc-api-root api) 'baseUrl)

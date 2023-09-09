@@ -30,9 +30,7 @@
 
   (define/contract (mk-resource res)
     (hash? . -> . config/c)
-    (define valid ((google-api-fn res 'validate) res))
-    (cond [(hash-has-key? res 'project) res]
-          [ else (raise (format "no project for resource: ~a" res))]))
+    ((google-api-fn res 'validate) res))
 
   (define APIS
     (hash "compute" (compute.init-api interface-id "compute:beta")
@@ -65,6 +63,7 @@
   (define auth-token (bearer-auth access-token))
 
   (define (expect-2xx resp #:expect-status (expect '(200 204)))
+    (displayln (response-json resp))
     (cond [(member (response-status-code resp) expect )(response-json resp)]
           [else (raise (format "unexpected response: ~a:~a"
                                (response-status-code resp)
