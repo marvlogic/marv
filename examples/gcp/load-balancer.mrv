@@ -110,11 +110,10 @@ node-disks = [ {
           # diskType = "zones/europe-west2-a/diskTypes/pd-standard"
      } 
     }
-    {
-     boot = false
-     deviceName = "db-disk0"
-     instantiateFrom = "blank"
-} ]
+#     { boot = false
+#       deviceName = "db-disk0"
+#       instantiateFrom = "blank" }
+]
 
 ################################################################################
 # variables can be parameterised; let's call the parameterised-variable things
@@ -137,89 +136,89 @@ f-instance-template(machine-type) = defaults <- {
    }
 }
 
-# instance-template = gcp:compute.instanceTemplate f-instance-template("f1-micro") <- { name = "instance-template1"}
-# 
-# ################################################################################
-# # Multiple parameters are space-separated
-# 
-# f-instance-group-manager(name size zone template) = defaults <- {
-#      name = imm: name
-#      zone = imm: zone
-#      namedPorts = imm:[ {port = 80 name = "http" }]
-#      instanceTemplate = imm: template
-#      baseInstanceName = name
-#      targetSize = size
+instance-template = gcp:compute.instanceTemplate f-instance-template("f1-micro") <- { name = "instance-template1"}
+
+################################################################################
+# Multiple parameters are space-separated
+
+f-instance-group-manager(name size zone template) = defaults <- {
+     name = imm: name
+     zone = imm: zone
+     namedPorts = imm:[ {port = 80 name = "http" }]
+     instanceTemplate = imm: template
+     baseInstanceName = name
+     targetSize = size
+}
+
+# NB this zone is hard-coded and needs to correspond with the 'MARV_GCP_REGION'
+# env-variable (until MARV-speak gets string-manipulation functions)
+
+instance-group-manager1 = gcp:compute.instanceGroupManager 
+     f-instance-group-manager("example" 2 "europe-west1-b" instance-template.selfLink) <- {
+#          statefulPolicy = {
+#               preservedState = {
+#                    disks = {
+#                        db-disk0 = { autoDelete = "never" } 
+#                    }
+#               }
+#          }
+     }
+
+################################################################################
+# The rest of the example is straight-forward declarations
+
+lb-basic-check = gcp:compute.regionHealthCheck defaults <- {
+   name = "lb-basic-check"
+   type = "HTTP"
+   httpHealthCheck = { portSpecification = "USE_SERVING_PORT" }
+}
+
+region-backend-service = gcp:compute.regionBackendService defaults <- {
+     name = "backend-service"
+     backends = {
+          group = imm: instance-group-manager1.selfLink
+          balancingMode = "UTILIZATION"
+     }
+     healthChecks = [ lb-basic-check.selfLink ]
+     loadBalancingScheme = "EXTERNAL_MANAGED"
+}
+
+region-url-map = gcp:compute.regionUrlMap defaults <- {
+   name = "urlmap"
+   defaultService = imm: region-backend-service.selfLink
+}
+
+region-target-proxies = gcp:compute.regionTargetHttpProxy defaults <- {
+   name = "proxy"
+   urlMap = imm: region-url-map.selfLink
+}
+
+forwarding-rule = gcp:compute.forwardingRule defaults <- {
+   name = "forwarding-rule"
+   ipAddress = "10.0.1.99" # backend SN1
+   ipProtocol = "TCP"
+   portRange = "80-80"
+   target = imm: region-target-proxies.selfLink
+   loadBalancingScheme = "EXTERNAL_MANAGED"
+   network = imm: vpc.selfLink
+   networkTier = "STANDARD"
+}
+
+# instance1 = gcp:compute.migInstance defaults <- {
+#      name = "example-marv1"
+#      instanceGroupManager = instance-group-manager1.name
+#      zone = instance-group-manager1.zone
 # }
 # 
-# # NB this zone is hard-coded and needs to correspond with the 'MARV_GCP_REGION'
-# # env-variable (until MARV-speak gets string-manipulation functions)
-# 
-# instance-group-manager1 = gcp:compute.instanceGroupManager 
-#      f-instance-group-manager("example" 2 "europe-west1-b" instance-template.selfLink) <- {
-#           statefulPolicy = {
-#                preservedState = {
-#                     disks = {
-#                         db-disk0 = { autoDelete = "never" } 
-#                     }
-#                }
+# pic = gcp:compute.perInstanceConfig defaults <- {
+#      instanceGroupManager = instance-group-manager1.name
+#      zone = instance-group-manager1.zone
+#      name = "example-kbh1"
+#      mostDistruptiveAllowedAction = "RESTART"
+#      preservedState = {
+#           metadata = {
+#                foo = "bar"
 #           }
 #      }
+#  }
 # 
-# ################################################################################
-# # The rest of the example is straight-forward declarations
-# 
-# lb-basic-check = gcp:compute.regionHealthCheck defaults <- {
-#    name = "lb-basic-check"
-#    type = "HTTP"
-#    httpHealthCheck = { portSpecification = "USE_SERVING_PORT" }
-# }
-# 
-# region-backend-service = gcp:compute.regionBackendService defaults <- {
-#      name = "backend-service"
-#      backends = {
-#           group = imm: instance-group-manager1.selfLink
-#           balancingMode = "UTILIZATION"
-#      }
-#      healthChecks = [ lb-basic-check.selfLink ]
-#      loadBalancingScheme = "EXTERNAL_MANAGED"
-# }
-# 
-# region-url-map = gcp:compute.regionUrlMap defaults <- {
-#    name = "urlmap"
-#    defaultService = imm: region-backend-service.selfLink
-# }
-# 
-# region-target-proxies = gcp:compute.regionTargetHttpProxy defaults <- {
-#    name = "proxy"
-#    urlMap = imm: region-url-map.selfLink
-# }
-# 
-# forwarding-rule = gcp:compute.forwardingRule defaults <- {
-#    name = "forwarding-rule"
-#    ipAddress = "10.0.1.99" # backend SN1
-#    ipProtocol = "TCP"
-#    portRange = "80-80"
-#    target = imm: region-target-proxies.selfLink
-#    loadBalancingScheme = "EXTERNAL_MANAGED"
-#    network = imm: vpc.selfLink
-#    networkTier = "STANDARD"
-# }
-# 
-# # pic = gcp:compute.perInstanceConfig defaults <- {
-# #      instanceGroupManager = instance-group-manager1.name
-# #      zone = instance-group-manager1.zone
-# #      name = "example-kbh1"
-# #      mostDistruptiveAllowedAction = "RESTART"
-# #      preservedState = {
-# #           metadata = {
-# #                foo = "bar"
-# #           }
-# #      }
-# #  }
-# # 
-# # instance1 = gcp:compute.migInstance defaults <- {
-# #      name = "mymig"
-# #      instanceGroupManager = instance-group-manager1.name
-# #      zone = instance-group-manager1.zone
-# #      instances = [ { name = "example-kbh" } ]
-# # }

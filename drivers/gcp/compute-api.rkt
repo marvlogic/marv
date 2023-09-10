@@ -3,10 +3,12 @@
 (require racket/string)
 (require racket/pretty)
 
+(require marv/log)
 (require marv/utils/hash)
 (require marv/drivers/gcp/compute-types)
 (require marv/drivers/gcp/discovery)
 (require marv/drivers/gcp/crud)
+(require marv/drivers/gcp/transformers)
 
 (provide (prefix-out compute. init-api))
 
@@ -33,25 +35,28 @@
   (define type (gcp-type resource))
   (define api (api-for-type-op (DISCOVERY) (crud-create(compute-type-map type))))
 
-  (define (validate-parameters-for-api)
+  (define (has-required-api-parameters?)
     (define req-params (api-required-params api))
     (for/first ([p req-params] #:unless (hash-has-key? resource p))
-      (raise (format "Resource did not have required field(s) (~a) ~a" p req-params))))
+      (raise (format "Resource does not have required field(s) (~a) ~a" p req-params))))
 
-  (validate-parameters-for-api)
+  (has-required-api-parameters?)
   resource)
 
 
 (define (generic-request crud-fn resource http)
   (define type-op (crud-fn (compute-type-map (gcp-type resource))))
+  (log-marv-debug "gen/req: type-op=~a ~a" type-op resource)
+  (define xform-resource (apply-request-transformer type-op resource) )
+  (log-marv-debug "xformed: ~a" xform-resource)
   (cond
-    [(null? type-op) resource]
+    [(null? type-op) xform-resource]
     [(symbol? type-op)
      (define api (api-for-type-op (DISCOVERY) type-op))
      (define response
        (http (api-http-method api)
-             (api-resource-url api resource)
-             (api-resource api resource)))
+             (api-resource-url api xform-resource)
+             (api-resource api xform-resource)))
      (hash-merge
       resource
       (if (expect-operation-response? api)

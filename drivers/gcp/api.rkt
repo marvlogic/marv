@@ -4,6 +4,7 @@
 (require net/http-easy)
 (require racket/contract)
 
+(require marv/log)
 (require marv/utils/hash)
 (require marv/core/resources)
 (require marv/drivers/driver)
@@ -63,7 +64,7 @@
   (define auth-token (bearer-auth access-token))
 
   (define (expect-2xx resp #:expect-status (expect '(200 204)))
-    (displayln (response-json resp))
+    (log-marv-debug "~a" (response-json resp))
     (cond [(member (response-status-code resp) expect )(response-json resp)]
           [else (raise (format "unexpected response: ~a:~a"
                                (response-status-code resp)

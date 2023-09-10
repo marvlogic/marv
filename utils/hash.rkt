@@ -14,6 +14,7 @@
          hash-apply
          make-immutable-caseless-string-hash
          hash-filter
+         hash-keep
          hash-match?)
 
 (define (hash-nref hs ks [def #f])
@@ -94,3 +95,6 @@
     (values k (sgl v)))
 
   (hash-map/copy hs inner))
+
+(define (hash-keep hs ks)
+  (for/hash ([i (in-list ks)]) (values i (hash-ref hs i))))
