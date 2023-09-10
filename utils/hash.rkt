@@ -97,4 +97,4 @@
   (hash-map/copy hs inner))
 
 (define (hash-keep hs ks)
-  (for/hash ([i (in-list ks)]) (values i (hash-ref hs i))))
+  (for/hasheq ([i (in-list ks)] #:when (hash-has-key? hs i)) (values i (hash-ref hs i))))

@@ -72,3 +72,13 @@
      (f3.line3.1 . b )
      (f3.line3.2 . c )))
  )
+
+(define keep-test #hasheq((project . "happy2")
+                          (region . "euwest2")
+                          (nested . #hasheq( (replace-me . "goob-boy")))))
+
+(check-equal? (hash-keep keep-test '(project region))
+              #hasheq((project . "happy2") (region . "euwest2")))
+
+(check-equal? (hash-keep keep-test '(project notfound))
+              #hasheq((project . "happy2")))

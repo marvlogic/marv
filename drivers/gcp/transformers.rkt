@@ -5,7 +5,7 @@
 
 (define (mig-create-instances res)
   (hash-set (hash-keep res '(name project zone instanceGroupManager))
-            'instances (list (hash-nremove res '(zone instanceGroupManager project)))))
+            'instances (list (hash-keep res '(name preservedState)))))
 
 (define (mig-delete-instances res)
   (hash-set (hash-keep res '(name project zone instanceGroupManager))
@@ -29,5 +29,5 @@
               'zone  "eu1"
               ))
 
-(apply-request-transformer 'compute.instanceGroupManagers.createInstances inst)
-(apply-request-transformer 'compute.instanceGroupManagers.deleteInstances inst)
+; (apply-request-transformer 'compute.instanceGroupManagers.createInstances inst)
+; (apply-request-transformer 'compute.instanceGroupManagers.deleteInstances inst)

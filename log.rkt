@@ -12,7 +12,8 @@
      'info pretty-display
      )
     )
-  (hash-ref levels lvl))
+  (if (getenv "MARV_LOG")
+      (hash-ref levels lvl) void))
 
 (define (log-marv-debug fstr . vs)
   ((get-fn 'debug) (apply format (string-append "DEBUG: " fstr) vs)))

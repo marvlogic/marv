@@ -43,20 +43,19 @@
   (has-required-api-parameters?)
   resource)
 
-
 (define (generic-request crud-fn resource http)
   (define type-op (crud-fn (compute-type-map (gcp-type resource))))
   (log-marv-debug "gen/req: type-op=~a ~a" type-op resource)
-  (define xform-resource (apply-request-transformer type-op resource) )
-  (log-marv-debug "xformed: ~a" xform-resource)
+  (define xfd-resource (apply-request-transformer type-op resource) )
+  (log-marv-debug "xformed: ~a" xfd-resource)
   (cond
-    [(null? type-op) xform-resource]
+    [(null? type-op) xfd-resource]
     [(symbol? type-op)
      (define api (api-for-type-op (DISCOVERY) type-op))
      (define response
        (http (api-http-method api)
-             (api-resource-url api xform-resource)
-             (api-resource api xform-resource)))
+             (api-resource-url api xfd-resource)
+             (api-resource api xfd-resource)))
      (hash-merge
       resource
       (if (expect-operation-response? api)

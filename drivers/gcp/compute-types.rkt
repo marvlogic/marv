@@ -11,15 +11,16 @@
 (define type-map
   (make-immutable-hasheq
    `(
-     (compute.perInstanceConfig . ,(crud 'compute.instanceGroupManagers.patchPerInstanceConfigs
-                                         null
-                                         'compute.instanceGroupManagers.patchPerInstanceConfigs
-                                         'compute.instanceGroupManagers.deletePerInstanceConfigs))
-
-     (compute.migInstance . ,(crud 'compute.instanceGroupManagers.createInstances
-                                   null
-                                   null
-                                   'compute.instanceGroupManagers.deleteInstances))
+     (compute.perInstanceConfig
+      . ,(crud 'compute.instanceGroupManagers.patchPerInstanceConfigs
+               null
+               'compute.instanceGroupManagers.patchPerInstanceConfigs
+               'compute.instanceGroupManagers.deletePerInstanceConfigs))
+     (compute.instanceGroupManager.instance
+      . ,(crud 'compute.instanceGroupManagers.createInstances
+               null
+               null
+               'compute.instanceGroupManagers.deleteInstances))
      (compute.acceleratorType . compute.acceleratorTypes)
      (compute.address . compute.addresses)
      (compute.autoscaler . compute.autoscalers)

@@ -154,7 +154,7 @@ f-instance-group-manager(name size zone template) = defaults <- {
 # env-variable (until MARV-speak gets string-manipulation functions)
 
 instance-group-manager1 = gcp:compute.instanceGroupManager 
-     f-instance-group-manager("example" 2 "europe-west1-b" instance-template.selfLink) <- {
+     f-instance-group-manager("example" 0 "europe-west1-b" instance-template.selfLink) <- {
 #          statefulPolicy = {
 #               preservedState = {
 #                    disks = {
@@ -204,12 +204,19 @@ forwarding-rule = gcp:compute.forwardingRule defaults <- {
    networkTier = "STANDARD"
 }
 
-# instance1 = gcp:compute.migInstance defaults <- {
-#      name = "example-marv1"
-#      instanceGroupManager = instance-group-manager1.name
-#      zone = instance-group-manager1.zone
-# }
-# 
+instance1 = gcp:compute.instanceGroupManager.instance defaults <- {
+     name = "example-marv1"
+     instanceGroupManager = instance-group-manager1.name
+     zone = instance-group-manager1.zone
+}
+
+instance2 = gcp:compute.instanceGroupManager.instance defaults <- {
+     name = "example-marv2"
+     instanceGroupManager = instance-group-manager1.name
+     zone = instance-group-manager1.zone
+}
+
+
 # pic = gcp:compute.perInstanceConfig defaults <- {
 #      instanceGroupManager = instance-group-manager1.name
 #      zone = instance-group-manager1.zone
