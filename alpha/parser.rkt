@@ -3,15 +3,21 @@
 marv-spec: statement*
 
 statement: decl | pprint
-decl: var-decl | res-decl | config-func-decl
+decl: var-decl | res-decl | config-func-decl | type-decl
 
 pprint: /"pprint" expression
 comment: COMMENT
 var-decl: IDENTIFIER /"=" expression
+
 config-func-decl: IDENTIFIER /"(" IDENTIFIER+ /")" /"=" config-expr
 config-func-param: IDENTIFIER
 
-expression: INTEGER | STRING | reference | config-func-call | boolean | config-expr | alist | built-in
+type-decl: /"type" driver-id /":" driver-attr /"=" type-body
+type-body: /"{" type-crud-decl+ /"}"
+type-crud-decl: ( "create" | "delete" ) /"=" type-api-spec
+type-api-spec: driver-attr /":" IDENTIFIER
+
+expression: INTEGER | STRING | IDENTIFIER | reference | config-func-call | boolean | config-expr | alist | built-in
 
 boolean: "true" | "false"
 
@@ -31,15 +37,15 @@ config-ident: IDENTIFIER
 config-func-call: IDENTIFIER /"(" expression+ /")"
 config-take: config-expr /"<<" list-attr
 
-attr-decl: IDENTIFIER /"=" [ "imm:" ] ( expression | reference | IDENTIFIER)
+; type is explicitly allowed as it's so common in configs
+attr-decl: ( IDENTIFIER | "type" | STRING ) /"=" [ "imm:" ] expression
 reference: DOTTY-IDENT
 
-res-decl: IDENTIFIER [ /"[" loop-ident /"]" ] /"=" driver-id /":" driver-attr config-expr
+res-decl: IDENTIFIER /"=" driver-id /":" driver-attr config-expr
 driver-id: IDENTIFIER
 driver-attr: DOTTY-IDENT
 
-loop-ident: IDENTIFIER
-
+; loop-ident: IDENTIFIER
 # for-list: /"for/list" loop-var "{" statement+ "}"
 # loop-var: /"(" IDENTIFIER /"in" (list-ident | alist) /")"
 # list-ident: IDENTIFIER

@@ -95,5 +95,7 @@
 
 (define (resource-self-link res-state) (hash-ref res-state 'selfLink))
 
-(define (gcp-register-type type-id transformers)
-  (log-marv-debug "Registered ~a" type-id))
+(define (gcp-register-type type-id create-api create-transformer)
+  (log-marv-info "Registering ~a ~a ~a" type-id create-api create-transformer)
+  (compute.register-type type-id create-api create-transformer)
+  )

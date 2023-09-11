@@ -1,26 +1,31 @@
 #lang racket/base
 
 (require marv/drivers/gcp/crud)
+(require marv/log)
 
-(provide compute-type-map)
+(provide compute-type-map ct-register-type)
 
 ; Returns id of resource operation e.g. compute.instance.get
-(define (compute-type-map type) (crud-for-type type-map type))
+(define (compute-type-map type) (crud-for-type (type-map) type))
+
+(define (ct-register-type type crud)
+  (log-marv-info "Registering compute type: ~a ~a" type crud)
+  (type-map (hash-set (type-map) type crud)))
 
 ; TODO - find way to auto-generate this (heuristics?)
-(define type-map
+(define base-type-map
   (make-immutable-hasheq
    `(
-     (compute.perInstanceConfig
-      . ,(crud 'compute.instanceGroupManagers.patchPerInstanceConfigs
-               null
-               'compute.instanceGroupManagers.patchPerInstanceConfigs
-               'compute.instanceGroupManagers.deletePerInstanceConfigs))
-     (compute.instanceGroupManager.instance
-      . ,(crud 'compute.instanceGroupManagers.createInstances
-               null
-               null
-               'compute.instanceGroupManagers.deleteInstances))
+     ;  (compute.perInstanceConfig
+     ;   . ,(crud 'compute.instanceGroupManagers.patchPerInstanceConfigs
+     ;            null
+     ;            'compute.instanceGroupManagers.patchPerInstanceConfigs
+     ;            'compute.instanceGroupManagers.deletePerInstanceConfigs))
+     ;  (compute.instanceGroupManager.instance
+     ;   . ,(crud 'compute.instanceGroupManagers.createInstances
+     ;            null
+     ;            null
+     ;            'compute.instanceGroupManagers.deleteInstances))
      (compute.acceleratorType . compute.acceleratorTypes)
      (compute.address . compute.addresses)
      (compute.autoscaler . compute.autoscalers)
@@ -114,3 +119,5 @@
      (compute.zone . compute.zones)
 
      )))
+
+(define type-map (make-parameter base-type-map))

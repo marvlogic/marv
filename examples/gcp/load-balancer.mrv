@@ -204,6 +204,23 @@ forwarding-rule = gcp:compute.forwardingRule defaults <- {
    networkTier = "STANDARD"
 }
 
+
+create-transform(spec) = 
+    spec << [ name project zone instanceGroupManager ] <- { 
+               instances = [ spec << [ name preservedState ] ]
+}
+
+delete-transform(spec) = spec << [ name project zone instanceGroupManager ] <- {
+    instances = [ strf("zones/~a/instances/~a" spec.zone spec.name) ]
+}
+ 
+# pprint create-transform(instance1)
+
+type gcp:compute.instanceGroupManager.instance = {
+     create = compute.instanceGroupManagers.createInstances:create-transform
+     delete = compute.instanceGroupManagers.deleteInstances:delete-transform
+}
+
 instance1 = gcp:compute.instanceGroupManager.instance defaults <- {
      name = "example-marv1"
      instanceGroupManager = instance-group-manager1.name
@@ -215,7 +232,6 @@ instance2 = gcp:compute.instanceGroupManager.instance defaults <- {
      instanceGroupManager = instance-group-manager1.name
      zone = instance-group-manager1.zone
 }
-
 
 # pic = gcp:compute.perInstanceConfig defaults <- {
 #      instanceGroupManager = instance-group-manager1.name

@@ -10,7 +10,8 @@
 (require marv/drivers/gcp/crud)
 (require marv/drivers/gcp/transformers)
 
-(provide (prefix-out compute. init-api))
+(provide (prefix-out compute. init-api)
+         (prefix-out compute. register-type))
 
 (define DISCOVERY (make-parameter #f))
 
@@ -26,6 +27,11 @@
         'read read-request
         'update update-request
         'delete delete-request))
+
+(define (register-type type create-api create-transformer)
+  (log-marv-info "compute-api")
+  (ct-register-type type (crud create-api null null null))
+  (register-request-transformer (transformer create-api create-transformer)))
 
 ; TODO - gcp-common module
 (define (gcp-type r) (string->symbol(hash-ref r '$type)))
