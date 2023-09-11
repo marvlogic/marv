@@ -189,9 +189,7 @@
   (define (m-config-take stx)
     (syntax-parse stx
       [(_ CFEXPR ATTRLIST) (syntax/loc stx (hash-take CFEXPR ATTRLIST))]
-      ; [(_ LEFT "<-" RIGHT) (syntax/loc stx (config-overlay RIGHT LEFT))]
       [else (raise "m-config-take")]))
-
 
   (define (m-config-ident stx)
     (syntax-parse stx
@@ -208,32 +206,17 @@
        (syntax/loc stx `(,(string->symbol att-name) . ,(expression EXPR)))]
       [(_ att-name:expr ((~literal expression) EXPR))
        (syntax/loc stx `(att-name . ,(expression EXPR)))]
-      ; [(_ att-name:expr ((~literal reference) REF))
-      ;  (syntax/loc stx `(att-name . ,(reference REF)))]
-      ; [(_ att-name:expr ident:id)
-      ;  (syntax/loc stx `(att-name . ,ident))]
-      ; [(_ att-name:expr IDENT)
-      ;  (syntax/loc stx `(att-name . ,(get-var IDENT)))]
 
       ; TODO - immutable stuff in the syntax is just temporary until moved to the driver
       [(_ att-name:string ((~literal expression) EXPR))
        (syntax/loc stx `(,(string->symbol att-name) . ,(ival (expression EXPR))))]
       [(_ att-name:expr "imm:" ((~literal expression) EXPR))
        (syntax/loc stx `(att-name . ,(ival (expression EXPR))))]
-      ; [(_ att-name:expr "imm:" ((~literal reference) REF))
-      ;  (syntax/loc stx `(att-name . ,(ival (reference REF))))]
-      ; [(_ att-name:expr "imm:" ident:id)
-      ;  (syntax/loc stx `(att-name . ,(ival ident)))]
-      ; [(_ att-name:expr "imm:" IDENT)
-      ;  (syntax/loc stx `(att-name . ,(ival (get-var IDENT))))]
       [else (raise "m-attr-decl")]))
 
   (define (m-reference stx)
     (syntax-parse stx
       [(_ (tgt:id key ...)) (syntax/loc stx (handle-ref 'tgt tgt #'key ...))]
-      ; [(_ (tgt:id key)) (syntax/loc stx (handle-ref tgt (syntax-e #'key)))]
-      ; [(_ (tgt:id key)) (syntax/loc stx (hash-ref tgt (syntax-e #'key)))]
-      ; [(_ (tgt:id key)) #'(hash-ref tgt (syntax-e #'key))]
       ))
 
   (define (m-res-decl stx)
