@@ -4,11 +4,11 @@
 (provide apply-request-transformer)
 
 (define (mig-create-instances res)
-  (hash-set (hash-keep res '(name project zone instanceGroupManager))
-            'instances (list (hash-keep res '(name preservedState)))))
+  (hash-set (hash-take res '(name project zone instanceGroupManager))
+            'instances (list (hash-take res '(name preservedState)))))
 
 (define (mig-delete-instances res)
-  (hash-set (hash-keep res '(name project zone instanceGroupManager))
+  (hash-set (hash-take res '(name project zone instanceGroupManager))
             ; TODO - this is better done in a response-transformer
             'instances (list (format "zones/~a/instances/~a" (hash-ref res 'zone) (hash-ref res 'name)))))
 
@@ -21,13 +21,13 @@
 (define (apply-request-transformer type-op resource)
   ((hash-ref request-transformers type-op (lambda() (lambda(r)resource))) resource))
 
-(define inst (hash
-              'name "example-kbh"
-              'project 'abc
-              'size "123"
-              'instanceGroupManager "name"
-              'zone  "eu1"
-              ))
+; (define inst (hash
+;               'name "example-kbh"
+;               'project 'abc
+;               'size "123"
+;               'instanceGroupManager "name"
+;               'zone  "eu1"
+;               ))
 
 ; (apply-request-transformer 'compute.instanceGroupManagers.createInstances inst)
 ; (apply-request-transformer 'compute.instanceGroupManagers.deleteInstances inst)

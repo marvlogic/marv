@@ -86,7 +86,6 @@
     (make-immutable-caseless-string-hash
      (hash-set resource
                (ref-type api) (hash-ref resource 'name))))
-  ; (pretty-print (dict-keys aliased-resource))
   (define url
     (format "~a~a" (hash-ref (disc-api-root api) 'baseUrl)
             (flat-path api)))
@@ -119,7 +118,7 @@
   (define path-parameters
     (hash-filter (hash-ref (disc-api-type-api api) 'parameters)
                  (lambda (k v) (equal? "path" (hash-ref v 'location)))))
-  (hash-nremove resource (cons '$type (hash-keys path-parameters))))
+  (hash-drop resource (cons '$type (hash-keys path-parameters))))
 
 (define/contract (api-response-type api)
   (disc-api? . -> . (or/c #f string?))
