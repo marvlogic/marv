@@ -17,7 +17,8 @@
 (define (gcp-type r) (hash-ref r '$type))
 
 (provide init-gcp
-         gcp-http-transport )
+         gcp-http-transport
+         gcp-register-type)
 
 (define (init-gcp interface-id
                   http-transport
@@ -85,11 +86,14 @@
 
 ; TODO - maybe a standard (e.g. a prefix) to identify keys to remove?
 ; TODO - region -assumption?
-(define (state->api s) (hash-remove-multi s 'project 'region))
+(define (state->api s) (hash-drop s '(project region)))
 
 ; TODO - may find etag is not avoidable in this way, so might need a soft-diff
 (define (api->state res-state api-resp)
-  (hash-union res-state (hash-remove-multi api-resp 'etag 'timeCreated 'metageneration 'updated)
+  (hash-union res-state (hash-drop api-resp '(etag timeCreated metageneration updated))
               #:combine (lambda (a b)b)))
 
 (define (resource-self-link res-state) (hash-ref res-state 'selfLink))
+
+(define (gcp-register-type type-id transformers)
+  (log-marv-debug "Registered ~a" type-id))

@@ -1,7 +1,8 @@
 #lang racket/base
 
 (require marv/utils/hash)
-(provide apply-request-transformer)
+(require marv/log)
+(provide register-transformer apply-request-transformer)
 
 (define (mig-create-instances res)
   (hash-set (hash-take res '(name project zone instanceGroupManager))
@@ -13,13 +14,18 @@
             'instances (list (format "zones/~a/instances/~a" (hash-ref res 'zone) (hash-ref res 'name)))))
 
 (define request-transformers
-  (hash
-   'compute.instanceGroupManagers.createInstances mig-create-instances
-   'compute.instanceGroupManagers.deleteInstances mig-delete-instances
-   ))
+  (make-parameter
+   (hash
+    'compute.instanceGroupManagers.createInstances mig-create-instances
+    'compute.instanceGroupManagers.deleteInstances mig-delete-instances
+    )))
+
+(define (register-transformer type-op transform-fn)
+  (log-marv-debug "Registered transformer ~a" type-op)
+  (request-transformers (hash-set (request-transformers) type-op transform-fn)))
 
 (define (apply-request-transformer type-op resource)
-  ((hash-ref request-transformers type-op (lambda() (lambda(r)resource))) resource))
+  ((hash-ref (request-transformers) type-op (lambda() (lambda(r)resource))) resource))
 
 ; (define inst (hash
 ;               'name "example-kbh"

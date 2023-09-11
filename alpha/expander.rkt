@@ -3,6 +3,9 @@
 (require racket/hash)
 (require racket/string)
 (require (for-syntax racket/base syntax/parse))
+(require marv/utils/hash)
+
+(require racket/pretty)
 
 (define VARS (make-parameter (hash)))
 
@@ -22,6 +25,7 @@
   r)
 
 (define (config-overlay left right) (hash-union left right #:combine (lambda (v0 _) v0)))
+; (define (config-take cfg attrs) (hash-take cfg attrs))
 
 (define (hash-nref hs ks)
   (for/fold ([h hs])
@@ -82,20 +86,20 @@
       [(_ id:expr EXPR) (syntax/loc stx (define id EXPR))]
       [else (raise "nowt-var-decl")]))
 
-  (define (m-conf-func-decl stx)
+  (define (m-config-func-decl stx)
     (syntax-parse stx
       [(_ id:expr param ... CONF-OBJ)
        (syntax/loc stx
          (define (id param ...) CONF-OBJ))]
-      [else (raise "conf-func-decl")]))
+      [else (raise "config-func-decl")]))
 
-  (define (m-conf-func-call stx)
+  (define (m-config-func-call stx)
     (syntax-parse stx
       [(_ func:id param ...)
        (syntax/loc stx (func param ...))]
-      [else (raise "conf-func-call")]))
+      [else (raise "config-func-call")]))
 
-  ; (define (m-conf-func-param stx)
+  ; (define (m-config-func-param stx)
   ;   (syntax-parse stx
   ;     [(_ id:expr)
   ;      (syntax/loc stx
@@ -113,9 +117,14 @@
       [(_ env-var:string) (syntax/loc stx (getenv-or-raise env-var))]
       [else (raise "m-env-read")]))
 
+  (define (m-strf stx)
+    (syntax-parse stx
+      [(_ str:string expr ... ) (syntax/loc stx (format str expr ...))]
+      [else (raise "m-strf")]))
+
   (define (m-pprint stx)
     (syntax-parse stx
-      [(_ ident:expr) (syntax/loc stx (displayln ident))]))
+      [(_ ident:expr) (syntax/loc stx (pretty-print ident))]))
 
   (define (m-expression stx)
     (syntax-parse stx
@@ -142,6 +151,12 @@
        (syntax/loc stx (list EXPR ...))]
       [else (raise "m-alist")]))
 
+  (define (m-list-attr stx)
+    (syntax-parse stx
+      [(_ ATTR ...)
+       (syntax/loc stx (list 'ATTR ...))]
+      [else (raise "m-list-attr")]))
+
   (define (m-config-expr stx)
     (syntax-parse stx
       [(_ CFEXPR) #'CFEXPR]
@@ -152,6 +167,13 @@
       [(_ LEFT "->" RIGHT) (syntax/loc stx (config-overlay LEFT RIGHT))]
       [(_ LEFT "<-" RIGHT) (syntax/loc stx (config-overlay RIGHT LEFT))]
       [else (raise "m-config-merge")]))
+
+  (define (m-config-take stx)
+    (syntax-parse stx
+      [(_ CFEXPR ATTRLIST) (syntax/loc stx (hash-take CFEXPR ATTRLIST))]
+      ; [(_ LEFT "<-" RIGHT) (syntax/loc stx (config-overlay RIGHT LEFT))]
+      [else (raise "m-config-take")]))
+
 
   (define (m-config-ident stx)
     (syntax-parse stx
@@ -220,27 +242,30 @@
 (define-syntax statement m-statement)
 (define-syntax decl m-decl)
 (define-syntax var-decl m-var-decl)
-(define-syntax conf-func-decl m-conf-func-decl)
+(define-syntax config-func-decl m-config-func-decl)
 (define-syntax res-decl m-res-decl)
-(define-syntax conf-func-call m-conf-func-call)
+(define-syntax config-func-call m-config-func-call)
 (define-syntax expression m-expression)
 (define-syntax reference m-reference)
 (define-syntax config-object m-config-object)
 (define-syntax alist m-alist)
+(define-syntax list-attr m-list-attr)
 (define-syntax attr-decl m-attr-decl)
 (define-syntax built-in m-built-in)
 (define-syntax env-read m-env-read)
+(define-syntax strf m-strf)
 (define-syntax pprint m-pprint)
 (define-syntax boolean m-boolean)
 (define-syntax config-expr m-config-expr)
 (define-syntax config-merge m-config-merge)
+(define-syntax config-take m-config-take)
 (define-syntax config-ident m-config-ident)
 (define-syntax for-list m-for-list)
 (define-syntax loop-var m-loop-var)
 
-(provide marv-spec decl var-decl res-decl conf-func-call conf-func-decl
-         expression reference statement config-object alist
-         config-expr config-merge config-ident
+(provide marv-spec decl var-decl res-decl config-func-call config-func-decl
+         expression reference statement config-object alist list-attr
+         config-expr config-merge config-ident config-take
          for-list loop-var
-         attr-decl built-in env-read pprint
+         attr-decl built-in env-read pprint strf
          boolean)

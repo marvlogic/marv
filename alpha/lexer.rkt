@@ -13,7 +13,7 @@
 (define basic-lexer
   (lexer-srcloc
    ;    ["\n" (token 'NEWLINE lexeme)]
-   [(:or "for/list" "in" "->" "<-" "pprint"
+   [(:or "for/list" "in" "->" "<-" "pprint" "<<" ">>" "strf"
          "imm:" "env" "true" "false") (token lexeme lexeme)]
    [(:= 1 (char-set "[](){}=:,")) lexeme]
    [digits (token 'INTEGER (string->number lexeme))]

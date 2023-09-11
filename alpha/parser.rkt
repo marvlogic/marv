@@ -3,29 +3,33 @@
 marv-spec: statement*
 
 statement: decl | pprint
-decl: var-decl | res-decl | conf-func-decl
+decl: var-decl | res-decl | config-func-decl
 
 pprint: /"pprint" expression
 comment: COMMENT
 var-decl: IDENTIFIER /"=" expression
-conf-func-decl: IDENTIFIER /"(" IDENTIFIER+ /")" /"=" config-expr
-conf-func-param: IDENTIFIER
+config-func-decl: IDENTIFIER /"(" IDENTIFIER+ /")" /"=" config-expr
+config-func-param: IDENTIFIER
 
-expression: INTEGER | STRING | reference | conf-func-call | boolean | config-expr | alist | built-in
+expression: INTEGER | STRING | reference | config-func-call | boolean | config-expr | alist | built-in
 
 boolean: "true" | "false"
 
 config-object: /"{" attr-decl* /"}"
 alist: /"[" expression* /"]"
 
-conf-func-call: IDENTIFIER /"(" expression+ /")"
+list-attr: /"[" IDENTIFIER+ /"]"
 
-built-in: env-read
+built-in: env-read | strf
 env-read: /"env" /"(" STRING /")"
 
-config-expr: config-object | config-ident | config-merge | conf-func-call
+strf: /"strf" /"(" STRING expression+ /")"
+
+config-expr: config-object | config-ident | config-merge | config-func-call | config-take
 config-merge: config-expr ("<-" | "->") config-expr
 config-ident: IDENTIFIER
+config-func-call: IDENTIFIER /"(" expression+ /")"
+config-take: config-expr /"<<" list-attr
 
 attr-decl: IDENTIFIER /"=" [ "imm:" ] ( expression | reference | IDENTIFIER)
 reference: DOTTY-IDENT
