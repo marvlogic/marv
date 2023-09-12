@@ -11,7 +11,7 @@
 
 (require marv/drivers/gcp/compute-api)
 (require marv/drivers/gcp/storage-api)
-
+(require marv/drivers/gcp/transformers)
 
 ; TODO - common module
 (define (gcp-type r) (hash-ref r '$type))
@@ -95,7 +95,10 @@
 
 (define (resource-self-link res-state) (hash-ref res-state 'selfLink))
 
-(define (gcp-register-type type-id create-api create-transformer)
-  (log-marv-info "Registering ~a ~a ~a" type-id create-api create-transformer)
-  (compute.register-type type-id create-api create-transformer)
-  )
+(define/contract (gcp-register-type type-id transformers)
+  (symbol? (list/c transformer? transformer? transformer? transformer? ) . -> . void)
+  (log-marv-info "Registering ~a ~a" type-id transformers)
+  ; TODO - check transformers' api fields are valid for type-id
+  ; TODO - route to other APIs
+
+  (compute.register-type type-id transformers))

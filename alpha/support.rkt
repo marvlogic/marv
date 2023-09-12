@@ -27,18 +27,26 @@
 
 (require marv/drivers/dev)
 (require marv/drivers/gcp/api)
+(require marv/drivers/gcp/transformers)
 
-(define (register-type driver-id type-list stuff)
-  (define type (string->symbol(string-join (map symbol->string type-list) ".")))
-  (log-marv-info "Registering: ~a:~a ~a" driver-id type stuff)
+(define (register-type driver-id type-id api-specs)
+  (define (check-for m)
+    (unless (hash-has-key? api-specs m)
+      (raise (format "~a:~a does not have the required '~a' clause" driver-id type-id m))))
+  (check-for 'create)
+  (check-for 'delete)
+
+  (define type (string->symbol(string-join (map symbol->string type-id) ".")))
+  (log-marv-info "Registering: ~a:~a ~a" driver-id type api-specs)
 
   (define (type-transform spec)
-    (values (string->symbol(string-join (map symbol->string (car spec)) ".")) (cadr spec)))
+    (cond [(null? spec) (transformer null null)]
+          [else (transformer (string->symbol(string-join (map symbol->string (car spec)) ".")) (cadr spec))]))
 
-  (for ([op (hash-keys stuff)])
-    (define-values (typeapi xform) (type-transform (hash-ref stuff op)))
-    (log-marv-info "Sub-reg ~a:~a" typeapi xform)
-    (gcp-register-type type typeapi xform)))
+  (gcp-register-type
+   type
+   (for/list ([op '(create read update delete)])
+     (type-transform (hash-ref api-specs op null)))))
 
 (define defaults
   (hash 'project (getenv-or-raise "MARV_GCP_PROJECT")

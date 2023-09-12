@@ -28,10 +28,17 @@
         'update update-request
         'delete delete-request))
 
-(define (register-type type create-api create-transformer)
-  (log-marv-info "compute-api")
-  (ct-register-type type (crud create-api null null null))
-  (register-request-transformer (transformer create-api create-transformer)))
+(define (register-type type transformers)
+  (log-marv-info "compute-register-type: ~a:~a" type transformers)
+  (define apis (map transformer-api-id transformers))
+  (define-values (create-api read-api update-api delete-api) (apply values apis))
+  (ct-register-type type (crud create-api read-api update-api delete-api))
+
+  (define tfns (map transformer-fn transformers))
+  (for ([a apis]
+        [t tfns]
+        #:when (procedure? t))
+    (register-request-transformer (transformer a t))))
 
 ; TODO - gcp-common module
 (define (gcp-type r) (string->symbol(hash-ref r '$type)))
