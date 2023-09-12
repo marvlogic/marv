@@ -2,7 +2,10 @@
 
 (require racket/hash)
 (require racket/string)
-(require (for-syntax racket/base syntax/parse))
+(require (for-syntax racket/base syntax/parse racket/pretty))
+(require marv/utils/hash)
+
+(require racket/pretty)
 
 (define VARS (make-parameter (hash)))
 
@@ -22,6 +25,7 @@
   r)
 
 (define (config-overlay left right) (hash-union left right #:combine (lambda (v0 _) v0)))
+; (define (config-take cfg attrs) (hash-take cfg attrs))
 
 (define (hash-nref hs ks)
   (for/fold ([h hs])
@@ -82,20 +86,41 @@
       [(_ id:expr EXPR) (syntax/loc stx (define id EXPR))]
       [else (raise "nowt-var-decl")]))
 
-  (define (m-conf-func-decl stx)
+  (define (m-config-func-decl stx)
     (syntax-parse stx
       [(_ id:expr param ... CONF-OBJ)
        (syntax/loc stx
          (define (id param ...) CONF-OBJ))]
-      [else (raise "conf-func-decl")]))
+      [else (raise "config-func-decl")]))
 
-  (define (m-conf-func-call stx)
+  (define (m-config-func-call stx)
     (syntax-parse stx
       [(_ func:id param ...)
        (syntax/loc stx (func param ...))]
-      [else (raise "conf-func-call")]))
+      [else (raise "config-func-call")]))
 
-  ; (define (m-conf-func-param stx)
+  (define (m-type-decl stx)
+    (syntax-parse stx
+      [(_ ((~literal driver-id) did:expr)
+          ((~literal driver-attr) datr:expr) body)
+       (syntax/loc stx (register-type 'did 'datr (make-immutable-hash body)))]))
+
+  (define (m-type-body stx)
+    (syntax-parse stx
+      [(_ crud-decl ...) (syntax/loc stx (list crud-decl ...))]))
+
+  (define (m-type-crud-decl stx)
+    (syntax-parse stx
+      [(_ "create" SPEC) (syntax/loc stx (cons 'create SPEC))]
+      [(_ "delete" SPEC) (syntax/loc stx (cons 'delete SPEC))]))
+
+  (define (m-type-api-spec stx)
+    (syntax-parse stx
+      [(_ ((~literal driver-attr) datr:expr) xform-id:identifier)
+       (syntax/loc stx `(datr ,xform-id))]
+      [else (raise "api-spec")]))
+
+  ; (define (m-config-func-param stx)
   ;   (syntax-parse stx
   ;     [(_ id:expr)
   ;      (syntax/loc stx
@@ -113,16 +138,18 @@
       [(_ env-var:string) (syntax/loc stx (getenv-or-raise env-var))]
       [else (raise "m-env-read")]))
 
+  (define (m-strf stx)
+    (syntax-parse stx
+      [(_ str:string expr ... ) (syntax/loc stx (format str expr ...))]
+      [else (raise "m-strf")]))
+
   (define (m-pprint stx)
     (syntax-parse stx
-      [(_ ident:expr) (syntax/loc stx (displayln ident))]))
+      [(_ ident:expr) (syntax/loc stx (pretty-print ident))]))
 
   (define (m-expression stx)
     (syntax-parse stx
-      [(_ val:integer) (syntax/loc stx val)]
-      [(_ val:string) (syntax/loc stx val)]
-      [(_ other) (syntax/loc stx other)]
-      [else (raise (format "expression didn't match: ~a" stx))]
+      [(_ passthru) (syntax/loc stx passthru)]
       ))
 
   (define (m-boolean stx)
@@ -142,6 +169,12 @@
        (syntax/loc stx (list EXPR ...))]
       [else (raise "m-alist")]))
 
+  (define (m-list-attr stx)
+    (syntax-parse stx
+      [(_ ATTR ...)
+       (syntax/loc stx (list 'ATTR ...))]
+      [else (raise "m-list-attr")]))
+
   (define (m-config-expr stx)
     (syntax-parse stx
       [(_ CFEXPR) #'CFEXPR]
@@ -153,39 +186,37 @@
       [(_ LEFT "<-" RIGHT) (syntax/loc stx (config-overlay RIGHT LEFT))]
       [else (raise "m-config-merge")]))
 
+  (define (m-config-take stx)
+    (syntax-parse stx
+      [(_ CFEXPR ATTRLIST) (syntax/loc stx (hash-take CFEXPR ATTRLIST))]
+      [else (raise "m-config-take")]))
+
   (define (m-config-ident stx)
     (syntax-parse stx
       [(_ CFIDENT) (syntax/loc stx CFIDENT)]
       [else (raise "m-config-ident")]))
 
+  (define (m-keyword stx)
+    (syntax-parse stx
+      [(_ keyword) (syntax/loc stx keyword)]))
+
   (define (m-attr-decl stx)
     (syntax-parse stx
+      [(_ att-name:string ((~literal expression) EXPR))
+       (syntax/loc stx `(,(string->symbol att-name) . ,(expression EXPR)))]
       [(_ att-name:expr ((~literal expression) EXPR))
        (syntax/loc stx `(att-name . ,(expression EXPR)))]
-      [(_ att-name:expr ((~literal reference) REF))
-       (syntax/loc stx `(att-name . ,(reference REF)))]
-      [(_ att-name:expr ident:id)
-       (syntax/loc stx `(att-name . ,ident))]
-      [(_ att-name:expr IDENT)
-       (syntax/loc stx `(att-name . ,(get-var IDENT)))]
 
       ; TODO - immutable stuff in the syntax is just temporary until moved to the driver
+      [(_ att-name:string ((~literal expression) EXPR))
+       (syntax/loc stx `(,(string->symbol att-name) . ,(ival (expression EXPR))))]
       [(_ att-name:expr "imm:" ((~literal expression) EXPR))
        (syntax/loc stx `(att-name . ,(ival (expression EXPR))))]
-      [(_ att-name:expr "imm:" ((~literal reference) REF))
-       (syntax/loc stx `(att-name . ,(ival (reference REF))))]
-      [(_ att-name:expr "imm:" ident:id)
-       (syntax/loc stx `(att-name . ,(ival ident)))]
-      [(_ att-name:expr "imm:" IDENT)
-       (syntax/loc stx `(att-name . ,(ival (get-var IDENT))))]
       [else (raise "m-attr-decl")]))
 
   (define (m-reference stx)
     (syntax-parse stx
       [(_ (tgt:id key ...)) (syntax/loc stx (handle-ref 'tgt tgt #'key ...))]
-      ; [(_ (tgt:id key)) (syntax/loc stx (handle-ref tgt (syntax-e #'key)))]
-      ; [(_ (tgt:id key)) (syntax/loc stx (hash-ref tgt (syntax-e #'key)))]
-      ; [(_ (tgt:id key)) #'(hash-ref tgt (syntax-e #'key))]
       ))
 
   (define (m-res-decl stx)
@@ -220,27 +251,38 @@
 (define-syntax statement m-statement)
 (define-syntax decl m-decl)
 (define-syntax var-decl m-var-decl)
-(define-syntax conf-func-decl m-conf-func-decl)
+(define-syntax config-func-decl m-config-func-decl)
+
+(define-syntax type-decl m-type-decl)
+(define-syntax type-body m-type-body)
+(define-syntax type-crud-decl m-type-crud-decl)
+(define-syntax type-api-spec m-type-api-spec)
+
 (define-syntax res-decl m-res-decl)
-(define-syntax conf-func-call m-conf-func-call)
+(define-syntax config-func-call m-config-func-call)
 (define-syntax expression m-expression)
 (define-syntax reference m-reference)
 (define-syntax config-object m-config-object)
 (define-syntax alist m-alist)
+(define-syntax list-attr m-list-attr)
 (define-syntax attr-decl m-attr-decl)
+(define-syntax keyword m-keyword)
 (define-syntax built-in m-built-in)
 (define-syntax env-read m-env-read)
+(define-syntax strf m-strf)
 (define-syntax pprint m-pprint)
 (define-syntax boolean m-boolean)
 (define-syntax config-expr m-config-expr)
 (define-syntax config-merge m-config-merge)
+(define-syntax config-take m-config-take)
 (define-syntax config-ident m-config-ident)
 (define-syntax for-list m-for-list)
 (define-syntax loop-var m-loop-var)
 
-(provide marv-spec decl var-decl res-decl conf-func-call conf-func-decl
-         expression reference statement config-object alist
-         config-expr config-merge config-ident
+(provide marv-spec decl var-decl res-decl config-func-call config-func-decl
+         type-decl type-body type-crud-decl type-api-spec
+         expression reference statement config-object alist list-attr
+         config-expr config-merge config-ident config-take
          for-list loop-var
-         attr-decl built-in env-read pprint
+         attr-decl keyword built-in env-read pprint strf
          boolean)

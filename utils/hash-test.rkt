@@ -15,7 +15,7 @@
 (check-equal? (hash-nref config4 '(project)) "happy2")
 (check-equal? (hash-nref config4 '(nested replace-me)) "goob-boy")
 
-(check-equal? (hash-nremove config1 '(project region)) #hasheq())
+(check-equal? (hash-drop config1 '(project region)) #hasheq())
 (check-equal? (hash-merge config1 driver1) config1)
 
 (check-equal? (hash-merge config2 driver1)
@@ -72,3 +72,16 @@
      (f3.line3.1 . b )
      (f3.line3.2 . c )))
  )
+
+(define keep-test #hasheq((project . "happy2")
+                          (region . "euwest2")
+                          (nested . #hasheq( (replace-me . "goob-boy")))))
+
+(check-equal? (hash-take keep-test '(project region))
+              #hasheq((project . "happy2") (region . "euwest2")))
+
+(check-equal? (hash-take keep-test '(project notfound))
+              #hasheq((project . "happy2")))
+
+(check-equal? (hash-drop keep-test '(project nested))
+              #hasheq((region . "euwest2")))

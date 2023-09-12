@@ -4,20 +4,21 @@
 (require net/http-easy)
 (require racket/contract)
 
+(require marv/log)
 (require marv/utils/hash)
 (require marv/core/resources)
 (require marv/drivers/driver)
-(require marv/core/globals)
 
 (require marv/drivers/gcp/compute-api)
 (require marv/drivers/gcp/storage-api)
-
+(require marv/drivers/gcp/transformers)
 
 ; TODO - common module
 (define (gcp-type r) (hash-ref r '$type))
 
 (provide init-gcp
-         gcp-http-transport )
+         gcp-http-transport
+         gcp-register-type)
 
 (define (init-gcp interface-id
                   http-transport
@@ -31,8 +32,7 @@
 
   (define/contract (mk-resource res)
     (hash? . -> . config/c)
-    (cond [(hash-has-key? res 'project) res]
-          [ else (raise (format "no project for resource: ~a" res))]))
+    ((google-api-fn res 'validate) res))
 
   (define APIS
     (hash "compute" (compute.init-api interface-id "compute:beta")
@@ -65,6 +65,7 @@
   (define auth-token (bearer-auth access-token))
 
   (define (expect-2xx resp #:expect-status (expect '(200 204)))
+    (log-marv-debug "~a" (response-json resp))
     (cond [(member (response-status-code resp) expect )(response-json resp)]
           [else (raise (format "unexpected response: ~a:~a"
                                (response-status-code resp)
@@ -85,11 +86,19 @@
 
 ; TODO - maybe a standard (e.g. a prefix) to identify keys to remove?
 ; TODO - region -assumption?
-(define (state->api s) (hash-remove-multi s 'project 'region))
+(define (state->api s) (hash-drop s '(project region)))
 
 ; TODO - may find etag is not avoidable in this way, so might need a soft-diff
 (define (api->state res-state api-resp)
-  (hash-union res-state (hash-remove-multi api-resp 'etag 'timeCreated 'metageneration 'updated)
+  (hash-union res-state (hash-drop api-resp '(etag timeCreated metageneration updated))
               #:combine (lambda (a b)b)))
 
 (define (resource-self-link res-state) (hash-ref res-state 'selfLink))
+
+(define/contract (gcp-register-type type-id transformers)
+  (symbol? (list/c transformer? transformer? transformer? transformer? ) . -> . void)
+  (log-marv-info "Registering ~a ~a" type-id transformers)
+  ; TODO - check transformers' api fields are valid for type-id
+  ; TODO - route to other APIs
+
+  (compute.register-type type-id transformers))

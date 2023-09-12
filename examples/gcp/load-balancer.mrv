@@ -108,8 +108,12 @@ node-disks = [ {
           sourceImage = "projects/debian-cloud/global/images/family/debian-12"
           diskSizeGb = "10"
           # diskType = "zones/europe-west2-a/diskTypes/pd-standard"
+     } 
     }
-} ]
+#     { boot = false
+#       deviceName = "db-disk0"
+#       instantiateFrom = "blank" }
+]
 
 ################################################################################
 # variables can be parameterised; let's call the parameterised-variable things
@@ -118,7 +122,6 @@ node-disks = [ {
 # the parameters can be referenced inside the CONFIG-OBJECTS
 
 f-instance-template(machine-type) = defaults <- {
-   name =  "l7-xlb-backend-template"
    properties = {
      machineType = machine-type
      tags = { items = [ "load-balanced-backend" ] }
@@ -133,7 +136,7 @@ f-instance-template(machine-type) = defaults <- {
    }
 }
 
-instance-template = gcp:compute.instanceTemplate f-instance-template("f1-micro")
+instance-template = gcp:compute.instanceTemplate f-instance-template("f1-micro") <- { name = "instance-template1"}
 
 ################################################################################
 # Multiple parameters are space-separated
@@ -151,7 +154,15 @@ f-instance-group-manager(name size zone template) = defaults <- {
 # env-variable (until MARV-speak gets string-manipulation functions)
 
 instance-group-manager1 = gcp:compute.instanceGroupManager 
-     f-instance-group-manager("example" 2 "europe-west1-b" instance-template.selfLink)
+     f-instance-group-manager("example" 2 "europe-west1-b" instance-template.selfLink) <- {
+#          statefulPolicy = {
+#               preservedState = {
+#                    disks = {
+#                        db-disk0 = { autoDelete = "never" } 
+#                    }
+#               }
+#          }
+     }
 
 ################################################################################
 # The rest of the example is straight-forward declarations
@@ -192,3 +203,76 @@ forwarding-rule = gcp:compute.forwardingRule defaults <- {
    network = imm: vpc.selfLink
    networkTier = "STANDARD"
 }
+
+
+# Custom types
+# 
+# Background: Marv doesn't support the entire API surface; e.g. some parts of
+# GCP API don't map nicely onto a standard CRUD lifecycle, for example the
+# ability to manually add instances to an instanceGroupManager - it's in the API
+# but needs custom coding.
+# 
+# Marv allows you to specify custom resource types using any of the available
+# API.
+
+# This example uses the 'compute.instanceGroupManagers.createInstances' and
+# 'compute.instanceGroupManagers.deleteInstances' API calls:
+#
+# https://www.googleapis.com/discovery/v1/apis/compute/beta/rest
+#
+
+# These are the transformers that will reformat the resource to fit the API.
+
+# spec '<<' [attr ...] yields a config that has only the listed attributes
+# taken from 'spec'
+
+create-transform(spec) = spec << [ name project zone instanceGroupManager ] <- { 
+               instances = [ spec << [ name preservedState ] ]
+}
+
+delete-transform(spec) = spec << [ name project zone instanceGroupManager ] <- {
+    instances = [ strf("zones/~a/instances/~a" spec.zone spec.name) ]
+}
+
+# Register the custom type (only create/delete supported for now). The example
+# uses 'compute.my-custom-type.instance' as the custom type ID, but it
+# could be anything prefixed with 'compute.'
+
+type gcp:compute.my-custom-type.instance = {
+     # The format is <method> = <api-id>:<transformer-func>. 
+     
+     # The <api-id> is the ID of the actual API in the GCP API that
+     # the custom type will invoke:
+
+     create = compute.instanceGroupManagers.createInstances:create-transform
+     delete = compute.instanceGroupManagers.deleteInstances:delete-transform
+}
+
+# Now we can use the custom type to create two instances under
+# instance-group-manager1
+
+instance1 = gcp:compute.my-custom-type.instance defaults <- {
+     name = "example-marv1"
+     instanceGroupManager = instance-group-manager1.name
+     zone = instance-group-manager1.zone
+}
+
+instance2 = gcp:compute.my-custom-type.instance defaults <- {
+     name = "example-marv2"
+     instanceGroupManager = instance-group-manager1.name
+     zone = instance-group-manager1.zone
+}
+
+# 
+# # pic = gcp:compute.perInstanceConfig defaults <- {
+#      instanceGroupManager = instance-group-manager1.name
+#      zone = instance-group-manager1.zone
+#      name = "example-kbh1"
+#      mostDistruptiveAllowedAction = "RESTART"
+#      preservedState = {
+#           metadata = {
+#                foo = "bar"
+#           }
+#      }
+#  }
+# 

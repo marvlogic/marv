@@ -11,8 +11,10 @@
 
 (provide load-discovery
          api-for-type
+         api-for-type-op
          api-http-method
          api-resource-url
+         api-required-params
          api-resource
          api-response-type)
 
@@ -20,14 +22,15 @@
 (struct disc-api (root type-api))
 
 (define ROOT-DISCOVERY "https://discovery.googleapis.com/discovery/v1/apis")
+
 (define/contract (load-discovery int-id disc-id)
   (string? string? . -> . disc-doc?)
-  (define disc-url (dict-ref (get-root-discovery) disc-id))
+  (define disc-url (dict-ref (get-root-discovery int-id) disc-id))
   (with-workspace-file int-id disc-id
     #:thunk (lambda() (disc-doc(read-json))) #:url disc-url))
 
-(define (get-root-discovery)
-  (with-workspace-file "gcp-discovery-index.json"
+(define (get-root-discovery int-id)
+  (with-workspace-file int-id "discovery-index.json"
     #:thunk (lambda ()
               (map
                (lambda (disc-ent) (cons (dict-ref disc-ent 'id) (dict-ref disc-ent 'discoveryRestUrl)))
@@ -38,6 +41,28 @@
   (disc-doc? symbol? symbol? . -> . disc-api?)
   (disc-api (disc-doc-root discovery)
             (hash-ref (hash-nref (disc-doc-root discovery) (list 'resources type 'methods)) op)))
+
+; TODO - better name for type-op stuff?
+(define/contract (api-for-type-op discovery type-op)
+  (disc-doc? symbol? . -> . disc-api?)
+  ; todo - cache this, or store in disc struct
+  (hash-ref (api-types discovery) type-op))
+
+; TODO - is append a code smell?
+(define (api-types discovery)
+  (make-immutable-hasheq
+   (for/fold ([acc '()])
+             ([res (hash-values (hash-ref (disc-doc-root discovery) 'resources))])
+     (append acc
+             (for/fold ([ac2 '()])
+                       ([meth (hash-values (hash-ref res 'methods))])
+               (cons (cons (string->symbol (hash-ref meth 'id))
+                           (disc-api (disc-doc-root discovery) meth)) ac2))))))
+
+; (define/contract (api-by-type-op discovery type-op)
+;   (disc-doc? symbol? . -> . disc-api?)
+;   (disc-api (disc-doc-root discovery)
+
 
 (define/contract (api-http-method api)
   (disc-api? . -> . symbol?)
@@ -55,14 +80,21 @@
    (hash-nref (disc-api-type-api api) '(request $ref)
               (last (hash-ref (disc-api-type-api api) 'parameterOrder)))))
 
-(define/contract (api-resource-url api type resource)
-  (disc-api? symbol? hash? . -> . string?)
-  (define aliased-resource (make-immutable-caseless-string-hash (hash-set resource (ref-type api) (hash-ref resource 'name))))
-  ; (pretty-print (dict-keys aliased-resource))
+(define/contract (api-resource-url api resource)
+  (disc-api? hash? . -> . string?)
+  (define aliased-resource
+    (make-immutable-caseless-string-hash
+     (hash-set resource
+               (ref-type api) (hash-ref resource 'name))))
   (define url
     (format "~a~a" (hash-ref (disc-api-root api) 'baseUrl)
             (flat-path api)))
   (dict-format-string aliased-resource url))
+
+(define/contract (api-required-params api)
+  (disc-api? . -> . list?)
+  (define params (hash-ref (disc-api-type-api api) 'parameters))
+  (filter (lambda (k) (hash-nref params (list k 'required) #f)) (hash-keys params)))
 
 (define (flat-path api)
   (define type-api (disc-api-type-api api))
@@ -81,16 +113,12 @@
       (lambda (_ v) (and (hash-ref v 'required #f) (equal? "query" (hash-ref v 'location)))))))
    "&"))
 
-; (define d (load-discovery "google-storage-api.json"))
-; (define a (api-for-type d 'buckets 'insert))
-; (api-query-params a)
-
 (define/contract (api-resource api resource)
   (disc-api? hash? . -> . hash?)
   (define path-parameters
     (hash-filter (hash-ref (disc-api-type-api api) 'parameters)
                  (lambda (k v) (equal? "path" (hash-ref v 'location)))))
-  (hash-nremove resource (cons '$type (hash-keys path-parameters))))
+  (hash-drop resource (cons '$type (hash-keys path-parameters))))
 
 (define/contract (api-response-type api)
   (disc-api? . -> . (or/c #f string?))
@@ -100,3 +128,5 @@
   (pretty-print
    (make-immutable-hash (map (lambda(k) (cons k k))
                              (hash-keys (hash-ref (disc-doc-root doc) 'resources))))))
+
+(define comp (load-discovery "gcp" "compute:beta"))

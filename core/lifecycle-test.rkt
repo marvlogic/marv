@@ -11,7 +11,7 @@
 (require "resource-def.rkt")
 
 (require/expose
- "lifecycle.rkt"
+ marv/core/lifecycle
  (op-replace
   op-update
   op-delete
@@ -23,8 +23,8 @@
 (define acc-ops
   (make-immutable-hash
    `(  (bucket1  . #f)
-       (bucket2  . ,(op-replace "immutable"))
-       (bucket3  . ,(op-update "blah")))))
+       (bucket2  . ,(op-replace "immutable" (hash)))
+       (bucket3  . ,(op-update "blah" (hash))))))
 
 (define res1
   (make-immutable-hash

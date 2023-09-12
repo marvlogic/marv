@@ -8,6 +8,7 @@
 (require racket/hash)
 (require racket/string)
 
+(require marv/log)
 (require marv/core/state)
 (require marv/core/diff)
 (require marv/core/resource-def)
@@ -134,6 +135,7 @@
     [else #f]))
 
 (define (operation id old-state new-module acc-ops)
+  ; (log-marv-debug "Checking ~a vs old ~a" id old-state)
   (if (hash-has-key? old-state id)
       (let ((new-res (resource-ref new-module id))
             (old-res (hash-ref old-state id)))

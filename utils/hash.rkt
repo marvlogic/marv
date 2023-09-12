@@ -5,8 +5,7 @@
 (require racket/dict)
 
 (provide hash-nref
-         hash-nremove
-         hash-remove-multi
+         hash-drop
          hash-merge
          hash-format-string
          dict-format-string
@@ -14,6 +13,8 @@
          hash-apply
          make-immutable-caseless-string-hash
          hash-filter
+         hash-take
+         hash-drop
          hash-match?)
 
 (define (hash-nref hs ks [def #f])
@@ -22,16 +23,13 @@
               ([k (in-list ks)])
       (hash-ref h k))))
 
-(define (hash-nremove hs ks)
+(define (hash-take hs ks)
+  (for/hasheq ([i (in-list ks)] #:when (hash-has-key? hs i)) (values i (hash-ref hs i))))
+
+(define (hash-drop hs ks)
   (for/fold ([h hs])
             ([k (in-list ks)])
     (hash-remove h k)))
-
-(define-syntax hash-remove-multi
-  (syntax-rules ()
-    [(hash-remove-multi h p) (hash-remove h p)]
-    [(hash-remove-multi h p q ...) (hash-remove-multi (hash-remove h p) q ...)]
-    ))
 
 ; Merge the two hashes, where the left has priority over the right
 ; NB for deep merging, see state-merge
