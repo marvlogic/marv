@@ -21,10 +21,14 @@
          gcp-register-type)
 
 (define (init-gcp interface-id http-transport)
-  (make-mk-resource-fn
-   (hash 'compute (compute.init-api interface-id "compute:beta" http-transport)
-         ;  'storage (storage.init-api interface-id "storage:v1")
-         )))
+  (define apis
+    (hash 'compute (compute.init-api interface-id "compute:beta" http-transport)
+          ;  'storage (storage.init-api interface-id "storage:v1" http-transport)
+          ))
+  (define (mkres config)
+    (define subtype (string->symbol (car (string-split (gcp-type config) "."))))
+    ((hash-ref apis subtype) config))
+  mkres)
 
 (define (gcp-http-transport access-token)
 
@@ -69,7 +73,7 @@
 
   (compute.register-type type-id transformers))
 
-(define token "")
-(define project-id "")
-(define g (init-gcp 'gcp (gcp-http-transport token)))
-(define r (g 'compute (hash 'name "vpc1" '$type "compute.network" 'project project-id)))
+(define (tmp project-id token)
+  (define drvs (make-mk-resource-fn (hash 'gcp (init-gcp 'gcp (gcp-http-transport token)))))
+  (define r (drvs 'gcp (hash 'name "vpc1" '$type "compute.network" 'project project-id)))
+  r)
