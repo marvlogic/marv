@@ -20,45 +20,11 @@
          gcp-http-transport
          gcp-register-type)
 
-(define (init-gcp interface-id
-                  http-transport
-                  #:project project-id
-                  #:region region)
-
-  (define driver-conf (hash 'project project-id
-                            'region region))
-
-  ; TODO - contract for supported types
-
-  (define/contract (mk-resource res)
-    (hash? . -> . config/c)
-    ((google-api-fn res 'validate) res))
-
-  (define APIS
-    (hash "compute" (compute.init-api interface-id "compute:beta")
-          "storage" (storage.init-api interface-id "storage:v1")))
-
-  (define (google-api-fn resource op)
-    (define sub-api (car (string-split (gcp-type resource) ".")))
-    (hash-ref (hash-ref APIS sub-api) op))
-
-  (define/contract (create resource)
-    (config/c . -> . config/c)
-    ((google-api-fn resource 'create) resource http-transport))
-
-  (define/contract (readr resource)
-    (config/c . -> . config/c)
-    ((google-api-fn resource 'read)  resource http-transport))
-
-  (define/contract (update resource)
-    (config/c . -> . config/c)
-    ((google-api-fn resource 'update) resource http-transport))
-
-  (define/contract (delete resource)
-    (config/c . -> . config/c)
-    ((google-api-fn resource 'delete) resource http-transport))
-
-  (driver mk-resource create readr update delete driver-conf))
+(define (init-gcp interface-id http-transport)
+  (make-mk-resource-fn
+   (hash 'compute (compute.init-api interface-id "compute:beta" http-transport)
+         ;  'storage (storage.init-api interface-id "storage:v1")
+         )))
 
 (define (gcp-http-transport access-token)
 
@@ -102,3 +68,8 @@
   ; TODO - route to other APIs
 
   (compute.register-type type-id transformers))
+
+(define token "")
+(define project-id "")
+(define g (init-gcp 'gcp (gcp-http-transport token)))
+(define r (g 'compute (hash 'name "vpc1" '$type "compute.network" 'project project-id)))

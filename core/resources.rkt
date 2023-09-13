@@ -18,10 +18,13 @@
          (struct-out attribute))
 
 (struct attribute (name value) #:prefab)
-(struct resource (driver config) #:prefab)
+(struct resource (config crudfn) #:prefab)
 
-; TODO - sort out circular dep if we use driver-id/c instead of 'symbol?'
-(define resource/c (struct/c resource symbol? hash?))
+; TODO - copy/pasta from driver.rkt to avoid circular deps
+(define crud/c symbol?)
+(define crudfn/c (crud/c . -> . resource/c))
+
+(define resource/c (struct/c resource config/c crudfn/c))
 
 ; rmodule because module is a keyword :/
 ; TODO - own module file, and rename to imodule

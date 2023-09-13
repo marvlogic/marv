@@ -4,48 +4,35 @@
 
 (require marv/core/resources)
 
-(provide (struct-out driver)
-         init-drivers
-         driver-config
-         make-master-driver)
+(provide make-mk-resource-fn make-driver-crud-fn)
 
-(struct driver (mkres create read update delete config) #:prefab)
-
-(define DRIVERS (make-parameter #f))
-
-(define/contract (init-drivers drivers)
-  ((hash/c symbol? driver?) . -> . (hash/c any/c driver?))
-  (DRIVERS drivers)
-  (DRIVERS))
+(define crud/c symbol?)
+(define crudfn/c (crud/c . -> . resource/c))
 
 (define driver-id/c symbol?)
 
-(define/contract (make-master-driver drivers)
-  ((hash/c symbol? driver?) . -> . driver?)
+(define (make-driver-crud-fn create readr update delete)
+  (define/contract (crud op)
+    crudfn/c
+    (define fn
+      (case op
+        ['create create]
+        ['read readr]
+        ['update update]
+        ['delete delete]
+        [else (raise "unsupported crud-fn op")]))
+    (fn))
+  crud)
 
-  (define (apply-crudfn crud-fn r)
-    (define drv (hash-ref drivers (resource-driver r)))
-    (resource (resource-driver r)
-              ((crud-fn drv) (resource-config r))))
+; TODO - procedure parameters contract
+(define driver/c procedure?)
 
-  (define/contract (drv-create resource)
-    (resource/c . -> . resource/c)
-    (apply-crudfn driver-create resource))
+(define/contract (make-mk-resource-fn drivers)
+  ((hash/c driver-id/c driver/c) . -> . driver/c)
 
-  (define/contract (drv-read resource)
-    (resource/c . -> . resource/c)
-    (apply-crudfn driver-read resource))
-
-  (define/contract (drv-update resource)
-    (resource/c . -> . resource/c)
-    (apply-crudfn driver-update resource))
-
-  (define/contract (drv-delete resource)
-    (resource/c . -> . resource/c )
-    (apply-crudfn driver-delete resource))
-
-  (define/contract (drv-mk-resource driver-id config)
+  (define/contract (mk-resource driver-id config)
     (driver-id/c config/c . -> . resource/c)
-    (resource driver-id ((driver-mkres (hash-ref drivers driver-id)) config)))
+    (define mkres (hash-ref drivers driver-id))
+    (mkres config))
 
-  (driver drv-mk-resource drv-create drv-read drv-update drv-delete (hash)))
+  mk-resource)

@@ -4,29 +4,30 @@
 (require racket/pretty)
 
 (require marv/log)
+(require marv/core/resources)
 (require marv/utils/hash)
 (require marv/drivers/gcp/compute-types)
 (require marv/drivers/gcp/discovery)
 (require marv/drivers/gcp/crud)
 (require marv/drivers/gcp/transformers)
+(require marv/drivers/driver)
+
 
 (provide (prefix-out compute. init-api)
          (prefix-out compute. register-type))
 
 (define DISCOVERY (make-parameter #f))
 
-(define (init-api interface-id api-id)
+(define (init-api interface-id api-id http)
   (DISCOVERY (load-discovery (symbol->string interface-id) api-id))
-
-  (define (create-request resource http) (generic-request crud-create resource http))
-  (define (read-request resource http) (generic-request crud-read resource http))
-  (define (update-request resource http) (generic-request crud-update resource http))
-  (define (delete-request resource http) (generic-request crud-delete resource http))
-  (hash 'validate validate-res
-        'create create-request
-        'read read-request
-        'update update-request
-        'delete delete-request))
+  (define (mk-res config)
+    (define res (validate-res config))
+    (define (create) (generic-request crud-create res http))
+    (define (readr) (generic-request crud-read res http))
+    (define (update) (generic-request crud-update res http))
+    (define (delete) (generic-request crud-delete res http))
+    (resource res (make-driver-crud-fn create readr update delete)))
+  mk-res)
 
 (define (register-type type transformers)
   (log-marv-info "compute-register-type: ~a:~a" type transformers)
