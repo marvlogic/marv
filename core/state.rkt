@@ -84,5 +84,4 @@
           [else r]))
 
   (if (not st) rs
-      (resource (resource-driver rs)
-                (combine-hash (resource-config st) (resource-config rs)))))
+      (resource (resource-driver-id rs) (combine-hash (resource-config st) (resource-config rs)))))

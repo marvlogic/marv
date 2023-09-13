@@ -25,10 +25,19 @@
     (hash 'compute (compute.init-api interface-id "compute:beta" http-transport)
           ;  'storage (storage.init-api interface-id "storage:v1" http-transport)
           ))
-  (define (mkres config)
+
+  (define (mk-resource driver-id config)
     (define subtype (string->symbol (car (string-split (gcp-type config) "."))))
-    ((hash-ref apis subtype) config))
-  mkres)
+    (define mkres (driver-mk-resource (hash-ref apis subtype)))
+    (mkres driver-id config))
+
+  (define (crudfn op resource)
+    (define config (resource-config resource))
+    (define subtype (string->symbol (car (string-split (gcp-type config) "."))))
+    (define crud (driver-crudfn (hash-ref apis subtype)))
+    (crud op resource))
+
+  (driver mk-resource crudfn))
 
 (define (gcp-http-transport access-token)
 
@@ -74,6 +83,6 @@
   (compute.register-type type-id transformers))
 
 (define (tmp project-id token)
-  (define drvs (make-mk-resource-fn (hash 'gcp (init-gcp 'gcp (gcp-http-transport token)))))
-  (define r (drvs 'gcp (hash 'name "vpc1" '$type "compute.network" 'project project-id)))
-  r)
+  (define drvs (make-driver-for-set (hash 'gcp (init-gcp 'gcp (gcp-http-transport token)))))
+  (define r ((driver-mk-resource drvs) 'gcp (hash 'name "vpc1" '$type "compute.network" 'project project-id)))
+  ((driver-crudfn drvs) 'create r))

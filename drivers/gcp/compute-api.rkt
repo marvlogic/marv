@@ -2,6 +2,7 @@
 
 (require racket/string)
 (require racket/pretty)
+(require racket/contract)
 
 (require marv/log)
 (require marv/core/resources)
@@ -20,14 +21,16 @@
 
 (define (init-api interface-id api-id http)
   (DISCOVERY (load-discovery (symbol->string interface-id) api-id))
-  (define (mk-res config)
+  (define (mk-resource driver-id config)
     (define res (validate-res config))
-    (define (create) (generic-request crud-create res http))
-    (define (readr) (generic-request crud-read res http))
-    (define (update) (generic-request crud-update res http))
-    (define (delete) (generic-request crud-delete res http))
-    (resource res (make-driver-crud-fn create readr update delete)))
-  mk-res)
+    (resource driver-id res))
+
+  (define (ggen cf) (lambda(res) (generic-request cf res http)))
+
+  (define crudfn
+    (make-driver-crud-fn (ggen crud-create) (ggen crud-read) (ggen crud-update) (ggen crud-delete)))
+
+  (driver mk-resource crudfn))
 
 (define (register-type type transformers)
   (log-marv-info "compute-register-type: ~a:~a" type transformers)
@@ -57,10 +60,12 @@
   (has-required-api-parameters?)
   resource)
 
-(define (generic-request crud-fn resource http)
-  (define type-op (crud-fn (compute-type-map (gcp-type resource))))
-  (log-marv-debug "gen/req: type-op=~a ~a" type-op resource)
-  (define xfd-resource (apply-request-transformer type-op resource) )
+(define/contract (generic-request crud-fn resource http)
+  (procedure? resource/c any/c . -> . config/c)
+  (define config (resource-config resource))
+  (define type-op (crud-fn (compute-type-map (gcp-type config))))
+  (log-marv-debug "gen/req: type-op=~a ~a" type-op config)
+  (define xfd-resource (apply-request-transformer type-op config) )
   (log-marv-debug "xformed: ~a" xfd-resource)
   (cond
     [(null? type-op) xfd-resource]
@@ -71,7 +76,7 @@
              (api-resource-url api xfd-resource)
              (api-resource api xfd-resource)))
      (hash-merge
-      resource
+      config
       (if (expect-operation-response? api)
           (handle-operation-response crud-fn response http)
           (handle-delete crud-fn response)))]

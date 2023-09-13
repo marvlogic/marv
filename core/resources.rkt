@@ -18,26 +18,32 @@
          (struct-out attribute))
 
 (struct attribute (name value) #:prefab)
-(struct resource (config crudfn) #:prefab)
-
-; TODO - copy/pasta from driver.rkt to avoid circular deps
-(define crud/c symbol?)
-(define crudfn/c (crud/c . -> . resource/c))
-
-(define resource/c (struct/c resource config/c crudfn/c))
-
-; rmodule because module is a keyword :/
-; TODO - own module file, and rename to imodule
-(struct rmodule (drivers resources))
-(define rmodule/c rmodule?)
+(struct resource (driver-id config) #:prefab)
 
 (define config/c hash?)
 (define res-id/c symbol?)
 
+(define driver-id/c symbol?)
+
+(define resource/c (struct/c resource driver-id/c config/c))
+
+; TODO - RESOLVE DEPENDENCIES!
+; TODO - copy/pasta from driver.rkt to avoid circular deps
+(define crud/c symbol?)
+(define crudfn/c (crud/c . -> . resource/c))
+; TODO - (define driver/c driver?) should not be any/c
+(define driver-set/c (hash/c driver-id/c any/c))
+
+; rmodule because module is a keyword :/
+; TODO - own module file, and rename to imodule
+(struct rmodule (drivers resources))
+
+(define rmodule/c rmodule?)
+
 (define resource-set/c (hash/c res-id/c resource/c))
 
 (define/contract (mk-rmodule drivers resources)
-  (hash? resource-set/c . -> . rmodule/c)
+  (driver-set/c resource-set/c . -> . rmodule/c)
   (rmodule drivers resources))
 
 (define/contract (hash->attribute h)
