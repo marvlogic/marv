@@ -43,7 +43,7 @@
   (define to-delete (set-subtract state-keyset resource-keyset))
   (define to-refresh (set-subtract resource-keyset to-delete to-create))
 
-  ; (cond [refresh (refresh (set->list to-refresh)) ])
+  (when refresh? (refresh-resources mod (set->list to-refresh)))
 
   ; TODO - pass in state, also define hash(id->state) contract types
   (define new-module (mk-rmodule (rmodule-drivers mod) (merge-state+resource (mk-id->state) resources)))
@@ -77,15 +77,23 @@
 
   (map (lambda(id) (import-one id)) ids))
 
-(define (mk-refresh-func readfn)
-  (define (update k)
+(define (refresh-resources mod ids)
+  (define driver (module-crudfn mod))
+
+  (define (readr res)
+    (define did (resource-driver-id res))
+    (resource did (driver did 'read (resource-config res))))
+
+  (define (refresh k)
     (displayln (format "Refreshing ~a" k))
-    (state-set-ref k (readfn (state-ref k))))
-  (lambda (resources-meta) (map update resources-meta)))
+    (define res (state-ref k))
+    (state-set-ref k (readr res)))
+  (for ([i ids]) (refresh i)))
 
 (define (module-crudfn m) (make-driver-for-set (rmodule-drivers m)))
 
 (define (apply-changes mod (refresh? #t))
+
   (define (crudfn op res)
     (define driver (module-crudfn mod))
     (define driver-id (resource-driver-id res))

@@ -49,7 +49,6 @@
 
   (define driver-head (make-driver-for-set (tmp-drivers)))
   (driver-head driver-id 'register-type
-               ; (gcp-register-type
                (register-type-msg
                 type
                 (for/list ([op '(create read update delete)])
