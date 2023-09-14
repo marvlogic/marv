@@ -1,21 +1,16 @@
 #lang racket/base
 
 (require racket/contract)
-(require marv/core/config)
 (require marv/drivers/types)
 
 (provide make-driver-for-set
-         make-driver-crud-fn
-         ;  (struct-out driver)
-         ;  resource-create
-         ;  resource-read
-         ;  resource-update
-         ;  resource-delete)
-         )
+         make-driver-crud-fn)
 
-; (struct driver (mk-resource crudfn))
+; TODO - it's not crudfn anymore; more generic
 
-(define (make-driver-crud-fn validate create readr update delete)
+(define (raise-unsupported op res) (raise (format "Unsupported message/operation: ~a = ~a" op res)))
+
+(define (make-driver-crud-fn validate create readr update delete (pass-thru-fn raise-unsupported))
   (define/contract (crud op res)
     crudfn/c
     (define fn
@@ -25,19 +20,12 @@
         ['read readr]
         ['update update]
         ['delete delete]
-        [else (raise "unsupported crud-fn op")]))
+        [else (pass-thru-fn op res)]))
     (fn res))
   crud)
 
-; TODO - procedure parameters contract
-
 (define/contract (make-driver-for-set drivers)
   (driver-set/c . -> . driver/c)
-
-  ; (define/contract (mk-resource driver-id config)
-  ;   (driver-id/c config/c . -> . resource/c)
-  ;   (define mkres (driver-mk-resource (hash-ref drivers driver-id)))
-  ;   (mkres driver-id config))
 
   (define/contract (crudfn-for driver-id op msg)
     (driver-id/c msg-id/c any/c . -> . any/c)

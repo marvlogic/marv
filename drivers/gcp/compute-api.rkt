@@ -26,21 +26,15 @@
   (define crudfn
     (make-driver-crud-fn
      validate-res
-     (ggen crud-create) (ggen crud-read) (ggen crud-update) (ggen crud-delete)))
-
+     (ggen crud-create) (ggen crud-read) (ggen crud-update) (ggen crud-delete)
+     aux-handler))
   crudfn)
 
-(define (register-type type transformers)
-  (log-marv-info "compute-register-type: ~a:~a" type transformers)
-  (define apis (map transformer-api-id transformers))
-  (define-values (create-api read-api update-api delete-api) (apply values apis))
-  (ct-register-type type (crud create-api read-api update-api delete-api))
+(define (aux-handler op msg)
+  (case op
+    ['register-type register-type]
+    [else (raise "Unsupported op/message in compute-api")]))
 
-  (define tfns (map transformer-fn transformers))
-  (for ([a apis]
-        [t tfns]
-        #:when (procedure? t))
-    (register-request-transformer (transformer a t))))
 
 ; TODO - gcp-common module
 (define (gcp-type r) (string->symbol(hash-ref r '$type)))
@@ -104,3 +98,17 @@
          (flush-output)
          new-op]
         [else (wait-completed new-op http #:wait1 wait2 #:wait2 sleeptime)]))
+
+(define (register-type msg)
+  (define-values (type transformers) (values (hash-ref msg '$type) (hash-ref msg 'transforms)))
+  (log-marv-info "compute-register-type: ~a:~a" type transformers)
+  (define apis (map transformer-api-id transformers))
+  (define-values (create-api read-api update-api delete-api) (apply values apis))
+  (ct-register-type type (crud create-api read-api update-api delete-api))
+
+  (define tfns (map transformer-fn transformers))
+  (for ([a apis]
+        [t tfns]
+        #:when (procedure? t))
+    (register-request-transformer (transformer a t)))
+  (hash))

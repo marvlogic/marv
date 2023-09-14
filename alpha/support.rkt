@@ -25,6 +25,7 @@
 (define (getenv-or-raise e)
   (or (getenv e) (raise (format "ERROR: ~a must be defined in environment" e))))
 
+(require marv/drivers/driver)
 (require marv/drivers/dev)
 (require marv/drivers/gcp/api)
 (require marv/drivers/gcp/transformers)
@@ -43,14 +44,20 @@
     (cond [(null? spec) (transformer null null)]
           [else (transformer (string->symbol(string-join (map symbol->string (car spec)) ".")) (cadr spec))]))
 
-  (gcp-register-type
-   type
-   (for/list ([op '(create read update delete)])
-     (type-transform (hash-ref api-specs op null)))))
+  (define (register-type-msg t tt) (hash '$type (symbol->string t) 'transforms tt))
+
+  (define driver-head (make-driver-for-set (tmp-drivers)))
+  (driver-head driver-id 'register-type
+               ; (gcp-register-type
+               (register-type-msg
+                type
+                (for/list ([op '(create read update delete)])
+                  (type-transform (hash-ref api-specs op null))))))
 
 (define defaults
   (hash 'project (getenv-or-raise "MARV_GCP_PROJECT")
         'region  (getenv-or-raise "MARV_GCP_REGION")))
+
 (define (tmp-drivers)
   (hash
    'dev (init-dev-driver 'dev)

@@ -17,9 +17,7 @@
 ; TODO - common module
 (define (gcp-type r) (hash-ref r '$type))
 
-(provide init-gcp
-         gcp-http-transport
-         gcp-register-type)
+(provide init-gcp gcp-http-transport)
 
 (define (init-gcp interface-id http-transport)
   (define apis
@@ -27,13 +25,13 @@
           ;  'storage (storage.init-api interface-id "storage:v1" http-transport)
           ))
 
-  (define/contract (crudfn op config)
+  (define/contract (routing op config)
     (msg-id/c config/c . -> . config/c)
     (define subtype (string->symbol (car (string-split (gcp-type config) "."))))
     (define crudfn (hash-ref apis subtype))
     (crudfn op config))
 
-  crudfn)
+  routing)
 
 (define (gcp-http-transport access-token)
 
@@ -69,14 +67,6 @@
               #:combine (lambda (a b)b)))
 
 (define (resource-self-link res-state) (hash-ref res-state 'selfLink))
-
-(define/contract (gcp-register-type type-id transformers)
-  (symbol? (list/c transformer? transformer? transformer? transformer? ) . -> . void)
-  (log-marv-info "Registering ~a ~a" type-id transformers)
-  ; TODO - check transformers' api fields are valid for type-id
-  ; TODO - route to other APIs
-
-  (compute.register-type type-id transformers))
 
 ; (define (tmp project-id token)
 ;   (define drvs (make-driver-for-set (hash 'gcp (init-gcp 'gcp (gcp-http-transport token)))))
