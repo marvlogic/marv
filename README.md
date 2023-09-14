@@ -12,30 +12,35 @@ __Under active development: Not suitable for production usage__
 
 You could play with this locally in your own GCP projects etc. It might be
 useful for managing small development environments. You would have to manage the
-state file manually.
+state file locally.
 
-The code is not in the best of places - I consider it very 'prototypey' :)
+The code is not in the best of places - consider it very 'prototypey' :)
 (though it is improving by the day)
+
+This is my first major project using Racket, which I'm still learning, so the
+structure of it is very much in-flux and subject to __significant__ change. 
 
 ## Current Limitations
 
-Tons of them! Rest assured I'll be working to resolve these and many others.
+There's a lot of work left to reach a good point to release it. There are a load
+of features that need to be added.
 
-The most important ones:
+The most important ones are:
 
 - A new DSL, in alpha quality. Subject to change. Lacking in features, such as
 loops, modules and parameters. All are planned though.
 
-- Only supports GCP compute and storage APIs.
+- The model doesn't know about which fields are immutable on GCP resources; you
+need to specify these manually (see attributes marked `imm:` in the
+[example](examples/gcp/load-balancer.mrv)).
+
+- Only supports GCP compute and storage APIs, more coming very soon.
 
 - Barely any error checking, most of the time the only error checking is
 performed by GCP itself during an `apply` phase. Parser errors are likely to be
 obtuse.
 
 - Only supports local state files
-
-This is my first major project using Racket, which I'm still learning, so the
-structure of it is very much in-flux and subject to __significant__ change. 
 
 # Installation - Linux & Mac
 

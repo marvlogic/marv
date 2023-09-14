@@ -72,7 +72,7 @@ vpc-defaults = defaults <- {
 sn1 = gcp:compute.subnetwork vpc-defaults <- {
      name = "subnet1"
      description = "primary subnet"
-     ipCidrRange =  imm: "10.0.1.0/24"
+     ipCidrRange =  imm: "10.0.2.0/24"
 }
 
 proxy-sn = gcp:compute.subnetwork vpc-defaults <- {
@@ -253,14 +253,14 @@ type gcp:compute.my-custom-type.instance = {
 
 instance1 = gcp:compute.my-custom-type.instance defaults <- {
      name = "example-marv1"
-     instanceGroupManager = instance-group-manager1.name
-     zone = instance-group-manager1.zone
+     instanceGroupManager = imm: instance-group-manager1.name
+     zone = imm: instance-group-manager1.zone
 }
 
 instance2 = gcp:compute.my-custom-type.instance defaults <- {
      name = "example-marv2"
-     instanceGroupManager = instance-group-manager1.name
-     zone = instance-group-manager1.zone
+     instanceGroupManager = imm: instance-group-manager1.name
+     zone = imm: instance-group-manager1.zone
 }
 
 # 

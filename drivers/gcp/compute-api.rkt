@@ -7,12 +7,12 @@
 (require marv/log)
 (require marv/core/config)
 (require marv/utils/hash)
-(require marv/drivers/gcp/compute-types)
 (require marv/drivers/gcp/discovery)
 (require marv/drivers/gcp/crud)
 (require marv/drivers/gcp/transformers)
 (require marv/drivers/driver)
 
+(require marv/drivers/gcp/compute-types)
 
 (provide (prefix-out compute. init-api)
          (prefix-out compute. register-type))
@@ -25,7 +25,7 @@
 
   (define crudfn
     (make-driver-crud-fn
-     validate-res
+     validate
      (genrq crud-create) (genrq crud-read) (genrq crud-update) (genrq crud-delete)
      aux-handler))
   crudfn)
@@ -38,18 +38,18 @@
 ; TODO - gcp-common module
 (define (gcp-type r) (hash-ref r '$type))
 
-(define/contract (validate-res config)
+(define/contract (validate cfg)
   (config/c . -> . config/c)
 
-  (define type (gcp-type config))
+  (define type (gcp-type cfg))
   (define api (api-for-type-op (DISCOVERY) (crud-create(compute-type-map type))))
 
   (define (has-required-api-parameters?)
     (define req-params (api-required-params api))
-    (for/first ([p req-params] #:unless (hash-has-key? config p))
+    (for/first ([p req-params] #:unless (hash-has-key? cfg p))
       (raise (format "Config does not have required field(s) (~a) ~a" p req-params))))
   (has-required-api-parameters?)
-  config)
+  cfg)
 
 (define/contract (generic-request crud-fn config http)
   (procedure? config/c any/c . -> . config/c)

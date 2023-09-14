@@ -55,7 +55,7 @@
              ([res (hash-values (hash-ref (disc-doc-root discovery) 'resources))])
      (append acc
              (for/fold ([ac2 '()])
-                       ([meth (hash-values (hash-ref res 'methods))])
+                       ([meth (hash-values (hash-ref res 'methods (hash)))])
                (cons (cons (string->symbol (hash-ref meth 'id))
                            (disc-api (disc-doc-root discovery) meth)) ac2))))))
 

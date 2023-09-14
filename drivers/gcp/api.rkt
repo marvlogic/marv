@@ -8,7 +8,6 @@
 (require marv/utils/hash)
 (require marv/core/config)
 (require marv/drivers/types)
-(require marv/drivers/driver)
 
 (require marv/drivers/gcp/compute-api)
 (require marv/drivers/gcp/storage-api)
@@ -22,7 +21,7 @@
 (define (init-gcp interface-id http-transport)
   (define apis
     (hash 'compute (compute.init-api interface-id "compute:beta" http-transport)
-          ;  'storage (storage.init-api interface-id "storage:v1" http-transport)
+          'storage (storage.init-api interface-id "storage:v1" http-transport)
           ))
 
   (define/contract (routing op config)
@@ -54,21 +53,4 @@
      ))
   (lambda (method url body) ((hash-ref methods method) url body)))
 
-; (define (exec api-method meta resource http)
-;   (api->state ((api-method (google-api (meta-type meta))) meta resource http)))
-
-; TODO - maybe a standard (e.g. a prefix) to identify keys to remove?
-; TODO - region -assumption?
-(define (state->api s) (hash-drop s '(project region)))
-
-; TODO - may find etag is not avoidable in this way, so might need a soft-diff
-(define (api->state res-state api-resp)
-  (hash-union res-state (hash-drop api-resp '(etag timeCreated metageneration updated))
-              #:combine (lambda (a b)b)))
-
 (define (resource-self-link res-state) (hash-ref res-state 'selfLink))
-
-; (define (tmp project-id token)
-;   (define drvs (make-driver-for-set (hash 'gcp (init-gcp 'gcp (gcp-http-transport token)))))
-;   (define r ((driver-mk-resource drvs) 'gcp (hash 'name "vpc1" '$type "compute.network" 'project project-id)))
-;   ((driver-crudfn drvs) 'create r))
