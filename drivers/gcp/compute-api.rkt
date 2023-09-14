@@ -5,7 +5,7 @@
 (require racket/contract)
 
 (require marv/log)
-(require marv/core/resources)
+(require marv/core/config)
 (require marv/utils/hash)
 (require marv/drivers/gcp/compute-types)
 (require marv/drivers/gcp/discovery)
@@ -21,16 +21,14 @@
 
 (define (init-api interface-id api-id http)
   (DISCOVERY (load-discovery (symbol->string interface-id) api-id))
-  (define (mk-resource driver-id config)
-    (define res (validate-res config))
-    (resource driver-id res))
-
   (define (ggen cf) (lambda(res) (generic-request cf res http)))
 
   (define crudfn
-    (make-driver-crud-fn (ggen crud-create) (ggen crud-read) (ggen crud-update) (ggen crud-delete)))
+    (make-driver-crud-fn
+     validate-res
+     (ggen crud-create) (ggen crud-read) (ggen crud-update) (ggen crud-delete)))
 
-  (driver mk-resource crudfn))
+  crudfn)
 
 (define (register-type type transformers)
   (log-marv-info "compute-register-type: ~a:~a" type transformers)
@@ -47,22 +45,21 @@
 ; TODO - gcp-common module
 (define (gcp-type r) (string->symbol(hash-ref r '$type)))
 
-(define (validate-res resource)
+(define/contract (validate-res config)
+  (config/c . -> . config/c)
 
-  (define type (gcp-type resource))
+  (define type (gcp-type config))
   (define api (api-for-type-op (DISCOVERY) (crud-create(compute-type-map type))))
 
   (define (has-required-api-parameters?)
     (define req-params (api-required-params api))
-    (for/first ([p req-params] #:unless (hash-has-key? resource p))
-      (raise (format "Resource does not have required field(s) (~a) ~a" p req-params))))
-
+    (for/first ([p req-params] #:unless (hash-has-key? config p))
+      (raise (format "Config does not have required field(s) (~a) ~a" p req-params))))
   (has-required-api-parameters?)
-  resource)
+  config)
 
-(define/contract (generic-request crud-fn resource http)
-  (procedure? resource/c any/c . -> . config/c)
-  (define config (resource-config resource))
+(define/contract (generic-request crud-fn config http)
+  (procedure? config/c any/c . -> . config/c)
   (define type-op (crud-fn (compute-type-map (gcp-type config))))
   (log-marv-debug "gen/req: type-op=~a ~a" type-op config)
   (define xfd-resource (apply-request-transformer type-op config) )

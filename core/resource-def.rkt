@@ -51,13 +51,14 @@
   (define keyw-params (make-keyword-params params))
   ; TODO - drivers should have their own keyword params
   ; (define drivers (keyword-apply (DRIVERS) (map car keyw-params) (map cdr keyw-params) (list)))
-  (define drivers ((DRIVERS)))
+  (define driver (make-driver-for-set ((DRIVERS))))
+  (define (mk-resource driver-id config) (resource driver-id (driver driver-id 'validate config)))
   (define resource-list
     (keyword-apply (RESOURCES) (map car keyw-params) (map cdr keyw-params)
-                   (list (driver-mk-resource (make-driver-for-set drivers)))))
+                   (list mk-resource)))
 
   ; (pretty-print resource-list)
-  (mk-rmodule drivers (resource-list->hash resource-list)))
+  (mk-rmodule ((DRIVERS)) (resource-list->hash resource-list)))
 
 (define/contract (resource-list->hash resources)
   ((listof (cons/c res-id/c resource/c)) . -> . (hash/c res-id/c resource/c))

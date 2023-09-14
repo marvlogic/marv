@@ -6,7 +6,8 @@
 
 (require marv/log)
 (require marv/utils/hash)
-(require marv/core/resources)
+(require marv/core/config)
+(require marv/drivers/types)
 (require marv/drivers/driver)
 
 (require marv/drivers/gcp/compute-api)
@@ -26,18 +27,13 @@
           ;  'storage (storage.init-api interface-id "storage:v1" http-transport)
           ))
 
-  (define (mk-resource driver-id config)
+  (define/contract (crudfn op config)
+    (msg-id/c config/c . -> . config/c)
     (define subtype (string->symbol (car (string-split (gcp-type config) "."))))
-    (define mkres (driver-mk-resource (hash-ref apis subtype)))
-    (mkres driver-id config))
+    (define crudfn (hash-ref apis subtype))
+    (crudfn op config))
 
-  (define (crudfn op resource)
-    (define config (resource-config resource))
-    (define subtype (string->symbol (car (string-split (gcp-type config) "."))))
-    (define crud (driver-crudfn (hash-ref apis subtype)))
-    (crud op resource))
-
-  (driver mk-resource crudfn))
+  crudfn)
 
 (define (gcp-http-transport access-token)
 
@@ -82,7 +78,7 @@
 
   (compute.register-type type-id transformers))
 
-(define (tmp project-id token)
-  (define drvs (make-driver-for-set (hash 'gcp (init-gcp 'gcp (gcp-http-transport token)))))
-  (define r ((driver-mk-resource drvs) 'gcp (hash 'name "vpc1" '$type "compute.network" 'project project-id)))
-  ((driver-crudfn drvs) 'create r))
+; (define (tmp project-id token)
+;   (define drvs (make-driver-for-set (hash 'gcp (init-gcp 'gcp (gcp-http-transport token)))))
+;   (define r ((driver-mk-resource drvs) 'gcp (hash 'name "vpc1" '$type "compute.network" 'project project-id)))
+;   ((driver-crudfn drvs) 'create r))

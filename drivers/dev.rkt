@@ -2,14 +2,13 @@
 (require racket/contract)
 
 (require marv/core/resources)
+(require marv/core/config)
 (require marv/drivers/driver)
-(require marv/core/state)
+(require marv/drivers/types)
 
 (provide init-dev-driver)
 
 (define (init-dev-driver interface-id)
-
-  (define driver-conf (hash))
 
   (define/contract (create resource)
     (config/c . -> . config/c)
@@ -37,4 +36,4 @@
 
   (define (http-transport method url res)(displayln (format "~a: ~a\n~a" method url res)))
 
-  (driver validate create readr update delete driver-conf))
+  (make-driver-crud-fn validate create readr update delete))

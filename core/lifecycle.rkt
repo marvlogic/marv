@@ -66,11 +66,14 @@
 
 (define (import-resources mod ids)
   (define (import-one id)
-    (displayln (format "importing ~a" id)))
-  ; (state-set-ref id
-  ;                ((driver-read md)
-  ;                 (unwrap-values(deref-resource
-  ;                                (rmodule (rmodule-drivers mod) (mk-id->state)) (resource-ref mod id))))))
+    (displayln (format "importing ~a" id))
+    (define res
+      (unwrap-values
+       (deref-resource
+        (rmodule (rmodule-drivers mod) (mk-id->state)) (resource-ref mod id))))
+    (define driver-id (resource-driver-id res))
+    (define config ((module-crudfn mod) driver-id 'read (resource-config res)))
+    (state-set-ref id (resource driver-id config)))
 
   (map (lambda(id) (import-one id)) ids))
 
@@ -80,10 +83,13 @@
     (state-set-ref k (readfn (state-ref k))))
   (lambda (resources-meta) (map update resources-meta)))
 
-(define (module-crudfn m) (driver-crudfn (make-driver-for-set (rmodule-drivers m))))
+(define (module-crudfn m) (make-driver-for-set (rmodule-drivers m)))
 
 (define (apply-changes mod (refresh? #t))
-  (define crudfn (module-crudfn mod))
+  (define (crudfn op res)
+    (define driver (module-crudfn mod))
+    (define driver-id (resource-driver-id res))
+    (resource driver-id (driver driver-id op (resource-config res))))
 
   (define (create id)
     ; (pretty-print (driver-repr id))
@@ -160,15 +166,14 @@
     [(has-diff? diff) (op-update "updated attribute" diff)]
     [else #f]))
 
-(define (resource-driver x)#t)
 (define (operation id old-state new-module acc-ops)
   ; (log-marv-debug "Checking ~a vs old ~a" id old-state)
   (if (hash-has-key? old-state id)
       (let ((new-res (resource-ref new-module id))
             (old-res (hash-ref old-state id)))
-        (if (eq? (resource-driver old-res) (resource-driver new-res))
+        (if (eq? (resource-driver-id old-res) (resource-driver-id new-res))
             (diff-resources new-module acc-ops old-res new-res)
-            (op-replace "driver changed")))
+            (op-replace "driver changed" (hash))))
       (op-create "New resource!")))
 
 ; TODO - factor merge into the state module
