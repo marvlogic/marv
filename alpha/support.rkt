@@ -31,20 +31,21 @@
 (require marv/drivers/gcp/transformers)
 
 (define (register-type driver-id type-id api-specs)
+
+  (define type (string->symbol(string-join (map symbol->string type-id) ".")))
   (define (check-for m)
     (unless (hash-has-key? api-specs m)
-      (raise (format "~a:~a does not have the required '~a' clause" driver-id type-id m))))
+      (raise (format "~a:~a does not have the required '~a' clause" driver-id type m))))
   (check-for 'create)
   (check-for 'delete)
 
-  (define type (string->symbol(string-join (map symbol->string type-id) ".")))
   (log-marv-info "Registering: ~a:~a ~a" driver-id type api-specs)
 
   (define (type-transform spec)
     (cond [(null? spec) (transformer null null)]
           [else (transformer (string->symbol(string-join (map symbol->string (car spec)) ".")) (cadr spec))]))
 
-  (define (register-type-msg t tt) (hash '$type (symbol->string t) 'transforms tt))
+  (define (register-type-msg type transforms) (hash '$type type 'transforms transforms))
 
   (define driver-head (make-driver-for-set (tmp-drivers)))
   (driver-head driver-id 'register-type

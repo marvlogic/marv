@@ -21,12 +21,12 @@
 
 (define (init-api interface-id api-id http)
   (DISCOVERY (load-discovery (symbol->string interface-id) api-id))
-  (define (ggen cf) (lambda(res) (generic-request cf res http)))
+  (define (genrq cf) (lambda(res) (generic-request cf res http)))
 
   (define crudfn
     (make-driver-crud-fn
      validate-res
-     (ggen crud-create) (ggen crud-read) (ggen crud-update) (ggen crud-delete)
+     (genrq crud-create) (genrq crud-read) (genrq crud-update) (genrq crud-delete)
      aux-handler))
   crudfn)
 
@@ -35,9 +35,8 @@
     ['register-type register-type]
     [else (raise "Unsupported op/message in compute-api")]))
 
-
 ; TODO - gcp-common module
-(define (gcp-type r) (string->symbol(hash-ref r '$type)))
+(define (gcp-type r) (hash-ref r '$type))
 
 (define/contract (validate-res config)
   (config/c . -> . config/c)

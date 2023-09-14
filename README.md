@@ -14,6 +14,9 @@ You could play with this locally in your own GCP projects etc. It might be
 useful for managing small development environments. You would have to manage the
 state file manually.
 
+The code is not in the best of places - I consider it very 'prototypey' :)
+(though it is improving by the day)
+
 ## Current Limitations
 
 Tons of them! Rest assured I'll be working to resolve these and many others.
@@ -21,16 +24,13 @@ Tons of them! Rest assured I'll be working to resolve these and many others.
 The most important ones:
 
 - A new DSL, in alpha quality. Subject to change. Lacking in features, such as
-loops and modules.
+loops, modules and parameters. All are planned though.
 
 - Only supports GCP compute and storage APIs.
 
 - Barely any error checking, most of the time the only error checking is
 performed by GCP itself during an `apply` phase. Parser errors are likely to be
 obtuse.
-
-- The [Racket example](examples/gcp/load-balancer.rkt) isn't documented enough, 
-and hard-coded to `europe-west1`
 
 - Only supports local state files
 
@@ -116,16 +116,8 @@ well documented.
 The detailed marv language specification is written in
 [brag](https://docs.racket-lang.org/brag/index.html) and is [defined here](alpha/parser.rkt).
 
-As well as Marv-speak, you can also declare your resources [in
-Racket](examples/gcp/load-balancer.rkt). (The racket example isn't as documented
-as I'd like).
-
-The two examples are interchangeable - they declare the exact same resources, so
-you can `marv --apply` one or the other and they will create the same GCP
-resources. 
-
-The only difference is that the `mrv` file doesn't accept parameters via the
-command line (for now).
+You can't pass parameters into the example, because the DSL lacks support for
+this at the moment.
 
 NB the example relies on the europe-west1 region; you need to change the
 environment variable and the example file itself to use another region.

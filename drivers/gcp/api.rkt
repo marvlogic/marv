@@ -14,7 +14,7 @@
 (require marv/drivers/gcp/storage-api)
 (require marv/drivers/gcp/transformers)
 
-; TODO - common module
+; TODO - common module, and abstract setting it too
 (define (gcp-type r) (hash-ref r '$type))
 
 (provide init-gcp gcp-http-transport)
@@ -27,7 +27,7 @@
 
   (define/contract (routing op config)
     (msg-id/c config/c . -> . config/c)
-    (define subtype (string->symbol (car (string-split (gcp-type config) "."))))
+    (define subtype (string->symbol (car (string-split (symbol->string (gcp-type config)) "."))))
     (define crudfn (hash-ref apis subtype))
     (crudfn op config))
 

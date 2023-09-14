@@ -1,5 +1,6 @@
 #lang racket/base
 
+(require racket/contract)
 (require marv/drivers/gcp/crud)
 (require marv/log)
 
@@ -8,7 +9,8 @@
 ; Returns id of resource operation e.g. compute.instance.get
 (define (compute-type-map type) (crud-for-type (type-map) type))
 
-(define (ct-register-type type crud)
+(define/contract (ct-register-type type crud)
+  (symbol? crud? . -> . void)
   (log-marv-info "Registering compute type: ~a ~a" type crud)
   (type-map (hash-set (type-map) type crud)))
 

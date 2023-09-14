@@ -20,7 +20,7 @@
 (define (get-var id) (hash-ref (VARS) id))
 
 (define (def-res id drv attr v)
-  (define r (hash-set* v '$driver drv '$type (string-join (map symbol->string attr) ".")))
+  (define r (hash-set* v '$driver drv '$type (string->symbol (string-join (map symbol->string attr) "."))))
   (set-var id r)
   r)
 
