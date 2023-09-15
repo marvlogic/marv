@@ -87,4 +87,14 @@
 (define (newhash hs) ((compose1 make-immutable-hash hash->flatlist) hs))
 (check-false (has-diff?  (make-diff nested-list1 nl2)))
 
+(define original-list #hasheq((sourceRanges . (1 2 3))))
+(define shorter-list #hasheq((sourceRanges . (1 2))))
+
+(check-true (has-diff? (make-diff original-list shorter-list)))
+(check-true (has-diff? (make-diff shorter-list original-list)))
+
 ; (pretty-print (make-diff (newhash nested-list1) (newhash nl2)))
+(define fw #hasheq((allowed . (#hasheq((IPProtocol . tcp))))
+                   (creationTimestamp . 2023-09-15T01:06:44.218-07:00) (description . x) (direction . INGRESS) (disabled . #f) (enableLogging . #f) (id . 8355087097663172219) (kind . compute#firewall) (logConfig . #hasheq((enable . #f))) (name . fw-allow-health-check) (network . https://www.googleapis.com/compute/beta/projects/happyrat-liberauth/global/networks/example-vpc) (priority . 1000) (selfLink . https://www.googleapis.com/compute/beta/projects/happyrat-liberauth/global/firewalls/fw-allow-health-check) (sourceRanges . (130.211.0.0/22 35.191.0.0/16 10.0.0.0/24)) (targetTags . (load-balanced-backend))))
+
+(define fwsrc #hasheq(($type . compute.firewall) (allowed . (#hasheq((IPProtocol . tcp)))) (creationTimestamp . 2023-09-15T01:06:44.218-07:00) (description . x) (direction . INGRESS) (disabled . #f) (enableLogging . #f) (id . 8355087097663172219) (kind . compute#firewall) (logConfig . #hasheq((enable . #f))) (name . fw-allow-health-check) (network . https://www.googleapis.com/compute/beta/projects/happyrat-liberauth/global/networks/example-vpc) (priority . 1000) (project . happyrat-liberauth) (region . europe-west1) (selfLink . https://www.googleapis.com/compute/beta/projects/happyrat-liberauth/global/firewalls/fw-allow-health-check) (sourceRanges . (130.211.0.0/22 35.191.0.0/16)) (targetTags . (load-balanced-backend))))

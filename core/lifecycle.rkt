@@ -45,6 +45,7 @@
 
   (when refresh? (refresh-resources mod (set->list to-refresh)))
 
+  ; (displayln (state-ref 'fw-health-check))
   ; TODO - pass in state, also define hash(id->state) contract types
   (define new-module (mk-rmodule (rmodule-drivers mod) (merge-state+resource (mk-id->state) resources)))
   (define ordered-rks (map mod-id->id (resources-dag-topo mod)))
@@ -163,9 +164,7 @@
   ; TODO - memoize diffs (store in operation?), also
   ; TODO - make-diff pattern here (see command.rkt) and parameter order
   (define munged (deref-resource new-module new-res))
-  ; (pretty-print munged)
   (define diff (make-diff (hash-merge (resource-config munged) old-cfg) old-cfg))
-  ; (pretty-print diff)
   (cond
     [(has-immutable-diff? diff) (op-replace "immutable diff" diff)]
     [(has-immutable-ref-to-replaced-resource? new-cfg acc-ops) (op-replace "immutable ref to replaced resource" diff)]

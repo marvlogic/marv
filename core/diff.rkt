@@ -1,6 +1,7 @@
 #lang racket/base
 
-(require racket/pretty)
+(require racket/set)
+(require racket/list)
 (require marv/utils/hash)
 (require marv/core/resource-def)
 
@@ -24,23 +25,22 @@
 
   (define (toats-eq? lh rh) (or (eq? lh rh) (equal? lh rh)))
 
-  (define (cmp k lhv)
+  (define flat-lhs (make-immutable-hasheq (hash->flatlist lhs)))
+  (define flat-rhs (make-immutable-hasheq (hash->flatlist rhs)))
+  (define all-keys (list->set (flatten (list (hash-keys flat-lhs) (hash-keys flat-rhs)))))
+
+  (define (cmp k)
+    (define lhv (hash-ref flat-lhs k void))
     (define rh (hash-ref flat-rhs k void))
     (define rhv (update-val lhv (lambda (_) rh)))
     (values k
             (cond
-              [(void? lhv) (removed rh)] ;; TODO - doesn't trigger
+              [(void? lhv) (removed rh)]
               [(void? rh) (added lhv)]
               [(toats-eq? lhv rhv) lhv]
               [else (changed lhv rhv)])))
 
-  ; TODO - when used to diff spec -> state, there may be keys in state not in
-  ; spec - don't know for sure if this is OK or if we need to merge keys from
-  ; both hashes
-
-  (define flat-lhs (make-immutable-hasheq (hash->flatlist lhs)))
-  (define flat-rhs (make-immutable-hasheq (hash->flatlist rhs)))
-  (hash-map/copy flat-lhs cmp))
+  (for/hash ([k all-keys]) (cmp k)))
 
 (define (flatten-diff df)
   (define (flat kv acc)
