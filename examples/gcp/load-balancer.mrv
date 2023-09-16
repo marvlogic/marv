@@ -72,7 +72,7 @@ vpc-defaults = defaults <- {
 sn1 = gcp:compute.subnetwork vpc-defaults <- {
      name = "subnet1"
      description = "primary subnet"
-     ipCidrRange =  imm: "10.0.2.0/24"
+     ipCidrRange =  imm: "10.0.1.0/24"
 }
 
 proxy-sn = gcp:compute.subnetwork vpc-defaults <- {
@@ -154,7 +154,7 @@ f-instance-group-manager(name size zone template) = defaults <- {
 # env-variable (until MARV-speak gets string-manipulation functions)
 
 instance-group-manager1 = gcp:compute.instanceGroupManager 
-     f-instance-group-manager("example" 2 "europe-west1-b" instance-template.selfLink) <- {
+     f-instance-group-manager("example" 4 "europe-west1-b" instance-template.selfLink) <- {
 #          statefulPolicy = {
 #               preservedState = {
 #                    disks = {

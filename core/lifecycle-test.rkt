@@ -9,7 +9,7 @@
 
 (require "resources.rkt")
 (require "resource-def.rkt")
-
+(require marv/core/diff)
 (require/expose
  marv/core/lifecycle
  (op-replace
@@ -24,7 +24,7 @@
   (make-immutable-hash
    `(  (bucket1  . #f)
        (bucket2  . ,(op-replace "immutable" (hash)))
-       (bucket3  . ,(op-update "blah" (hash))))))
+       (bucket3  . ,(op-update "blah" (hash 'attr1 (changed 3 2 )))))))
 
 (define res1
   (make-immutable-hash
@@ -56,7 +56,7 @@
 (around
  (setup-state (list (cons 'res1 res1) (cons 'res2 res2) (cons 'res3 res3)))
  (check-equal? (plan-ordered-operations
-                (get-plan-for (mk-rmodule (hash) (hash)) #:refresh #f))
+                (get-plan-for (mk-rmodule (hash) (hash)) #f))
                (list
                 (cons 'res3 (op-delete "Removed from definition"))
                 (cons 'res2 (op-delete "Removed from definition"))
