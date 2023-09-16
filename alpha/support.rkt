@@ -10,7 +10,6 @@
     (filter (lambda (kv)
               (and (hash? (cdr kv)) (hash-has-key? (cdr kv) '$driver)))
             (hash->list decls-hs)))
-  ; (displayln rs)
   (lambda (mkres) (xform-resources mkres rs)))
 
 (define (xform-resources mkres resources)

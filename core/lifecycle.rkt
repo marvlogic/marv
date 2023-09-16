@@ -2,13 +2,10 @@
 
 (require racket/set)
 (require racket/dict)
-(require racket/function)
 (require racket/match)
 (require racket/pretty)
-(require racket/hash)
-(require racket/string)
 
-(require marv/log)
+(require marv/core/values)
 (require marv/core/state)
 (require marv/core/diff)
 (require marv/core/resource-def)
@@ -151,11 +148,22 @@
 (define (has-ref-to-updated-attr? new acc-ops)(ref-updated-attr? ref? new acc-ops))
 
 (define (ref-updated-attr? test-fn? new acc-ops)
+  (define (is-ref-a-diff? ref)
+    (diff? (get-ref-diff ref acc-ops)))
   (define (match? k v)
-    (and (test-fn? v)
-         ; TODO - BUG need to drill into changed attributes
-         (op-update? (hash-ref acc-ops (ref->id v)))))
+    (and (test-fn? v) (is-ref-a-diff? v)))
   (match-resource-attr? new match?))
+
+(define (get-ref-diff ref acc-ops)
+  (match (ref->list ref)
+    [(list id vs ...)
+     (define attr (ref-path (list->ref vs)))
+     (match (hash-ref acc-ops id)
+       [(op-update _ diff) (hash-ref diff attr #f)]
+       [(op-replace _ diff) (hash-ref diff attr #f)]
+       [else #f])]
+    [else (raise (format "~a: Bad reference format" (ref-path ref)))]))
+
 
 (define (diff-resources new-module acc-ops old-res new-res)
   (define old-cfg (resource-config old-res))
@@ -163,13 +171,14 @@
   ; TODO - memoize diffs (store in operation?), also
   ; TODO - make-diff pattern here (see command.rkt) and parameter order
   (define munged (deref-resource new-module new-res))
-  (define (hfl h) (make-immutable-hasheq (hash->flatlist h)))
-  (define diff (make-diff (hash-merge (hfl (resource-config munged))
-                                      (hfl old-cfg)) (hfl old-cfg)))
+  (define (flathash h) (make-immutable-hasheq (hash->flatlist h)))
+  (define diff (make-diff (hash-merge (flathash (resource-config munged))
+                                      (flathash old-cfg)) (flathash old-cfg)))
   (cond
     [(has-immutable-diff? diff) (op-replace "immutable diff" diff)]
     [(has-immutable-ref-to-replaced-resource? new-cfg acc-ops) (op-replace "immutable ref to replaced resource" diff)]
-    [(has-immutable-ref-to-updated-attr? new-cfg acc-ops) (op-replace "immutable ref to updated attribute" diff)]
+    [(has-immutable-ref-to-updated-attr? new-cfg acc-ops)
+     (op-replace "immutable ref to updated attribute" diff)]
     [(has-ref-to-updated-attr? new-cfg acc-ops) (op-update "ref to updated attribute" diff)]
     [(has-diff? diff) (op-update "updated attribute" diff)]
     [else #f]))
