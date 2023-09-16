@@ -8,6 +8,7 @@
 (require racket/dict)
 (require marv/utils/hash)
 (require marv/core/globals)
+(require marv/core/config)
 
 (provide load-discovery
          api-for-type
@@ -55,7 +56,7 @@
              ([res (hash-values (hash-ref (disc-doc-root discovery) 'resources))])
      (append acc
              (for/fold ([ac2 '()])
-                       ([meth (hash-values (hash-ref res 'methods))])
+                       ([meth (hash-values (hash-ref res 'methods (hash)))])
                (cons (cons (string->symbol (hash-ref meth 'id))
                            (disc-api (disc-doc-root discovery) meth)) ac2))))))
 
@@ -80,15 +81,16 @@
    (hash-nref (disc-api-type-api api) '(request $ref)
               (last (hash-ref (disc-api-type-api api) 'parameterOrder)))))
 
-(define/contract (api-resource-url api resource)
-  (disc-api? hash? . -> . string?)
+(define/contract (api-resource-url api config)
+  (disc-api? config/c . -> . string?)
   (define aliased-resource
     (make-immutable-caseless-string-hash
-     (hash-set resource
-               (ref-type api) (hash-ref resource 'name))))
+     (hash-set config
+               (ref-type api) (hash-ref config 'name))))
   (define url
     (format "~a~a" (hash-ref (disc-api-root api) 'baseUrl)
             (flat-path api)))
+  ; TODO - needs to be dict?
   (dict-format-string aliased-resource url))
 
 (define/contract (api-required-params api)
@@ -113,12 +115,12 @@
       (lambda (_ v) (and (hash-ref v 'required #f) (equal? "query" (hash-ref v 'location)))))))
    "&"))
 
-(define/contract (api-resource api resource)
-  (disc-api? hash? . -> . hash?)
+(define/contract (api-resource api config)
+  (disc-api? config/c . -> . config/c)
   (define path-parameters
     (hash-filter (hash-ref (disc-api-type-api api) 'parameters)
                  (lambda (k v) (equal? "path" (hash-ref v 'location)))))
-  (hash-drop resource (cons '$type (hash-keys path-parameters))))
+  (hash-drop config (cons '$type (hash-keys path-parameters))))
 
 (define/contract (api-response-type api)
   (disc-api? . -> . (or/c #f string?))

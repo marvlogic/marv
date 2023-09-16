@@ -12,30 +12,35 @@ __Under active development: Not suitable for production usage__
 
 You could play with this locally in your own GCP projects etc. It might be
 useful for managing small development environments. You would have to manage the
-state file manually.
+state file locally.
+
+The code is not in the best of places - consider it very 'prototypey' :)
+(though it is improving by the day)
+
+This is my first major project using Racket, which I'm still learning, so the
+structure of it is very much in-flux and subject to __significant__ change. 
 
 ## Current Limitations
 
-Tons of them! Rest assured I'll be working to resolve these and many others.
+There's a lot of work left to reach a good point to release it. There are a load
+of features that need to be added.
 
-The most important ones:
+The most important ones are:
 
 - A new DSL, in alpha quality. Subject to change. Lacking in features, such as
-loops and modules.
+loops, modules and parameters. All are planned though.
 
-- Only supports GCP compute and storage APIs.
+- The model doesn't know about which fields are immutable on GCP resources; you
+need to specify these manually (see attributes marked `imm:` in the
+[example](examples/gcp/load-balancer.mrv)).
+
+- Only supports GCP compute and storage APIs, more coming very soon.
 
 - Barely any error checking, most of the time the only error checking is
 performed by GCP itself during an `apply` phase. Parser errors are likely to be
 obtuse.
 
-- The [Racket example](examples/gcp/load-balancer.rkt) isn't documented enough, 
-and hard-coded to `europe-west1`
-
 - Only supports local state files
-
-This is my first major project using Racket, which I'm still learning, so the
-structure of it is very much in-flux and subject to __significant__ change. 
 
 # Installation - Linux & Mac
 
@@ -116,16 +121,8 @@ well documented.
 The detailed marv language specification is written in
 [brag](https://docs.racket-lang.org/brag/index.html) and is [defined here](alpha/parser.rkt).
 
-As well as Marv-speak, you can also declare your resources [in
-Racket](examples/gcp/load-balancer.rkt). (The racket example isn't as documented
-as I'd like).
-
-The two examples are interchangeable - they declare the exact same resources, so
-you can `marv --apply` one or the other and they will create the same GCP
-resources. 
-
-The only difference is that the `mrv` file doesn't accept parameters via the
-command line (for now).
+You can't pass parameters into the example, because the DSL lacks support for
+this at the moment.
 
 NB the example relies on the europe-west1 region; you need to change the
 environment variable and the example file itself to use another region.

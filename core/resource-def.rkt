@@ -35,7 +35,6 @@
 
 (struct params (required accepted))
 
-
 (define RESOURCES (make-parameter (lambda oo (list))))
 (define DRIVERS (make-parameter (lambda() (hash))))
 
@@ -44,19 +43,23 @@
   (define rel-mod (find-relative-path (current-directory) f) )
   (DRIVERS (dynamic-require rel-mod 'drivers))
   (when (not purge?)
-    (RESOURCES (dynamic-require rel-mod 'resources))))
+    (RESOURCES (dynamic-require rel-mod 'resources)))
+  (void))
 
 (define/contract (get-module params)
   ((hash/c string? string?) . -> . rmodule/c)
   (validate-params params)
   (define keyw-params (make-keyword-params params))
   ; TODO - drivers should have their own keyword params
-  (define drivers (keyword-apply (DRIVERS) (map car keyw-params) (map cdr keyw-params) (list)))
-  (define resource-list (keyword-apply (RESOURCES) (map car keyw-params) (map cdr keyw-params)
-                                       (list (driver-mkres (make-master-driver drivers)))))
+  ; (define drivers (keyword-apply (DRIVERS) (map car keyw-params) (map cdr keyw-params) (list)))
+  (define driver (make-driver-for-set ((DRIVERS))))
+  (define (mk-resource driver-id config) (resource driver-id (driver driver-id 'validate config)))
+  (define resource-list
+    (keyword-apply (RESOURCES) (map car keyw-params) (map cdr keyw-params)
+                   (list mk-resource)))
 
   ; (pretty-print resource-list)
-  (mk-rmodule drivers (resource-list->hash resource-list)))
+  (mk-rmodule ((DRIVERS)) (resource-list->hash resource-list)))
 
 (define/contract (resource-list->hash resources)
   ((listof (cons/c res-id/c resource/c)) . -> . (hash/c res-id/c resource/c))
@@ -104,9 +107,7 @@
 (define/contract (module-ref mod k)
   (any/c any/c . -> . any/c)
   (define ref-spec (map string->symbol (string-split (symbol->string k) ".")))
-  (if (eq? '$drivers (car ref-spec))
-      (driver-config (hash-nref mod ref-spec))
-      (hash-nref mod ref-spec)))
+  (hash-nref mod ref-spec))
 
 (define (mod-ref-driver? ref)
   (define ref-spec (map string->symbol (string-split (symbol->string ref) ".")))
@@ -125,7 +126,7 @@
 
   (define (unwrap k v)  (unpack-value v))
 
-  (resource (resource-driver res) (hash-apply (resource-config res) unwrap)))
+  (resource (resource-driver-id res) (hash-apply (resource-config res) unwrap)))
 
 ; TODO - NB, the $resources/$drivers definition stuff has been left in for now,
 ; not sure if it will be needed in future.
@@ -161,4 +162,4 @@
   (rmodule/c resource/c . -> . resource/c)
   (define (deref-attr _ a)
     (update-val a (lambda (v) (if (ref? v) (unpack-value(get-ref mod v)) v))))
-  (resource (resource-driver r) (hash-apply (resource-config r) deref-attr)))
+  (resource (resource-driver-id r) (hash-apply (resource-config r) deref-attr)))

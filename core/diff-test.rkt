@@ -87,4 +87,8 @@
 (define (newhash hs) ((compose1 make-immutable-hash hash->flatlist) hs))
 (check-false (has-diff?  (make-diff nested-list1 nl2)))
 
-; (pretty-print (make-diff (newhash nested-list1) (newhash nl2)))
+(define original-list #hasheq((sourceRanges . (1 2 3))))
+(define shorter-list #hasheq((sourceRanges . (1 2))))
+
+(check-true (has-diff? (make-diff original-list shorter-list)))
+(check-true (has-diff? (make-diff shorter-list original-list)))

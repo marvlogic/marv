@@ -30,7 +30,8 @@
 (define (load-state f)
   (cond
     [ (file-exists? f)
-      (with-input-from-file f (lambda() (STATE (read))))]))
+      (with-input-from-file f (lambda() (STATE (read))))])
+  (void))
 
 (define (save-state f)
   (with-output-to-file f #:mode 'text #:exists 'replace
@@ -84,5 +85,4 @@
           [else r]))
 
   (if (not st) rs
-      (resource (resource-driver rs)
-                (combine-hash (resource-config st) (resource-config rs)))))
+      (resource (resource-driver-id rs) (combine-hash (resource-config st) (resource-config rs)))))

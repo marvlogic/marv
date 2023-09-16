@@ -1,51 +1,35 @@
 #lang racket/base
 
 (require racket/contract)
+(require marv/drivers/types)
 
-(require marv/core/resources)
+(provide make-driver-for-set
+         make-driver-crud-fn)
 
-(provide (struct-out driver)
-         init-drivers
-         driver-config
-         make-master-driver)
+; TODO - it's not crudfn anymore; more generic
 
-(struct driver (mkres create read update delete config) #:prefab)
+(define (raise-unsupported op res) (raise (format "Unsupported message/operation: ~a = ~a" op res)))
 
-(define DRIVERS (make-parameter #f))
+(define (make-driver-crud-fn validate create readr update delete (pass-thru-fn raise-unsupported))
+  (define/contract (crud op res)
+    crudfn/c
+    (define fn
+      (case op
+        ['validate validate]
+        ['create create]
+        ['read readr]
+        ['update update]
+        ['delete delete]
+        [else (pass-thru-fn op res)]))
+    (fn res))
+  crud)
 
-(define/contract (init-drivers drivers)
-  ((hash/c symbol? driver?) . -> . (hash/c any/c driver?))
-  (DRIVERS drivers)
-  (DRIVERS))
+(define/contract (make-driver-for-set drivers)
+  (driver-set/c . -> . driver/c)
 
-(define driver-id/c symbol?)
+  (define/contract (crudfn-for driver-id op msg)
+    (driver-id/c msg-id/c any/c . -> . any/c)
+    (define crud (hash-ref drivers driver-id))
+    (crud op msg))
 
-(define/contract (make-master-driver drivers)
-  ((hash/c symbol? driver?) . -> . driver?)
-
-  (define (apply-crudfn crud-fn r)
-    (define drv (hash-ref drivers (resource-driver r)))
-    (resource (resource-driver r)
-              ((crud-fn drv) (resource-config r))))
-
-  (define/contract (drv-create resource)
-    (resource/c . -> . resource/c)
-    (apply-crudfn driver-create resource))
-
-  (define/contract (drv-read resource)
-    (resource/c . -> . resource/c)
-    (apply-crudfn driver-read resource))
-
-  (define/contract (drv-update resource)
-    (resource/c . -> . resource/c)
-    (apply-crudfn driver-update resource))
-
-  (define/contract (drv-delete resource)
-    (resource/c . -> . resource/c )
-    (apply-crudfn driver-delete resource))
-
-  (define/contract (drv-mk-resource driver-id config)
-    (driver-id/c config/c . -> . resource/c)
-    (resource driver-id ((driver-mkres (hash-ref drivers driver-id)) config)))
-
-  (driver drv-mk-resource drv-create drv-read drv-update drv-delete (hash)))
+  crudfn-for)

@@ -2,13 +2,10 @@
 
 (require racket/set)
 (require racket/dict)
-(require racket/function)
 (require racket/match)
 (require racket/pretty)
-(require racket/hash)
-(require racket/string)
 
-(require marv/log)
+(require marv/core/values)
 (require marv/core/state)
 (require marv/core/diff)
 (require marv/core/resource-def)
@@ -31,50 +28,90 @@
 (struct op-update(op-base diff) #:transparent)
 (struct op-delete(op-base) #:transparent)
 
-(define (plan-changes mod #:refresh? (refresh? #t))
-  (define mdrv (make-master-driver (rmodule-drivers mod)))
-  (get-plan-for mod #:refresh (mk-refresh-func (driver-read mdrv))))
+(define (plan-changes mod (refresh? #t))
+  (get-plan-for mod refresh?))
+
+(define (get-plan-for mod refresh?)
+  (define resources (rmodule-resources mod))
+  (define resource-keyset (list->set (resource-keys mod)))
+  ; TODO - pass in state, also define hash(id->state) contract types
+  (define state-keyset (list->set (state-keys)))
+  (define to-create (set-subtract resource-keyset state-keyset))
+  (define to-delete (set-subtract state-keyset resource-keyset))
+  (define to-refresh (set-subtract resource-keyset to-delete to-create))
+
+  (when refresh? (refresh-resources mod (set->list to-refresh)))
+
+  ; TODO - pass in state, also define hash(id->state) contract types
+  (define new-module (mk-rmodule (rmodule-drivers mod) (merge-state+resource (mk-id->state) resources)))
+  (define ordered-rks (map mod-id->id (resources-dag-topo mod)))
+  ; (pretty-print ordered-rks)
+  (define operations
+    (foldl
+     (lambda (id acc-ops)
+       ; TODO - pass in state, also define hash(id->state) contract types
+       (hash-set acc-ops id (operation id (mk-id->state) new-module acc-ops))) (hash) ordered-rks))
+
+  (define ordered-ops
+    (append
+     (map (lambda (rk) (cons rk (op-delete "Removed from definition")))
+          (sort (set->list to-delete) > #:key state-ref-serial))
+     (map (lambda (rk) (cons rk (hash-ref operations rk)))
+          ordered-rks)))
+
+  (plan resources new-module ordered-ops))
 
 (define (import-resources mod ids)
-  (define md (make-master-driver (rmodule-drivers mod)))
   (define (import-one id)
     (displayln (format "importing ~a" id))
-    (state-set-ref id
-                   ((driver-read md)
-                    (unwrap-values(deref-resource
-                                   (rmodule (rmodule-drivers mod) (mk-id->state)) (resource-ref mod id))))))
+    (define res
+      (unwrap-values
+       (deref-resource
+        (rmodule (rmodule-drivers mod) (mk-id->state)) (resource-ref mod id))))
+    (define driver-id (resource-driver-id res))
+    (define config ((module-crudfn mod) driver-id 'read (resource-config res)))
+    (state-set-ref id (resource driver-id config)))
 
   (map (lambda(id) (import-one id)) ids))
 
-(define (mk-refresh-func readfn)
+(define (refresh-resources mod ids)
+  (define driver (module-crudfn mod))
 
-  (define (update k)
+  (define (readr res)
+    (define did (resource-driver-id res))
+    (resource did (driver did 'read (resource-config res))))
+
+  (define (refresh k)
     (displayln (format "Refreshing ~a" k))
-    (state-set-ref k (readfn (state-ref k))))
+    (define res (state-ref k))
+    (state-set-ref k (readr res)))
+  (for ([i ids]) (refresh i)))
 
-  (lambda (resources-meta) (map update resources-meta)))
+(define (module-crudfn m) (make-driver-for-set (rmodule-drivers m)))
 
+(define (apply-changes mod (refresh? #t))
 
-(define (apply-changes mod #:refresh (refresh #t))
-
-  (define mdrv (make-master-driver (rmodule-drivers mod)))
+  (define (crudfn op res)
+    (define driver (module-crudfn mod))
+    (define driver-id (resource-driver-id res))
+    (resource driver-id (driver driver-id op (resource-config res))))
 
   (define (create id)
     ; (pretty-print (driver-repr id))
     (display (format "CREATING ~a" id))
     (flush-output)
-    (state-set-ref id ((driver-create mdrv) (driver-repr id))))
+    (state-set-ref id (crudfn 'create (driver-repr id))))
 
   (define (delete id)
     (display (format "DELETING ~a" id))
     (flush-output)
-    ((driver-delete mdrv) (state-ref id))
+    (crudfn 'delete (state-ref id))
     (state-delete id))
 
   (define (update id)
     (display (format "UPDATING ~a" id))
     (flush-output)
-    (state-set-ref id ((driver-update mdrv) (driver-repr id))))
+    (state-set-ref id (crudfn 'update (driver-repr id))))
 
   ; TODO - check if unpacking is done here or should use unwrap fn
   (define (driver-repr id)
@@ -82,7 +119,7 @@
      (deref-resource (rmodule (rmodule-drivers mod) (mk-id->state))
                      (resource-ref mod id))))
 
-  (define plan (get-plan-for mod #:refresh (mk-refresh-func (driver-read mdrv))))
+  (define plan (get-plan-for mod refresh?))
 
   (define (delete-replacements res-op)
     (match res-op
@@ -111,11 +148,22 @@
 (define (has-ref-to-updated-attr? new acc-ops)(ref-updated-attr? ref? new acc-ops))
 
 (define (ref-updated-attr? test-fn? new acc-ops)
+  (define (is-ref-a-diff? ref)
+    (diff? (get-ref-diff ref acc-ops)))
   (define (match? k v)
-    (and (test-fn? v)
-         ; TODO - BUG need to drill into changed attributes
-         (op-update? (hash-ref acc-ops (ref->id v)))))
+    (and (test-fn? v) (is-ref-a-diff? v)))
   (match-resource-attr? new match?))
+
+(define (get-ref-diff ref acc-ops)
+  (match (ref->list ref)
+    [(list id vs ...)
+     (define attr (ref-path (list->ref vs)))
+     (match (hash-ref acc-ops id)
+       [(op-update _ diff) (hash-ref diff attr #f)]
+       [(op-replace _ diff) (hash-ref diff attr #f)]
+       [else #f])]
+    [else (raise (format "~a: Bad reference format" (ref-path ref)))]))
+
 
 (define (diff-resources new-module acc-ops old-res new-res)
   (define old-cfg (resource-config old-res))
@@ -123,13 +171,14 @@
   ; TODO - memoize diffs (store in operation?), also
   ; TODO - make-diff pattern here (see command.rkt) and parameter order
   (define munged (deref-resource new-module new-res))
-  ; (pretty-print munged)
-  (define diff (make-diff (hash-merge (resource-config munged) old-cfg) old-cfg))
-  ; (pretty-print diff)
+  (define (flathash h) (make-immutable-hasheq (hash->flatlist h)))
+  (define diff (make-diff (hash-merge (flathash (resource-config munged))
+                                      (flathash old-cfg)) (flathash old-cfg)))
   (cond
     [(has-immutable-diff? diff) (op-replace "immutable diff" diff)]
     [(has-immutable-ref-to-replaced-resource? new-cfg acc-ops) (op-replace "immutable ref to replaced resource" diff)]
-    [(has-immutable-ref-to-updated-attr? new-cfg acc-ops) (op-replace "immutable ref to updated attribute" diff)]
+    [(has-immutable-ref-to-updated-attr? new-cfg acc-ops)
+     (op-replace "immutable ref to updated attribute" diff)]
     [(has-ref-to-updated-attr? new-cfg acc-ops) (op-update "ref to updated attribute" diff)]
     [(has-diff? diff) (op-update "updated attribute" diff)]
     [else #f]))
@@ -139,40 +188,10 @@
   (if (hash-has-key? old-state id)
       (let ((new-res (resource-ref new-module id))
             (old-res (hash-ref old-state id)))
-        (if (eq? (resource-driver old-res) (resource-driver new-res))
+        (if (eq? (resource-driver-id old-res) (resource-driver-id new-res))
             (diff-resources new-module acc-ops old-res new-res)
-            (op-replace "driver changed")))
+            (op-replace "driver changed" (hash))))
       (op-create "New resource!")))
-
-(define (get-plan-for mod #:refresh refresh)
-  (define resources (rmodule-resources mod))
-  (define resource-keyset (list->set (resource-keys mod)))
-  ; TODO - pass in state, also define hash(id->state) contract types
-  (define state-keyset (list->set (state-keys)))
-  (define to-create (set-subtract resource-keyset state-keyset))
-  (define to-delete (set-subtract state-keyset resource-keyset))
-  (define to-refresh (set-subtract resource-keyset to-delete to-create))
-
-  (cond [refresh (refresh (set->list to-refresh)) ])
-
-  ; TODO - pass in state, also define hash(id->state) contract types
-  (define new-module (mk-rmodule (rmodule-drivers mod) (merge-state+resource (mk-id->state) resources)))
-  (define ordered-rks (map mod-id->id (resources-dag-topo mod)))
-  ; (pretty-print ordered-rks)
-  (define operations
-    (foldl
-     (lambda (id acc-ops)
-       ; TODO - pass in state, also define hash(id->state) contract types
-       (hash-set acc-ops id (operation id (mk-id->state) new-module acc-ops))) (hash) ordered-rks))
-
-  (define ordered-ops
-    (append
-     (map (lambda (rk) (cons rk (op-delete "Removed from definition")))
-          (sort (set->list to-delete) > #:key state-ref-serial))
-     (map (lambda (rk) (cons rk (hash-ref operations rk)))
-          ordered-rks)))
-
-  (plan resources new-module ordered-ops))
 
 ; TODO - factor merge into the state module
 (define (merge-state+resource old-resources new-resources)

@@ -20,7 +20,7 @@
 (define (get-var id) (hash-ref (VARS) id))
 
 (define (def-res id drv attr v)
-  (define r (hash-set* v '$driver drv '$type (string-join (map symbol->string attr) ".")))
+  (define r (hash-set* v '$driver drv '$type (string->symbol (string-join (map symbol->string attr) "."))))
   (set-var id r)
   r)
 
@@ -34,8 +34,8 @@
 
 (define (handle-ref id tgt . ks)
   (define ksx (map syntax-e ks))
-  (define p (string->symbol (string-join (map symbol->string (cons id ksx)) ".")))
-  (cond [(hash-has-key? tgt '$driver) (ref p)]
+  (define full-ref (string->symbol (string-join (map symbol->string (cons id ksx)) ".")))
+  (cond [(hash-has-key? tgt '$driver) (ref full-ref)]
         [else (hash-nref tgt ksx)]))
 
 ; (define (handle-deref r) #`(hash-nref #,(car r) #,(cdr r)))

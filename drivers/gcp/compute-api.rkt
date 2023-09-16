@@ -2,66 +2,63 @@
 
 (require racket/string)
 (require racket/pretty)
+(require racket/contract)
 
 (require marv/log)
+(require marv/core/config)
 (require marv/utils/hash)
-(require marv/drivers/gcp/compute-types)
 (require marv/drivers/gcp/discovery)
 (require marv/drivers/gcp/crud)
 (require marv/drivers/gcp/transformers)
+(require marv/drivers/driver)
+
+(require marv/drivers/gcp/compute-types)
 
 (provide (prefix-out compute. init-api)
          (prefix-out compute. register-type))
 
 (define DISCOVERY (make-parameter #f))
 
-(define (init-api interface-id api-id)
+(define (init-api interface-id api-id http)
   (DISCOVERY (load-discovery (symbol->string interface-id) api-id))
+  (define (genrq cf) (lambda(res) (generic-request cf res http)))
 
-  (define (create-request resource http) (generic-request crud-create resource http))
-  (define (read-request resource http) (generic-request crud-read resource http))
-  (define (update-request resource http) (generic-request crud-update resource http))
-  (define (delete-request resource http) (generic-request crud-delete resource http))
-  (hash 'validate validate-res
-        'create create-request
-        'read read-request
-        'update update-request
-        'delete delete-request))
+  (define crudfn
+    (make-driver-crud-fn
+     validate
+     (genrq crud-create) (genrq crud-read) (genrq crud-update) (genrq crud-delete)
+     aux-handler))
+  crudfn)
 
-(define (register-type type transformers)
-  (log-marv-info "compute-register-type: ~a:~a" type transformers)
-  (define apis (map transformer-api-id transformers))
-  (define-values (create-api read-api update-api delete-api) (apply values apis))
-  (ct-register-type type (crud create-api read-api update-api delete-api))
-
-  (define tfns (map transformer-fn transformers))
-  (for ([a apis]
-        [t tfns]
-        #:when (procedure? t))
-    (register-request-transformer (transformer a t))))
+(define (aux-handler op msg)
+  (case op
+    ['register-type register-type]
+    [else (raise "Unsupported op/message in compute-api")]))
 
 ; TODO - gcp-common module
-(define (gcp-type r) (string->symbol(hash-ref r '$type)))
+(define (gcp-type r) (hash-ref r '$type))
 
-(define (validate-res resource)
+(define/contract (validate cfg)
+  (config/c . -> . config/c)
 
-  (define type (gcp-type resource))
+  (define type (gcp-type cfg))
   (define api (api-for-type-op (DISCOVERY) (crud-create(compute-type-map type))))
 
   (define (has-required-api-parameters?)
     (define req-params (api-required-params api))
-    (for/first ([p req-params] #:unless (hash-has-key? resource p))
-      (raise (format "Resource does not have required field(s) (~a) ~a" p req-params))))
-
+    (for/first ([p req-params] #:unless (hash-has-key? cfg p))
+      (raise (format "Config does not have required field(s) (~a) ~a" p req-params))))
   (has-required-api-parameters?)
-  resource)
+  cfg)
 
-(define (generic-request crud-fn resource http)
-  (define type-op (crud-fn (compute-type-map (gcp-type resource))))
-  (log-marv-debug "gen/req: type-op=~a ~a" type-op resource)
-  (define xfd-resource (apply-request-transformer type-op resource) )
+(define/contract (generic-request crud-fn config http)
+  (procedure? config/c any/c . -> . config/c)
+  (define type-op (crud-fn (compute-type-map (gcp-type config))))
+  (log-marv-debug "gen/req: type-op=~a ~a" type-op config)
+  (define xfd-resource (apply-request-transformer type-op config) )
   (log-marv-debug "xformed: ~a" xfd-resource)
   (cond
+    ; TODO - hacked
     [(null? type-op) xfd-resource]
     [(symbol? type-op)
      (define api (api-for-type-op (DISCOVERY) type-op))
@@ -69,11 +66,13 @@
        (http (api-http-method api)
              (api-resource-url api xfd-resource)
              (api-resource api xfd-resource)))
-     (hash-merge
-      resource
-      (if (expect-operation-response? api)
-          (handle-operation-response crud-fn response http)
-          (handle-delete crud-fn response)))]
+     (log-marv-debug "response:~a" response)
+     (define resp
+       (api-resource api
+                     (if (expect-operation-response? api)
+                         (handle-operation-response crud-fn response http)
+                         (handle-delete crud-fn response))))
+     (hash-merge resp config)]
     [else raise (format "type has no usable CRUD for ~a : ~a" crud-fn type-op )]
     ))
 
@@ -101,3 +100,17 @@
          (flush-output)
          new-op]
         [else (wait-completed new-op http #:wait1 wait2 #:wait2 sleeptime)]))
+
+(define (register-type msg)
+  (define-values (type transformers) (values (hash-ref msg '$type) (hash-ref msg 'transforms)))
+  (log-marv-info "compute-register-type: ~a:~a" type transformers)
+  (define apis (map transformer-api-id transformers))
+  (define-values (create-api read-api update-api delete-api) (apply values apis))
+  (ct-register-type type (crud create-api read-api update-api delete-api))
+
+  (define tfns (map transformer-fn transformers))
+  (for ([a apis]
+        [t tfns]
+        #:when (procedure? t))
+    (register-request-transformer (transformer a t)))
+  (hash))

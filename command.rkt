@@ -50,14 +50,11 @@
 
    #:args (module-file) module-file))
 
-(marv-init)
-
 (when (not (STATE-FILE))
   (STATE-FILE (path-replace-extension (file-name-from-path (string->path RESOURCES)) ".state.dat" )))
 
 (printf "Using state file: ~a\n" (STATE-FILE))
 (load-state (STATE-FILE))
-
 (init-module RESOURCES (PURGE))
 
 (define modl (get-module (PARAMS)))

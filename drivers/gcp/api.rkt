@@ -6,70 +6,45 @@
 
 (require marv/log)
 (require marv/utils/hash)
-(require marv/core/resources)
-(require marv/drivers/driver)
+(require marv/core/config)
+(require marv/drivers/types)
 
 (require marv/drivers/gcp/compute-api)
 (require marv/drivers/gcp/storage-api)
 (require marv/drivers/gcp/transformers)
 
-; TODO - common module
+; TODO - common module, and abstract setting it too
 (define (gcp-type r) (hash-ref r '$type))
 
-(provide init-gcp
-         gcp-http-transport
-         gcp-register-type)
+(provide init-gcp gcp-http-transport)
 
-(define (init-gcp interface-id
-                  http-transport
-                  #:project project-id
-                  #:region region)
+(define (init-gcp interface-id http-transport)
+  (define apis
+    (hash 'compute (compute.init-api interface-id "compute:beta" http-transport)
+          'storage (storage.init-api interface-id "storage:v1" http-transport)
+          ))
 
-  (define driver-conf (hash 'project project-id
-                            'region region))
+  (define/contract (routing op config)
+    (msg-id/c config/c . -> . config/c)
+    (define subtype (string->symbol (car (string-split (symbol->string (gcp-type config)) "."))))
+    (define crudfn (hash-ref apis subtype))
+    (crudfn op config))
 
-  ; TODO - contract for supported types
-
-  (define/contract (mk-resource res)
-    (hash? . -> . config/c)
-    ((google-api-fn res 'validate) res))
-
-  (define APIS
-    (hash "compute" (compute.init-api interface-id "compute:beta")
-          "storage" (storage.init-api interface-id "storage:v1")))
-
-  (define (google-api-fn resource op)
-    (define sub-api (car (string-split (gcp-type resource) ".")))
-    (hash-ref (hash-ref APIS sub-api) op))
-
-  (define/contract (create resource)
-    (config/c . -> . config/c)
-    ((google-api-fn resource 'create) resource http-transport))
-
-  (define/contract (readr resource)
-    (config/c . -> . config/c)
-    ((google-api-fn resource 'read)  resource http-transport))
-
-  (define/contract (update resource)
-    (config/c . -> . config/c)
-    ((google-api-fn resource 'update) resource http-transport))
-
-  (define/contract (delete resource)
-    (config/c . -> . config/c)
-    ((google-api-fn resource 'delete) resource http-transport))
-
-  (driver mk-resource create readr update delete driver-conf))
+  routing)
 
 (define (gcp-http-transport access-token)
 
   (define auth-token (bearer-auth access-token))
 
   (define (expect-2xx resp #:expect-status (expect '(200 204)))
-    (log-marv-debug "~a" (response-json resp))
-    (cond [(member (response-status-code resp) expect )(response-json resp)]
-          [else (raise (format "unexpected response: ~a:~a"
+    (cond [(member (response-status-code resp) expect )
+           (log-marv-debug "~a" (response-json resp))
+           (response-json resp)]
+          [else (log-marv-warn "H: ~a" (response-headers resp))
+                (raise (format "unexpected response: ~a:~a headers:~a"
                                (response-status-code resp)
-                               (response-body resp)))]))
+                               (response-body resp)
+                               (response-headers resp)))]))
 
   (define methods
     (hash
@@ -79,26 +54,9 @@
      'PATCH (lambda(url body) (expect-2xx (patch url #:auth auth-token #:json body)))
      'DELETE (lambda(url _) (expect-2xx (delete url #:auth auth-token)))
      ))
-  (lambda (method url body) ((hash-ref methods method) url body)))
-
-; (define (exec api-method meta resource http)
-;   (api->state ((api-method (google-api (meta-type meta))) meta resource http)))
-
-; TODO - maybe a standard (e.g. a prefix) to identify keys to remove?
-; TODO - region -assumption?
-(define (state->api s) (hash-drop s '(project region)))
-
-; TODO - may find etag is not avoidable in this way, so might need a soft-diff
-(define (api->state res-state api-resp)
-  (hash-union res-state (hash-drop api-resp '(etag timeCreated metageneration updated))
-              #:combine (lambda (a b)b)))
+  (define (handle method url body)
+    (log-marv-info "gcp-http-transport: ~a ~a" method url)
+    ((hash-ref methods method) url body))
+  handle)
 
 (define (resource-self-link res-state) (hash-ref res-state 'selfLink))
-
-(define/contract (gcp-register-type type-id transformers)
-  (symbol? (list/c transformer? transformer? transformer? transformer? ) . -> . void)
-  (log-marv-info "Registering ~a ~a" type-id transformers)
-  ; TODO - check transformers' api fields are valid for type-id
-  ; TODO - route to other APIs
-
-  (compute.register-type type-id transformers))

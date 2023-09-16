@@ -1,8 +1,9 @@
 
 #lang racket/base
 
-; (require "struct-hash.rkt")
 (require racket/contract)
+(require marv/core/config)
+(require marv/drivers/types)
 
 (provide hash->attribute
          flat-attributes
@@ -11,30 +12,27 @@
          resource
          resource/c
          resource-set/c
-         config/c
          rmodule/c
          (struct-out resource)
          (struct-out rmodule)
          (struct-out attribute))
 
+
 (struct attribute (name value) #:prefab)
-(struct resource (driver config) #:prefab)
+(struct resource (driver-id config) #:prefab)
 
-; TODO - sort out circular dep if we use driver-id/c instead of 'symbol?'
-(define resource/c (struct/c resource symbol? hash?))
-
-; rmodule because module is a keyword :/
-; TODO - own module file, and rename to imodule
-(struct rmodule (drivers resources))
-(define rmodule/c rmodule?)
-
-(define config/c hash?)
 (define res-id/c symbol?)
+
+(define resource/c (struct/c resource driver-id/c config/c))
+
+(struct rmodule (drivers resources))
+
+(define rmodule/c rmodule?)
 
 (define resource-set/c (hash/c res-id/c resource/c))
 
 (define/contract (mk-rmodule drivers resources)
-  (hash? resource-set/c . -> . rmodule/c)
+  (driver-set/c resource-set/c . -> . rmodule/c)
   (rmodule drivers resources))
 
 (define/contract (hash->attribute h)
