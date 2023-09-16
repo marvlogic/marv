@@ -43,7 +43,8 @@
   (define rel-mod (find-relative-path (current-directory) f) )
   (DRIVERS (dynamic-require rel-mod 'drivers))
   (when (not purge?)
-    (RESOURCES (dynamic-require rel-mod 'resources))))
+    (RESOURCES (dynamic-require rel-mod 'resources)))
+  (void))
 
 (define/contract (get-module params)
   ((hash/c string? string?) . -> . rmodule/c)

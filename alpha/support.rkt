@@ -51,7 +51,9 @@
                (register-type-msg
                 type
                 (for/list ([op '(create read update delete)])
-                  (type-transform (hash-ref api-specs op null))))))
+                  (type-transform (hash-ref api-specs op null)))))
+  ; NB return void or the empty hash gets printed!
+  (void))
 
 (define defaults
   (hash 'project (getenv-or-raise "MARV_GCP_PROJECT")
