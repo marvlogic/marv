@@ -27,7 +27,6 @@
     (make-driver-crud-fn
      validate
      (genrq crud-create) (genrq crud-read) (genrq crud-update) (genrq crud-delete)
-     ;  (genrq crud-create) (lambda(cfg)(read-request cfg http)) (genrq crud-update) (genrq crud-delete)
      aux-handler))
   crudfn)
 
@@ -52,17 +51,6 @@
   (has-required-api-parameters?)
   cfg)
 
-(define (read-request config http)
-  (define type-op (crud-read (compute-type-map (gcp-type config))))
-  (log-marv-debug "gen/req: type-op=~a ~a" type-op config)
-  (define api (api-for-type-op (DISCOVERY) type-op))
-  (define xfd-resource (apply-request-transformer type-op config) )
-  (define response
-    (http (api-http-method api)
-          (api-resource-url api xfd-resource)
-          (api-resource api xfd-resource)))
-  response)
-
 (define/contract (generic-request crud-fn config http)
   (procedure? config/c any/c . -> . config/c)
   (define type-op (crud-fn (compute-type-map (gcp-type config))))
@@ -78,7 +66,6 @@
        (http (api-http-method api)
              (api-resource-url api xfd-resource)
              (api-resource api xfd-resource)))
-     ; TODO - incorrect for read-responses during refresh
      (log-marv-debug "response:~a" response)
      (define resp
        (api-resource api
