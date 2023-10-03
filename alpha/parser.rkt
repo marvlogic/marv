@@ -1,6 +1,10 @@
 #lang brag
 
-marv-spec: statement*
+marv-spec: marv-module*
+
+marv-module: /"module" IDENTIFIER ["(" parameters+ ")"] /"{" statement* /"}"
+
+parameters: IDENTIFIER
 
 statement: decl | pprint
 decl: var-decl | res-decl | config-func-decl | type-decl

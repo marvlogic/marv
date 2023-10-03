@@ -42,23 +42,16 @@
   (string? boolean? . -> . void?)
   (define rel-mod (find-relative-path (current-directory) f) )
   (DRIVERS (dynamic-require rel-mod 'drivers))
-  (when (not purge?)
-    (RESOURCES (dynamic-require rel-mod 'resources)))
+  (unless purge?
+    (RESOURCES (dynamic-require rel-mod 'main)))
   (void))
 
 (define/contract (get-module params)
-  ((hash/c string? string?) . -> . rmodule/c)
-  (validate-params params)
-  (define keyw-params (make-keyword-params params))
-  ; TODO - drivers should have their own keyword params
-  ; (define drivers (keyword-apply (DRIVERS) (map car keyw-params) (map cdr keyw-params) (list)))
+  ((hash/c symbol? string?) . -> . rmodule/c)
+  ; (validate-params params)
   (define driver (make-driver-for-set ((DRIVERS))))
   (define (mk-resource driver-id config) (resource driver-id (driver driver-id 'validate config)))
-  (define resource-list
-    (keyword-apply (RESOURCES) (map car keyw-params) (map cdr keyw-params)
-                   (list mk-resource)))
-
-  ; (pretty-print resource-list)
+  (define resource-list ((RESOURCES) mk-resource params))
   (mk-rmodule ((DRIVERS)) (resource-list->hash resource-list)))
 
 (define/contract (resource-list->hash resources)

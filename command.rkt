@@ -46,7 +46,7 @@
    [("--list-params") "Lists parameters accepted by module" (LIST-PARAMS #t)]
 
    #:multi
-   [("--param") param value "Set <param> to <value>" (PARAMS (hash-set (PARAMS) param value))]
+   [("--param") param value "Set <param> to <value>" (PARAMS (hash-set (PARAMS) (string->symbol param) value))]
 
    #:args (module-file) module-file))
 

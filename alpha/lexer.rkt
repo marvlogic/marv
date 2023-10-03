@@ -14,7 +14,7 @@
   (lexer-srcloc
    ;    ["\n" (token 'NEWLINE lexeme)]
    [(:or "for/list" "->" "<-" "<<" ">>"
-         "strf" "type" "in" "pprint" "env" "true" "false"
+         "module" "strf" "type" "in" "pprint" "env" "true" "false"
          "create" "delete"
          "imm:" ) (token lexeme lexeme)]
    [(:= 1 (char-set "[](){}=:,")) lexeme]

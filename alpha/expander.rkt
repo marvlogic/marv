@@ -1,54 +1,13 @@
 #lang racket/base
 
-(require racket/hash)
 (require racket/string)
+(require racket/syntax)
 (require (for-syntax racket/base syntax/parse racket/pretty))
-(require marv/utils/hash)
 
 (require racket/pretty)
 
-(define VARS (make-parameter (hash)))
-
-(define (error:excn msg)
-  (raise (format "ERROR: ~a\n at ~a:~a" msg 1 2))) ;(syntax-source stx) (syntax-line stx)))
-
-(define (set-var id v)
-  (when (hash-has-key? (VARS) id) (error:excn (format "~a is already defined" id)))
-  (VARS (hash-set (VARS) id v)))
-
-; todo - out
-(define (get-var id) (hash-ref (VARS) id))
-
-(define (def-res id drv attr v)
-  (define r (hash-set* v '$driver drv '$type (string->symbol (string-join (map symbol->string attr) "."))))
-  (set-var id r)
-  r)
-
-(define (config-overlay left right) (hash-union left right #:combine (lambda (v0 _) v0)))
-; (define (config-take cfg attrs) (hash-take cfg attrs))
-
-(define (hash-nref hs ks)
-  (for/fold ([h hs])
-            ([k (in-list ks)])
-    (hash-ref h k)))
-
-(define (handle-ref id tgt . ks)
-  (define ksx (map syntax-e ks))
-  (define full-ref (string->symbol (string-join (map symbol->string (cons id ksx)) ".")))
-  (cond [(hash-has-key? tgt '$driver) (ref full-ref)]
-        [else (hash-nref tgt ksx)]))
-
-; (define (handle-deref r) #`(hash-nref #,(car r) #,(cdr r)))
-
-(define (loop-res-name name loop-ident)
-  (format "~a.~a" name (get-var loop-ident)))
-
 (require marv/alpha/support)
 (require marv/core/values)
-
-(define (resource-var? id)
-  (define v (hash-ref (VARS) id))
-  (and (hash? v) (hash-has-key? v '$driver)))
 
 ; TODO - swap prefix usage to m- on the provided
 
@@ -58,18 +17,37 @@
 
   (define (m-marv-spec stx)
     (syntax-parse stx
-      [(_ STMT ...)
+      [(_ MODULE ...)
        #'(begin
            (require marv/alpha/support)
            (require racket/hash)
            (require racket/pretty)
-           STMT ...
-           (define resources (gen-resources (VARS)))
-           (define drivers (gen-drivers (VARS)))
-           (provide resources drivers)
+           MODULE ...
+           (define drivers (gen-drivers (hash)))
+           (provide drivers)
            ;  (pretty-print (VARS))
            )]
       [else (raise "nowt")]))
+
+  (define (m-marv-module stx)
+    (syntax-parse stx
+      ; TODO - handle no-params case
+      [(_ mod-id:expr "(" PARAMS ... ")" STMT ...)
+       (syntax/loc stx
+         (begin
+           (define (mod-id mkres params)
+             ; TODO - parameterize
+             (pretty-print params)
+             (set-params params)
+             PARAMS ...
+             STMT ...
+             ((gen-resources) mkres params))
+           (provide mod-id))) ]
+      [else (raise "invalid module")]))
+
+  (define (m-parameters stx)
+    (syntax-parse stx
+      [(_ PARAMETER) (syntax/loc stx (define PARAMETER (get-param 'PARAMETER)))]))
 
   (define (m-statement stx)
     (syntax-parse stx
@@ -226,11 +204,11 @@
           ((~literal driver-attr) dad:expr) cfg)
        (syntax/loc stx (define name (def-res 'name 'did 'dad cfg)))]
 
-      [(_ name:string
-          ((~literal loop-ident) lid:string)
-          ((~literal driver-id) did:string)
-          ((~literal driver-attr) dad:string) cfg)
-       (syntax/loc stx (set-res (loop-res-name name lid) did dad cfg))]
+      ; [(_ name:string
+      ;     ((~literal loop-ident) lid:string)
+      ;     ((~literal driver-id) did:string)
+      ;     ((~literal driver-attr) dad:string) cfg)
+      ;  (syntax/loc stx (set-res (loop-res-name name lid) did dad cfg))]
       [else (raise (format "res-decl didn't match: ~a" stx))]))
 
   (define (m-for-list stx)
@@ -248,6 +226,8 @@
   )
 
 (define-syntax marv-spec m-marv-spec)
+(define-syntax marv-module m-marv-module)
+(define-syntax parameters m-parameters)
 (define-syntax statement m-statement)
 (define-syntax decl m-decl)
 (define-syntax var-decl m-var-decl)
@@ -279,7 +259,7 @@
 (define-syntax for-list m-for-list)
 (define-syntax loop-var m-loop-var)
 
-(provide marv-spec decl var-decl res-decl config-func-call config-func-decl
+(provide marv-spec marv-module parameters decl var-decl res-decl config-func-call config-func-decl
          type-decl type-body type-crud-decl type-api-spec
          expression reference statement config-object alist list-attr
          config-expr config-merge config-ident config-take

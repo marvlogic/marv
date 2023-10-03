@@ -1,16 +1,72 @@
 #lang racket/base
 
-(require marv/log)
+(require racket/hash)
 (require racket/string)
+(require marv/log)
+(require marv/utils/hash)
+(require marv/core/values)
+
 (provide gen-resources gen-drivers getenv-or-raise
+         hash-union
+         resources-stub
+         set-var
+         get-var
+         def-res resource-var? config-overlay hash-nref handle-ref
+         set-params get-param
          register-type)
 
-(define (gen-resources decls-hs)
+(define (error:excn msg)
+  (raise (format "ERROR: ~a\n at ~a:~a" msg 1 2))) ;(syntax-source stx) (syntax-line stx)))
+
+(define PARAMS (make-parameter (hash)))
+(define set-params PARAMS)
+(define (get-param p) (hash-ref (PARAMS) p))
+
+(define VARS (make-parameter (hash)))
+(define (set-var id v)
+  (when (hash-has-key? (VARS) id) (error:excn (format "~a is already defined" id)))
+  (VARS (hash-set (VARS) id v)))
+(define (get-var id) (hash-ref (VARS) id))
+
+(define (def-res id drv attr v)
+  (define r (hash-set* v '$driver drv '$type (string->symbol (string-join (map symbol->string attr) "."))))
+  (set-var id r)
+  r)
+
+(define (resource-var? id)
+  (define v (hash-ref (VARS) id))
+  (and (hash? v) (hash-has-key? v '$driver)))
+
+(define (config-overlay left right) (hash-union left right #:combine (lambda (v0 _) v0)))
+; (define (config-take cfg attrs) (hash-take cfg attrs))
+
+(define (hash-nref hs ks)
+  (for/fold ([h hs])
+            ([k (in-list ks)])
+    (hash-ref h k)))
+
+(define (handle-ref id tgt . ks)
+  (define ksx (map syntax-e ks))
+  (define full-ref (string->symbol (string-join (map symbol->string (cons id ksx)) ".")))
+  (cond [(hash-has-key? tgt '$driver) (ref full-ref)]
+        [else (hash-nref tgt ksx)]))
+
+; (define (handle-deref r) #`(hash-nref #,(car r) #,(cdr r)))
+
+(define (loop-res-name name loop-ident)
+  (format "~a.~a" name (get-var loop-ident)))
+
+(define (resources-stub module-id mkres params)
+  (parameterize ([VARS (hash)]
+                 [PARAMS params])
+    (print (list mkres params))))
+
+(define (gen-resources)
   (define rs
     (filter (lambda (kv)
               (and (hash? (cdr kv)) (hash-has-key? (cdr kv) '$driver)))
-            (hash->list decls-hs)))
-  (lambda (mkres) (xform-resources mkres rs)))
+            (hash->list (VARS))))
+  (lambda (mkres params) (xform-resources mkres rs)))
 
 (define (xform-resources mkres resources)
   (define (xform kv)
