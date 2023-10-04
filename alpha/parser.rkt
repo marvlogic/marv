@@ -2,12 +2,11 @@
 
 marv-spec: marv-module*
 
-marv-module: /"module" IDENTIFIER ["(" parameters+ ")"] /"{" statement* /"}"
-
-parameters: IDENTIFIER
+marv-module: /"module" IDENTIFIER ["(" module-parameter+ ")"] /"{" statement* /"}"
+module-parameter: IDENTIFIER
 
 statement: decl | pprint
-decl: var-decl | res-decl | config-func-decl | type-decl
+decl: var-decl | res-decl | module-invoke | config-func-decl | type-decl
 
 pprint: /"pprint" expression
 comment: COMMENT
@@ -41,15 +40,18 @@ config-ident: IDENTIFIER
 config-func-call: IDENTIFIER /"(" expression+ /")"
 config-take: config-expr /"<<" list-attr
 
-; type is explicitly allowed as it's so common in configs
-attr-decl: ( IDENTIFIER | "type" | STRING ) /"=" [ "imm:" ] expression
+; type is explicitly allowed as it's so common in configs, and we need 'type' as a lexical token;
+; also allow STRING to allow user to avoid marv keywords
+attr-decl: ( STRING | IDENTIFIER | "type" ) /"=" [ "imm:" ] expression
+
 reference: DOTTY-IDENT
 
 res-decl: IDENTIFIER /"=" driver-id /":" driver-attr config-expr
+module-invoke: IDENTIFIER /"=" IDENTIFIER /"(" named-parameter+ [ /"," ] /")"
+
+; type is explicitly allowed as it's common, and we need 'type' as a lexical token
+; also allow STRING to allow user to avoid marv keywords
+named-parameter: ( STRING | IDENTIFIER | "type" ) /"=" expression
+
 driver-id: IDENTIFIER
 driver-attr: DOTTY-IDENT
-
-; loop-ident: IDENTIFIER
-# for-list: /"for/list" loop-var "{" statement+ "}"
-# loop-var: /"(" IDENTIFIER /"in" (list-ident | alist) /")"
-# list-ident: IDENTIFIER

@@ -51,7 +51,7 @@
   ; (validate-params params)
   (define driver (make-driver-for-set ((DRIVERS))))
   (define (mk-resource driver-id config) (resource driver-id (driver driver-id 'validate config)))
-  (define resource-list ((RESOURCES) mk-resource params))
+  (define resource-list ((RESOURCES) 'main mk-resource params))
   (mk-rmodule ((DRIVERS)) (resource-list->hash resource-list)))
 
 (define/contract (resource-list->hash resources)

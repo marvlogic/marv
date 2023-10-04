@@ -2,27 +2,38 @@
 
 (require racket/hash)
 (require racket/string)
+(require racket/pretty)
 (require marv/log)
-(require marv/utils/hash)
 (require marv/core/values)
+(require (prefix-in core: marv/core/resources))
 
 (provide gen-resources gen-drivers getenv-or-raise
          hash-union
-         resources-stub
          set-var
          get-var
-         def-res resource-var? config-overlay hash-nref handle-ref
-         set-params get-param
+         def-res
+         module-call
+         resource-var? config-overlay hash-nref handle-ref
+         with-module-ctx get-param
          register-type)
 
 (define (error:excn msg)
   (raise (format "ERROR: ~a\n at ~a:~a" msg 1 2))) ;(syntax-source stx) (syntax-line stx)))
 
 (define PARAMS (make-parameter (hash)))
-(define set-params PARAMS)
+(define MODULE-PREFIX (make-parameter #f))
+(define VARS (make-parameter (hash)))
+
+(define (prefix-id i) (core:prefix-id (MODULE-PREFIX) i))
+
+(define (with-module-ctx id-prefix params proc)
+  (parameterize ([PARAMS params]
+                 [VARS (hash)]
+                 [MODULE-PREFIX id-prefix ])
+    (proc)))
+
 (define (get-param p) (hash-ref (PARAMS) p))
 
-(define VARS (make-parameter (hash)))
 (define (set-var id v)
   (when (hash-has-key? (VARS) id) (error:excn (format "~a is already defined" id)))
   (VARS (hash-set (VARS) id v)))
@@ -32,6 +43,11 @@
   (define r (hash-set* v '$driver drv '$type (string->symbol (string-join (map symbol->string attr) "."))))
   (set-var id r)
   r)
+
+(define (module-call id mod-id . params)
+  (log-marv-debug "invoke ~a = ~a ( ~a )" id mod-id params)
+  (set-var id (lambda(id-prefix mkres params) (mod-id (prefix-id id) mkres params)))
+  (hash 'output1 1 'output2 2))
 
 (define (resource-var? id)
   (define v (hash-ref (VARS) id))
@@ -45,32 +61,27 @@
             ([k (in-list ks)])
     (hash-ref h k)))
 
-(define (handle-ref id tgt . ks)
+(define (handle-ref tgt id . ks)
   (define ksx (map syntax-e ks))
-  (define full-ref (string->symbol (string-join (map symbol->string (cons id ksx)) ".")))
+  (define full-ref (prefix-id (core:list->id (cons id ksx))))
+
   (cond [(hash-has-key? tgt '$driver) (ref full-ref)]
         [else (hash-nref tgt ksx)]))
-
-; (define (handle-deref r) #`(hash-nref #,(car r) #,(cdr r)))
 
 (define (loop-res-name name loop-ident)
   (format "~a.~a" name (get-var loop-ident)))
 
-(define (resources-stub module-id mkres params)
-  (parameterize ([VARS (hash)]
-                 [PARAMS params])
-    (print (list mkres params))))
-
-(define (gen-resources)
+(define (gen-resources mkres)
   (define rs
     (filter (lambda (kv)
               (and (hash? (cdr kv)) (hash-has-key? (cdr kv) '$driver)))
             (hash->list (VARS))))
-  (lambda (mkres params) (xform-resources mkres rs)))
+  (define resid-prefix (MODULE-PREFIX))
+  (xform-resources resid-prefix mkres rs))
 
-(define (xform-resources mkres resources)
+(define (xform-resources resid-prefix mkres resources)
   (define (xform kv)
-    (define id (car kv))
+    (define id (prefix-id (car kv)))
     (define res (cdr kv))
     (cons id (mkres (hash-ref res '$driver) (hash-remove res '$driver))))
   (map xform resources))

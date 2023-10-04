@@ -25,7 +25,6 @@
            MODULE ...
            (define drivers (gen-drivers (hash)))
            (provide drivers)
-           ;  (pretty-print (VARS))
            )]
       [else (raise "nowt")]))
 
@@ -35,17 +34,17 @@
       [(_ mod-id:expr "(" PARAMS ... ")" STMT ...)
        (syntax/loc stx
          (begin
-           (define (mod-id mkres params)
-             ; TODO - parameterize
-             (pretty-print params)
-             (set-params params)
-             PARAMS ...
-             STMT ...
-             ((gen-resources) mkres params))
+           (define (mod-id resid-prefix mkres params)
+             ;  (pretty-print params)
+             (with-module-ctx resid-prefix params
+               (lambda ()
+                 PARAMS ...
+                 STMT ...
+                 (gen-resources mkres))))
            (provide mod-id))) ]
       [else (raise "invalid module")]))
 
-  (define (m-parameters stx)
+  (define (m-module-parameter stx)
     (syntax-parse stx
       [(_ PARAMETER) (syntax/loc stx (define PARAMETER (get-param 'PARAMETER)))]))
 
@@ -194,7 +193,7 @@
 
   (define (m-reference stx)
     (syntax-parse stx
-      [(_ (tgt:id key ...)) (syntax/loc stx (handle-ref 'tgt tgt #'key ...))]
+      [(_ (tgt:id key ...)) (syntax/loc stx (handle-ref tgt 'tgt #'key ...))]
       ))
 
   (define (m-res-decl stx)
@@ -211,23 +210,23 @@
       ;  (syntax/loc stx (set-res (loop-res-name name lid) did dad cfg))]
       [else (raise (format "res-decl didn't match: ~a" stx))]))
 
-  (define (m-for-list stx)
+  (define (m-module-invoke stx)
+    (pretty-print stx)
     (syntax-parse stx
-      [(_ LOOPVAR "{" STMT ... "}")
-       (syntax/loc stx `(for/list LOOPVAR (STMT ...)))]
-      [else (raise (format "for-list didn't match: ~a" stx))])
-    )
+      [(_ id:expr mod-id:expr PARAMS ...)
+       (syntax/loc stx (define id (module-call 'id mod-id (make-immutable-hasheq (list PARAMS ...)) )))]))
 
-  (define (m-loop-var stx)
+  (define (m-named-parameter stx)
     (syntax-parse stx
-      [(_ IDENT:string LIST) (syntax/loc stx `[ ,(string->symbol IDENT) ,LIST])]
-      [else (raise (format "loop-var didn't match: ~a" stx))]))
-
+      ; NB string has to be first!
+      [(_ param-name:string EXPR) (syntax/loc stx (cons (string->symbol param-name) EXPR))]
+      [(_ param-name:expr EXPR) (syntax/loc stx (cons 'param-name EXPR))]
+      ))
   )
 
 (define-syntax marv-spec m-marv-spec)
 (define-syntax marv-module m-marv-module)
-(define-syntax parameters m-parameters)
+(define-syntax module-parameter m-module-parameter)
 (define-syntax statement m-statement)
 (define-syntax decl m-decl)
 (define-syntax var-decl m-var-decl)
@@ -239,6 +238,8 @@
 (define-syntax type-api-spec m-type-api-spec)
 
 (define-syntax res-decl m-res-decl)
+(define-syntax module-invoke m-module-invoke)
+(define-syntax named-parameter m-named-parameter)
 (define-syntax config-func-call m-config-func-call)
 (define-syntax expression m-expression)
 (define-syntax reference m-reference)
@@ -256,13 +257,12 @@
 (define-syntax config-merge m-config-merge)
 (define-syntax config-take m-config-take)
 (define-syntax config-ident m-config-ident)
-(define-syntax for-list m-for-list)
-(define-syntax loop-var m-loop-var)
 
-(provide marv-spec marv-module parameters decl var-decl res-decl config-func-call config-func-decl
+(provide marv-spec marv-module module-parameter decl var-decl res-decl
+         module-invoke named-parameter
+         config-func-call config-func-decl
          type-decl type-body type-crud-decl type-api-spec
          expression reference statement config-object alist list-attr
          config-expr config-merge config-ident config-take
-         for-list loop-var
          attr-decl keyword built-in env-read pprint strf
          boolean)

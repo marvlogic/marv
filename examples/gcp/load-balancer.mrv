@@ -11,7 +11,13 @@
 defaults = {
      # env is a built-in function to read environment variables
      project = env("MARV_GCP_PROJECT")
-     region = env("MARV_GCP_REGION")
+
+     # Attribute names can be enclosed in quotes; for the situation where an
+     # attribute name clashes with a marv keyword (nb 'type' is specifically
+     # allowed); this is just an example - 'region' is not a keyword!
+     
+    "region" = env("MARV_GCP_REGION")
+
 }
 
 ################################################################################
