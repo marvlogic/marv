@@ -51,20 +51,8 @@
   ; (validate-params params)
   (define driver (make-driver-for-set ((DRIVERS))))
   (define (mk-resource driver-id config) (resource driver-id (driver driver-id 'validate config)))
-  (define resource-list ((RESOURCES) 'main mk-resource params))
-  (mk-rmodule ((DRIVERS)) (resource-list->hash resource-list)))
-
-(define/contract (resource-list->hash resources)
-  ((listof (cons/c res-id/c resource/c)) . -> . (hash/c res-id/c resource/c))
-
-  (define (check-dups acc-hs res-id res)
-    (when (hash-has-key? acc-hs res-id) (raise (format "duplicate resource id: ~a" res-id)))
-    (hash-set acc-hs res-id res))
-
-  (for/fold ([hs (hash)])
-            ([r (in-list resources)])
-    (check-dups hs (car r) (cdr r))))
-
+  (define resources ((RESOURCES) 'main mk-resource params))
+  (mk-rmodule ((DRIVERS)) resources))
 
 (define (make-keyword-params params)
   ; TODO: test for check that #t (sorting) works
@@ -129,7 +117,7 @@
    (match (string-split (symbol->string mid) ".")
      [(list "$resources" id _ ...) id]
      [(list "$drivers" id _ ...) id]
-     [(list id _ ...) id]
+     [(list id _ ...) (format "~a" mid)]
      [else (raise (format "~a: Bad reference format" (ref-path ref)))])))
 
 (define (ref->id ref)

@@ -8,6 +8,7 @@
 
 (require marv/alpha/support)
 (require marv/core/values)
+(require marv/log)
 
 ; TODO - swap prefix usage to m- on the provided
 
@@ -35,7 +36,7 @@
        (syntax/loc stx
          (begin
            (define (mod-id resid-prefix mkres params)
-             ;  (pretty-print params)
+             (log-marv-debug "Calling module ~a.~a(~a)" resid-prefix mod-id params)
              (with-module-ctx resid-prefix params
                (lambda ()
                  PARAMS ...
@@ -211,7 +212,6 @@
       [else (raise (format "res-decl didn't match: ~a" stx))]))
 
   (define (m-module-invoke stx)
-    (pretty-print stx)
     (syntax-parse stx
       [(_ id:expr mod-id:expr PARAMS ...)
        (syntax/loc stx (define id (module-call 'id mod-id (make-immutable-hasheq (list PARAMS ...)) )))]))

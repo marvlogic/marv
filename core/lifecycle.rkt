@@ -44,8 +44,7 @@
 
   ; TODO - pass in state, also define hash(id->state) contract types
   (define new-module (mk-rmodule (rmodule-drivers mod) (merge-state+resource (mk-id->state) resources)))
-  (define ordered-rks (map mod-id->id (resources-dag-topo mod)))
-  ; (pretty-print ordered-rks)
+  (define ordered-rks (resources-dag-topo mod))
   (define operations
     (foldl
      (lambda (id acc-ops)

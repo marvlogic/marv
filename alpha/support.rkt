@@ -27,6 +27,7 @@
 (define (prefix-id i) (core:prefix-id (MODULE-PREFIX) i))
 
 (define (with-module-ctx id-prefix params proc)
+  (log-marv-debug "Switching into module-context ~a" id-prefix)
   (parameterize ([PARAMS params]
                  [VARS (hash)]
                  [MODULE-PREFIX id-prefix ])
@@ -44,14 +45,13 @@
   (set-var id r)
   r)
 
-(define (module-call id mod-id . params)
-  (log-marv-debug "invoke ~a = ~a ( ~a )" id mod-id params)
-  (set-var id (lambda(id-prefix mkres params) (mod-id (prefix-id id) mkres params)))
-  (hash 'output1 1 'output2 2))
+(define (module-call id mod-id params)
+  (log-marv-debug "invoke ~a = ~a(~a)" id mod-id params)
+  (set-var id (lambda(id-prefix mkres) (mod-id (prefix-id id) mkres params)))
+  (hash 'selfLink 'abcdef 'output2 2))
 
-(define (resource-var? id)
-  (define v (hash-ref (VARS) id))
-  (and (hash? v) (hash-has-key? v '$driver)))
+(define (resource? res) (and (hash? res) (hash-has-key? res '$driver)))
+(define (resource-var? id) (resource? (hash-ref (VARS) id)))
 
 (define (config-overlay left right) (hash-union left right #:combine (lambda (v0 _) v0)))
 ; (define (config-take cfg attrs) (hash-take cfg attrs))
@@ -62,6 +62,7 @@
     (hash-ref h k)))
 
 (define (handle-ref tgt id . ks)
+  (log-marv-debug "Handle ref: ~a ~a ~a" tgt id ks)
   (define ksx (map syntax-e ks))
   (define full-ref (prefix-id (core:list->id (cons id ksx))))
 
@@ -72,19 +73,17 @@
   (format "~a.~a" name (get-var loop-ident)))
 
 (define (gen-resources mkres)
-  (define rs
-    (filter (lambda (kv)
-              (and (hash? (cdr kv)) (hash-has-key? (cdr kv) '$driver)))
-            (hash->list (VARS))))
-  (define resid-prefix (MODULE-PREFIX))
-  (xform-resources resid-prefix mkres rs))
+  (log-marv-debug "gen-resources for: ~a" (VARS))
+  ; (pretty-print ((hash-ref (VARS) 'sn1 (lambda() (lambda oo (void)))) 'main.sn1 mkres))
 
-(define (xform-resources resid-prefix mkres resources)
-  (define (xform kv)
-    (define id (prefix-id (car kv)))
-    (define res (cdr kv))
-    (cons id (mkres (hash-ref res '$driver) (hash-remove res '$driver))))
-  (map xform resources))
+  (define (xform-one v)
+    (mkres (hash-ref v '$driver) (hash-remove v '$driver)))
+
+  (for/fold ([rs (hash)])
+            ([k (hash-keys (VARS))])
+    (define res (hash-ref (VARS) k))
+    (cond [(resource? res) (hash-set rs (prefix-id k) (xform-one res))]
+          [(procedure? res) (hash-union rs (res (prefix-id k) mkres))])))
 
 (define (gen-drivers decls-hs) tmp-drivers)
 
