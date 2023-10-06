@@ -30,24 +30,34 @@
       [else (raise "nowt")]))
 
   (define (m-marv-module stx)
+    ; getting void?
+    ; (~optional (~seq "return" RETURN) #:defaults ([RETURN #'(hash)])))
     (syntax-parse stx
       ; TODO - handle no-params case
-      [(_ mod-id:expr "(" PARAMS ... ")" STMT ...)
+      [(_ mod-id:expr "(" PARAMS ... ")" STMT ... RETURN)
        (syntax/loc stx
          (begin
            (define (mod-id resid-prefix mkres params)
-             (log-marv-debug "Calling module ~a.~a(~a)" resid-prefix mod-id params)
+             (log-marv-debug "Generating module: ~a=~a(~a)" resid-prefix 'mod-id params)
              (with-module-ctx resid-prefix params
                (lambda ()
                  PARAMS ...
                  STMT ...
                  (gen-resources mkres))))
-           (provide mod-id))) ]
-      [else (raise "invalid module")]))
+           (provide mod-id)))]
+      [else (raise "invalid module spec m-marv-module")]))
 
   (define (m-module-parameter stx)
     (syntax-parse stx
       [(_ PARAMETER) (syntax/loc stx (define PARAMETER (get-param 'PARAMETER)))]))
+
+  (define (m-module-return stx)
+    (syntax-parse stx
+      [(_ RETURNS ...) (syntax/loc stx (set-var '$returns (make-immutable-hasheq (RETURNS ...))))]))
+
+  (define (m-return-parameter stx)
+    (syntax-parse stx
+      [(_ NAME VALUE) (syntax/loc stx (cons NAME VALUE))]))
 
   (define (m-statement stx)
     (syntax-parse stx
@@ -166,6 +176,7 @@
 
   (define (m-config-take stx)
     (syntax-parse stx
+      ; TODO - why not support fn?
       [(_ CFEXPR ATTRLIST) (syntax/loc stx (hash-take CFEXPR ATTRLIST))]
       [else (raise "m-config-take")]))
 
@@ -213,8 +224,9 @@
 
   (define (m-module-invoke stx)
     (syntax-parse stx
-      [(_ id:expr mod-id:expr PARAMS ...)
-       (syntax/loc stx (define id (module-call 'id mod-id (make-immutable-hasheq (list PARAMS ...)) )))]))
+      [(_ var-id:expr mod-id:expr PARAMS ...)
+       (syntax/loc stx
+         (define var-id (module-call 'var-id mod-id (make-immutable-hasheq (list PARAMS ...)) )))]))
 
   (define (m-named-parameter stx)
     (syntax-parse stx
@@ -227,6 +239,8 @@
 (define-syntax marv-spec m-marv-spec)
 (define-syntax marv-module m-marv-module)
 (define-syntax module-parameter m-module-parameter)
+(define-syntax module-return m-module-return)
+(define-syntax return-parameter m-return-parameter)
 (define-syntax statement m-statement)
 (define-syntax decl m-decl)
 (define-syntax var-decl m-var-decl)
@@ -259,7 +273,7 @@
 (define-syntax config-ident m-config-ident)
 
 (provide marv-spec marv-module module-parameter decl var-decl res-decl
-         module-invoke named-parameter
+         module-invoke named-parameter module-return return-parameter
          config-func-call config-func-decl
          type-decl type-body type-crud-decl type-api-spec
          expression reference statement config-object alist list-attr

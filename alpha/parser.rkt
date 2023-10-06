@@ -2,8 +2,10 @@
 
 marv-spec: marv-module*
 
-marv-module: /"module" IDENTIFIER ["(" module-parameter+ ")"] /"{" statement* /"}"
+marv-module: /"module" IDENTIFIER ["(" module-parameter+ ")"] /"{" statement* module-return /"}"
 module-parameter: IDENTIFIER
+module-return: /"return" /"{" return-parameter* /"}"
+return-parameter: ( STRING | IDENTIFIER | "type" ) /"=" expression
 
 statement: decl | pprint
 decl: var-decl | res-decl | module-invoke | config-func-decl | type-decl

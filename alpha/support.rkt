@@ -45,13 +45,15 @@
   (set-var id r)
   r)
 
-(define (module-call id mod-id params)
-  (log-marv-debug "invoke ~a = ~a(~a)" id mod-id params)
-  (set-var id (lambda(id-prefix mkres) (mod-id (prefix-id id) mkres params)))
-  (hash 'selfLink 'abcdef 'output2 2))
-
 (define (resource? res) (and (hash? res) (hash-has-key? res '$driver)))
 (define (resource-var? id) (resource? (hash-ref (VARS) id)))
+
+(struct mod-returns (x))
+
+(define (module-call var-id mod-proc params)
+  (log-marv-debug "Registering future invocation of ~a=~a(~a)" var-id mod-proc params)
+  (set-var var-id (lambda(id-prefix mkres) (mod-proc (prefix-id var-id) mkres params)))
+  (mod-returns #t))
 
 (define (config-overlay left right) (hash-union left right #:combine (lambda (v0 _) v0)))
 ; (define (config-take cfg attrs) (hash-take cfg attrs))
@@ -61,20 +63,24 @@
             ([k (in-list ks)])
     (hash-ref h k)))
 
+(struct return-ref (ref) #:prefab)
+
 (define (handle-ref tgt id . ks)
-  (log-marv-debug "Handle ref: ~a ~a ~a" tgt id ks)
   (define ksx (map syntax-e ks))
   (define full-ref (prefix-id (core:list->id (cons id ksx))))
+  (log-marv-debug "Handle ref: ~a ~a (full-ref=~a)" id ksx full-ref)
 
-  (cond [(hash-has-key? tgt '$driver) (ref full-ref)]
-        [else (hash-nref tgt ksx)]))
+  (cond [(resource? tgt) (ref full-ref)]
+        [(hash? tgt) (hash-nref tgt ksx)]
+        [(mod-returns? tgt)
+         (ref (prefix-id (core:list->id (cons id (cons '$returns ksx)))))]
+        [else (raise "unsupported ref type")]))
 
 (define (loop-res-name name loop-ident)
   (format "~a.~a" name (get-var loop-ident)))
 
 (define (gen-resources mkres)
   (log-marv-debug "gen-resources for: ~a" (VARS))
-  ; (pretty-print ((hash-ref (VARS) 'sn1 (lambda() (lambda oo (void)))) 'main.sn1 mkres))
 
   (define (xform-one v)
     (mkres (hash-ref v '$driver) (hash-remove v '$driver)))
@@ -82,8 +88,10 @@
   (for/fold ([rs (hash)])
             ([k (hash-keys (VARS))])
     (define res (hash-ref (VARS) k))
-    (cond [(resource? res) (hash-set rs (prefix-id k) (xform-one res))]
-          [(procedure? res) (hash-union rs (res (prefix-id k) mkres))])))
+    (cond [(resource? res)
+           (hash-set rs (prefix-id k) (xform-one res))]
+          [(procedure? res)
+           (hash-union rs (res (prefix-id k) mkres))])))
 
 (define (gen-drivers decls-hs) tmp-drivers)
 
