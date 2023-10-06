@@ -38,12 +38,18 @@
        (syntax/loc stx
          (begin
            (define (mod-id resid-prefix mkres params)
-             (log-marv-debug "Generating module: ~a=~a(~a)" resid-prefix 'mod-id params)
-             (with-module-ctx resid-prefix params
-               (lambda ()
-                 PARAMS ...
-                 STMT ...
-                 (gen-resources mkres))))
+             (log-marv-debug "** Generating module: ~a=~a(~a)" resid-prefix 'mod-id params)
+             (define rs
+               (with-module-ctx resid-prefix params
+                 (lambda ()
+                   PARAMS ...
+                   STMT ...
+                   (define rs (gen-resources mkres))
+                   RETURN
+                   rs
+                   )))
+             (log-marv-debug "** generation completed for ~a.~a" resid-prefix 'mod-id)
+             rs)
            (provide mod-id)))]
       [else (raise "invalid module spec m-marv-module")]))
 
@@ -53,11 +59,13 @@
 
   (define (m-module-return stx)
     (syntax-parse stx
-      [(_ RETURNS ...) (syntax/loc stx (set-var '$returns (make-immutable-hasheq (RETURNS ...))))]))
+      [(_ RETURNS ...) (syntax/loc stx
+                         (set-return (make-immutable-hasheq (list RETURNS ...))))]
+      [else (raise "m-module-return f*")]))
 
   (define (m-return-parameter stx)
     (syntax-parse stx
-      [(_ NAME VALUE) (syntax/loc stx (cons NAME VALUE))]))
+      [(_ NAME VALUE) (syntax/loc stx (cons 'NAME VALUE))]))
 
   (define (m-statement stx)
     (syntax-parse stx

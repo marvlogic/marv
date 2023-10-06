@@ -5,11 +5,13 @@
 (require racket/pretty)
 (require marv/log)
 (require marv/core/values)
+(require marv/utils/hash)
 (require (prefix-in core: marv/core/resources))
 
 (provide gen-resources gen-drivers getenv-or-raise
          hash-union
          set-var
+         set-return
          get-var
          def-res
          module-call
@@ -40,6 +42,21 @@
   (VARS (hash-set (VARS) id v)))
 (define (get-var id) (hash-ref (VARS) id))
 
+(define RETURNS (make-parameter (hash)))
+(define (set-return v)
+  (log-marv-debug "** CURRENT RETURNS: ~a" (RETURNS))
+  (define id (MODULE-PREFIX))
+  (RETURNS (for/fold ([hs (RETURNS)])
+                     ([k (in-list (hash-keys v))])
+             (define new-id (core:list->id (list id k)))
+             (define val (hash-ref v k))
+             (log-marv-debug "Setting return value: ~a -> ~a" new-id val)
+             (hash-set hs new-id val)
+             )))
+
+(define (try-resolve-future-ref id)
+  (hash-ref (RETURNS) id (lambda() (future-ref id))))
+
 (define (def-res id drv attr v)
   (define r (hash-set* v '$driver drv '$type (string->symbol (string-join (map symbol->string attr) "."))))
   (set-var id r)
@@ -48,12 +65,12 @@
 (define (resource? res) (and (hash? res) (hash-has-key? res '$driver)))
 (define (resource-var? id) (resource? (hash-ref (VARS) id)))
 
-(struct mod-returns (x))
+(struct future-ref (ref) #:prefab)
 
 (define (module-call var-id mod-proc params)
-  (log-marv-debug "Registering future invocation of ~a=~a(~a)" var-id mod-proc params)
+  (log-marv-debug "Registering future invocation of ~a=~a(~a)" (prefix-id var-id) mod-proc params)
   (set-var var-id (lambda(id-prefix mkres) (mod-proc (prefix-id var-id) mkres params)))
-  (mod-returns #t))
+  (future-ref #f))
 
 (define (config-overlay left right) (hash-union left right #:combine (lambda (v0 _) v0)))
 ; (define (config-take cfg attrs) (hash-take cfg attrs))
@@ -63,8 +80,6 @@
             ([k (in-list ks)])
     (hash-ref h k)))
 
-(struct return-ref (ref) #:prefab)
-
 (define (handle-ref tgt id . ks)
   (define ksx (map syntax-e ks))
   (define full-ref (prefix-id (core:list->id (cons id ksx))))
@@ -72,18 +87,26 @@
 
   (cond [(resource? tgt) (ref full-ref)]
         [(hash? tgt) (hash-nref tgt ksx)]
-        [(mod-returns? tgt)
-         (ref (prefix-id (core:list->id (cons id (cons '$returns ksx)))))]
+        [(future-ref? tgt)
+         (define resolved (try-resolve-future-ref full-ref))
+         (log-marv-debug "(future-ref, being re-linked to ~a)" resolved)
+         resolved]
+        ;  (ref (core:prefix-id '$returns full-ref))]
         [else (raise "unsupported ref type")]))
-
-(define (loop-res-name name loop-ident)
-  (format "~a.~a" name (get-var loop-ident)))
 
 (define (gen-resources mkres)
   (log-marv-debug "gen-resources for: ~a" (VARS))
 
+  (define (handle-future-ref k v)
+    ; TODO - what if not found?
+    (if (future-ref? v)
+        (try-resolve-future-ref (future-ref-ref v))
+        v))
+
   (define (xform-one v)
-    (mkres (hash-ref v '$driver) (hash-remove v '$driver)))
+    (mkres (hash-ref v '$driver)
+           (hash-apply (hash-remove v '$driver)
+                       handle-future-ref)))
 
   (for/fold ([rs (hash)])
             ([k (hash-keys (VARS))])
