@@ -14,7 +14,8 @@
     (config/c . -> . config/c)
     (displayln ". DONE")
     (hash-set* resource
-               'selfLink (format "dev:~a:~a" (hash-ref resource '$type) (hash-ref resource 'name))))
+               'selfLink (format "dev:~a:~a" (hash-ref resource '$type)
+                                 (hash-ref resource 'name 'no-name))))
 
   (define/contract (readr resource-state)
     (config/c . -> . config/c)

@@ -13,6 +13,7 @@
 (require marv/core/resources)
 (require marv/core/values)
 (require marv/utils/hash)
+(require marv/log)
 
 (provide init-module get-module
          resource-keys resource-ref
@@ -25,7 +26,6 @@
          unwrap-values
          (struct-out ref)
          (struct-out value)
-         ref->id ref->pid
          mod-id->id
          ival ival?
          iref iref?
@@ -120,27 +120,15 @@
      [(list id _ ...) (format "~a" mid)]
      [else (raise (format "~a: Bad reference format" (ref-path ref)))])))
 
-(define (ref->id ref)
-  (string->symbol
-   (match (string-split (symbol->string (ref-path (unpack-value ref))) ".")
-     [(list "$resources" id _ ..1) id]
-     [(list "$drivers" id _ ...) id]
-     [(list id _ ...) id]
-     [else (raise (format "~a: Bad reference format" (ref-path ref)))])))
-
-(define (ref->pid ref)
-  (match (string-split (symbol->string (ref-path (unpack-value ref))) ".")
-    [(list "$resources" id _ ...) (string->symbol (format "$resources.~a" id))]
-    [(list "$drivers" id _ ...) (string->symbol (format "$drivers.~a" id))]
-    [(list id _ ...) (string->symbol (format "$resources.~a" id))]
-    [else (raise (format "~a: Bad reference format" (ref-path ref)))]))
-
-(define (get-ref mod ref)
-  (define ref-spec (ref->list ref))
-  (hash-nref (resource-config (resource-ref mod (car ref-spec))) (drop ref-spec 1)))
 
 (define/contract (deref-resource mod r)
   (rmodule/c resource/c . -> . resource/c)
+
+  (define (get-ref ref)
+    (define-values (res-id attr) (ref-split ref))
+    (unpack-value (hash-nref (resource-config (resource-ref mod res-id)) attr)))
+
   (define (deref-attr _ a)
-    (update-val a (lambda (v) (if (ref? v) (unpack-value(get-ref mod v)) v))))
+    (update-val a (lambda (v) (if (vref? v) (get-ref (unpack-value v)) v))))
+
   (resource (resource-driver-id r) (hash-apply (resource-config r) deref-attr)))
