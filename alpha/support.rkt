@@ -149,13 +149,12 @@
   ; NB return void or the empty hash gets printed!
   (void))
 
-(define defaults
-  (hash 'project (getenv-or-raise "MARV_GCP_PROJECT")
-        'region  (getenv-or-raise "MARV_GCP_REGION")))
-
 (define (tmp-drivers)
-  (hash
-   'dev (init-dev-driver 'dev2)
-   'gcp (init-dev-driver 'dev)
-   'gcp2 (init-gcp 'gcp (gcp-http-transport (getenv-or-raise "GCP_ACCESS_TOKEN"))
-                   )))
+  (if
+   (getenv "MARV_DEV_DRIVER")
+   (hash
+    'dev (init-dev-driver 'dev2)
+    'gcp (init-dev-driver 'dev))
+   (hash
+    'dev (init-dev-driver 'dev)
+    'gcp (init-gcp 'gcp (gcp-http-transport (getenv-or-raise "GCP_ACCESS_TOKEN"))))))

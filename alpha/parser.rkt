@@ -1,6 +1,6 @@
 #lang brag
 
-marv-spec: marv-module*
+marv-spec: module-import* marv-module*
 
 marv-module: /"module" IDENTIFIER ["(" module-parameter+ ")"] /"{" statement* module-return /"}"
 module-parameter: IDENTIFIER
@@ -9,6 +9,8 @@ return-parameter: ( STRING | IDENTIFIER | "type" ) /"=" expression
 
 statement: decl | pprint
 decl: var-decl | res-decl | module-invoke | config-func-decl | type-decl
+
+module-import: /"import" STRING [ "as" IDENTIFIER ]
 
 pprint: /"pprint" expression
 comment: COMMENT
@@ -49,7 +51,7 @@ attr-decl: ( STRING | IDENTIFIER | "type" ) /"=" [ "imm:" ] expression
 reference: DOTTY-IDENT
 
 res-decl: IDENTIFIER /"=" driver-id /":" driver-attr config-expr
-module-invoke: IDENTIFIER /"=" IDENTIFIER /"(" (named-parameter [ /"," ] )+ /")"
+module-invoke: IDENTIFIER /"=" ( MODULE-IDENTIFIER | IDENTIFIER ) /"(" (named-parameter [ /"," ] )+ /")"
 
 ; type is explicitly allowed as it's common, and we need 'type' as a lexical token
 ; also allow STRING to allow user to avoid marv keywords

@@ -2,7 +2,7 @@
 
 (require racket/string)
 (require racket/syntax)
-(require (for-syntax racket/base syntax/parse racket/pretty))
+(require (for-syntax racket/base racket/syntax syntax/parse racket/pretty))
 
 (require racket/pretty)
 
@@ -62,6 +62,13 @@
       [(_ RETURNS ...) (syntax/loc stx
                          (set-return (make-immutable-hasheq (list RETURNS ...))))]
       [else (raise "m-module-return f*")]))
+
+  (define (m-module-import stx)
+    (syntax-parse stx
+      [(_ FILENAME) (syntax/loc stx (require FILENAME)) ]
+      [(_ FILENAME "as" ALIAS) #`(require (prefix-in #,(format-id #f "~a/" #`ALIAS) FILENAME)) ]
+      ; [(_ FILENAME) (syntax/loc stx #`(require #,(format "~a.mrv" 'FILENAME))) ]
+      [else (raise "m-import")]))
 
   (define (m-return-parameter stx)
     (syntax-parse stx
@@ -249,6 +256,7 @@
 (define-syntax module-parameter m-module-parameter)
 (define-syntax module-return m-module-return)
 (define-syntax return-parameter m-return-parameter)
+(define-syntax module-import m-module-import)
 (define-syntax statement m-statement)
 (define-syntax decl m-decl)
 (define-syntax var-decl m-var-decl)
@@ -282,6 +290,7 @@
 
 (provide marv-spec marv-module module-parameter decl var-decl res-decl
          module-invoke named-parameter module-return return-parameter
+         module-import
          config-func-call config-func-decl
          type-decl type-body type-crud-decl type-api-spec
          expression reference statement config-object alist list-attr
