@@ -1,0 +1,47 @@
+#lang marv
+
+module network-base(defaults name) {
+
+    vpc = gcp:compute.network defaults <- {
+
+        # imm: declares that this attribute is immutable; if it changes, then the
+        # resource will need to be recreated.  (this is a work-around because
+        # marv's GCP driver doesn't know which attributes are immutable in GCP)
+        
+        name = imm: name
+        description = strf("VPC for ~a" name)
+        autoCreateSubnetworks = false
+
+        routingConfig = { routingMode = "REGIONAL" }
+    } 
+
+    vpc-defaults = defaults <- {
+
+        # this is a reference to the vpc resource's 'selfLink' value - any resource
+        # that uses this CONFIG-OBJECT will get its 'network' attribute from the
+        # 'vpc' resource. Because it's immutable if the VPC is recreated then the
+        # resource will be too.
+        
+        network = imm: vpc.selfLink
+    }
+
+    primary-sn = gcp:compute.subnetwork vpc-defaults <- {
+        name = strf("~a-primary" name)
+        description = strf("Primary subnet for ~a" name)
+        ipCidrRange =  imm: "10.0.1.0/24"
+    }
+
+    proxy-sn = gcp:compute.subnetwork vpc-defaults <- {
+        name = strf("~a-proxy" name)
+        description = strf("Proxy subnet for ~a" name)
+        ipCidrRange = imm: "10.0.2.0/24"
+        purpose = "REGIONAL_MANAGED_PROXY"
+        role = "ACTIVE"
+    }
+
+    return {
+        vpc = vpc.selfLink
+        primary-subnet = primary-sn.selfLink
+        proxy-subnet = proxy-sn.selfLink
+    }
+}

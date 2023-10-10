@@ -35,7 +35,7 @@
 
 (struct params (required accepted))
 
-(define RESOURCES (make-parameter (lambda oo (list))))
+(define RESOURCES (make-parameter (lambda oo (hash))))
 (define DRIVERS (make-parameter (lambda() (hash))))
 
 (define/contract (init-module f purge?)
@@ -126,7 +126,7 @@
 
   (define (get-ref ref)
     (define-values (res-id attr) (ref-split ref))
-    (unpack-value (hash-nref (resource-config (resource-ref mod res-id)) attr)))
+    (unpack-value (hash-nref (resource-config (resource-ref mod res-id)) (id->list attr))))
 
   (define (deref-attr _ a)
     (update-val a (lambda (v) (if (vref? v) (get-ref (unpack-value v)) v))))

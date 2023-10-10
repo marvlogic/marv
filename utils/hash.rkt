@@ -17,8 +17,9 @@
          hash-drop
          hash-match?)
 
-(define (hash-nref hs ks [def #f])
-  (with-handlers ([exn:fail? (const (cond [(procedure? def) (def)][else def]))])
+(define (hash-nref hs ks [def (lambda() (raise (format "hash-nref failed to find: ~v in ~v" ks hs)))])
+  (with-handlers ([exn:fail? (lambda(e) (cond [(procedure? def) (def)]
+                                              [else def]))])
     (for/fold ([h hs])
               ([k (in-list ks)])
       (hash-ref h k))))
