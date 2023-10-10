@@ -1,6 +1,6 @@
 #lang marv
 
-module network-base(defaults name) {
+module network-base(defaults name primary-cidr proxy-cidr) {
 
     vpc = gcp:compute.network defaults <- {
 
@@ -28,13 +28,13 @@ module network-base(defaults name) {
     primary-sn = gcp:compute.subnetwork vpc-defaults <- {
         name = strf("~a-primary" name)
         description = strf("Primary subnet for ~a" name)
-        ipCidrRange =  imm: "10.0.1.0/24"
+        ipCidrRange =  imm: primary-cidr
     }
 
     proxy-sn = gcp:compute.subnetwork vpc-defaults <- {
         name = strf("~a-proxy" name)
         description = strf("Proxy subnet for ~a" name)
-        ipCidrRange = imm: "10.0.2.0/24"
+        ipCidrRange = imm: proxy-cidr
         purpose = "REGIONAL_MANAGED_PROXY"
         role = "ACTIVE"
     }

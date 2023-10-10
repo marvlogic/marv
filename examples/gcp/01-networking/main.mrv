@@ -10,6 +10,7 @@ module main(name) {
           region = env("MARV_GCP_REGION")
      }
 
-     network = net/network-base(defaults = defaults, name = name)
-     return { xxx = 123 }
+     network = net/network-base(defaults = defaults, name = name, 
+        primary-cidr = "10.0.1.0/24"
+        proxy-cidr = "10.0.2.0/24")
 }

@@ -30,11 +30,10 @@
       [else (raise "nowt")]))
 
   (define (m-marv-module stx)
-    ; getting void?
-    ; (~optional (~seq "return" RETURN) #:defaults ([RETURN #'(hash)])))
     (syntax-parse stx
       ; TODO - handle no-params case
-      [(_ mod-id:expr "(" PARAMS ... ")" STMT ... RETURN)
+      [(_ mod-id:expr "(" PARAMS ... ")" STMT ...
+          (~optional (~seq "return" RETURN) #:defaults ([RETURN #'void])))
        (syntax/loc stx
          (begin
            (define (mod-id resid-prefix mkres params)
@@ -59,15 +58,13 @@
 
   (define (m-module-return stx)
     (syntax-parse stx
-      [(_ RETURNS ...) (syntax/loc stx
-                         (set-return (make-immutable-hasheq (list RETURNS ...))))]
+      [(_ "return" RETURNS ...) (syntax/loc stx (set-return (make-immutable-hasheq (list RETURNS ...))))]
       [else (raise "m-module-return f*")]))
 
   (define (m-module-import stx)
     (syntax-parse stx
       [(_ FILENAME) (syntax/loc stx (require FILENAME)) ]
       [(_ FILENAME "as" ALIAS) #`(require (prefix-in #,(format-id #f "~a/" #`ALIAS) FILENAME)) ]
-      ; [(_ FILENAME) (syntax/loc stx #`(require #,(format "~a.mrv" 'FILENAME))) ]
       [else (raise "m-import")]))
 
   (define (m-return-parameter stx)
