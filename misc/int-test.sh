@@ -1,7 +1,11 @@
 #!/bin/bash
 
 STATE=int-test-state.dat
-RESF=int-test-resources.rkt
+RESF=examples/gcp/01-networking/main.mrv
+
+export MARV_DEV_DRIVER=y
+export MARV_GCP_PROJECT=nosuchproject
+export MARV_GCP_PROJECT=europe-west1
 
 rm $STATE
 
@@ -26,6 +30,6 @@ marv --plan $RESF
 marv --dump $RESF
 
 echo "*** REMOVING ***"
-marv --plan --param skip-define YES $RESF 
-marv --apply --param skip-define YES $RESF 
-marv --dump --param skip-define YES $RESF 
+marv --plan --purge $RESF 
+marv --apply --purge $RESF 
+marv --dump $RESF 
