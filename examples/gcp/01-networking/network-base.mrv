@@ -1,8 +1,19 @@
 #lang marv
 
+
+private module test {
+    bollos = gcp:compute.subnetwork {
+        name = "hard"
+        description = "Primary subnet for ~a"
+        ipCidrRange =  "10.0.4.0/24"
+    }
+}
+
 module network-base(defaults name 
         primary-cidr="10.0.1.0/24" 
         proxy-cidr="10.0.2.0/24") {
+
+    x = test()
 
     vpc = gcp:compute.network defaults <- {
 
@@ -46,8 +57,4 @@ module network-base(defaults name
         primary-subnet = primary-sn.selfLink
         proxy-subnet = proxy-sn.selfLink
     }
-}
-
-private module test(name) {
-
 }

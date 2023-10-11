@@ -51,7 +51,7 @@ attr-decl: ( STRING | IDENTIFIER | "type" ) /"=" [ "imm:" ] expression
 reference: DOTTY-IDENT
 
 res-decl: IDENTIFIER /"=" driver-id /":" driver-attr config-expr
-module-invoke: IDENTIFIER /"=" ( MODULE-IDENTIFIER | IDENTIFIER ) /"(" (named-parameter [ /"," ] )+ /")"
+module-invoke: IDENTIFIER /"=" ( MODULE-IDENTIFIER | IDENTIFIER ) /"(" (named-parameter [ /"," ] )* /")"
 
 ; type is explicitly allowed as it's common, and we need 'type' as a lexical token
 ; also allow STRING to allow user to avoid marv keywords

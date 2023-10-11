@@ -32,7 +32,9 @@
   (define (m-marv-module stx)
     (syntax-parse stx
       ; TODO - handle no-params case
-      [(_ (~optional (~and private? "private")) mod-id:expr "(" PARAMS ... ")"
+      [(_ (~optional (~and private? "private"))
+          mod-id:expr (~optional (~seq "(" PARAMS ... ")")
+                                 #:defaults ([(PARAMS 1) null]))
           STMT ...
           (~optional (~seq "return" RETURN)
                      #:defaults ([RETURN #'void])))
