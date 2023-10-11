@@ -15,7 +15,7 @@
          get-var
          def-res
          module-call
-         resource-var? config-overlay hash-nref handle-ref
+         resource-var? config-overlay config-reduce hash-nref handle-ref
          with-module-ctx get-param
          register-type)
 
@@ -56,8 +56,11 @@
              (hash-set hs new-id val)
              )))
 
-(define (try-resolve-future-ref id)
-  (hash-ref (RETURNS) id (lambda() (future-ref id))))
+(define (try-resolve-future-ref id #:fail-on-missing (fail-on-missing #f))
+  (define fail (if fail-on-missing
+                   (lambda() (error:excn (format "future-ref not found: ~a~nin ~a" id (RETURNS))))
+                   (lambda() (log-marv-warn "future-ref not yet resolved (~a)" id)(future-ref id))))
+  (hash-ref (RETURNS) id fail))
 
 (define (def-res id drv attr v)
   (define r (hash-set* v '$driver drv '$type (string->symbol (string-join (map symbol->string attr) "."))))
@@ -75,7 +78,7 @@
   (future-ref #f))
 
 (define (config-overlay left right) (hash-union left right #:combine (lambda (v0 _) v0)))
-; (define (config-take cfg attrs) (hash-take cfg attrs))
+(define (config-reduce cfg attrs) (hash-take cfg attrs))
 
 (define (make-full-ref full-id attrs)
   (string->symbol (format "~a/~a" full-id attrs)))
@@ -97,10 +100,10 @@
   (log-marv-debug "gen-resources for: ~a" (VARS))
 
   (define (handle-future-ref k v)
-    ; TODO - what if not found?
-    (if (future-ref? v)
-        (try-resolve-future-ref (future-ref-ref v))
-        v))
+    (update-val v (lambda(uv)
+                    (if (future-ref? uv)
+                        (try-resolve-future-ref (future-ref-ref uv) #:fail-on-missing #t)
+                        uv))))
 
   (define (make-resource v)
     (mkres (hash-ref v '$driver)

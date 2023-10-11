@@ -195,7 +195,7 @@
   (define (m-config-take stx)
     (syntax-parse stx
       ; TODO - why not support fn?
-      [(_ CFEXPR ATTRLIST) (syntax/loc stx (hash-take CFEXPR ATTRLIST))]
+      [(_ CFEXPR ATTRLIST) (syntax/loc stx (config-reduce CFEXPR ATTRLIST))]
       [else (raise "m-config-take")]))
 
   (define (m-config-ident stx)

@@ -28,6 +28,7 @@
 (define (unpack-value v) (if (value? v) (value-val v) v))
 
 ; TODO - some unit tests here.
+; TODO - needs to be used more often (or replaced with suitable mechanism)
 (define (update-val v fn)
   (if (value? v)
       (value (fn (value-val v)) (value-flags v))

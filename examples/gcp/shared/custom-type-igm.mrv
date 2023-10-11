@@ -1,0 +1,50 @@
+#lang marv
+
+# Custom types
+# 
+# Background: Marv doesn't support the entire API surface; e.g. some parts of
+# GCP API don't map nicely onto a standard CRUD lifecycle, for example the
+# ability to manually add instances to an instanceGroupManager - it's in the API
+# but needs custom coding.
+# 
+# Marv allows you to specify custom resource types using any of the available
+# API.
+
+# This example uses the 'compute.instanceGroupManagers.createInstances' and
+# 'compute.instanceGroupManagers.deleteInstances' API calls:
+#
+# https://www.googleapis.com/discovery/v1/apis/compute/beta/rest
+#
+
+# These are the transformers that will reformat the resource to fit the API.
+
+# spec '<<' [attr ...] yields a config that has only the listed attributes
+# taken from 'spec'
+
+module igm-custom {
+    create-transform(spec) = spec << [ name project zone instanceGroupManager ] <- { 
+                instances = [ spec << [ name preservedState ] ]
+    }
+
+    delete-transform(spec) = spec << [ name project zone instanceGroupManager ] <- {
+        instances = [ strf("zones/~a/instances/~a" spec.zone spec.name) ]
+    }
+
+    # Register the custom type (only create/delete supported for now). The example
+    # uses 'compute.my-custom-type.instance' as the custom type ID, but it
+    # could be anything prefixed with 'compute.'
+
+    type gcp:compute.my-custom-type.instance = {
+        # The format is <method> = <api-id>:<transformer-func>. 
+        
+        # The <api-id> is the ID of the actual API in the GCP API that
+        # the custom type will invoke:
+
+        create = compute.instanceGroupManagers.createInstances:create-transform
+        delete = compute.instanceGroupManagers.deleteInstances:delete-transform
+    }
+
+    # Now we can use the custom type to create two instances under
+    # instance-group-manager1
+
+}
