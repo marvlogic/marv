@@ -2,8 +2,8 @@
 
 marv-spec: module-import* marv-module*
 
-marv-module: /"module" IDENTIFIER ["(" module-parameter+ ")"] /"{" statement* [ module-return ] /"}"
-module-parameter: IDENTIFIER
+marv-module: [ "private" ] /"module" IDENTIFIER ["(" module-parameter+ ")"] /"{" statement* [ module-return ] /"}"
+module-parameter: IDENTIFIER [ "=" expression ]
 module-return: "return" /"{" return-parameter+ /"}"
 return-parameter: ( STRING | IDENTIFIER | "type" ) /"=" expression
 

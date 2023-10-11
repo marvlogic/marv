@@ -1,6 +1,8 @@
 #lang marv
 
-module network-base(defaults name primary-cidr proxy-cidr) {
+module network-base(defaults name 
+        primary-cidr="10.0.1.0/24" 
+        proxy-cidr="10.0.2.0/24") {
 
     vpc = gcp:compute.network defaults <- {
 
@@ -44,4 +46,8 @@ module network-base(defaults name primary-cidr proxy-cidr) {
         primary-subnet = primary-sn.selfLink
         proxy-subnet = proxy-sn.selfLink
     }
+}
+
+private module test(name) {
+
 }

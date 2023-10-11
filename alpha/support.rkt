@@ -20,7 +20,7 @@
          register-type)
 
 (define (error:excn msg)
-  (raise (format "ERROR: ~a\n at ~a:~a" msg 1 2))) ;(syntax-source stx) (syntax-line stx)))
+  (raise (format "ERROR at ~a:~a :  ~a" 1 2 msg))) ;(syntax-source stx) (syntax-line stx)))
 
 (define PARAMS (make-parameter (hash)))
 (define MODULE-PREFIX (make-parameter #f))
@@ -35,7 +35,9 @@
                  [MODULE-PREFIX id-prefix ])
     (proc)))
 
-(define (get-param p) (hash-ref (PARAMS) p))
+(define (get-param p [def (lambda()
+                            (error:excn (format "Parameter '~a' has not received a value" p)))])
+  (hash-ref (PARAMS) p def))
 
 (define (set-var id v)
   (when (hash-has-key? (VARS) id) (error:excn (format "~a is already defined" id)))

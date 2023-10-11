@@ -32,8 +32,9 @@
   (define (m-marv-module stx)
     (syntax-parse stx
       ; TODO - handle no-params case
-      [(_ mod-id:expr "(" PARAMS ... ")" STMT ...
+      [(_ (~optional (~and private? "private")) mod-id:expr "(" PARAMS ... ")" STMT ...
           (~optional (~seq "return" RETURN) #:defaults ([RETURN #'void])))
+       #:with MAYBE-PRIVATE (if (attribute private?) #'(void) #'(provide mod-id))
        (syntax/loc stx
          (begin
            (define (mod-id resid-prefix mkres params)
@@ -49,11 +50,12 @@
                    )))
              (log-marv-debug "** generation completed for ~a.~a" resid-prefix 'mod-id)
              rs)
-           (provide mod-id)))]
+           MAYBE-PRIVATE))]
       [else (raise "invalid module spec m-marv-module")]))
 
   (define (m-module-parameter stx)
     (syntax-parse stx
+      [(_ PARAMETER "=" EXPR) (syntax/loc stx (define PARAMETER (get-param 'PARAMETER EXPR)))]
       [(_ PARAMETER) (syntax/loc stx (define PARAMETER (get-param 'PARAMETER)))]))
 
   (define (m-module-return stx)
