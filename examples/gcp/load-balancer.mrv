@@ -149,18 +149,15 @@ instance-template = gcp:compute.instanceTemplate f-instance-template("f1-micro")
 
 f-instance-group-manager(name size zone template) = defaults <- {
      name = imm: name
-     zone = imm: zone
+     zone = imm: strf("~a-~a" defaults.region zone)
      namedPorts = imm:[ {port = 80 name = "http" }]
      instanceTemplate = imm: template
      baseInstanceName = name
      targetSize = size
 }
 
-# NB this zone is hard-coded and needs to correspond with the 'MARV_GCP_REGION'
-# env-variable (until MARV-speak gets string-manipulation functions)
-
 instance-group-manager1 = gcp:compute.instanceGroupManager 
-     f-instance-group-manager("example" 4 "europe-west1-b" instance-template.selfLink) <- {
+     f-instance-group-manager("example" 4 "b" instance-template.selfLink) <- {
 #          statefulPolicy = {
 #               preservedState = {
 #                    disks = {

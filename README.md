@@ -15,30 +15,30 @@ useful for managing small development environments. You would have to manage the
 state file locally.
 
 The code is not in the best of places - consider it very 'prototypey' :)
-(though it is improving by the day)
+(though it is improving).
 
 This is my first major project using Racket, which I'm still learning, so the
 structure of it is very much in-flux and subject to __significant__ change. 
 
 ## Current Limitations
 
-There's a lot of work left to reach a good point to release it. There are a load
-of features that need to be added.
+There's a lot of work left to reach a good beta release point. That said, the
+current feature set allows fairly complex configurations to be managed, albeit
+with a local state file.
 
-The most important ones are:
+The most important issues/omissions are:
 
-- A new DSL, in alpha quality. Subject to change. Lacking in features, such as
-loops, modules and parameters. All are planned though.
+- A new DSL subject to change, very lacking in features, such as loops and
+conditions. All are planned though.
 
-- The model doesn't know about which fields are immutable on GCP resources; you
+- The model doesn't yet know about which fields are immutable on GCP resources; you
 need to specify these manually (see attributes marked `imm:` in the
-[example](examples/gcp/load-balancer.mrv)).
+[examples](examples/gcp/shared/network-base.mrv)).
 
 - Only supports GCP compute and storage APIs, more coming very soon.
 
-- Barely any error checking, most of the time the only error checking is
-performed by GCP itself during an `apply` phase. Parser errors are likely to be
-obtuse.
+- Barely any error checking, and errors are somewhat obtuse most of the time; a
+lot of checking is performed by GCP itself during an `apply` phase. 
 
 - Only supports local state files
 
@@ -115,25 +115,16 @@ usage: command.rkt [ <option> ... ] <module-file>
     
 # Marv's DSL (marv-speak)
 
-Have a read of the [example](examples/gcp/load-balancer.mrv), which is fairly
-well documented.
+Have a look at the [examples](examples/gcp/), which are fairly well documented.
 
-The detailed marv language specification is written in
-[brag](https://docs.racket-lang.org/brag/index.html) and is [defined here](alpha/parser.rkt).
-
-You can't pass parameters into the example, because the DSL lacks support for
-this at the moment.
-
-NB the example relies on the europe-west1 region; you need to change the
-environment variable and the example file itself to use another region.
+The marv language specification is written in
+[brag](https://docs.racket-lang.org/brag/index.html) and is [defined
+here](alpha/parser.rkt).
 
 # Running the example
 
     # GCP project must already exist
     export MARV_GCP_PROJECT=...
-
-    # Note that this is dependent on the value in example's instance-group-manager, if
-    # you change this then change the example's value as well
     export MARV_GCP_REGION=europe-west1
 
     # Take care that you refresh the token regularly - it expires after 1 hour
@@ -142,13 +133,13 @@ environment variable and the example file itself to use another region.
     export GCP_ACCESS_TOKEN=`gcloud auth print-access-token`
 
     alias marv="racket command.rkt"
-    marv --plan examples/gcp/load-balancer.mrv
-    marv --apply examples/gcp/load-balancer.mrv 
+    marv --plan examples/gcp/01-networking.mrv
+    marv --apply examples/gcp/01-networking.mrv
 
     # Delete all resources
-    marv --purge --apply examples/gcp/load-balancer.mrv 
+    marv --purge --apply examples/gcp/01-networking.mrv
 
-The state is stored locally in `load-balancer.state.dat` by default. Use `-s` to
+The state is stored locally in `01-networking.state.dat` by default. Use `-s` to
 override this.
 
 Cached information is held in the `.marv` directory - this is mainly for holding

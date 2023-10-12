@@ -1,7 +1,6 @@
-
 #lang marv
 
-module instance-group(defaults name vpc subnet) {
+module instance-group(defaults name zone="b" vpc subnet) {
     node-disks = [ {
         boot = true
         autoDelete = true
@@ -18,23 +17,26 @@ module instance-group(defaults name vpc subnet) {
 
     ################################################################################
     # variables can be parameterised; let's call the parameterised-variable things
-    # 'functions' :) 
-
+    # 'functions' :)  
+    
+    # Unlike modules, the parameters are not named when the function is called;
+    # i.e. they are positional only.
+    
     # the parameters can be referenced inside the CONFIG-OBJECTS
 
     f-instance-template(machine-type) = defaults <- {
-    properties = {
-        machineType = machine-type
-        tags = { items = [ "load-balanced-backend" ] }
-        networkInterfaces = [ 
-            {
-                network = imm:vpc
-                subnetwork = imm:subnet
-                accessConfigs = [ { type = "ONE_TO_ONE_NAT" } ] 
-            } 
-        ]
-        disks = node-disks
-    }
+        properties = {
+            machineType = machine-type
+            tags = { items = [ "load-balanced-backend" ] }
+            networkInterfaces = [ 
+                {
+                    network = imm:vpc
+                    subnetwork = imm:subnet
+                    accessConfigs = [ { type = "ONE_TO_ONE_NAT" } ] 
+                } 
+            ]
+            disks = node-disks
+        }
     }
 
     instance-template = gcp:compute.instanceTemplate f-instance-template("f1-micro") <- { name = "instance-template1"}
@@ -51,11 +53,8 @@ module instance-group(defaults name vpc subnet) {
         targetSize = size
     }
 
-    # NB this zone is hard-coded and needs to correspond with the 'MARV_GCP_REGION'
-    # env-variable (until MARV-speak gets string-manipulation functions)
-
     igm = gcp:compute.instanceGroupManager 
-        f-instance-group-manager(strf("~a-igm" name) 4 "europe-west1-b" instance-template.selfLink) <- {
+        f-instance-group-manager(strf("~a-igm" name) 4 strf("~a-~a" defaults.region zone) instance-template.selfLink) <- {
     #          statefulPolicy = {
     #               preservedState = {
     #                    disks = {

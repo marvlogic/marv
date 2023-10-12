@@ -16,7 +16,9 @@ module main(name = "example-03-custom-type") {
     ig = ig/instance-group(defaults = defaults, name = name, vpc = network.vpc, subnet = network.primary-subnet)
 
     # The call to igm-custom registers the custom type, which can then be used
-    # to manage the two instances.
+    # to manage the two instances. This module must be invoked before the
+    # instances can be managed - if it's not available then marv won't be able
+    # to delete the instances!
     
     igcst = ctigm/igm-custom()
 
