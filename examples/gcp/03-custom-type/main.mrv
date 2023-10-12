@@ -23,10 +23,10 @@ module main(name = "example-03-custom-type") {
         zone = imm: ig.zone
     }
 
-#   instance2 = gcp:compute.my-custom-type.instance defaults <- {
-#       name = "example-marv2"
-#       instanceGroupManager = imm: ig.name
-#       zone = imm: ig.zone
-#   }
+    instance2 = gcp:compute.my-custom-type.instance defaults <- {
+        name = "example-marv2"
+        instanceGroupManager = imm: ig.name
+        zone = imm: ig.zone
+    }
 
 }

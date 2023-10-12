@@ -9,40 +9,45 @@
 (require (prefix-in core: marv/core/resources))
 
 (provide gen-resources gen-drivers getenv-or-raise
-         hash-union
-         set-var
-         set-return
-         get-var
          def-res
+         set-return
          module-call
-         resource-var? config-overlay config-reduce hash-nref handle-ref
+         config-overlay config-reduce hash-nref handle-ref
          with-module-ctx get-param
          register-type)
 
 (define (error:excn msg)
   (raise (format "ERROR at ~a:~a :  ~a" 1 2 msg))) ;(syntax-source stx) (syntax-line stx)))
 
-(define PARAMS (make-parameter (hash)))
+(define (init-resources) (list null (hash)))
+(define (add-resource id res)
+  (define idx (car (RESOURCES)))
+  (define hs (cadr (RESOURCES)))
+  (when (hash-has-key? hs id) (error:excn (format "~a is already defined" id)))
+  (RESOURCES (list (cons id idx) (hash-set hs id res))))
+(define (resource-ids) (reverse (car (RESOURCES))))
+(define (get-resource id) (hash-ref (cadr (RESOURCES)) id))
+
+(define RESOURCES (make-parameter (init-resources)))
+
 (define MODULE-PREFIX (make-parameter #f))
-(define VARS (make-parameter (hash)))
-
 (define (prefix-mod-id i) (core:prefix-id (MODULE-PREFIX) i))
-
 (define (with-module-ctx id-prefix params proc)
   (log-marv-debug "Switching into module-context ~a" id-prefix)
   (parameterize ([PARAMS params]
-                 [VARS (hash)]
+                 [RESOURCES (init-resources)]
                  [MODULE-PREFIX id-prefix ])
     (proc)))
 
+(define PARAMS (make-parameter (hash)))
 (define (get-param p [def (lambda()
-                            (error:excn (format "Parameter '~a' has not received a value" p)))])
+                            (error:excn (format "Parameter '~a' has not been assigned" p)))])
   (hash-ref (PARAMS) p def))
 
-(define (set-var id v)
-  (when (hash-has-key? (VARS) id) (error:excn (format "~a is already defined" id)))
-  (VARS (hash-set (VARS) id v)))
-(define (get-var id) (hash-ref (VARS) id))
+(define (def-res id drv attr v)
+  (define r (hash-set* v '$driver drv '$type (string->symbol (string-join (map symbol->string attr) "."))))
+  (add-resource id r)
+  r)
 
 (define RETURNS (make-parameter (hash)))
 (define (set-return v)
@@ -58,23 +63,18 @@
 
 (define (try-resolve-future-ref id #:fail-on-missing (fail-on-missing #f))
   (define fail (if fail-on-missing
-                   (lambda() (error:excn (format "future-ref not found: ~a~nin ~a" id (RETURNS))))
+                   (lambda() (log-marv-error "future-ref not found: ~a~n  in ~a" id (RETURNS))
+                     (error:excn "future-ref not found"))
                    (lambda() (log-marv-warn "future-ref not yet resolved (~a)" id)(future-ref id))))
   (hash-ref (RETURNS) id fail))
 
-(define (def-res id drv attr v)
-  (define r (hash-set* v '$driver drv '$type (string->symbol (string-join (map symbol->string attr) "."))))
-  (set-var id r)
-  r)
-
 (define (resource? res) (and (hash? res) (hash-has-key? res '$driver)))
-(define (resource-var? id) (resource? (hash-ref (VARS) id)))
 
 (struct future-ref (ref) #:prefab)
 
 (define (module-call var-id mod-proc params)
   (log-marv-debug "Registering future invocation of ~a=~a(~a)" (prefix-mod-id var-id) mod-proc params)
-  (set-var var-id (lambda(id-prefix mkres) (mod-proc (prefix-mod-id var-id) mkres params)))
+  (add-resource var-id (lambda(id-prefix mkres) (mod-proc (prefix-mod-id var-id) mkres params)))
   (future-ref #f))
 
 (define (config-overlay left right) (hash-union left right #:combine (lambda (v0 _) v0)))
@@ -97,7 +97,7 @@
         [else (raise "unsupported ref type")]))
 
 (define (gen-resources mkres)
-  (log-marv-debug "gen-resources for: ~a" (VARS))
+  (log-marv-debug "gen-resources called for these visible resources: ~a" (RESOURCES))
 
   (define (handle-future-ref k v)
     (update-val v (lambda(uv)
@@ -106,13 +106,12 @@
                         uv))))
 
   (define (make-resource v)
-    (mkres (hash-ref v '$driver)
-           (hash-apply (hash-remove v '$driver)
-                       handle-future-ref)))
+    (log-marv-debug "  generating ~a" v)
+    (mkres (hash-ref v '$driver) (hash-apply (hash-remove v '$driver) handle-future-ref)))
 
   (for/fold ([rs (hash)])
-            ([k (hash-keys (VARS))])
-    (define res (hash-ref (VARS) k))
+            ([k (in-list (resource-ids))])
+    (define res (get-resource k))
     (cond [(resource? res)
            (hash-set rs (prefix-mod-id k) (make-resource res))]
           [(procedure? res)

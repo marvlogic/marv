@@ -121,6 +121,7 @@
      [else (raise (format "~a: Bad reference format" (ref-path ref)))])))
 
 
+; TODO#4 come back to this
 (define/contract (deref-resource mod r)
   (rmodule/c resource/c . -> . resource/c)
 

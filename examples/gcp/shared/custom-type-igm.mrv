@@ -47,4 +47,7 @@ module igm-custom {
     # Now we can use the custom type to create two instances under
     # instance-group-manager1
 
+    return {
+        type = "compute.my-custom-type.instance"
+    }
 }
