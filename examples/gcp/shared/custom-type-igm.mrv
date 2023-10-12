@@ -10,18 +10,25 @@
 # Marv allows you to specify custom resource types using any of the available
 # API.
 
+# Ideally we'd return the custom type from this module, so it can be linked to
+# resources, but for now you have to consider drivers and their custom types as
+# global things. This also means that the type has to be available at all times
+# - if you want to delete a custom resource, the type has to be registered.
+
 # This example uses the 'compute.instanceGroupManagers.createInstances' and
 # 'compute.instanceGroupManagers.deleteInstances' API calls:
 #
 # https://www.googleapis.com/discovery/v1/apis/compute/beta/rest
 #
 
-# These are the transformers that will reformat the resource to fit the API.
-
-# spec '<<' [attr ...] yields a config that has only the listed attributes
-# taken from 'spec'
 
 module igm-custom {
+
+    # These are the transformers that will reformat the resource to fit the API.
+
+    # spec '<<' [attr ...] yields a config that has only the listed attributes
+    # taken from 'spec'
+
     create-transform(spec) = spec << [ name project zone instanceGroupManager ] <- { 
                 instances = [ spec << [ name preservedState ] ]
     }
@@ -30,12 +37,17 @@ module igm-custom {
         instances = [ strf("zones/~a/instances/~a" spec.zone spec.name) ]
     }
 
-    # Register the custom type (only create/delete supported for now). The example
-    # uses 'compute.my-custom-type.instance' as the custom type ID, but it
-    # could be anything prefixed with 'compute.'
-
+    # Register the custom type. The example uses the name
+    # 'compute.my-custom-type.instance' as the custom type ID, but it could be
+    # anything prefixed with 'compute.'
+    
+    # Remember that the custom type is global; once this module has been invoked
+    # the type will be available everywhere (but it must be invoked before the
+    # custom type can be used).
+    
     type gcp:compute.my-custom-type.instance = {
         # The format is <method> = <api-id>:<transformer-func>. 
+        # <method> = create or delete
         
         # The <api-id> is the ID of the actual API in the GCP API that
         # the custom type will invoke:
@@ -44,10 +56,5 @@ module igm-custom {
         delete = compute.instanceGroupManagers.deleteInstances:delete-transform
     }
 
-    # Now we can use the custom type to create two instances under
-    # instance-group-manager1
-
-    return {
-        type = "compute.my-custom-type.instance"
-    }
+    
 }

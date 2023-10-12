@@ -15,6 +15,9 @@ module main(name = "example-03-custom-type") {
     network = net/network-base(defaults = defaults, name = name)
     ig = ig/instance-group(defaults = defaults, name = name, vpc = network.vpc, subnet = network.primary-subnet)
 
+    # The call to igm-custom registers the custom type, which can then be used
+    # to manage the two instances.
+    
     igcst = ctigm/igm-custom()
 
     instance1 = gcp:compute.my-custom-type.instance defaults <- {
