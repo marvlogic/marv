@@ -1,8 +1,8 @@
 #lang marv
 
-import "../shared/network-base.mrv" as net
-import "../shared/instance-group.mrv" as ig
-import "../shared/custom-type-igm.mrv" as ctigm
+import "shared/network-base.mrv" as net
+import "shared/instance-group.mrv" as ig
+import "shared/custom-type-igm.mrv" as ctigm
 
 module main(name = "example-03-custom-type") {
 

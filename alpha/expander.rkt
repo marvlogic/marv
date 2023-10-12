@@ -31,7 +31,6 @@
 
   (define (m-marv-module stx)
     (syntax-parse stx
-      ; TODO - handle no-params case
       [(_ (~optional (~and private? "private"))
           mod-id:expr (~optional (~seq "(" PARAMS ... ")")
                                  #:defaults ([(PARAMS 1) null]))
@@ -194,7 +193,6 @@
 
   (define (m-config-take stx)
     (syntax-parse stx
-      ; TODO - why not support fn?
       [(_ CFEXPR ATTRLIST) (syntax/loc stx (config-reduce CFEXPR ATTRLIST))]
       [else (raise "m-config-take")]))
 

@@ -3,7 +3,7 @@
 # Importing another marv module set for use in this one. In this example the
 # modules that are imported will be prefixed with 'net/' 
 
-import "../shared/network-base.mrv" as net
+import "shared/network-base.mrv" as net
 
 # The top-level module file (the one you'll specify on the command-line) must
 # include a 'main' module. The main module's parameters will be passed on the

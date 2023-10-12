@@ -103,9 +103,7 @@
 
 (define/contract (unwrap-values res)
   (resource/c . -> . resource/c)
-
   (define (unwrap k v)  (unpack-value v))
-
   (resource (resource-driver-id res) (hash-apply (resource-config res) unwrap)))
 
 ; TODO - NB, the $resources/$drivers definition stuff has been left in for now,
@@ -119,7 +117,6 @@
      [(list id _ ...) (format "~a" mid)]
      [else (raise (format "~a: Bad reference format" (ref-path ref)))])))
 
-
 (define/contract (deref-resource mod r)
   (rmodule/c resource/c . -> . resource/c)
 
@@ -127,8 +124,7 @@
     (define-values (res-id attr) (ref-split ref))
     (unpack-value (hash-nref (resource-config (resource-ref mod res-id)) (id->list attr))))
 
-  ; TODO#4 come back to this - unpacking and vref? not needed?
   (define (deref-attr _ a)
-    (update-val a (lambda (v) (if (vref? v) (get-ref (unpack-value v)) v))))
+    (update-val a (lambda (v) (if (ref? v) (get-ref v) v))))
 
   (resource (resource-driver-id r) (hash-apply (resource-config r) deref-attr)))
