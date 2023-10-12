@@ -55,9 +55,9 @@
 
 (printf "Using state file: ~a\n" (STATE-FILE))
 (load-state (STATE-FILE))
-(init-module RESOURCES (PURGE))
+(init-module RESOURCES)
 
-(define modl (get-module (PARAMS)))
+(define modl (get-module (PARAMS) (PURGE)))
 
 (cond
   [(SHOW-STATE-IDS)

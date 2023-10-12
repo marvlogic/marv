@@ -18,7 +18,6 @@
          (struct-out rmodule)
          (struct-out attribute))
 
-
 (struct attribute (name value) #:prefab)
 (struct resource (driver-id config) #:prefab)
 

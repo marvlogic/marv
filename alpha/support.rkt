@@ -24,8 +24,9 @@
   (define idx (car (RESOURCES)))
   (define hs (cadr (RESOURCES)))
   (when (hash-has-key? hs id) (error:excn (format "~a is already defined" id)))
-  (RESOURCES (list (cons id idx) (hash-set hs id res))))
-(define (resource-ids) (reverse (car (RESOURCES))))
+  (RESOURCES (list (cons id idx) (hash-set hs id res)))
+  res)
+(define (ordered-resource-ids) (reverse (car (RESOURCES))))
 (define (get-resource id) (hash-ref (cadr (RESOURCES)) id))
 
 (define RESOURCES (make-parameter (init-resources)))
@@ -46,8 +47,7 @@
 
 (define (def-res id drv attr v)
   (define r (hash-set* v '$driver drv '$type (string->symbol (string-join (map symbol->string attr) "."))))
-  (add-resource id r)
-  r)
+  (add-resource id r))
 
 (define RETURNS (make-parameter (hash)))
 (define (set-return v)
@@ -74,7 +74,9 @@
 
 (define (module-call var-id mod-proc params)
   (log-marv-debug "Registering future invocation of ~a=~a(~a)" (prefix-mod-id var-id) mod-proc params)
-  (add-resource var-id (lambda(id-prefix mkres) (mod-proc (prefix-mod-id var-id) mkres params)))
+  (add-resource var-id (lambda(id-prefix mkres)
+                         (log-marv-debug "calling ~a (~a)" var-id mod-proc)
+                         (mod-proc (prefix-mod-id var-id) mkres params)))
   (future-ref #f))
 
 (define (config-overlay left right) (hash-union left right #:combine (lambda (v0 _) v0)))
@@ -84,14 +86,14 @@
   (string->symbol (format "~a/~a" full-id attrs)))
 
 (define (handle-ref tgt id . ks)
+  (log-marv-debug "handle-ref ~a.~a -> ~a" id ks tgt)
   (define ksx (map syntax-e ks))
-  (define full-ref (make-full-ref (prefix-mod-id id) (core:list->id ksx)))
-  (log-marv-debug "Handle ref: ~a ~a (full-ref=~a)" id ksx full-ref)
+  (define (full-ref) (make-full-ref (prefix-mod-id id) (core:list->id ksx)))
 
-  (cond [(resource? tgt) (ref full-ref)]
+  (cond [(resource? tgt) (ref (full-ref))]
         [(hash? tgt) (hash-nref tgt ksx)]
         [(future-ref? tgt)
-         (define resolved (try-resolve-future-ref full-ref))
+         (define resolved (try-resolve-future-ref (full-ref)))
          (log-marv-debug "(future-ref, being re-linked to ~a)" resolved)
          resolved]
         [else (raise "unsupported ref type")]))
@@ -110,7 +112,7 @@
     (mkres (hash-ref v '$driver) (hash-apply (hash-remove v '$driver) handle-future-ref)))
 
   (for/fold ([rs (hash)])
-            ([k (in-list (resource-ids))])
+            ([k (in-list (ordered-resource-ids))])
     (define res (get-resource k))
     (cond [(resource? res)
            (hash-set rs (prefix-mod-id k) (make-resource res))]

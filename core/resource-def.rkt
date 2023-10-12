@@ -38,21 +38,20 @@
 (define RESOURCES (make-parameter (lambda oo (hash))))
 (define DRIVERS (make-parameter (lambda() (hash))))
 
-(define/contract (init-module f purge?)
-  (string? boolean? . -> . void?)
+(define/contract (init-module f)
+  (string? . -> . void?)
   (define rel-mod (find-relative-path (current-directory) f) )
   (DRIVERS (dynamic-require rel-mod 'drivers))
-  (unless purge?
-    (RESOURCES (dynamic-require rel-mod 'main)))
+  (RESOURCES (dynamic-require rel-mod 'main))
   (void))
 
-(define/contract (get-module params)
-  ((hash/c symbol? string?) . -> . rmodule/c)
+(define/contract (get-module params purge?)
+  ((hash/c symbol? string?) boolean? . -> . rmodule/c)
   ; (validate-params params)
   (define driver (make-driver-for-set ((DRIVERS))))
   (define (mk-resource driver-id config) (resource driver-id (driver driver-id 'validate config)))
   (define resources ((RESOURCES) 'main mk-resource params))
-  (mk-rmodule ((DRIVERS)) resources))
+  (mk-rmodule ((DRIVERS)) (if purge? (hash) resources)))
 
 (define (make-keyword-params params)
   ; TODO: test for check that #t (sorting) works
@@ -121,7 +120,6 @@
      [else (raise (format "~a: Bad reference format" (ref-path ref)))])))
 
 
-; TODO#4 come back to this
 (define/contract (deref-resource mod r)
   (rmodule/c resource/c . -> . resource/c)
 
@@ -129,6 +127,7 @@
     (define-values (res-id attr) (ref-split ref))
     (unpack-value (hash-nref (resource-config (resource-ref mod res-id)) (id->list attr))))
 
+  ; TODO#4 come back to this - unpacking and vref? not needed?
   (define (deref-attr _ a)
     (update-val a (lambda (v) (if (vref? v) (get-ref (unpack-value v)) v))))
 
