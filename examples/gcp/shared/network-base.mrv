@@ -1,9 +1,37 @@
 #lang marv
 
+# Modules can accept parameters, each of which has an optional default value
+# Parameters can be separated by commas if you want, but they are currently
+# optional.
+
 module network-base(defaults name 
         primary-cidr="10.0.1.0/24" 
         proxy-cidr="10.0.2.0/24") {
 
+    # resources are declared using the syntax:
+    #    <res-id> = <driver-id>:<type> CONFIG-EXPRESSION
+
+    # <res-id> is immutable - you can't change a resource's ident without destroying
+    # and recreating it.
+
+    # <driver-id> - two drivers are supported for now: gcp and dev, and they are
+    # currently hard-coded into marv. 
+
+    # <type> - driver-specific resource type 
+
+    # A CONFIG-EXPRESSION can be a CONFIG-OBJECT or it can be a
+    # merge of CONFIG-OBJECTS. There are two merge operations:
+    #
+    #   a -> b   # a is merged over b, with a's attributes taking priority
+    #   a <- b   # b is merged over a, with b's attributes taking priority
+    #
+    # (the object with priority is on the 'greater-than' side of the <- or ->)
+    #
+    # a and b can be literal objects, variables or expressions that create objects.
+
+    # So here we will create a VPC network, using the 'defaults' as a basis but
+    # merging them with the CONFIG-OBJECT (between { and })
+    
     vpc = gcp:compute.network defaults <- {
 
         # imm: declares that this attribute is immutable; if it changes, then the
@@ -11,11 +39,17 @@ module network-base(defaults name
         # marv's GCP driver doesn't know which attributes are immutable in GCP)
         
         name = imm: name
+
+        # strf is a string-template function, '~a' is replaced by 'name'
         description = strf("VPC for ~a" name)
         autoCreateSubnetworks = false
 
         routingConfig = { routingMode = "REGIONAL" }
     } 
+
+    ################################################################################
+    # the result of a CONFIG-EXPRESSION is another CONFIG-OBJECT which can also be
+    # assigned to a variable and re-used.
 
     vpc-defaults = defaults <- {
 
@@ -41,6 +75,7 @@ module network-base(defaults name
         role = "ACTIVE"
     }
 
+    # lists are space separated
     google-source-range = [ "130.211.0.0/22" "35.191.0.0/16" ]
     
     fw-health-check = gcp:compute.firewall vpc-defaults <- {
@@ -61,6 +96,8 @@ module network-base(defaults name
         direction = "INGRESS"
     }
 
+    # a module can provide return values to its caller
+    
     return {
         vpc = vpc.selfLink
         primary-subnet = primary-sn.selfLink

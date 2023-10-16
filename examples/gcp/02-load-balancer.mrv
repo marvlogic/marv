@@ -11,10 +11,6 @@ module main(name = "example-02-load-balancer") {
         region = env("MARV_GCP_REGION")
     }
 
-    # Call the imported module to create the resources that it contains
-    # Attributes are passed as named pairs (x=y) and can be optionally separated
-    # by commas.
-
     network = net/network-base(defaults = defaults, name = name)
     ig = ig/instance-group(defaults = defaults, name = name, vpc = network.vpc, subnet = network.primary-subnet)
 }

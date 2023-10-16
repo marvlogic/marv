@@ -128,7 +128,9 @@ usage: command.rkt [ <option> ... ] <module-file>
     
 # Marv's DSL (marv-speak)
 
-Have a look at the [examples](examples/gcp/), which are fairly well documented.
+Start by looking at the [first example](examples/gcp/01-networking.mrv), and
+follow the trail from there into the [network-base
+module](examples/gcp/shared/network-base.mrv).
 
 The marv language specification is written in
 [brag](https://docs.racket-lang.org/brag/index.html) and is [defined

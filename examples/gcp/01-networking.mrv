@@ -1,7 +1,10 @@
 #lang marv
 
-# Importing another marv module set for use in this one. In this example the
-# modules that are imported will be prefixed with 'net/' 
+# All Marv specifications start with the line '#lang marv' - this is what tells
+# Racket to look for the marv DSL.
+
+# Importing another marv module set. In this example the modules that are
+# imported will be prefixed with 'net/' 
 
 import "shared/network-base.mrv" as net
 
@@ -11,6 +14,10 @@ import "shared/network-base.mrv" as net
 
 module main(name = "example-01-networking") {
 
+    # defaults is a CONFIG-OBJECT, which is basically a set of <attr> = <value>
+    # pairs. CONFIG-OBJECTs are the building blocks for declaring resources, 
+    # which we'll get to in the 'network-base.mrv' module set.
+
     defaults = {
         # env is a built-in function to read environment variables
         project = env("MARV_GCP_PROJECT")
@@ -18,8 +25,12 @@ module main(name = "example-01-networking") {
     }
 
     # Call the imported module to create the resources that it contains
-    # Attributes are passed as named pairs (x=y) and can be optionally separated
+    # Parameters are passed as named pairs (x=y) and can be optionally separated
     # by commas.
 
     network = net/network-base(defaults = defaults, name = name, primary-cidr="10.0.1.0/24")
+
+    # The network-base module returns values that can be referenced:
+    # e.g. network.vpc
+    #  and network.primary-subnet
 }

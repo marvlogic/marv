@@ -20,7 +20,8 @@
 #
 # https://www.googleapis.com/discovery/v1/apis/compute/beta/rest
 #
-
+# WARNING: HERE BE DRAGONS :)
+#
 
 module igm-custom {
 
