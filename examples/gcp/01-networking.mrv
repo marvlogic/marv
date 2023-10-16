@@ -21,5 +21,5 @@ module main(name = "example-01-networking") {
     # Attributes are passed as named pairs (x=y) and can be optionally separated
     # by commas.
 
-    network = net/network-base(defaults = defaults, name = name, primary-cidr="10.0.3.0/24")
+    network = net/network-base(defaults = defaults, name = name, primary-cidr="10.0.1.0/24")
 }

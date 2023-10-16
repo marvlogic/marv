@@ -1,21 +1,32 @@
 # Introduction
 
-`marv` is a DevOps tool designed to help people manage their Infrastructure as Code.
+`marv` is an Infrastructure-as-Code tool for declaring and managing cloud
+resources.
 
-It allows you to define your infrastructure in files, and then apply the
+You define your infrastructure in files using Marv's DSL, and then apply the
 definition which creates/updates/deletes the actual resources. `marv` manages
 the lifecycle of the resources to keep the infrastructure in sync with code.
+
+![Demo of Marv CLI](screencap.gif)
 
 # Status
 
 __Under active development: Not suitable for production usage__
 
+## Features so far...
+
+- Support for GCP Compute and Storage APIs (more planned soon)
+- New DSL for describing resources
+- Modules, including parameters and returns (outputs)
+- Custom types (for accessing parts of the API not covered in the standard model)
+- Local state file
+
 You could play with this locally in your own GCP projects etc. It might be
-useful for managing small development environments. You would have to manage the
+useful for managing small development environments; you would have to manage the
 state file locally.
 
 The code is not in the best of places - consider it very 'prototypey' :)
-(though it is improving).
+(it is improving).
 
 This is my first major project using Racket, which I'm still learning, so the
 structure of it is very much in-flux and subject to __significant__ change. 
@@ -26,23 +37,25 @@ There's a lot of work left to reach a good beta release point. That said, the
 current feature set allows fairly complex configurations to be managed, albeit
 with a local state file.
 
-The most important issues/omissions are:
+The main issues and omissions are:
 
-- A new DSL subject to change, very lacking in features, such as loops and
+- A new DSL subject to change, and very lacking in features, such as loops and
 conditions. All are planned though.
+
+- Only supports GCP compute and storage APIs, more coming very soon.
 
 - The model doesn't yet know about which fields are immutable on GCP resources; you
 need to specify these manually (see attributes marked `imm:` in the
 [examples](examples/gcp/shared/network-base.mrv)).
 
-- Only supports GCP compute and storage APIs, more coming very soon.
-
-- Barely any error checking, and errors are somewhat obtuse most of the time; a
-lot of checking is performed by GCP itself during an `apply` phase. 
+- Bare-bones error checking, and error reports are often obtuse. A lot of times
+errors aren't caught until GCP sees the configuration during an `apply` phase. 
 
 - Only supports local state files
 
-# Installation - Linux & Mac
+# Installation 
+
+## Linux & Mac
 
 Install Racket from: https://download.racket-lang.org
 
@@ -51,7 +64,7 @@ Install `marv` using `raco`:
     # From the root of the cloned project:
     raco pkg install
 
-# Docker Image
+## Docker Image
 
 Marv is available as a pre-built docker image:
 
@@ -67,9 +80,9 @@ To build the image locally:
 
 `marv` is available as an installed command when running in the container e.g.:
 
-    marv --plan /usr/lib/marv/examples/gcp/load-balancer.mrv
-
-etc...
+    docker run -it happyrat/marv:latest /bin/bash
+    .. [ set up environment - see below ]
+    marv --plan /usr/lib/marv/examples/gcp/01-networking.mrv
 
 # Command line usage
 ```
@@ -133,6 +146,8 @@ here](alpha/parser.rkt).
     export GCP_ACCESS_TOKEN=`gcloud auth print-access-token`
 
     alias marv="racket command.rkt"
+
+    # NB '--plan' doesn't actually output a plan-file, it just previews the changes.
     marv --plan examples/gcp/01-networking.mrv
     marv --apply examples/gcp/01-networking.mrv
 
@@ -147,6 +162,7 @@ downloaded GCP API schema information.
 
 # Notes
 
-## Build a standalone(deprecated)
+## Build a standalone
+(deprecated)
 
     raco exe ++lib net/http-easy ++lang racket/base --collects-path ./ -o marv command.rkt

@@ -23,13 +23,13 @@ module main(name = "example-03-custom-type") {
     igcst = ctigm/igm-custom()
 
     instance1 = gcp:compute.my-custom-type.instance defaults <- {
-        name = "example-marv1"
+        name = imm: "example-marv1"
         instanceGroupManager = imm: ig.name
         zone = imm: ig.zone
     }
 
     instance2 = gcp:compute.my-custom-type.instance defaults <- {
-        name = "example-marv2"
+        name = imm: "example-marv4"
         instanceGroupManager = imm: ig.name
         zone = imm: ig.zone
     }
