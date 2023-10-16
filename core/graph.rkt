@@ -4,8 +4,9 @@
 (require racket/contract)
 (require racket/list)
 (require racket/set)
-(require "resources.rkt")
-(require "resource-def.rkt")
+(require marv/core/resources)
+(require marv/core/resource-def)
+(require marv/core/values)
 
 (provide resources-dag-topo resources-dag resource-edges)
 
@@ -23,6 +24,7 @@
   (remove-vertex! graph root)
   graph)
 
+(require racket/pretty)
 (define (validated-graph edges modl)
   (define graph (directed-graph edges))
   (define res-keys (set-add (list->set (resource-keys modl)) root))

@@ -46,7 +46,7 @@
    [("--list-params") "Lists parameters accepted by module" (LIST-PARAMS #t)]
 
    #:multi
-   [("--param") param value "Set <param> to <value>" (PARAMS (hash-set (PARAMS) param value))]
+   [("--param") param value "Set <param> to <value>" (PARAMS (hash-set (PARAMS) (string->symbol param) value))]
 
    #:args (module-file) module-file))
 
@@ -55,9 +55,9 @@
 
 (printf "Using state file: ~a\n" (STATE-FILE))
 (load-state (STATE-FILE))
-(init-module RESOURCES (PURGE))
+(init-module RESOURCES)
 
-(define modl (get-module (PARAMS)))
+(define modl (get-module (PARAMS) (PURGE)))
 
 (cond
   [(SHOW-STATE-IDS)

@@ -1,0 +1,37 @@
+#lang marv
+
+import "shared/network-base.mrv" as net
+import "shared/instance-group.mrv" as ig
+import "shared/custom-type-igm.mrv" as ctigm
+
+module main(name = "example-03-custom-type") {
+
+    defaults = {
+        # env is a built-in function to read environment variables
+        project = env("MARV_GCP_PROJECT")
+        region = env("MARV_GCP_REGION")
+    }
+
+    network = net/network-base(defaults = defaults, name = name)
+    ig = ig/instance-group(defaults = defaults, name = name, vpc = network.vpc, subnet = network.primary-subnet)
+
+    # The call to igm-custom registers the custom type, which can then be used
+    # to manage the two instances. This module must be invoked before the
+    # instances can be managed - if it's not available then marv won't be able
+    # to delete the instances!
+    
+    igcst = ctigm/igm-custom()
+
+    instance1 = gcp:compute.my-custom-type.instance defaults <- {
+        name = imm: "example-marv1"
+        instanceGroupManager = imm: ig.name
+        zone = imm: ig.zone
+    }
+
+    instance2 = gcp:compute.my-custom-type.instance defaults <- {
+        name = imm: "example-marv4"
+        instanceGroupManager = imm: ig.name
+        zone = imm: ig.zone
+    }
+
+}

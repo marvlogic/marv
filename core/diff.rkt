@@ -42,16 +42,6 @@
 
   (for/hash ([k all-keys]) (cmp k)))
 
-(define (flatten-diff df)
-  (define (flat kv acc)
-    (define val (unpack-value (cdr kv)))
-    (if (hash? val) (fltn val acc)
-        (cons (cons (car kv) val) acc)))
-
-  (define (fltn d init) (foldl flat init (hash->list d)))
-
-  (fltn df '()))
-
 (define (has-diff? df) (hash-match? df (lambda (_ v) (diff? v))))
 
 ; TODO - collect with other has-*diff? functions

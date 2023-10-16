@@ -1,6 +1,8 @@
 #lang racket/base
 
 (require racket/string)
+(require racket/match)
+(require racket/contract)
 
 (provide (struct-out value)
          (struct-out ref)
@@ -8,9 +10,8 @@
          update-val
          ival ival?
          iref iref? vref?
-         ref->list
-         list->ref)
-
+         ref-split
+         ref->id)
 
 (struct value (val flags) #:prefab)
 
@@ -26,6 +27,7 @@
 (define (unpack-value v) (if (value? v) (value-val v) v))
 
 ; TODO - some unit tests here.
+; TODO - needs to be used more often (or replaced with suitable mechanism)
 (define (update-val v fn)
   (if (value? v)
       (value (fn (value-val v)) (value-flags v))
@@ -37,8 +39,13 @@
 
 (define (vref? v) (ref? (unpack-value v)))
 
-(define (ref->list ref)
-  (map string->symbol (string-split (symbol->string (ref-path (unpack-value ref))) ".")))
+(define/contract (ref-split r)
+  (vref? . -> . (values symbol? symbol?))
+  (match (map string->symbol (string-split (symbol->string (ref-path (unpack-value r))) "/"))
+    [(list id attrs) (values id attrs)]
+    [else (raise (format "Bad reference format:~a" r))]))
 
-(define (list->ref lst)
-  (ref (string->symbol (string-join (map symbol->string lst) "."))))
+(define/contract (ref->id ref)
+  (vref? . -> . symbol?)
+  (define-values (id _) (ref-split (unpack-value ref)))
+  id)

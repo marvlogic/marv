@@ -13,6 +13,7 @@
 (require marv/core/resources)
 (require marv/core/values)
 (require marv/utils/hash)
+(require marv/log)
 
 (provide init-module get-module
          resource-keys resource-ref
@@ -25,7 +26,6 @@
          unwrap-values
          (struct-out ref)
          (struct-out value)
-         ref->id ref->pid
          mod-id->id
          ival ival?
          iref iref?
@@ -35,43 +35,23 @@
 
 (struct params (required accepted))
 
-(define RESOURCES (make-parameter (lambda oo (list))))
+(define RESOURCES (make-parameter (lambda oo (hash))))
 (define DRIVERS (make-parameter (lambda() (hash))))
 
-(define/contract (init-module f purge?)
-  (string? boolean? . -> . void?)
+(define/contract (init-module f)
+  (string? . -> . void?)
   (define rel-mod (find-relative-path (current-directory) f) )
   (DRIVERS (dynamic-require rel-mod 'drivers))
-  (when (not purge?)
-    (RESOURCES (dynamic-require rel-mod 'resources)))
+  (RESOURCES (dynamic-require rel-mod 'main))
   (void))
 
-(define/contract (get-module params)
-  ((hash/c string? string?) . -> . rmodule/c)
-  (validate-params params)
-  (define keyw-params (make-keyword-params params))
-  ; TODO - drivers should have their own keyword params
-  ; (define drivers (keyword-apply (DRIVERS) (map car keyw-params) (map cdr keyw-params) (list)))
+(define/contract (get-module params purge?)
+  ((hash/c symbol? string?) boolean? . -> . rmodule/c)
+  ; (validate-params params)
   (define driver (make-driver-for-set ((DRIVERS))))
   (define (mk-resource driver-id config) (resource driver-id (driver driver-id 'validate config)))
-  (define resource-list
-    (keyword-apply (RESOURCES) (map car keyw-params) (map cdr keyw-params)
-                   (list mk-resource)))
-
-  ; (pretty-print resource-list)
-  (mk-rmodule ((DRIVERS)) (resource-list->hash resource-list)))
-
-(define/contract (resource-list->hash resources)
-  ((listof (cons/c res-id/c resource/c)) . -> . (hash/c res-id/c resource/c))
-
-  (define (check-dups acc-hs res-id res)
-    (when (hash-has-key? acc-hs res-id) (raise (format "duplicate resource id: ~a" res-id)))
-    (hash-set acc-hs res-id res))
-
-  (for/fold ([hs (hash)])
-            ([r (in-list resources)])
-    (check-dups hs (car r) (cdr r))))
-
+  (define resources ((RESOURCES) 'main mk-resource params))
+  (mk-rmodule ((DRIVERS)) (if purge? (hash) resources)))
 
 (define (make-keyword-params params)
   ; TODO: test for check that #t (sorting) works
@@ -123,9 +103,7 @@
 
 (define/contract (unwrap-values res)
   (resource/c . -> . resource/c)
-
   (define (unwrap k v)  (unpack-value v))
-
   (resource (resource-driver-id res) (hash-apply (resource-config res) unwrap)))
 
 ; TODO - NB, the $resources/$drivers definition stuff has been left in for now,
@@ -136,30 +114,17 @@
    (match (string-split (symbol->string mid) ".")
      [(list "$resources" id _ ...) id]
      [(list "$drivers" id _ ...) id]
-     [(list id _ ...) id]
+     [(list id _ ...) (format "~a" mid)]
      [else (raise (format "~a: Bad reference format" (ref-path ref)))])))
-
-(define (ref->id ref)
-  (string->symbol
-   (match (string-split (symbol->string (ref-path (unpack-value ref))) ".")
-     [(list "$resources" id _ ..1) id]
-     [(list "$drivers" id _ ...) id]
-     [(list id _ ...) id]
-     [else (raise (format "~a: Bad reference format" (ref-path ref)))])))
-
-(define (ref->pid ref)
-  (match (string-split (symbol->string (ref-path (unpack-value ref))) ".")
-    [(list "$resources" id _ ...) (string->symbol (format "$resources.~a" id))]
-    [(list "$drivers" id _ ...) (string->symbol (format "$drivers.~a" id))]
-    [(list id _ ...) (string->symbol (format "$resources.~a" id))]
-    [else (raise (format "~a: Bad reference format" (ref-path ref)))]))
-
-(define (get-ref mod ref)
-  (define ref-spec (ref->list ref))
-  (hash-nref (resource-config (resource-ref mod (car ref-spec))) (drop ref-spec 1)))
 
 (define/contract (deref-resource mod r)
   (rmodule/c resource/c . -> . resource/c)
+
+  (define (get-ref ref)
+    (define-values (res-id attr) (ref-split ref))
+    (unpack-value (hash-nref (resource-config (resource-ref mod res-id)) (id->list attr))))
+
   (define (deref-attr _ a)
-    (update-val a (lambda (v) (if (ref? v) (unpack-value(get-ref mod v)) v))))
+    (update-val a (lambda (v) (if (ref? v) (get-ref v) v))))
+
   (resource (resource-driver-id r) (hash-apply (resource-config r) deref-attr)))

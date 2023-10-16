@@ -1,54 +1,14 @@
 #lang racket/base
 
-(require racket/hash)
 (require racket/string)
-(require (for-syntax racket/base syntax/parse racket/pretty))
-(require marv/utils/hash)
+(require racket/syntax)
+(require (for-syntax racket/base racket/syntax syntax/parse racket/pretty))
 
 (require racket/pretty)
 
-(define VARS (make-parameter (hash)))
-
-(define (error:excn msg)
-  (raise (format "ERROR: ~a\n at ~a:~a" msg 1 2))) ;(syntax-source stx) (syntax-line stx)))
-
-(define (set-var id v)
-  (when (hash-has-key? (VARS) id) (error:excn (format "~a is already defined" id)))
-  (VARS (hash-set (VARS) id v)))
-
-; todo - out
-(define (get-var id) (hash-ref (VARS) id))
-
-(define (def-res id drv attr v)
-  (define r (hash-set* v '$driver drv '$type (string->symbol (string-join (map symbol->string attr) "."))))
-  (set-var id r)
-  r)
-
-(define (config-overlay left right) (hash-union left right #:combine (lambda (v0 _) v0)))
-; (define (config-take cfg attrs) (hash-take cfg attrs))
-
-(define (hash-nref hs ks)
-  (for/fold ([h hs])
-            ([k (in-list ks)])
-    (hash-ref h k)))
-
-(define (handle-ref id tgt . ks)
-  (define ksx (map syntax-e ks))
-  (define full-ref (string->symbol (string-join (map symbol->string (cons id ksx)) ".")))
-  (cond [(hash-has-key? tgt '$driver) (ref full-ref)]
-        [else (hash-nref tgt ksx)]))
-
-; (define (handle-deref r) #`(hash-nref #,(car r) #,(cdr r)))
-
-(define (loop-res-name name loop-ident)
-  (format "~a.~a" name (get-var loop-ident)))
-
 (require marv/alpha/support)
 (require marv/core/values)
-
-(define (resource-var? id)
-  (define v (hash-ref (VARS) id))
-  (and (hash? v) (hash-has-key? v '$driver)))
+(require marv/log)
 
 ; TODO - swap prefix usage to m- on the provided
 
@@ -58,18 +18,63 @@
 
   (define (m-marv-spec stx)
     (syntax-parse stx
-      [(_ STMT ...)
+      [(_ MODULE ...)
        #'(begin
            (require marv/alpha/support)
            (require racket/hash)
            (require racket/pretty)
-           STMT ...
-           (define resources (gen-resources (VARS)))
-           (define drivers (gen-drivers (VARS)))
-           (provide resources drivers)
-           ;  (pretty-print (VARS))
+           MODULE ...
+           (define drivers (gen-drivers (hash)))
+           (provide drivers)
            )]
       [else (raise "nowt")]))
+
+  (define (m-marv-module stx)
+    (syntax-parse stx
+      [(_ (~optional (~and private? "private"))
+          mod-id:expr (~optional (~seq "(" PARAMS ... ")")
+                                 #:defaults ([(PARAMS 1) null]))
+          STMT ...
+          (~optional (~seq "return" RETURN)
+                     #:defaults ([RETURN #'void])))
+       #:with MAYBE-PRIVATE (if (attribute private?) #'(void) #'(provide mod-id))
+       (syntax/loc stx
+         (begin
+           (define (mod-id resid-prefix mkres params)
+             (log-marv-debug "** Generating module: ~a=~a(~a)" resid-prefix 'mod-id params)
+             (define rs
+               (with-module-ctx resid-prefix params
+                 (lambda ()
+                   PARAMS ...
+                   STMT ...
+                   (define rs (gen-resources mkres))
+                   RETURN
+                   rs
+                   )))
+             (log-marv-debug "** generation completed for ~a.~a" resid-prefix 'mod-id)
+             rs)
+           MAYBE-PRIVATE))]
+      [else (raise "invalid module spec m-marv-module")]))
+
+  (define (m-module-parameter stx)
+    (syntax-parse stx
+      [(_ PARAMETER "=" EXPR) (syntax/loc stx (define PARAMETER (get-param 'PARAMETER EXPR)))]
+      [(_ PARAMETER) (syntax/loc stx (define PARAMETER (get-param 'PARAMETER)))]))
+
+  (define (m-module-return stx)
+    (syntax-parse stx
+      [(_ "return" RETURNS ...) (syntax/loc stx (set-return (make-immutable-hasheq (list RETURNS ...))))]
+      [else (raise "m-module-return f*")]))
+
+  (define (m-module-import stx)
+    (syntax-parse stx
+      [(_ FILENAME) (syntax/loc stx (require FILENAME)) ]
+      [(_ FILENAME "as" ALIAS) #`(require (prefix-in #,(format-id #f "~a/" #`ALIAS) FILENAME)) ]
+      [else (raise "m-import")]))
+
+  (define (m-return-parameter stx)
+    (syntax-parse stx
+      [(_ NAME VALUE) (syntax/loc stx (cons 'NAME VALUE))]))
 
   (define (m-statement stx)
     (syntax-parse stx
@@ -188,7 +193,7 @@
 
   (define (m-config-take stx)
     (syntax-parse stx
-      [(_ CFEXPR ATTRLIST) (syntax/loc stx (hash-take CFEXPR ATTRLIST))]
+      [(_ CFEXPR ATTRLIST) (syntax/loc stx (config-reduce CFEXPR ATTRLIST))]
       [else (raise "m-config-take")]))
 
   (define (m-config-ident stx)
@@ -216,7 +221,7 @@
 
   (define (m-reference stx)
     (syntax-parse stx
-      [(_ (tgt:id key ...)) (syntax/loc stx (handle-ref 'tgt tgt #'key ...))]
+      [(_ (tgt:id key ...)) (syntax/loc stx (handle-ref tgt 'tgt #'key ...))]
       ))
 
   (define (m-res-decl stx)
@@ -226,28 +231,33 @@
           ((~literal driver-attr) dad:expr) cfg)
        (syntax/loc stx (define name (def-res 'name 'did 'dad cfg)))]
 
-      [(_ name:string
-          ((~literal loop-ident) lid:string)
-          ((~literal driver-id) did:string)
-          ((~literal driver-attr) dad:string) cfg)
-       (syntax/loc stx (set-res (loop-res-name name lid) did dad cfg))]
+      ; [(_ name:string
+      ;     ((~literal loop-ident) lid:string)
+      ;     ((~literal driver-id) did:string)
+      ;     ((~literal driver-attr) dad:string) cfg)
+      ;  (syntax/loc stx (set-res (loop-res-name name lid) did dad cfg))]
       [else (raise (format "res-decl didn't match: ~a" stx))]))
 
-  (define (m-for-list stx)
+  (define (m-module-invoke stx)
     (syntax-parse stx
-      [(_ LOOPVAR "{" STMT ... "}")
-       (syntax/loc stx `(for/list LOOPVAR (STMT ...)))]
-      [else (raise (format "for-list didn't match: ~a" stx))])
-    )
+      [(_ var-id:expr mod-id:expr PARAMS ...)
+       (syntax/loc stx
+         (define var-id (module-call 'var-id mod-id (make-immutable-hasheq (list PARAMS ...)) )))]))
 
-  (define (m-loop-var stx)
+  (define (m-named-parameter stx)
     (syntax-parse stx
-      [(_ IDENT:string LIST) (syntax/loc stx `[ ,(string->symbol IDENT) ,LIST])]
-      [else (raise (format "loop-var didn't match: ~a" stx))]))
-
+      ; NB string has to be first!
+      [(_ param-name:string EXPR) (syntax/loc stx (cons (string->symbol param-name) EXPR))]
+      [(_ param-name:expr EXPR) (syntax/loc stx (cons 'param-name EXPR))]
+      ))
   )
 
 (define-syntax marv-spec m-marv-spec)
+(define-syntax marv-module m-marv-module)
+(define-syntax module-parameter m-module-parameter)
+(define-syntax module-return m-module-return)
+(define-syntax return-parameter m-return-parameter)
+(define-syntax module-import m-module-import)
 (define-syntax statement m-statement)
 (define-syntax decl m-decl)
 (define-syntax var-decl m-var-decl)
@@ -259,6 +269,8 @@
 (define-syntax type-api-spec m-type-api-spec)
 
 (define-syntax res-decl m-res-decl)
+(define-syntax module-invoke m-module-invoke)
+(define-syntax named-parameter m-named-parameter)
 (define-syntax config-func-call m-config-func-call)
 (define-syntax expression m-expression)
 (define-syntax reference m-reference)
@@ -276,13 +288,13 @@
 (define-syntax config-merge m-config-merge)
 (define-syntax config-take m-config-take)
 (define-syntax config-ident m-config-ident)
-(define-syntax for-list m-for-list)
-(define-syntax loop-var m-loop-var)
 
-(provide marv-spec decl var-decl res-decl config-func-call config-func-decl
+(provide marv-spec marv-module module-parameter decl var-decl res-decl
+         module-invoke named-parameter module-return return-parameter
+         module-import
+         config-func-call config-func-decl
          type-decl type-body type-crud-decl type-api-spec
          expression reference statement config-object alist list-attr
          config-expr config-merge config-ident config-take
-         for-list loop-var
          attr-decl keyword built-in env-read pprint strf
          boolean)

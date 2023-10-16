@@ -14,4 +14,5 @@
   (request-transformers (hash-set (request-transformers) (transformer-api-id t) (transformer-fn t))))
 
 (define (apply-request-transformer type-op resource)
+  (log-marv-debug "apply-request-transformer: ~a ~a" type-op resource)
   ((hash-ref (request-transformers) type-op (lambda() (lambda(r)resource))) resource))

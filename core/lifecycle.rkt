@@ -44,8 +44,7 @@
 
   ; TODO - pass in state, also define hash(id->state) contract types
   (define new-module (mk-rmodule (rmodule-drivers mod) (merge-state+resource (mk-id->state) resources)))
-  (define ordered-rks (map mod-id->id (resources-dag-topo mod)))
-  ; (pretty-print ordered-rks)
+  (define ordered-rks (resources-dag-topo mod))
   (define operations
     (foldl
      (lambda (id acc-ops)
@@ -155,14 +154,11 @@
   (match-resource-attr? new match?))
 
 (define (get-ref-diff ref acc-ops)
-  (match (ref->list ref)
-    [(list id vs ...)
-     (define attr (ref-path (list->ref vs)))
-     (match (hash-ref acc-ops id)
-       [(op-update _ diff) (hash-ref diff attr #f)]
-       [(op-replace _ diff) (hash-ref diff attr #f)]
-       [else #f])]
-    [else (raise (format "~a: Bad reference format" (ref-path ref)))]))
+  (define-values (id attr) (ref-split ref))
+  (match (hash-ref acc-ops id)
+    [(op-update _ diff) (hash-ref diff attr #f)]
+    [(op-replace _ diff) (hash-ref diff attr #f)]
+    [else #f]))
 
 
 (define (diff-resources new-module acc-ops old-res new-res)
