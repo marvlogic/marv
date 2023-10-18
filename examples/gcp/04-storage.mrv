@@ -1,0 +1,13 @@
+#lang marv
+
+module main {
+
+    defaults = {
+        project = env("MARV_GCP_PROJECT")
+        region = env("MARV_GCP_REGION")
+    }
+
+    bucket = gcp:storage.bucket defaults <- {
+        name = strf("~a-mybucket" defaults.project)
+    }
+}
