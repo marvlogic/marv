@@ -38,9 +38,9 @@
 
   (define (expect-2xx resp #:expect-status (expect '(200 204)))
     (cond [(member (response-status-code resp) expect )
-           (log-marv-debug "~a" (response-json resp))
+           (log-marv-debug "~v" (response-json resp))
            (response-json resp)]
-          [else (log-marv-warn "H: ~a" (response-headers resp))
+          [else (log-marv-warn "Headers: ~v" (response-headers resp))
                 (raise (format "unexpected response: ~a:~a headers:~a"
                                (response-status-code resp)
                                (response-body resp)
