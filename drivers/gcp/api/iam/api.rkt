@@ -10,7 +10,7 @@
 (require marv/drivers/driver)
 (require marv/core/config)
 
-(require marv/drivers/gcp/api/storage/types)
+(require marv/drivers/gcp/api/iam/types)
 
 (provide init-api)
 
@@ -19,7 +19,7 @@
 (define (init-api interface-id api-id http)
   (DISCOVERY (load-discovery (symbol->string interface-id) api-id))
   (define (genrq cf)
-    (lambda(res) ((mk-request-handler (DISCOVERY) storage-type-map compute-api-operation-handler) cf res http)))
+    (lambda(res) ((mk-request-handler (DISCOVERY) iam-type-map iam-api-operation-handler) cf res http)))
 
   (define crudfn
     (make-driver-crud-fn
@@ -33,11 +33,14 @@
     ; ['register-type register-type]
     [else (raise "Unsupported op/message in storage-api")]))
 
+; TODO - gcp-common module
+(define (gcp-type r) (hash-ref r '$type))
+
 (define/contract (validate cfg)
   (config/c . -> . config/c)
 
   (define type (gcp-type cfg))
-  (define api (api-for-type-op (DISCOVERY) (crud-create(storage-type-map type))))
+  (define api (api-for-type-op (DISCOVERY) (crud-create(iam-type-map type))))
 
   (define (has-required-api-parameters?)
     (define req-params (api-required-params api))
@@ -46,6 +49,3 @@
   (has-required-api-parameters?)
   cfg)
 
-
-; TODO - gcp-common module
-(define (gcp-type r) (hash-ref r '$type))

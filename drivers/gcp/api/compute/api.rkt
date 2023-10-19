@@ -13,8 +13,7 @@
 
 (require marv/drivers/gcp/api/compute/types)
 
-(provide (prefix-out compute. init-api)
-         (prefix-out compute. register-type))
+(provide init-api register-type)
 
 (define DISCOVERY (make-parameter #f))
 

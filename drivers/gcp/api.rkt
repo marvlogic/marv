@@ -5,10 +5,12 @@
 
 (require marv/log)
 (require marv/core/config)
+(require marv/core/globals)
 (require marv/drivers/types)
 
-(require marv/drivers/gcp/api/compute/api)
-(require marv/drivers/gcp/api/storage/api)
+(require (prefix-in compute. marv/drivers/gcp/api/compute/api))
+(require (prefix-in storage. marv/drivers/gcp/api/storage/api))
+(require (prefix-in iam. marv/drivers/gcp/api/iam/api))
 
 ; TODO - common module, and abstract setting it too
 (define (gcp-type r) (hash-ref r '$type))
@@ -19,11 +21,12 @@
   (define apis
     (hash 'compute (compute.init-api interface-id "compute:beta" http-transport)
           'storage (storage.init-api interface-id "storage:v1" http-transport)
+          'iam (iam.init-api interface-id "iam:v1" http-transport)
           ))
 
   (define/contract (routing op config)
     (msg-id/c config/c . -> . config/c)
-    (define subtype (string->symbol (car (string-split (symbol->string (gcp-type config)) "."))))
+    (define subtype (car (split-symbol (gcp-type config))))
     (define crudfn (hash-ref apis subtype))
     (crudfn op config))
 

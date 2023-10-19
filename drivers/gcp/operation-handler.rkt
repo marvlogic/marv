@@ -4,6 +4,7 @@
 (require marv/utils/hash)
 
 (provide compute-api-operation-handler
+         iam-api-operation-handler
          (struct-out op-status)
          op-status-flag)
 
@@ -19,6 +20,24 @@
     [else 'running]))
 
 (define (compute-api-operation-handler response-type resp)
+  (define is-operation? (equal? "Operation" response-type))
+  (cond
+    [is-operation?
+     (define done? (equal? "DONE" (hash-ref resp 'status)))
+     (define errors (hash-nref resp '(error items) #f))
+     (define poll-next
+       (and (not done?)
+            (lambda(http)
+              (compute-api-operation-handler
+               "Operation"
+               (http 'GET (hash-ref resp 'selfLink) '())))))
+     (define completed (and done?
+                            (not errors)
+                            (lambda(http) (http 'GET (hash-ref resp 'targetLink) '()))))
+     (op-status done?  errors poll-next completed)]
+    [else (op-success resp)]))
+
+(define (iam-api-operation-handler response-type resp)
   (define is-operation? (equal? "Operation" response-type))
   (cond
     [is-operation?
