@@ -1,12 +1,9 @@
 #lang racket/base
 
-(require racket/string)
-(require racket/pretty)
 (require racket/contract)
 
 (require marv/log)
 (require marv/core/config)
-(require marv/utils/hash)
 (require marv/drivers/gcp/discovery)
 (require marv/drivers/gcp/crud)
 (require marv/drivers/gcp/generic-api-handler)
@@ -23,7 +20,7 @@
 
 (define (init-api interface-id api-id http)
   (DISCOVERY (load-discovery (symbol->string interface-id) api-id))
-  (define (genrq cf) (lambda(res) (generic-request cf res http)))
+  (define (genrq cf) (lambda(res) ((mk-request-handler (DISCOVERY) compute-type-map compute-api-operation-handler) cf res http)))
 
   (define crudfn
     (make-driver-crud-fn
@@ -52,25 +49,6 @@
       (raise (format "Config does not have required field(s) (~a) ~a" p req-params))))
   (has-required-api-parameters?)
   cfg)
-
-(define/contract (generic-request crud-fn config http)
-  (procedure? config/c any/c . -> . config/c)
-  (define type-op (crud-fn (compute-type-map (gcp-type config))))
-  (log-marv-debug "gen/req: type-op=~a ~a" type-op config)
-  (define xfd-resource (apply-request-transformer type-op config) )
-  (log-marv-debug "xformed: ~a" xfd-resource)
-  (cond
-    ; TODO - hacked
-    [(null? type-op) xfd-resource]
-    [(symbol? type-op)
-     (define api (api-for-type-op (DISCOVERY) type-op))
-     (define is-delete? (eq? crud-delete crud-fn))
-     (define response (generic-api-req api xfd-resource http is-delete? compute-api-operation-handler))
-     (log-marv-debug "response: ~a" response)
-     (define resp (api-resource api response))
-     (hash-merge resp config)]
-    [else raise (format "type has no usable CRUD for ~a : ~a" crud-fn type-op )]
-    ))
 
 (define (register-type msg)
   (define-values (type transformers) (values (hash-ref msg '$type) (hash-ref msg 'transforms)))
