@@ -17,7 +17,9 @@
          api-resource-url
          api-required-params
          api-resource
-         api-response-type)
+         api-response-type
+         disc-api?)
+
 
 (struct disc-doc (root) #:transparent)
 (struct disc-api (root type-api))
