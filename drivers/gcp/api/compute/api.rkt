@@ -11,7 +11,7 @@
 (require marv/drivers/gcp/transformers)
 (require marv/drivers/driver)
 
-(require marv/drivers/gcp/compute-types)
+(require marv/drivers/gcp/api/compute/types)
 
 (provide (prefix-out compute. init-api)
          (prefix-out compute. register-type))

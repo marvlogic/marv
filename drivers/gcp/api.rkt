@@ -1,17 +1,14 @@
 #lang racket/base
-(require racket/hash)
 (require racket/string)
 (require net/http-easy)
 (require racket/contract)
 
 (require marv/log)
-(require marv/utils/hash)
 (require marv/core/config)
 (require marv/drivers/types)
 
-(require marv/drivers/gcp/compute-api)
-(require marv/drivers/gcp/storage-api)
-(require marv/drivers/gcp/transformers)
+(require marv/drivers/gcp/api/compute/api)
+(require marv/drivers/gcp/api/storage/api)
 
 ; TODO - common module, and abstract setting it too
 (define (gcp-type r) (hash-ref r '$type))

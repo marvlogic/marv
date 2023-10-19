@@ -10,7 +10,7 @@
 (require marv/drivers/driver)
 (require marv/core/config)
 
-(require marv/drivers/gcp/storage-types)
+(require marv/drivers/gcp/api/storage/types)
 
 (provide (prefix-out storage. init-api))
 
