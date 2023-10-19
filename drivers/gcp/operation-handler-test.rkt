@@ -72,3 +72,9 @@
 (check-eq? (op-status-flag errored) 'errored)
 (check-false (op-status-poll-next errored))
 (check-equal? (op-status-errors errored) '("AN ERROR" "ANOTHER"))
+
+(define (mock-http-non-op . h) (fail-check "Shouldn't call me!"))
+(define non-operation-resp (hash 'something 'else))
+(check-eq? ((op-status-final-response (compute-api-operation-handler "Object" non-operation-resp))
+            mock-http-non-op)
+           non-operation-resp)

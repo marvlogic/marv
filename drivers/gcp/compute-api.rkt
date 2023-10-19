@@ -9,6 +9,8 @@
 (require marv/utils/hash)
 (require marv/drivers/gcp/discovery)
 (require marv/drivers/gcp/crud)
+(require marv/drivers/gcp/generic-api-handler)
+(require marv/drivers/gcp/operation-handler)
 (require marv/drivers/gcp/transformers)
 (require marv/drivers/driver)
 
@@ -62,44 +64,13 @@
     [(null? type-op) xfd-resource]
     [(symbol? type-op)
      (define api (api-for-type-op (DISCOVERY) type-op))
-     (define response
-       (http (api-http-method api)
-             (api-resource-url api xfd-resource)
-             (api-resource api xfd-resource)))
-     (log-marv-debug "response:~a" response)
-     (define resp
-       (api-resource api
-                     (if (expect-operation-response? api)
-                         (handle-operation-response crud-fn response http)
-                         (handle-delete crud-fn response))))
+     (define is-delete? (eq? crud-delete crud-fn))
+     (define response (generic-api-req api xfd-resource http is-delete? compute-api-operation-handler))
+     (log-marv-debug "response: ~a" response)
+     (define resp (api-resource api response))
      (hash-merge resp config)]
     [else raise (format "type has no usable CRUD for ~a : ~a" crud-fn type-op )]
     ))
-
-(define (handle-delete crud-fn response) (if (eq? crud-delete crud-fn) (hash) response))
-
-(define (expect-operation-response? api) (equal? "Operation" (api-response-type api)))
-
-(define (handle-operation-response crud-fn op-response http)
-  (cond [(not (hash? op-response)) #f]
-        [(equal? "compute#operation" (hash-ref op-response 'kind))
-         (define completed-op (wait-completed op-response http))
-         (cond [(eq? crud-delete crud-fn) (hash)]
-               [else (http 'GET (hash-ref completed-op 'targetLink) '())])]
-        [else op-response]
-        ))
-
-(define (wait-completed op-response http #:wait1 (wait1 1) #:wait2 (wait2 2))
-  (printf "\033[s..IN PROGRESS..~a\033[u" wait1)
-  (flush-output)
-  (define sleeptime(+ wait1 wait2))
-  (sleep sleeptime)
-  (define new-op (http 'GET (hash-ref op-response 'selfLink) '()))
-  (cond [(equal? "DONE" (hash-ref new-op 'status))
-         (displayln "..DONE\033[K")
-         (flush-output)
-         new-op]
-        [else (wait-completed new-op http #:wait1 wait2 #:wait2 sleeptime)]))
 
 (define (register-type msg)
   (define-values (type transformers) (values (hash-ref msg '$type) (hash-ref msg 'transforms)))

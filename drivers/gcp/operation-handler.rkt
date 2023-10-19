@@ -8,7 +8,7 @@
          op-status-flag)
 
 (struct op-status (done? errors poll-next final-response) #:prefab)
-(define (op-success resp) (op-status #f #t #f #f (lambda(_)resp)))
+(define (op-success resp) (op-status #t #f #f (lambda(_)resp)))
 
 (define (op-status-flag op)
   (define op-success? (and (op-status-done? op) (not (op-status-errors op))))

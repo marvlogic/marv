@@ -14,11 +14,12 @@
   (displayln "..DONE\033[K")
   (flush-output))
 
-(define/contract (generic-api-req api resource http is-delete? api-operation-handler)
+(define/contract (generic-api-req api resource http is-delete? operation-handler)
   (disc-api? any/c any/c boolean? procedure? . -> . hash?)
+
   (define (work-it op-resp [poll-delay 3])
     (case (op-status-flag op-resp)
-      ['success (define fin ((op-status-final-response op-resp) http))
+      ['success (define fin (if is-delete? (hash) ((op-status-final-response op-resp) http)))
                 (success-output)
                 fin]
       ['running (running-output poll-delay)
@@ -28,9 +29,10 @@
       [else (raise (format "indeterminate op state: ~v" op-resp))]
       ))
 
+  ; TODO - smells wrong that api-* stuff is in this module
   (define initial-response
-    (api-operation-handler (api-response-type api)
-                           (http (api-http-method api)
-                                 (api-resource-url api resource)
-                                 (api-resource api resource))))
+    (operation-handler (api-response-type api)
+                       (http (api-http-method api)
+                             (api-resource-url api resource)
+                             (api-resource api resource))))
   (work-it initial-response))
