@@ -38,7 +38,7 @@
        (define response (generic-api-req api xfd-resource http is-delete? op-handler))
        (log-marv-debug "response: ~a" response)
        ;  (define resp (api-resource api response))
-       (hash-merge response config)]
+       (hash-merge config response)]
       [else raise (format "type has no usable CRUD for ~a : ~a" crud-fn type-op )]
       ))
   generic-request)

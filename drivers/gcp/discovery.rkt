@@ -86,11 +86,13 @@
 
 (define/contract (api-resource-url api config)
   (disc-api? config/c . -> . string?)
+
+  ; TODO14 - aliasing....?
   (define aliased-resource
-    ;  (hash-set config (ref-type api) (hash-ref config 'name))
     (make-immutable-hash
      (hash->list (hash-map/copy
-                  (hash-take config (hash-keys (api-path-parameters api)))
+                  (hash-take (hash-set config (ref-type api) (hash-ref config 'name))
+                             (hash-keys (api-path-parameters api)))
                   (lambda(k v) (values (symbol->string k) v))))))
   (define api-root (disc-api-root api))
   (define path (hash-ref (disc-api-type-api api) 'path))
@@ -98,7 +100,7 @@
   (log-marv-debug "exp: ~v" (expand-template path aliased-resource))
   (define url
     (format "~a~a~a"
-            (hash-ref api-root 'baseUrl)
+            (hash-ref api-root 'rootUrl)
             (hash-ref api-root 'servicePath)
             (expand-template path aliased-resource)))
   (log-marv-debug "url: ~v" url)

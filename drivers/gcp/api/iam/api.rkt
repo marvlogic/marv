@@ -23,10 +23,13 @@
   (define (genrq cf)
     (lambda(res) ((mk-request-handler (DISCOVERY) iam-type-map iam-api-operation-handler) cf res http)))
 
-  ; TODO14 - hard-coded hash-drops aren't good!
-  (define (create-name res)
-    (hash-drop (hash-set res 'name (format "projects/~a" (hash-ref res 'project))) '(project region)))
-  (register-request-transformer (transformer 'iam.projects.serviceAccounts.create create-name))
+  (define (create-sa-name res)
+    (hash-set res 'name (format "projects/~a" (hash-ref res 'project))))
+  (register-request-transformer (transformer 'iam.projects.serviceAccounts.create create-sa-name))
+
+  (define (create-sa-key-name res)
+    (hash-remove (hash-set res 'name (hash-ref res 'service-account)) 'service-account))
+  (register-request-transformer (transformer 'iam.projects.serviceAccounts.keys.create create-sa-key-name))
 
   (define crudfn
     (make-driver-crud-fn
