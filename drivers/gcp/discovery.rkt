@@ -6,7 +6,9 @@
 (require racket/list)
 (require racket/match)
 (require racket/string)
+(require uri-template)
 (require racket/dict)
+(require marv/log)
 (require marv/utils/hash)
 (require marv/core/globals)
 (require marv/core/config)
@@ -85,19 +87,32 @@
 (define/contract (api-resource-url api config)
   (disc-api? config/c . -> . string?)
   (define aliased-resource
-    (make-immutable-caseless-string-hash
-     (hash-set config
-               (ref-type api) (hash-ref config 'name))))
+    ;  (hash-set config (ref-type api) (hash-ref config 'name))
+    (make-immutable-hash
+     (hash->list (hash-map/copy
+                  (hash-take config (hash-keys (api-path-parameters api)))
+                  (lambda(k v) (values (symbol->string k) v))))))
+  (define api-root (disc-api-root api))
+  (define path (hash-ref (disc-api-type-api api) 'path))
+  (log-marv-debug "path: ~v, imm: ~v" path aliased-resource)
+  (log-marv-debug "exp: ~v" (expand-template path aliased-resource))
   (define url
-    (format "~a~a" (hash-ref (disc-api-root api) 'baseUrl)
-            (flat-path api)))
-  ; TODO - needs to be dict?
-  (dict-format-string aliased-resource url))
+    (format "~a~a~a"
+            (hash-ref api-root 'baseUrl)
+            (hash-ref api-root 'servicePath)
+            (expand-template path aliased-resource)))
+  (log-marv-debug "url: ~v" url)
+  url)
 
 (define/contract (api-required-params api)
   (disc-api? . -> . list?)
   (define params (hash-ref (disc-api-type-api api) 'parameters))
   (filter (lambda (k) (hash-nref params (list k 'required) #f)) (hash-keys params)))
+
+(define/contract (api-path-parameters api)
+  (disc-api? .  -> . hash?)
+  (hash-filter (hash-ref (disc-api-type-api api) 'parameters)
+               (lambda (k v) (equal? "path" (hash-ref v 'location)))))
 
 (define (flat-path api)
   (define type-api (disc-api-type-api api))
