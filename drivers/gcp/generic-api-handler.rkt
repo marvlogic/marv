@@ -37,8 +37,8 @@
        (define is-delete? (eq? crud-delete crud-fn))
        (define response (generic-api-req api xfd-resource http is-delete? op-handler))
        (log-marv-debug "response: ~a" response)
-       (define resp (api-resource api response))
-       (hash-merge resp config)]
+       ;  (define resp (api-resource api response))
+       (hash-merge response config)]
       [else raise (format "type has no usable CRUD for ~a : ~a" crud-fn type-op )]
       ))
   generic-request)
@@ -58,9 +58,10 @@
       [else (raise (format "indeterminate op state: ~v" op-resp))]
       ))
 
+  ; TODO14 - hash-dropping the project/region fields?
   (define initial-response
     (operation-handler (api-response-type api)
                        (http (api-http-method api)
                              (api-resource-url api resource)
-                             (api-resource api resource))))
+                             (api-resource api (hash-drop resource '(project region))))))
   (work-it initial-response))

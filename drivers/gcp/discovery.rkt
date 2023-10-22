@@ -114,12 +114,6 @@
   (hash-filter (hash-ref (disc-api-type-api api) 'parameters)
                (lambda (k v) (equal? "path" (hash-ref v 'location)))))
 
-(define (flat-path api)
-  (define type-api (disc-api-type-api api))
-  (define (construct-flat-path)
-    (format "~a?~a" (hash-ref type-api 'path) (type-api-query-params type-api)))
-  (dict-ref type-api 'flatPath construct-flat-path))
-
 (define (type-api-query-params api)
   (define params (hash-ref api 'parameters))
   (string-join
@@ -133,6 +127,7 @@
 
 (define/contract (api-resource api config)
   (disc-api? config/c . -> . config/c)
+  ; TODO - needs to use request schema
   (define path-parameters
     (hash-filter (hash-ref (disc-api-type-api api) 'parameters)
                  (lambda (k v) (equal? "path" (hash-ref v 'location)))))

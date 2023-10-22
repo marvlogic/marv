@@ -15,4 +15,7 @@ module main {
         } 
     }
 
+    service-account-key = gcp:iam.project.serviceAccount.key defaults <- {
+        name = service-account.name
+    }
 }
