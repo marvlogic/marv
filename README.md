@@ -81,6 +81,16 @@ To build the image locally:
     .. [ set up environment - see below ]
     marv --plan /usr/lib/marv/examples/gcp/01-networking.mrv
 
+    # or:
+    # Mount local directory (to save state - cd to /home/marv) 
+    # and pass environment into container
+
+    docker run -v `pwd`:/home/marv \
+        -e GCP_ACCESS_TOKEN=$GCP_ACCESS_TOKEN \
+        -e MARV_GCP_PROJECT=$MARV_GCP_PROJECT \
+        -e MARV_GCP_REGION=$MARV_GCP_REGION \
+        -it happyrat/marv:latest /bin/bash
+
 # Command line usage
 ```
 alias marv="racket command.rkt" # (not needed in docker container)
