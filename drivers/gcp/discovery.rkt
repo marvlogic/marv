@@ -91,7 +91,7 @@
       [(1)
        (define missing (set-first missing-params))
        (define name (hash-ref config 'name))
-       (log-marv-debug "missing parameter: ~v, assuming ~v is ok" missing name)
+       (log-marv-warn "missing parameter: ~v, assuming ~v is ok" missing name)
        (hash-set config-params missing name)]
       [else (raise-exn "missing too many path parameters: ~v, need: ~v" missing-params reqd-params)]))
 
