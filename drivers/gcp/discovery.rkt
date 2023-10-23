@@ -24,7 +24,7 @@
 
 
 (struct disc-doc (root) #:transparent)
-(struct disc-api (root type-api))
+(struct disc-api (root type-api) #:transparent)
 
 (define ROOT-DISCOVERY "https://discovery.googleapis.com/discovery/v1/apis")
 
@@ -129,15 +129,24 @@
 
 (define/contract (api-resource api config)
   (disc-api? config/c . -> . config/c)
-  ; TODO - needs to use request schema
-  (define path-parameters
-    (hash-filter (hash-ref (disc-api-type-api api) 'parameters)
-                 (lambda (k v) (equal? "path" (hash-ref v 'location)))))
-  (hash-drop config (cons '$type (hash-keys path-parameters))))
+  (define req-type (api-request-type api))
+  (cond [req-type
+         (define api-root (disc-api-root api))
+         (define schema (api-schema api-root req-type))
+         (hash-take config (hash-keys schema))]
+        [else (hash)]))
 
 (define/contract (api-response-type api)
   (disc-api? . -> . (or/c #f string?))
   (hash-nref (disc-api-type-api api) '(response $ref) #f))
+
+(define/contract (api-request-type api)
+  (disc-api? . -> . (or/c #f string?))
+  (hash-nref (disc-api-type-api api) '(request $ref) #f))
+
+(define/contract (api-schema disc type)
+  (hash? string? . -> . hash?)
+  (hash-nref disc (list 'schemas (string->symbol type) 'properties)))
 
 (define (api-resource-keys doc)
   (pretty-print

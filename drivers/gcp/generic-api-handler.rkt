@@ -28,7 +28,7 @@
     (define type-op (crud-fn (type-map (gcp-type config))))
     (log-marv-debug "gen/req: type-op=~a ~a" type-op config)
     (define xfd-resource (apply-request-transformer type-op config) )
-    (log-marv-debug "xformed: ~a" xfd-resource)
+    (log-marv-debug "xformed: ~v" xfd-resource)
     (cond
       ; TODO - hacked
       [(null? type-op) xfd-resource]
@@ -57,11 +57,12 @@
       ['errored (raise (format "Operation failed with errors: ~v" (op-status-errors op-resp)))]
       [else (raise (format "indeterminate op state: ~v" op-resp))]
       ))
-
+  (define api-shaped-resource (api-resource api resource))
+  (log-marv-debug "api-shaped: ~v" api-shaped-resource)
   ; TODO14 - hash-dropping the project/region fields?
   (define initial-response
     (operation-handler (api-response-type api)
                        (http (api-http-method api)
                              (api-resource-url api resource)
-                             (api-resource api (hash-drop resource '(project region))))))
+                             api-shaped-resource)))
   (work-it initial-response))
