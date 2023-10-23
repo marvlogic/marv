@@ -72,37 +72,29 @@
   (disc-api? . -> . symbol?)
   (string->symbol(hash-ref (disc-api-type-api api) 'httpMethod)))
 
-(define (ref-type api)
-
-  ; TODO - bit of a hack to rely on parameterOrder like this?
-
-  ; Warning! on method='insert, request.$ref has initial Upper case character,
-  ; but it's not used in an insert request hence it 'works'.  parameterOrder is
-  ; used on get and delete.
-
-  (string->symbol
-   (hash-nref (disc-api-type-api api) '(request $ref)
-              (last (hash-ref (disc-api-type-api api) 'parameterOrder)))))
-
 (define/contract (api-resource-url api config)
   (disc-api? config/c . -> . string?)
 
-  ; TODO14 - aliasing....?
-  (define aliased-resource
-    (make-immutable-hash
-     (hash->list (hash-map/copy
-                  (hash-take (hash-set config (ref-type api) (hash-ref config 'name))
-                             (hash-keys (api-path-parameters api)))
-                  (lambda(k v) (values (symbol->string k) v))))))
+  (define last-param (string->symbol(last (hash-ref (disc-api-type-api api) 'parameterOrder))))
+  (log-marv-debug "assuming 'name' aliases to ~v" last-param)
+  (define alias-cfg
+    (hash-set
+     (hash-take config (hash-keys (api-path-parameters api)))
+     last-param (hash-ref config 'name)))
+  (define path-parameters
+    (hash-map/copy
+     (make-immutable-hash (hash->list alias-cfg))
+     (lambda(k v) (values (symbol->string k) v))))
+
   (define api-root (disc-api-root api))
   (define path (hash-ref (disc-api-type-api api) 'path))
-  (log-marv-debug "path: ~v, imm: ~v" path aliased-resource)
-  (log-marv-debug "exp: ~v" (expand-template path aliased-resource))
+  (log-marv-debug "path: ~v, imm: ~v" path path-parameters)
+  (log-marv-debug "exp: ~v" (expand-template path path-parameters))
   (define url
     (format "~a~a~a"
             (hash-ref api-root 'rootUrl)
             (hash-ref api-root 'servicePath)
-            (expand-template path aliased-resource)))
+            (expand-template path path-parameters)))
   (log-marv-debug "url: ~v" url)
   url)
 
