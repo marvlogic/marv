@@ -15,7 +15,7 @@ __Under active development: Not suitable for production usage__
 
 ## Features so far...
 
-- Support for GCP Compute and Storage APIs (more planned soon)
+- Support for GCP Compute, Storage and (partial) IAM APIs (more planned soon)
 - New DSL for describing resources
 - Modules, including parameters and returns (outputs)
 - Custom types (for accessing parts of the API not covered in the standard model)
@@ -33,16 +33,13 @@ structure of it is very much in-flux and subject to __significant__ change.
 
 ## Current Limitations
 
-There's a lot of work left to reach a good beta release point. That said, the
-current feature set allows fairly complex configurations to be managed, albeit
-with a local state file.
-
-The main issues and omissions are:
+There's a lot of work left to reach a good beta release point. The main issues
+and omissions are:
 
 - A new DSL subject to change, and very lacking in features, such as loops and
 conditions. All are planned though.
 
-- Only supports GCP compute and storage APIs, more coming very soon.
+- Limited API support (compute, storage, and some IAM coverage)
 
 - The model doesn't yet know about which fields are immutable on GCP resources; you
 need to specify these manually (see attributes marked `imm:` in the
@@ -83,6 +80,16 @@ To build the image locally:
     docker run -it happyrat/marv:latest /bin/bash
     .. [ set up environment - see below ]
     marv --plan /usr/lib/marv/examples/gcp/01-networking.mrv
+
+    # or:
+    # Mount local directory (to save state - cd to /home/marv) 
+    # and pass environment into container
+
+    docker run -v `pwd`:/home/marv \
+        -e GCP_ACCESS_TOKEN=$GCP_ACCESS_TOKEN \
+        -e MARV_GCP_PROJECT=$MARV_GCP_PROJECT \
+        -e MARV_GCP_REGION=$MARV_GCP_REGION \
+        -it happyrat/marv:latest /bin/bash
 
 # Command line usage
 ```

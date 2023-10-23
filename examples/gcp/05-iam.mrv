@@ -1,0 +1,21 @@
+#lang marv
+
+module main {
+
+    defaults = {
+        project = env("MARV_GCP_PROJECT")
+        region = env("MARV_GCP_REGION")
+    }
+
+    service-account = gcp:iam.project.serviceAccount defaults <- {
+        accountId = "service-account-id"
+        serviceAccount = {
+            displayName = "service-account1"
+            description = "example service account"
+        } 
+    }
+
+    service-account-key = gcp:iam.project.serviceAccount.key defaults <- {
+        service-account = service-account.name
+    }
+}

@@ -2,10 +2,14 @@
 
 (require racket/file)
 (require racket/list)
+(require racket/contract)
+(require racket/string)
 (require net/http-easy)
 
 (provide marv-init
          workspace-path
+         split-symbol
+         join-symbols
          with-workspace-file)
 
 (define WORKDIR (make-parameter (list (current-directory) ".marv")))
@@ -21,3 +25,11 @@
     (printf "Downloading ~a \n  -> ~a\n" url wspath)
     (with-output-to-file wspath (lambda() (write-bytes (response-body (get url))))))
   (with-input-from-file wspath thk))
+
+(define/contract (split-symbol sym [splitter "."])
+  ((symbol?) (string?) . ->* . (listof symbol?))
+  (map string->symbol (string-split (symbol->string sym) splitter)))
+
+(define/contract (join-symbols syms [joiner "."])
+  (((listof symbol?)) (string?) . ->* . symbol?)
+  (string->symbol (string-join (map symbol->string syms) joiner)))

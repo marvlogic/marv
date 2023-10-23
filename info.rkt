@@ -5,6 +5,7 @@
                "rackunit-lib"
                "sha"
                "brag"
+               "uri-template"
                "base"))
 (define build-deps '("scribble-lib" "racket-doc" "rackunit-lib"))
 (define scribblings '(("scribblings/marv.scrbl" ())))
