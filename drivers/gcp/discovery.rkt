@@ -4,6 +4,7 @@
 (require racket/contract)
 (require racket/pretty)
 (require racket/list)
+(require racket/set)
 (require racket/match)
 (require racket/string)
 (require uri-template)
@@ -22,6 +23,7 @@
          api-response-type
          disc-api?)
 
+(define (raise-exn fstr . vs) (apply error 'discovery fstr vs))
 
 (struct disc-doc (root) #:transparent)
 (struct disc-api (root type-api) #:transparent)
@@ -64,7 +66,7 @@
 
   (define api-id (string->symbol (hash-ref api 'id)))
   (when (not (eq? api-id type-op))
-    (raise (format "API for ~v did not match in API's id field (~v)" type-op api-id)))
+    (raise-exn "API for ~v did not match in API's id field (~v)" type-op api-id))
 
   (disc-api (disc-doc-root discovery) api))
 
@@ -75,12 +77,25 @@
 (define/contract (api-resource-url api config)
   (disc-api? config/c . -> . string?)
 
-  (define last-param (string->symbol(last (hash-ref (disc-api-type-api api) 'parameterOrder))))
-  (log-marv-debug "assuming 'name' aliases to ~v" last-param)
+  ; NB this area is bound to give problems in the future, because assumptions are
+  ; made for all APIs that we can provide a missing required-parameter by using
+  ; the 'name' attribute from a resource config
+
+  (define reqd-params (api-required-params api))
+  (define config-params (hash-take config reqd-params))
+  (define missing-params (set-subtract reqd-params (hash-keys config-params) ))
+
   (define alias-cfg
-    (hash-set
-     (hash-take config (hash-keys (api-path-parameters api)))
-     last-param (hash-ref config 'name)))
+    (case (set-count missing-params)
+      [(0) config-params]
+      [(1)
+       (define missing (set-first missing-params))
+       (define name (hash-ref config 'name))
+       (log-marv-debug "missing parameter: ~v, assuming ~v is ok" missing name)
+       (hash-set config-params missing name)]
+      [else (raise-exn "missing too many path parameters: ~v, need: ~v" missing-params reqd-params)]))
+
+  ; uri-template library needs an 'equal?' hash
   (define path-parameters
     (hash-map/copy
      (make-immutable-hash (hash->list alias-cfg))

@@ -17,10 +17,12 @@
          hash-drop
          hash-match?)
 
+(define (raise-exn fstr . vs) (apply error 'hash fstr vs))
+
 (define (hash-nref
          hs ks
          [def (lambda()
-                (raise (exn:fail (format "hash-nref failed to find: ~v in ~v" ks hs))))])
+                (raise-exn "hash-nref failed to find: ~v in ~v" ks hs))])
   (with-handlers ([exn:fail? (lambda(e) (cond [(procedure? def) (def)]
                                               [else def]))])
     (for/fold ([h hs])
