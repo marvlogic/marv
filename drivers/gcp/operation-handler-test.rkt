@@ -10,6 +10,8 @@
   op-status?
   op-status-errors))
 
+'operation-handler-test
+
 (define done-resp
   #hasheq(
    (id . "65076254")
