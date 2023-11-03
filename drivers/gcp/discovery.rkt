@@ -98,16 +98,26 @@
        (hash-set config-params missing name)]
       [else (raise-exn "missing too many path parameters: ~v, need: ~v" missing-params reqd-params)]))
 
-  ; uri-template library needs an 'equal?' hash
+  ; uri-template library needs an 'equal?' hash, using strings as keys
   (define path-parameters
     (hash-map/copy
      (make-immutable-hash (hash->list alias-cfg))
      (lambda(k v) (values (symbol->string k) v))))
 
-  (define api-root (disc-api-root api))
-  (define path (format "~a" (hash-ref (disc-api-type-api api) 'path)))
+  ; for apis (secret-manager, storage) that have required query parameters, but
+  ; don't have the template variables for them in the 'path' setting:
+
+  (define query-params-str
+    (match (set-intersect reqd-params (api-query-parameters api))
+      [(list qps ..1) (string-join
+                       (for/list ([q qps]) (format "~a={~a}" q q))
+                       "&" #:before-first "?")]
+      [else ""]))
+
+  (define path (format "~a~a" (hash-ref (disc-api-type-api api) 'path) query-params-str))
   (log-marv-debug "path: ~v, imm: ~v" path path-parameters)
   (log-marv-debug "exp: ~v" (expand-template path path-parameters))
+  (define api-root (disc-api-root api))
   (define url
     (format "~a~a~a"
             (hash-ref api-root 'rootUrl)
@@ -120,30 +130,20 @@
   (disc-api? . -> . list?)
   (hash-keys (hash-ref (disc-api-type-api api) 'parameters)))
 
+(define/contract (api-parameters api param-filter)
+  (disc-api? procedure? .  -> . (listof symbol?))
+  (hash-keys(hash-filter (hash-ref (disc-api-type-api api) 'parameters)
+                         (lambda (k v) (param-filter v)))))
+
 (define/contract (api-required-params api)
-  (disc-api? . -> . list?)
-  (define params (hash-ref (disc-api-type-api api) 'parameters))
-  (filter (lambda (k) (hash-nref params (list k 'required) #f)) (hash-keys params)))
+  (disc-api? . -> . (listof symbol?))
+  (define (required? v) (hash-ref v 'required #f))
+  (api-parameters api required?))
 
-(define/contract (api-path-parameters api)
-  (disc-api? .  -> . hash?)
-  (hash-filter (hash-ref (disc-api-type-api api) 'parameters)
-               (lambda (k v) (equal? "path" (hash-ref v 'location)))))
-
-(define/contract (api-query-params api)
-  (disc-api? . -> . list?)
-  (define params (hash-ref (disc-api-type-api api) 'parameters))
-  (hash-keys
-   (hash-filter
-    params
-    (lambda (_ v) (equal? "query" (hash-ref v 'location))))))
-
-(define/contract (api-query-params-str api)
-  (disc-api? . -> . string?)
-  (define qps
-    (map
-     (lambda (param) (format "~a={~a}" param param)) (api-query-params api) ))
-  (string-join qps "&"))
+(define/contract (api-query-parameters api)
+  (disc-api? . -> . (listof symbol?))
+  (define (qry? p) (equal? "query" (hash-ref p 'location)))
+  (api-parameters api qry?))
 
 (define/contract (api-resource api config)
   (disc-api? config/c . -> . config/c)
@@ -172,4 +172,5 @@
                              (hash-keys (hash-ref (disc-doc-root doc) 'resources))))))
 
 ; (define comp (load-discovery "gcp" "compute:beta"))
-(define secret (load-discovery "gcp" "secretmanager:v1"))
+; (define secret (load-discovery "gcp" "secretmanager:v1"))
+; (define api (api-for-type-op secret 'secretmanager.projects.secrets.create))

@@ -15,7 +15,7 @@
   (define (secret-version res)
     (hash-set* res
                'payload (hash 'data (b64enc (hash-ref res 'secret-data)))
-               'name (hash-ref res 'secret)))
+               'parent (hash-ref res 'secret)))
   (register-request-transformer
    (transformer 'secretmanager.projects.secrets.addVersion secret-version))
 

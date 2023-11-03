@@ -3,13 +3,12 @@
 
 (provide patches)
 
-; This patch adds query params to the 'path' and adds a missing 'required: true'
-; to the secretId
+; This patch adds a missing 'required: true' to the secretId
 
 (define secret-create (string->jsexpr #<<EOF
 {
   "id": "secretmanager.projects.secrets.create",
-  "path": "v1/{+parent}/secrets?secretId={secretId}",
+  "path": "v1/{+parent}/secrets",
   "flatPath": "v1/projects/{projectsId}/secrets",
   "httpMethod": "POST",
   "parameters": {
