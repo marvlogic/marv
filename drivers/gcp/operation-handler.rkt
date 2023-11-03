@@ -37,6 +37,7 @@
      (op-status done?  errors poll-next completed)]
     [else (op-success resp)]))
 
+; TODO - same code?
 (define (iam-api-operation-handler response-type resp)
   (define is-operation? (equal? "Operation" response-type))
   (cond

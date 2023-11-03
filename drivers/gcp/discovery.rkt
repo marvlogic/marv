@@ -25,16 +25,16 @@
 
 (define (raise-exn fstr . vs) (apply error 'discovery fstr vs))
 
-(struct disc-doc (root) #:transparent)
+(struct disc-doc (root type-op-patches) #:transparent)
 (struct disc-api (root type-api) #:transparent)
 
 (define ROOT-DISCOVERY "https://discovery.googleapis.com/discovery/v1/apis")
 
-(define/contract (load-discovery int-id disc-id)
-  (string? string? . -> . disc-doc?)
+(define/contract (load-discovery int-id disc-id [type-op-patches (hash)])
+  ((string? string?) (hash?) . ->* . disc-doc?)
   (define disc-url (dict-ref (get-root-discovery int-id) disc-id))
   (with-workspace-file int-id disc-id
-    #:thunk (lambda() (disc-doc(read-json))) #:url disc-url))
+    #:thunk (lambda() (disc-doc(read-json) type-op-patches)) #:url disc-url))
 
 (define (get-root-discovery int-id)
   (with-workspace-file int-id "discovery-index.json"
@@ -48,27 +48,30 @@
 (define/contract (api-for-type-op discovery type-op)
   (disc-doc? symbol? . -> . disc-api?)
 
-  (define (find-api res-tree type-path)
-    (define hs (hash-ref res-tree 'resources))
-    (match type-path
-      [(list t op) (hash-nref hs (list t 'methods op))]
-      [(list t ts ...) (find-api (hash-ref hs t) ts)]))
+  (define (consult-discovery-doc)
+    (define (find-api res-tree type-path)
+      (define hs (hash-ref res-tree 'resources))
+      (match type-path
+        [(list t op) (hash-nref hs (list t 'methods op))]
+        [(list t ts ...) (find-api (hash-ref hs t) ts)]))
 
-  ; TODO14 - exception handling
-  (define res-tree (disc-doc-root discovery))
-  (define path (cdr (split-symbol type-op)))
-  (define api (find-api res-tree path))
+    ; TODO14 - exception handling
+    (define res-tree (disc-doc-root discovery))
+    (define path (cdr (split-symbol type-op)))
+    (define api (find-api res-tree path))
 
-  ; This check covers the assumption that the path through the discovery
-  ; document should match up with the id of the API. e.g the IAM discovery
-  ; document path "resources.projects.resources.serviceAccounts.methods.get"
-  ; should have an API with id = "iam.projects.serviceAccount.get"
+    ; This check covers the assumption that the path through the discovery
+    ; document should match up with the id of the API. e.g the IAM discovery
+    ; document path "resources.projects.resources.serviceAccounts.methods.get"
+    ; should have an API with id = "iam.projects.serviceAccount.get"
 
-  (define api-id (string->symbol (hash-ref api 'id)))
-  (when (not (eq? api-id type-op))
-    (raise-exn "API for ~v did not match in API's id field (~v)" type-op api-id))
+    (define api-id (string->symbol (hash-ref api 'id)))
+    (when (not (eq? api-id type-op))
+      (raise-exn "API for ~v did not match in API's id field (~v)" type-op api-id))
+    api)
 
-  (disc-api (disc-doc-root discovery) api))
+  (define patches (disc-doc-type-op-patches discovery))
+  (disc-api (disc-doc-root discovery) (hash-ref patches type-op consult-discovery-doc)))
 
 (define/contract (api-http-method api)
   (disc-api? . -> . symbol?)
@@ -102,7 +105,7 @@
      (lambda(k v) (values (symbol->string k) v))))
 
   (define api-root (disc-api-root api))
-  (define path (hash-ref (disc-api-type-api api) 'path))
+  (define path (format "~a" (hash-ref (disc-api-type-api api) 'path)))
   (log-marv-debug "path: ~v, imm: ~v" path path-parameters)
   (log-marv-debug "exp: ~v" (expand-template path path-parameters))
   (define url
@@ -112,6 +115,10 @@
             (expand-template path path-parameters)))
   (log-marv-debug "url: ~v" url)
   url)
+
+(define/contract (api-all-params api)
+  (disc-api? . -> . list?)
+  (hash-keys (hash-ref (disc-api-type-api api) 'parameters)))
 
 (define/contract (api-required-params api)
   (disc-api? . -> . list?)
@@ -123,16 +130,20 @@
   (hash-filter (hash-ref (disc-api-type-api api) 'parameters)
                (lambda (k v) (equal? "path" (hash-ref v 'location)))))
 
-(define (type-api-query-params api)
-  (define params (hash-ref api 'parameters))
-  (string-join
-   (map
-    (lambda (param) (format "~a={~a}" param param))
-    (hash-keys
-     (hash-filter
-      params
-      (lambda (_ v) (and (hash-ref v 'required #f) (equal? "query" (hash-ref v 'location)))))))
-   "&"))
+(define/contract (api-query-params api)
+  (disc-api? . -> . list?)
+  (define params (hash-ref (disc-api-type-api api) 'parameters))
+  (hash-keys
+   (hash-filter
+    params
+    (lambda (_ v) (equal? "query" (hash-ref v 'location))))))
+
+(define/contract (api-query-params-str api)
+  (disc-api? . -> . string?)
+  (define qps
+    (map
+     (lambda (param) (format "~a={~a}" param param)) (api-query-params api) ))
+  (string-join qps "&"))
 
 (define/contract (api-resource api config)
   (disc-api? config/c . -> . config/c)
@@ -160,4 +171,5 @@
    (make-immutable-hash (map (lambda(k) (cons k k))
                              (hash-keys (hash-ref (disc-doc-root doc) 'resources))))))
 
-(define comp (load-discovery "gcp" "compute:beta"))
+; (define comp (load-discovery "gcp" "compute:beta"))
+(define secret (load-discovery "gcp" "secretmanager:v1"))

@@ -26,19 +26,20 @@
   (define/contract (generic-request crud-fn config http)
     (procedure? config/c any/c . -> . config/c)
     (define type-op (crud-fn (type-map (gcp-type config))))
-    (log-marv-debug "gen/req: type-op=~a ~a" type-op config)
+    (log-marv-debug "generic-request-handler: type-op=~a ~a" type-op config)
     (define xfd-resource (apply-request-transformer type-op config) )
-    (log-marv-debug "xformed: ~v" xfd-resource)
+    (log-marv-debug "transformed: ~v" xfd-resource)
     (cond
-      ; TODO - hacked
+      ; TODO - hacked, if null operation then we don't do anything
       [(null? type-op) xfd-resource]
       [(symbol? type-op)
        (define api (api-for-type-op discovery-doc type-op))
        (define is-delete? (eq? crud-delete crud-fn))
        (define response (generic-api-req api xfd-resource http is-delete? op-handler))
        (log-marv-debug "response: ~a" response)
-       ;  (define resp (api-resource api response))
-       (hash-merge config response)]
+       (define xresp (apply-response-transformer type-op response))
+       (log-marv-debug "transformed: ~a" xresp)
+       (hash-merge config xresp)]
       [else raise (format "type has no usable CRUD for ~a : ~a" crud-fn type-op )]
       ))
   generic-request)
