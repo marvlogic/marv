@@ -4,6 +4,7 @@
 (require racket/match)
 (require marv/core/globals)
 (require racket/string)
+(require json)
 (require/expose
  marv/drivers/gcp/discovery
  (disc-doc
@@ -54,8 +55,8 @@
              #hasheq((ReqBody
                       . #hasheq((properties . #hasheq((attr1 . value)(attr2 . value))))))))
 
-(define compute-doc (disc-doc (mk-disc 'compute.networks)))
-(define iam-doc (disc-doc (mk-disc 'iam.projects.serviceAccounts.keys)))
+(define compute-doc (disc-doc (mk-disc 'compute.networks) (hash)))
+(define iam-doc (disc-doc (mk-disc 'iam.projects.serviceAccounts.keys) (hash)))
 
 (check-true (disc-api? (api-for-type-op compute-doc 'compute.networks.insert)))
 (check-true (disc-api? (api-for-type-op iam-doc 'iam.projects.serviceAccounts.keys.insert)))

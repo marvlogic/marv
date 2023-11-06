@@ -60,7 +60,6 @@
       ))
   (define api-shaped-resource (api-resource api resource))
   (log-marv-debug "api-shaped: ~v" api-shaped-resource)
-  ; TODO14 - hash-dropping the project/region fields?
   (define initial-response
     (operation-handler (api-response-type api)
                        (http (api-http-method api)

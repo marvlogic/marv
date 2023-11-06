@@ -1,5 +1,4 @@
 #lang racket/base
-(require racket/string)
 (require net/http-easy)
 (require racket/contract)
 
