@@ -10,7 +10,8 @@
          workspace-path
          split-symbol
          join-symbols
-         with-workspace-file)
+         with-workspace-file
+         getenv-or-raise)
 
 (define WORKDIR (make-parameter (list (current-directory) ".marv")))
 
@@ -33,3 +34,6 @@
 (define/contract (join-symbols syms [joiner "."])
   (((listof symbol?)) (string?) . ->* . symbol?)
   (string->symbol (string-join (map symbol->string syms) joiner)))
+
+(define (getenv-or-raise e)
+  (or (getenv e) (raise (format "ERROR: ~a must be defined in environment" e))))

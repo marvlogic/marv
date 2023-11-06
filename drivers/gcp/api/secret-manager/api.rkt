@@ -5,11 +5,12 @@
 (require marv/drivers/gcp/crud)
 (require marv/drivers/gcp/generic-api-handler)
 (require marv/drivers/gcp/operation-handler)
-(require marv/drivers/driver)
+(require marv/drivers/utils)
 (require marv/core/config)
 (require marv/drivers/gcp/api/secret-manager/types)
 (require marv/drivers/gcp/api/secret-manager/patches)
 (require marv/drivers/gcp/api/secret-manager/transformers)
+
 
 
 (provide init-api)

@@ -6,26 +6,26 @@
 (require marv/log)
 (require marv/core/values)
 (require marv/utils/hash)
-
-(require marv/drivers/driver)
-(require marv/drivers/dev)
-(require marv/drivers/gcp/api)
-(require marv/drivers/gcp/transformers)
+(require marv/core/globals)
 
 (require (prefix-in core: marv/core/resources))
+(require (prefix-in drv: marv/core/drivers))
 
-(provide gen-resources gen-drivers getenv-or-raise
+(provide gen-resources getenv-or-raise
          def-res
+         drv:current-driver-set
+         drv:register-type
          set-return
          module-call
-         config-overlay config-reduce hash-nref handle-ref
-         with-module-ctx get-param
-         register-type)
+         config-overlay config-reduce handle-ref
+         with-module-ctx
+         get-param)
 
 (define (error:excn msg)
   (raise (format "ERROR at ~a:~a :  ~a" 1 2 msg))) ;(syntax-source stx) (syntax-line stx)))
 
 (define (init-resources) (list null (hash)))
+
 (define (add-resource id res)
   (define idx (car (RESOURCES)))
   (define hs (cadr (RESOURCES)))
@@ -124,44 +124,3 @@
            (hash-set rs (prefix-mod-id k) (make-resource res))]
           [(procedure? res)
            (hash-union rs (res (prefix-mod-id k) mkres))])))
-
-(define (gen-drivers decls-hs) tmp-drivers)
-
-(define (getenv-or-raise e)
-  (or (getenv e) (raise (format "ERROR: ~a must be defined in environment" e))))
-
-(define (register-type driver-id type-id api-specs)
-
-  (define type (string->symbol(string-join (map symbol->string type-id) ".")))
-  (define (check-for m)
-    (unless (hash-has-key? api-specs m)
-      (raise (format "~a:~a does not have the required '~a' clause" driver-id type m))))
-  (check-for 'create)
-  (check-for 'delete)
-
-  (log-marv-info "Registering: ~a:~a ~a" driver-id type api-specs)
-
-  (define (type-transform spec)
-    (cond [(null? spec) (transformer null null)]
-          [else (transformer (string->symbol(string-join (map symbol->string (car spec)) ".")) (cadr spec))]))
-
-  (define (register-type-msg type transforms) (hash '$type type 'transforms transforms))
-
-  (define driver-head (make-driver-for-set (tmp-drivers)))
-  (driver-head driver-id 'register-type
-               (register-type-msg
-                type
-                (for/list ([op '(create read update delete)])
-                  (type-transform (hash-ref api-specs op null)))))
-  ; NB return void or the empty hash gets printed!
-  (void))
-
-(define (tmp-drivers)
-  (if
-   (getenv "MARV_DEV_DRIVER")
-   (hash
-    'dev (init-dev-driver 'dev2)
-    'gcp (init-dev-driver 'dev))
-   (hash
-    'dev (init-dev-driver 'dev)
-    'gcp (init-gcp 'gcp (gcp-http-transport (getenv-or-raise "GCP_ACCESS_TOKEN"))))))

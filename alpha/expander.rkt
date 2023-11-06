@@ -24,7 +24,7 @@
            (require racket/hash)
            (require racket/pretty)
            MODULE ...
-           (define drivers (gen-drivers (hash)))
+           (define drivers (drv:current-driver-set))
            (provide drivers)
            )]
       [else (raise "nowt")]))
@@ -108,7 +108,7 @@
     (syntax-parse stx
       [(_ ((~literal driver-id) did:expr)
           ((~literal driver-attr) datr:expr) body)
-       (syntax/loc stx (register-type 'did 'datr (make-immutable-hash body)))]))
+       (syntax/loc stx (drv:register-type 'did 'datr (make-immutable-hash body)))]))
 
   (define (m-type-body stx)
     (syntax-parse stx

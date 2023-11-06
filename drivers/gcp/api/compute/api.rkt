@@ -9,7 +9,7 @@
 (require marv/drivers/gcp/generic-api-handler)
 (require marv/drivers/gcp/operation-handler)
 (require marv/drivers/gcp/transformers)
-(require marv/drivers/driver)
+(require marv/drivers/utils)
 
 (require marv/drivers/gcp/api/compute/types)
 
