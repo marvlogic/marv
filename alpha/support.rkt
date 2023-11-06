@@ -6,6 +6,12 @@
 (require marv/log)
 (require marv/core/values)
 (require marv/utils/hash)
+
+(require marv/drivers/driver)
+(require marv/drivers/dev)
+(require marv/drivers/gcp/api)
+(require marv/drivers/gcp/transformers)
+
 (require (prefix-in core: marv/core/resources))
 
 (provide gen-resources gen-drivers getenv-or-raise
@@ -123,11 +129,6 @@
 
 (define (getenv-or-raise e)
   (or (getenv e) (raise (format "ERROR: ~a must be defined in environment" e))))
-
-(require marv/drivers/driver)
-(require marv/drivers/dev)
-(require marv/drivers/gcp/api)
-(require marv/drivers/gcp/transformers)
 
 (define (register-type driver-id type-id api-specs)
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 STATE=int-test-state.dat
-RESF=examples/gcp/01-networking/main.mrv
+RESF=examples/gcp/01-networking.mrv
 
 export MARV_DEV_DRIVER=y
 export MARV_GCP_PROJECT=nosuchproject

@@ -1,5 +1,4 @@
 #lang racket/base
-(require racket/string)
 (require net/http-easy)
 (require racket/contract)
 
@@ -11,6 +10,7 @@
 (require (prefix-in compute. marv/drivers/gcp/api/compute/api))
 (require (prefix-in storage. marv/drivers/gcp/api/storage/api))
 (require (prefix-in iam. marv/drivers/gcp/api/iam/api))
+(require (prefix-in secret. marv/drivers/gcp/api/secret-manager/api))
 
 ; TODO - common module, and abstract setting it too
 (define (gcp-type r) (hash-ref r '$type))
@@ -22,6 +22,7 @@
     (hash 'compute (compute.init-api interface-id "compute:beta" http-transport)
           'storage (storage.init-api interface-id "storage:v1" http-transport)
           'iam (iam.init-api interface-id "iam:v1" http-transport)
+          'secretmanager (secret.init-api interface-id "secretmanager:v1" http-transport)
           ))
 
   (define/contract (routing op config)
