@@ -22,7 +22,7 @@
   (define (genrq cf)
     (lambda(res) ((mk-request-handler (DISCOVERY) secret-type-map iam-api-operation-handler) cf res http)))
 
-  (request-transformers)
+  ; (request-transformers)
   (define crudfn
     (make-driver-crud-fn
      validate

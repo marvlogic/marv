@@ -15,7 +15,7 @@
   (type-map (hash-set (type-map) type crud)))
 
 (define base-type-map
-  (make-immutable-hasheq
-   `((secretmanager.project.secret . secretmanager.projects.secrets))))
+  (make-immutable-hasheq '()))
+;  `((secretmanager.project.secret . secretmanager.projects.secrets))))
 
 (define type-map (make-parameter base-type-map))
