@@ -1,10 +1,12 @@
 #lang brag
 
-marv-spec: module-import* outer-decl* marv-module*
+marv-spec: module-import* module-export* outer-decl* marv-module*
 
-module-import: /"import" STRING [ "as" IDENTIFIER ]
+module-import: /"import" [ STRING | MODULE-IDENTIFIER ] [ "as" IDENTIFIER ]
 
 outer-decl: config-func-decl | type-decl
+
+module-export: /"export" IDENTIFIER+
 
 marv-module: [ "private" ] /"module" IDENTIFIER ["(" module-parameter+ ")"] /"{" statement* [ module-return ] /"}"
 module-parameter: IDENTIFIER [ "=" expression ]

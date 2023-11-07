@@ -1,0 +1,5 @@
+#lang marv
+
+export identity
+
+identity(config) = config

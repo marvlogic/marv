@@ -32,6 +32,11 @@
       [(_ OUTER) (syntax/loc stx OUTER)]
       [else (raise "nowt-outer-decl")]))
 
+  (define (m-module-export stx)
+    (syntax-parse stx
+      [(_ IDS ...) (syntax/loc stx (provide IDS ...))]
+      [else (raise "nowt-outer-decl")]))
+
   (define (m-marv-module stx)
     (syntax-parse stx
       [(_ (~optional (~and private? "private"))
@@ -71,7 +76,8 @@
 
   (define (m-module-import stx)
     (syntax-parse stx
-      [(_ FILENAME) (syntax/loc stx (require FILENAME)) ]
+      [(_ MOD-ID:id) #`(require (lib #,(format "marv/~a.mrv" (syntax->datum #`MOD-ID))))]
+      [(_ FILENAME:string) (syntax/loc stx (require FILENAME)) ]
       [(_ FILENAME "as" ALIAS) #`(require (prefix-in #,(format-id #f "~a/" #`ALIAS) FILENAME)) ]
       [else (raise "m-import")]))
 
@@ -274,6 +280,7 @@
 (define-syntax module-return m-module-return)
 (define-syntax return-parameter m-return-parameter)
 (define-syntax module-import m-module-import)
+(define-syntax module-export m-module-export)
 (define-syntax statement m-statement)
 (define-syntax decl m-decl)
 (define-syntax var-decl m-var-decl)
@@ -310,6 +317,7 @@
 (provide marv-spec outer-decl marv-module module-parameter decl var-decl res-decl
          module-invoke named-parameter module-return return-parameter
          module-import
+         module-export
          config-func-call config-func-decl
          type-decl type-body type-crud-decl type-api-spec
          expression reference statement config-object alist list-attr
