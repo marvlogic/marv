@@ -1,6 +1,7 @@
 #lang racket/base
 
 (require racket/contract)
+(require racket/list)
 (require racket/string)
 (require marv/log)
 (require marv/core/globals)
@@ -42,13 +43,14 @@
     (unless (hash-has-key? api-specs m)
       (raise (format "~a:~a does not have the required '~a' clause" driver-id type m))))
   (check-for 'create)
+  (check-for 'read)
   (check-for 'delete)
 
-  (log-marv-info "Registering: ~a:~a ~a" driver-id type api-specs)
+  (log-marv-info "Registering type: ~a:~a ~a" driver-id type api-specs)
 
   (define (type-transform spec)
-    (cond [(null? spec) (transformer null null)]
-          [else (transformer (string->symbol(string-join (map symbol->string (car spec)) ".")) (cadr spec))]))
+    (cond [(null? spec) (transformer null null null)]
+          [else (transformer (join-symbols (first spec)) (second spec) (third spec))]))
 
   (define (register-type-msg type transforms) (hash '$type type 'transforms transforms))
 

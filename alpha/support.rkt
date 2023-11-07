@@ -7,6 +7,8 @@
 (require marv/core/values)
 (require marv/utils/hash)
 (require marv/core/globals)
+(require marv/utils/base64)
+
 
 (require (prefix-in core: marv/core/resources))
 (require (prefix-in drv: marv/core/drivers))
@@ -17,6 +19,7 @@
          drv:register-type
          set-return
          module-call
+         b64enc b64dec
          config-overlay config-reduce handle-ref
          with-module-ctx
          get-param)

@@ -1,6 +1,10 @@
 #lang brag
 
-marv-spec: module-import* marv-module*
+marv-spec: module-import* outer-decl* marv-module*
+
+module-import: /"import" STRING [ "as" IDENTIFIER ]
+
+outer-decl: config-func-decl | type-decl
 
 marv-module: [ "private" ] /"module" IDENTIFIER ["(" module-parameter+ ")"] /"{" statement* [ module-return ] /"}"
 module-parameter: IDENTIFIER [ "=" expression ]
@@ -8,9 +12,7 @@ module-return: "return" /"{" return-parameter+ /"}"
 return-parameter: ( STRING | IDENTIFIER | "type" ) /"=" expression
 
 statement: decl | pprint
-decl: var-decl | res-decl | module-invoke | config-func-decl | type-decl
-
-module-import: /"import" STRING [ "as" IDENTIFIER ]
+decl: var-decl | res-decl | module-invoke | config-func-decl
 
 pprint: /"pprint" expression
 comment: COMMENT
@@ -21,8 +23,8 @@ config-func-param: IDENTIFIER
 
 type-decl: /"type" driver-id /":" driver-attr /"=" type-body
 type-body: /"{" type-crud-decl+ /"}"
-type-crud-decl: ( "create" | "delete" ) /"=" type-api-spec
-type-api-spec: driver-attr /":" IDENTIFIER
+type-crud-decl: ( "create" | "read" | "update" | "delete" ) /"=" type-api-spec
+type-api-spec: driver-attr /"{" IDENTIFIER IDENTIFIER /"}"
 
 expression: INTEGER | STRING | IDENTIFIER | reference | config-func-call | boolean | config-expr | alist | built-in
 
@@ -33,10 +35,12 @@ alist: /"[" expression* /"]"
 
 list-attr: /"[" IDENTIFIER+ /"]"
 
-built-in: env-read | strf
+built-in: env-read | strf | base64encode | base64decode
 env-read: /"env" /"(" STRING /")"
 
 strf: /"strf" /"(" STRING expression+ /")"
+base64encode: /"base64encode" /"(" expression /")"
+base64decode: /"base64decode" /"(" expression /")"
 
 config-expr: config-object | config-ident | config-merge | config-func-call | config-take
 config-merge: config-expr ("<-" | "->") config-expr

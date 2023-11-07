@@ -31,7 +31,7 @@ module igm-custom {
     # taken from 'spec'
 
     create-transform(spec) = spec << [ name project zone instanceGroupManager ] <- { 
-                instances = [ spec << [ name preservedState ] ]
+        instances = [ spec << [ name preservedState ] ]
     }
 
     delete-transform(spec) = spec << [ name project zone instanceGroupManager ] <- {

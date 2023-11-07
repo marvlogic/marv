@@ -13,7 +13,7 @@
 
 (require marv/drivers/gcp/api/compute/types)
 
-(provide init-api register-type)
+(provide init-api)
 
 (define DISCOVERY (make-parameter #f))
 
@@ -30,7 +30,7 @@
 
 (define (aux-handler op msg)
   (case op
-    ['register-type register-type]
+    ; ['register-type register-type]
     [else (raise "Unsupported op/message in compute-api")]))
 
 ; TODO - gcp-common module
@@ -49,16 +49,17 @@
   (has-required-api-parameters?)
   cfg)
 
-(define (register-type msg)
-  (define-values (type transformers) (values (hash-ref msg '$type) (hash-ref msg 'transforms)))
-  (log-marv-info "compute-register-type: ~a:~a" type transformers)
-  (define apis (map transformer-api-id transformers))
-  (define-values (create-api read-api update-api delete-api) (apply values apis))
-  (ct-register-type type (crud create-api read-api update-api delete-api))
+; TODO23
+; (define (register-type msg)
+;   (define-values (type transformers) (values (hash-ref msg '$type) (hash-ref msg 'transforms)))
+;   (log-marv-info "compute-register-type: ~a:~a" type transformers)
+;   (define apis (map transformer-api-id transformers))
+;   (define-values (create-api read-api update-api delete-api) (apply values apis))
+;   (ct-register-type type (crud create-api read-api update-api delete-api))
 
-  (define tfns (map transformer-fn transformers))
-  (for ([a apis]
-        [t tfns]
-        #:when (procedure? t))
-    (register-request-transformer (transformer a t)))
-  (hash))
+;   (define tfns (map transformer-fn transformers))
+;   (for ([a apis]
+;         [t tfns]
+;         #:when (procedure? t))
+;     (register-request-transformer (transformer a t)))
+;   (hash))
