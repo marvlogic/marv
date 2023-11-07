@@ -11,8 +11,6 @@
 (require marv/drivers/gcp/api/secret-manager/patches)
 (require marv/drivers/gcp/api/secret-manager/transformers)
 
-
-
 (provide init-api)
 
 (define DISCOVERY (make-parameter #f))

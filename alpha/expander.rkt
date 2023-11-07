@@ -24,8 +24,6 @@
            (require racket/hash)
            (require racket/pretty)
            MODULE ...
-           (define drivers (drv:current-driver-set))
-           (provide drivers)
            )]
       [else (raise "nowt")]))
 
