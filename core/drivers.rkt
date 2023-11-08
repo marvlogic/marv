@@ -43,7 +43,7 @@
     (unless (hash-has-key? api-specs m)
       (raise (format "~a:~a does not have the required '~a' clause" driver-id type m))))
   (check-for 'create)
-  (check-for 'read)
+  ; (check-for 'read)
   (check-for 'delete)
 
   (log-marv-info "Registering type: ~a:~a ~a" driver-id type api-specs)
