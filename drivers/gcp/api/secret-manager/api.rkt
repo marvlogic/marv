@@ -11,7 +11,6 @@
 (require marv/log)
 (require marv/drivers/gcp/api/secret-manager/types)
 (require marv/drivers/gcp/api/secret-manager/patches)
-(require marv/drivers/gcp/api/secret-manager/transformers)
 
 (provide init-api handle-register-type)
 
@@ -22,7 +21,6 @@
   (define (genrq cf)
     (lambda(res) ((mk-request-handler (DISCOVERY) secret-type-map iam-api-operation-handler) cf res http)))
 
-  ; (request-transformers)
   (define crudfn
     (make-driver-crud-fn
      validate
