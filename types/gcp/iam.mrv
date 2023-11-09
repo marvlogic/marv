@@ -1,0 +1,25 @@
+#lang marv
+
+import "../common.mrv"
+
+create-sa-name(cfg) = cfg <- { 
+    name = strf("projects/~a" cfg.project)
+}
+
+type gcp:iam.serviceAccount = {
+    create = iam.projects.serviceAccounts.create { create-sa-name identity }
+    read = iam.projects.serviceAccounts.get { identity identity }
+    update = iam.projects.serviceAccounts.patch { identity identity }
+    delete = iam.projects.serviceAccounts.delete { identity identity }
+}
+
+create-sa-key-name(cfg) = cfg <- {
+    name = cfg.service-account
+}
+
+type gcp:iam.serviceAccountKey = {
+    create = iam.projects.serviceAccounts.keys.create { create-sa-key-name identity }
+    read = iam.projects.serviceAccounts.keys.read { identity identity }
+    update = iam.projects.serviceAccounts.keys.patch { identity identity }
+    delete = iam.projects.serviceAccounts.keys.delete { identity identity }
+}

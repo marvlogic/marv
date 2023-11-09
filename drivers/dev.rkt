@@ -1,10 +1,8 @@
 #lang racket/base
 (require racket/contract)
 
-(require marv/core/resources)
 (require marv/core/config)
-(require marv/drivers/driver)
-(require marv/drivers/types)
+(require marv/drivers/utils)
 
 (provide init-dev-driver)
 

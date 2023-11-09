@@ -23,39 +23,38 @@
 # WARNING: HERE BE DRAGONS :)
 #
 
-module igm-custom {
 
-    # These are the transformers that will reformat the resource to fit the API.
+# These are the transformers that will reformat the resource to fit the API.
 
-    # spec '<<' [attr ...] yields a config that has only the listed attributes
-    # taken from 'spec'
+# spec '<<' [attr ...] yields a config that has only the listed attributes
+# taken from 'spec'
 
-    create-transform(spec) = spec << [ name project zone instanceGroupManager ] <- { 
-                instances = [ spec << [ name preservedState ] ]
-    }
+create-transform(spec) = spec << [ name project zone instanceGroupManager ] <- { 
+    instances = [ spec << [ name preservedState ] ]
+}
 
-    delete-transform(spec) = spec << [ name project zone instanceGroupManager ] <- {
-        instances = [ strf("zones/~a/instances/~a" spec.zone spec.name) ]
-    }
+delete-transform(spec) = spec << [ name project zone instanceGroupManager ] <- {
+    instances = [ strf("zones/~a/instances/~a" spec.zone spec.name) ]
+}
 
-    # Register the custom type. The example uses the name
-    # 'compute.my-custom-type.instance' as the custom type ID, but it could be
-    # anything prefixed with 'compute.'
+identity(cfg) = cfg
+
+# Register the custom type. The example uses the name
+# 'compute.my-custom-type.instance' as the custom type ID, but it could be
+# anything prefixed with 'compute.'
+
+# Remember that the custom type is global; once this module has been imported
+# the type will be available everywhere (but it must be imported before the
+# custom type can be used).
+
+type gcp:compute.my-custom-type.instance = {
+    # The format is <method> = <api-id> { <request-transformer-func> <response-transfomer-func> }
+    # <method> = create, read, update or delete
     
-    # Remember that the custom type is global; once this module has been invoked
-    # the type will be available everywhere (but it must be invoked before the
-    # custom type can be used).
-    
-    type gcp:compute.my-custom-type.instance = {
-        # The format is <method> = <api-id>:<transformer-func>. 
-        # <method> = create or delete
-        
-        # The <api-id> is the ID of the actual API in the GCP API that
-        # the custom type will invoke:
+    # The <api-id> is the ID of the actual API in the GCP API that
+    # the custom type will invoke:
 
-        create = compute.instanceGroupManagers.createInstances:create-transform
-        delete = compute.instanceGroupManagers.deleteInstances:delete-transform
-    }
-
-    
+    create = compute.instanceGroupManagers.createInstances { create-transform identity }
+    # read = compute.instanceGroupManagers.readInstances { identity identity }
+    delete = compute.instanceGroupManagers.deleteInstances { delete-transform identity }
 }

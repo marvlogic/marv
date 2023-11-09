@@ -9,7 +9,7 @@
 (require racket/string)
 (require racket/path)
 
-(require marv/drivers/driver)
+(require marv/core/drivers)
 (require marv/core/resources)
 (require marv/core/values)
 (require marv/utils/hash)
@@ -35,23 +35,23 @@
 
 (struct params (required accepted))
 
+; TODO - using parameters for this isn't necessary
 (define RESOURCES (make-parameter (lambda oo (hash))))
-(define DRIVERS (make-parameter (lambda() (hash))))
 
 (define/contract (init-module f)
   (string? . -> . void?)
   (define rel-mod (find-relative-path (current-directory) f) )
-  (DRIVERS (dynamic-require rel-mod 'drivers))
   (RESOURCES (dynamic-require rel-mod 'main))
   (void))
 
 (define/contract (get-module params purge?)
   ((hash/c symbol? string?) boolean? . -> . rmodule/c)
   ; (validate-params params)
-  (define driver (make-driver-for-set ((DRIVERS))))
-  (define (mk-resource driver-id config) (resource driver-id (driver driver-id 'validate config)))
-  (define resources ((RESOURCES) 'main mk-resource params))
-  (mk-rmodule ((DRIVERS)) (if purge? (hash) resources)))
+  (with-drivers (current-driver-set)
+    (lambda()
+      (define (mk-resource driver-id config) (resource driver-id ((current-driver) driver-id 'validate config)))
+      (define resources ((RESOURCES) 'main mk-resource params))
+      (mk-rmodule (current-driver-set) (if purge? (hash) resources)))))
 
 (define (make-keyword-params params)
   ; TODO: test for check that #t (sorting) works

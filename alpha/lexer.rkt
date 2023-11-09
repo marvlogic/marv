@@ -21,8 +21,10 @@
   (lexer-srcloc
    ;    ["\n" (token 'NEWLINE lexeme)]
    [(:or "for/list" "->" "<-" "<<" ">>"
-         "module" "private" "import" "as" "return" "strf" "type" "in" "pprint" "env" "true" "false"
-         "create" "delete"
+         "module" "private" "import" "export" "as" "return" "strf"
+         "base64encode"
+         "type" "in" "pprint" "env" "true" "false"
+         "create" "read" "update" "delete"
          "imm:" ) (token lexeme lexeme)]
    [(:= 1 (char-set "[](){}=:,")) lexeme]
    [digits (token 'INTEGER (string->number lexeme))]

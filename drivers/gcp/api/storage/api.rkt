@@ -7,7 +7,7 @@
 (require marv/drivers/gcp/crud)
 (require marv/drivers/gcp/generic-api-handler)
 (require marv/drivers/gcp/operation-handler)
-(require marv/drivers/driver)
+(require marv/drivers/utils)
 (require marv/core/config)
 
 (require marv/drivers/gcp/api/storage/types)

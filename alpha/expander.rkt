@@ -24,10 +24,18 @@
            (require racket/hash)
            (require racket/pretty)
            MODULE ...
-           (define drivers (gen-drivers (hash)))
-           (provide drivers)
            )]
       [else (raise "nowt")]))
+
+  (define (m-outer-decl stx)
+    (syntax-parse stx
+      [(_ OUTER) (syntax/loc stx OUTER)]
+      [else (raise "nowt-outer-decl")]))
+
+  (define (m-module-export stx)
+    (syntax-parse stx
+      [(_ IDS ...) (syntax/loc stx (provide IDS ...))]
+      [else (raise "nowt-module-export")]))
 
   (define (m-marv-module stx)
     (syntax-parse stx
@@ -68,7 +76,9 @@
 
   (define (m-module-import stx)
     (syntax-parse stx
-      [(_ FILENAME) (syntax/loc stx (require FILENAME)) ]
+      ; TODO - this shorthand form doesn't work, the provided identifiers aren't seen by the consumer
+      [(_ MOD-ID:id) #`(require (lib #,(format "marv/~a.mrv" (syntax->datum #`MOD-ID))))]
+      [(_ FILENAME:string) (syntax/loc stx (require FILENAME)) ]
       [(_ FILENAME "as" ALIAS) #`(require (prefix-in #,(format-id #f "~a/" #`ALIAS) FILENAME)) ]
       [else (raise "m-import")]))
 
@@ -108,7 +118,7 @@
     (syntax-parse stx
       [(_ ((~literal driver-id) did:expr)
           ((~literal driver-attr) datr:expr) body)
-       (syntax/loc stx (register-type 'did 'datr (make-immutable-hash body)))]))
+       (syntax/loc stx (drv:register-type 'did 'datr (make-immutable-hash body)))]))
 
   (define (m-type-body stx)
     (syntax-parse stx
@@ -117,12 +127,14 @@
   (define (m-type-crud-decl stx)
     (syntax-parse stx
       [(_ "create" SPEC) (syntax/loc stx (cons 'create SPEC))]
+      [(_ "read" SPEC) (syntax/loc stx (cons 'read SPEC))]
+      [(_ "update" SPEC) (syntax/loc stx (cons 'update SPEC))]
       [(_ "delete" SPEC) (syntax/loc stx (cons 'delete SPEC))]))
 
   (define (m-type-api-spec stx)
     (syntax-parse stx
-      [(_ ((~literal driver-attr) datr:expr) xform-id:identifier)
-       (syntax/loc stx `(datr ,xform-id))]
+      [(_ ((~literal driver-attr) drv-attr:expr) req-xform-id:identifier resp-xform-id:identifier)
+       (syntax/loc stx `(drv-attr ,req-xform-id ,resp-xform-id))]
       [else (raise "api-spec")]))
 
   ; (define (m-config-func-param stx)
@@ -147,6 +159,16 @@
     (syntax-parse stx
       [(_ str:string expr ... ) (syntax/loc stx (format str expr ...))]
       [else (raise "m-strf")]))
+
+  (define (m-base64encode stx)
+    (syntax-parse stx
+      [(_ ex:expr) (syntax/loc stx (b64enc ex))]
+      [else (raise "m-base64encode")]))
+
+  (define (m-base64decode stx)
+    (syntax-parse stx
+      [(_ ex:expr) (syntax/loc stx (b64dec ex))]
+      [else (raise "m-base64decode")]))
 
   (define (m-pprint stx)
     (syntax-parse stx
@@ -253,11 +275,13 @@
   )
 
 (define-syntax marv-spec m-marv-spec)
+(define-syntax outer-decl m-outer-decl)
 (define-syntax marv-module m-marv-module)
 (define-syntax module-parameter m-module-parameter)
 (define-syntax module-return m-module-return)
 (define-syntax return-parameter m-return-parameter)
 (define-syntax module-import m-module-import)
+(define-syntax module-export m-module-export)
 (define-syntax statement m-statement)
 (define-syntax decl m-decl)
 (define-syntax var-decl m-var-decl)
@@ -282,6 +306,8 @@
 (define-syntax built-in m-built-in)
 (define-syntax env-read m-env-read)
 (define-syntax strf m-strf)
+(define-syntax base64encode m-base64encode)
+(define-syntax base64decode m-base64decode)
 (define-syntax pprint m-pprint)
 (define-syntax boolean m-boolean)
 (define-syntax config-expr m-config-expr)
@@ -289,12 +315,13 @@
 (define-syntax config-take m-config-take)
 (define-syntax config-ident m-config-ident)
 
-(provide marv-spec marv-module module-parameter decl var-decl res-decl
+(provide marv-spec outer-decl marv-module module-parameter decl var-decl res-decl
          module-invoke named-parameter module-return return-parameter
          module-import
+         module-export
          config-func-call config-func-decl
          type-decl type-body type-crud-decl type-api-spec
          expression reference statement config-object alist list-attr
          config-expr config-merge config-ident config-take
-         attr-decl keyword built-in env-read pprint strf
+         attr-decl keyword built-in env-read pprint strf base64encode base64decode
          boolean)

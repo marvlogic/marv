@@ -12,7 +12,7 @@
 (require marv/core/resources)
 (require marv/core/graph)
 (require marv/utils/hash)
-(require marv/drivers/driver)
+(require marv/core/drivers)
 
 (provide import-resources
          plan-changes
@@ -68,17 +68,15 @@
        (deref-resource
         (rmodule (rmodule-drivers mod) (mk-id->state)) (resource-ref mod id))))
     (define driver-id (resource-driver-id res))
-    (define config ((module-crudfn mod) driver-id 'read (resource-config res)))
+    (define config ((current-driver) driver-id 'read (resource-config res)))
     (state-set-ref id (resource driver-id config)))
 
   (map (lambda(id) (import-one id)) ids))
 
 (define (refresh-resources mod ids)
-  (define driver (module-crudfn mod))
-
   (define (readr res)
     (define did (resource-driver-id res))
-    (resource did (driver did 'read (resource-config res))))
+    (resource did ((current-driver) did 'read (resource-config res))))
 
   (define (refresh k)
     (displayln (format "Refreshing ~a" k))
@@ -86,12 +84,10 @@
     (state-set-ref k (readr res)))
   (for ([i ids]) (refresh i)))
 
-(define (module-crudfn m) (make-driver-for-set (rmodule-drivers m)))
-
 (define (apply-changes mod (refresh? #t))
 
   (define (crudfn op res)
-    (define driver (module-crudfn mod))
+    (define driver (current-driver))
     (define driver-id (resource-driver-id res))
     (resource driver-id (driver driver-id op (resource-config res))))
 
