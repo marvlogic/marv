@@ -7,6 +7,7 @@
 (require marv/core/globals)
 (require marv/drivers/types)
 
+(require marv/drivers/gcp/operation-handler)
 (require (prefix-in generic: marv/drivers/gcp/generic-api))
 (require (prefix-in sm: marv/drivers/gcp/api/secret-manager/patches))
 
@@ -15,7 +16,6 @@
 
 (provide init-gcp gcp-http-transport)
 
-(require marv/drivers/gcp/operation-handler)
 
 (define (init-gcp interface-id http-transport)
   (define apis
