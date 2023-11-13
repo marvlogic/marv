@@ -4,19 +4,14 @@
 (require marv/drivers/gcp/crud)
 (require marv/log)
 
-(provide storage-type-map)
+(provide register-type
+         storage-type-map)
 
-(define (storage-type-map type) (crud-for-type (type-map) type))
+(define (storage-type-map type) (hash-ref (type-map) type))
 
-(define base-type-map
-  '#hasheq(
-    (storage.bucketAccessControls . storage.bucketAccessControls)
-    (storage.bucket . storage.buckets)
-    (storage.channel . storage.channels)
-    (storage.defaultObjectAccessControls . storage.defaultObjectAccessControls)
-    (storage.notification . storage.notifications)
-    (storage.objectAccessControls . storage.objectAccessControls)
-    (storage.object . storage.objects)
-    (storage.project . storage.projects)))
+(define/contract (register-type type crud)
+  (symbol? crud? . -> . void)
+  (log-marv-info "Registering compute type: ~a ~a" type crud)
+  (type-map (hash-set (type-map) type crud)))
 
-(define type-map (make-parameter base-type-map))
+(define type-map (make-parameter (hash)))

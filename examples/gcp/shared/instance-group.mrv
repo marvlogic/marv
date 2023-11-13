@@ -1,5 +1,7 @@
 #lang marv
 
+import types/gcp/compute
+
 module instance-group(defaults name zone="b" vpc subnet) {
     node-disks = [ {
         boot = true

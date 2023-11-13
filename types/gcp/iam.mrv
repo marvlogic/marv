@@ -23,3 +23,11 @@ type gcp:iam.serviceAccountKey = {
     update = iam.projects.serviceAccounts.keys.patch { identity identity }
     delete = iam.projects.serviceAccounts.keys.delete { identity identity }
 }
+
+# TODO25 - debug
+type gcp:iam.role = {
+    create = iam.role.create { identity identity }
+    read = iam.role.get { identity identity }
+    update = iam.role.patch { identity identity }
+    delete = iam.role.delete { identity identity }
+}
