@@ -3,15 +3,13 @@
 (require racket/contract)
 (require marv/log)
 (require marv/core/config)
-(require marv/drivers/gcp/discovery)
-(require marv/drivers/gcp/generic-api-handler)
-(require marv/drivers/gcp/crud)
-(require marv/drivers/gcp/transformers)
 (require marv/drivers/utils)
+(require marv/drivers/gcp/crud)
+(require marv/drivers/gcp/discovery)
+(require marv/drivers/gcp/generic-request-handler)
+(require marv/drivers/gcp/transformers)
 
 (provide init-api)
-
-(define (gcp-type r) (hash-ref r '$type))
 
 (define TYPE-MAP (make-parameter (hash)))
 

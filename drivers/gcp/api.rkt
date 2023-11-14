@@ -6,16 +6,13 @@
 (require marv/core/config)
 (require marv/core/globals)
 (require marv/drivers/types)
+(require marv/drivers/utils)
 
 (require marv/drivers/gcp/operation-handler)
 (require (prefix-in generic: marv/drivers/gcp/generic-api))
 (require (prefix-in sm: marv/drivers/gcp/api/secret-manager/patches))
 
-; TODO - common module, and abstract setting it too
-(define (gcp-type r) (hash-ref r '$type))
-
 (provide init-gcp gcp-http-transport)
-
 
 (define (init-gcp interface-id http-transport)
   (define apis
