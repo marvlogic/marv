@@ -15,7 +15,8 @@
 
 (define (init-api interface-id api-id http OPERATION-HANDLER [type-op-patches (hash)])
   (define discovery (load-discovery (symbol->string interface-id) api-id type-op-patches))
-  (define (type-map-fn t) (hash-ref (TYPE-MAP) t))
+  (define (type-map-fn t)
+    (hash-ref (TYPE-MAP) t (lambda()(raise-argument-error 'type "registered type" t))))
   (define (genrq cf)
     (lambda(res) ((mk-request-handler discovery type-map-fn OPERATION-HANDLER) cf res http)))
 
