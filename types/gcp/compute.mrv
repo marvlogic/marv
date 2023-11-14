@@ -1,0 +1,550 @@
+#lang marv
+
+import "../common.mrv"
+
+type gcp:compute.instance = {
+  create = compute.instances.insert { identity identity }
+  read = compute.instances.get { identity identity }
+  update = compute.instances.patch { identity identity }
+  delete = compute.instances.delete { identity identity }
+}
+type gcp:compute.vpnGateway = {
+  create = compute.vpnGateways.insert { identity identity }
+  read = compute.vpnGateways.get { identity identity }
+  update = compute.vpnGateways.patch { identity identity }
+  delete = compute.vpnGateways.delete { identity identity }
+}
+type gcp:compute.interconnectLocation = {
+  create = compute.interconnectLocations.insert { identity identity }
+  read = compute.interconnectLocations.get { identity identity }
+  update = compute.interconnectLocations.patch { identity identity }
+  delete = compute.interconnectLocations.delete { identity identity }
+}
+type gcp:compute.targetHttpsProxy = {
+  create = compute.targetHttpsProxies.insert { identity identity }
+  read = compute.targetHttpsProxies.get { identity identity }
+  update = compute.targetHttpsProxies.patch { identity identity }
+  delete = compute.targetHttpsProxies.delete { identity identity }
+}
+type gcp:compute.router = {
+  create = compute.routers.insert { identity identity }
+  read = compute.routers.get { identity identity }
+  update = compute.routers.patch { identity identity }
+  delete = compute.routers.delete { identity identity }
+}
+type gcp:compute.regionAutoscaler = {
+  create = compute.regionAutoscalers.insert { identity identity }
+  read = compute.regionAutoscalers.get { identity identity }
+  update = compute.regionAutoscalers.patch { identity identity }
+  delete = compute.regionAutoscalers.delete { identity identity }
+}
+type gcp:compute.networkFirewallPolicy = {
+  create = compute.networkFirewallPolicies.insert { identity identity }
+  read = compute.networkFirewallPolicies.get { identity identity }
+  update = compute.networkFirewallPolicies.patch { identity identity }
+  delete = compute.networkFirewallPolicies.delete { identity identity }
+}
+type gcp:compute.networkAttachment = {
+  create = compute.networkAttachments.insert { identity identity }
+  read = compute.networkAttachments.get { identity identity }
+  update = compute.networkAttachments.patch { identity identity }
+  delete = compute.networkAttachments.delete { identity identity }
+}
+type gcp:compute.instanceGroup = {
+  create = compute.instanceGroups.insert { identity identity }
+  read = compute.instanceGroups.get { identity identity }
+  update = compute.instanceGroups.patch { identity identity }
+  delete = compute.instanceGroups.delete { identity identity }
+}
+type gcp:compute.securityPolicy = {
+  create = compute.securityPolicies.insert { identity identity }
+  read = compute.securityPolicies.get { identity identity }
+  update = compute.securityPolicies.patch { identity identity }
+  delete = compute.securityPolicies.delete { identity identity }
+}
+type gcp:compute.globalAddress = {
+  create = compute.globalAddresses.insert { identity identity }
+  read = compute.globalAddresses.get { identity identity }
+  update = compute.globalAddresses.patch { identity identity }
+  delete = compute.globalAddresses.delete { identity identity }
+}
+type gcp:compute.globalOrganizationOperation = {
+  create = compute.globalOrganizationOperations.insert { identity identity }
+  read = compute.globalOrganizationOperations.get { identity identity }
+  update = compute.globalOrganizationOperations.patch { identity identity }
+  delete = compute.globalOrganizationOperations.delete { identity identity }
+}
+type gcp:compute.regionHealthCheckService = {
+  create = compute.regionHealthCheckServices.insert { identity identity }
+  read = compute.regionHealthCheckServices.get { identity identity }
+  update = compute.regionHealthCheckServices.patch { identity identity }
+  delete = compute.regionHealthCheckServices.delete { identity identity }
+}
+type gcp:compute.packetMirroring = {
+  create = compute.packetMirrorings.insert { identity identity }
+  read = compute.packetMirrorings.get { identity identity }
+  update = compute.packetMirrorings.patch { identity identity }
+  delete = compute.packetMirrorings.delete { identity identity }
+}
+type gcp:compute.healthCheck = {
+  create = compute.healthChecks.insert { identity identity }
+  read = compute.healthChecks.get { identity identity }
+  update = compute.healthChecks.patch { identity identity }
+  delete = compute.healthChecks.delete { identity identity }
+}
+type gcp:compute.address = {
+  create = compute.addresses.insert { identity identity }
+  read = compute.addresses.get { identity identity }
+  update = compute.addresses.patch { identity identity }
+  delete = compute.addresses.delete { identity identity }
+}
+type gcp:compute.route = {
+  create = compute.routes.insert { identity identity }
+  read = compute.routes.get { identity identity }
+  update = compute.routes.patch { identity identity }
+  delete = compute.routes.delete { identity identity }
+}
+type gcp:compute.instanceGroupManager = {
+  create = compute.instanceGroupManagers.insert { identity identity }
+  read = compute.instanceGroupManagers.get { identity identity }
+  update = compute.instanceGroupManagers.patch { identity identity }
+  delete = compute.instanceGroupManagers.delete { identity identity }
+}
+type gcp:compute.interconnectAttachment = {
+  create = compute.interconnectAttachments.insert { identity identity }
+  read = compute.interconnectAttachments.get { identity identity }
+  update = compute.interconnectAttachments.patch { identity identity }
+  delete = compute.interconnectAttachments.delete { identity identity }
+}
+type gcp:compute.image = {
+  create = compute.images.insert { identity identity }
+  read = compute.images.get { identity identity }
+  update = compute.images.patch { identity identity }
+  delete = compute.images.delete { identity identity }
+}
+type gcp:compute.regionNotificationEndpoint = {
+  create = compute.regionNotificationEndpoints.insert { identity identity }
+  read = compute.regionNotificationEndpoints.get { identity identity }
+  update = compute.regionNotificationEndpoints.patch { identity identity }
+  delete = compute.regionNotificationEndpoints.delete { identity identity }
+}
+type gcp:compute.resourcePolicy = {
+  create = compute.resourcePolicies.insert { identity identity }
+  read = compute.resourcePolicies.get { identity identity }
+  update = compute.resourcePolicies.patch { identity identity }
+  delete = compute.resourcePolicies.delete { identity identity }
+}
+type gcp:compute.regionTargetHttpProxy = {
+  create = compute.regionTargetHttpProxies.insert { identity identity }
+  read = compute.regionTargetHttpProxies.get { identity identity }
+  update = compute.regionTargetHttpProxies.patch { identity identity }
+  delete = compute.regionTargetHttpProxies.delete { identity identity }
+}
+type gcp:compute.targetTcpProxy = {
+  create = compute.targetTcpProxies.insert { identity identity }
+  read = compute.targetTcpProxies.get { identity identity }
+  update = compute.targetTcpProxies.patch { identity identity }
+  delete = compute.targetTcpProxies.delete { identity identity }
+}
+type gcp:compute.regionInstance = {
+  create = compute.regionInstances.insert { identity identity }
+  read = compute.regionInstances.get { identity identity }
+  update = compute.regionInstances.patch { identity identity }
+  delete = compute.regionInstances.delete { identity identity }
+}
+type gcp:compute.globalPublicDelegatedPrefix = {
+  create = compute.globalPublicDelegatedPrefixes.insert { identity identity }
+  read = compute.globalPublicDelegatedPrefixes.get { identity identity }
+  update = compute.globalPublicDelegatedPrefixes.patch { identity identity }
+  delete = compute.globalPublicDelegatedPrefixes.delete { identity identity }
+}
+type gcp:compute.networkEndpointGroup = {
+  create = compute.networkEndpointGroups.insert { identity identity }
+  read = compute.networkEndpointGroups.get { identity identity }
+  update = compute.networkEndpointGroups.patch { identity identity }
+  delete = compute.networkEndpointGroups.delete { identity identity }
+}
+type gcp:compute.zone = {
+  create = compute.zones.insert { identity identity }
+  read = compute.zones.get { identity identity }
+  update = compute.zones.patch { identity identity }
+  delete = compute.zones.delete { identity identity }
+}
+type gcp:compute.regionTargetHttpsProxy = {
+  create = compute.regionTargetHttpsProxies.insert { identity identity }
+  read = compute.regionTargetHttpsProxies.get { identity identity }
+  update = compute.regionTargetHttpsProxies.patch { identity identity }
+  delete = compute.regionTargetHttpsProxies.delete { identity identity }
+}
+type gcp:compute.firewall = {
+  create = compute.firewalls.insert { identity identity }
+  read = compute.firewalls.get { identity identity }
+  update = compute.firewalls.patch { identity identity }
+  delete = compute.firewalls.delete { identity identity }
+}
+type gcp:compute.sslPolicy = {
+  create = compute.sslPolicies.insert { identity identity }
+  read = compute.sslPolicies.get { identity identity }
+  update = compute.sslPolicies.patch { identity identity }
+  delete = compute.sslPolicies.delete { identity identity }
+}
+type gcp:compute.globalOperation = {
+  create = compute.globalOperations.insert { identity identity }
+  read = compute.globalOperations.get { identity identity }
+  update = compute.globalOperations.patch { identity identity }
+  delete = compute.globalOperations.delete { identity identity }
+}
+type gcp:compute.subnetwork = {
+  create = compute.subnetworks.insert { identity identity }
+  read = compute.subnetworks.get { identity identity }
+  update = compute.subnetworks.patch { identity identity }
+  delete = compute.subnetworks.delete { identity identity }
+}
+type gcp:compute.vpnTunnel = {
+  create = compute.vpnTunnels.insert { identity identity }
+  read = compute.vpnTunnels.get { identity identity }
+  update = compute.vpnTunnels.patch { identity identity }
+  delete = compute.vpnTunnels.delete { identity identity }
+}
+type gcp:compute.imageFamilyView = {
+  create = compute.imageFamilyViews.insert { identity identity }
+  read = compute.imageFamilyViews.get { identity identity }
+  update = compute.imageFamilyViews.patch { identity identity }
+  delete = compute.imageFamilyViews.delete { identity identity }
+}
+type gcp:compute.globalForwardingRule = {
+  create = compute.globalForwardingRules.insert { identity identity }
+  read = compute.globalForwardingRules.get { identity identity }
+  update = compute.globalForwardingRules.patch { identity identity }
+  delete = compute.globalForwardingRules.delete { identity identity }
+}
+type gcp:compute.nodeType = {
+  create = compute.nodeTypes.insert { identity identity }
+  read = compute.nodeTypes.get { identity identity }
+  update = compute.nodeTypes.patch { identity identity }
+  delete = compute.nodeTypes.delete { identity identity }
+}
+type gcp:compute.nodeGroup = {
+  create = compute.nodeGroups.insert { identity identity }
+  read = compute.nodeGroups.get { identity identity }
+  update = compute.nodeGroups.patch { identity identity }
+  delete = compute.nodeGroups.delete { identity identity }
+}
+type gcp:compute.targetSslProxy = {
+  create = compute.targetSslProxies.insert { identity identity }
+  read = compute.targetSslProxies.get { identity identity }
+  update = compute.targetSslProxies.patch { identity identity }
+  delete = compute.targetSslProxies.delete { identity identity }
+}
+type gcp:compute.regionTargetTcpProxy = {
+  create = compute.regionTargetTcpProxies.insert { identity identity }
+  read = compute.regionTargetTcpProxies.get { identity identity }
+  update = compute.regionTargetTcpProxies.patch { identity identity }
+  delete = compute.regionTargetTcpProxies.delete { identity identity }
+}
+type gcp:compute.regionNetworkEndpointGroup = {
+  create = compute.regionNetworkEndpointGroups.insert { identity identity }
+  read = compute.regionNetworkEndpointGroups.get { identity identity }
+  update = compute.regionNetworkEndpointGroups.patch { identity identity }
+  delete = compute.regionNetworkEndpointGroups.delete { identity identity }
+}
+type gcp:compute.licenseCode = {
+  create = compute.licenseCodes.insert { identity identity }
+  read = compute.licenseCodes.get { identity identity }
+  update = compute.licenseCodes.patch { identity identity }
+  delete = compute.licenseCodes.delete { identity identity }
+}
+type gcp:compute.publicAdvertisedPrefixe = {
+  create = compute.publicAdvertisedPrefixes.insert { identity identity }
+  read = compute.publicAdvertisedPrefixes.get { identity identity }
+  update = compute.publicAdvertisedPrefixes.patch { identity identity }
+  delete = compute.publicAdvertisedPrefixes.delete { identity identity }
+}
+type gcp:compute.firewallPolicy = {
+  create = compute.firewallPolicies.insert { identity identity }
+  read = compute.firewallPolicies.get { identity identity }
+  update = compute.firewallPolicies.patch { identity identity }
+  delete = compute.firewallPolicies.delete { identity identity }
+}
+type gcp:compute.region = {
+  create = compute.regions.insert { identity identity }
+  read = compute.regions.get { identity identity }
+  update = compute.regions.patch { identity identity }
+  delete = compute.regions.delete { identity identity }
+}
+type gcp:compute.regionDiskType = {
+  create = compute.regionDiskTypes.insert { identity identity }
+  read = compute.regionDiskTypes.get { identity identity }
+  update = compute.regionDiskTypes.patch { identity identity }
+  delete = compute.regionDiskTypes.delete { identity identity }
+}
+type gcp:compute.disk = {
+  create = compute.disks.insert { identity identity }
+  read = compute.disks.get { identity identity }
+  update = compute.disks.patch { identity identity }
+  delete = compute.disks.delete { identity identity }
+}
+type gcp:compute.serviceAttachment = {
+  create = compute.serviceAttachments.insert { identity identity }
+  read = compute.serviceAttachments.get { identity identity }
+  update = compute.serviceAttachments.patch { identity identity }
+  delete = compute.serviceAttachments.delete { identity identity }
+}
+type gcp:compute.regionBackendService = {
+  create = compute.regionBackendServices.insert { identity identity }
+  read = compute.regionBackendServices.get { identity identity }
+  update = compute.regionBackendServices.patch { identity identity }
+  delete = compute.regionBackendServices.delete { identity identity }
+}
+type gcp:compute.httpsHealthCheck = {
+  create = compute.httpsHealthChecks.insert { identity identity }
+  read = compute.httpsHealthChecks.get { identity identity }
+  update = compute.httpsHealthChecks.patch { identity identity }
+  delete = compute.httpsHealthChecks.delete { identity identity }
+}
+type gcp:compute.acceleratorType = {
+  create = compute.acceleratorTypes.insert { identity identity }
+  read = compute.acceleratorTypes.get { identity identity }
+  update = compute.acceleratorTypes.patch { identity identity }
+  delete = compute.acceleratorTypes.delete { identity identity }
+}
+type gcp:compute.publicDelegatedPrefixe = {
+  create = compute.publicDelegatedPrefixes.insert { identity identity }
+  read = compute.publicDelegatedPrefixes.get { identity identity }
+  update = compute.publicDelegatedPrefixes.patch { identity identity }
+  delete = compute.publicDelegatedPrefixes.delete { identity identity }
+}
+type gcp:compute.regionSslCertificate = {
+  create = compute.regionSslCertificates.insert { identity identity }
+  read = compute.regionSslCertificates.get { identity identity }
+  update = compute.regionSslCertificates.patch { identity identity }
+  delete = compute.regionSslCertificates.delete { identity identity }
+}
+type gcp:compute.instanceTemplate = {
+  create = compute.instanceTemplates.insert { identity identity }
+  read = compute.instanceTemplates.get { identity identity }
+  update = compute.instanceTemplates.patch { identity identity }
+  delete = compute.instanceTemplates.delete { identity identity }
+}
+type gcp:compute.snapshot = {
+  create = compute.snapshots.insert { identity identity }
+  read = compute.snapshots.get { identity identity }
+  update = compute.snapshots.patch { identity identity }
+  delete = compute.snapshots.delete { identity identity }
+}
+type gcp:compute.httpHealthCheck = {
+  create = compute.httpHealthChecks.insert { identity identity }
+  read = compute.httpHealthChecks.get { identity identity }
+  update = compute.httpHealthChecks.patch { identity identity }
+  delete = compute.httpHealthChecks.delete { identity identity }
+}
+type gcp:compute.regionCommitment = {
+  create = compute.regionCommitments.insert { identity identity }
+  read = compute.regionCommitments.get { identity identity }
+  update = compute.regionCommitments.patch { identity identity }
+  delete = compute.regionCommitments.delete { identity identity }
+}
+type gcp:compute.regionOperation = {
+  create = compute.regionOperations.insert { identity identity }
+  read = compute.regionOperations.get { identity identity }
+  update = compute.regionOperations.patch { identity identity }
+  delete = compute.regionOperations.delete { identity identity }
+}
+type gcp:compute.targetVpnGateway = {
+  create = compute.targetVpnGateways.insert { identity identity }
+  read = compute.targetVpnGateways.get { identity identity }
+  update = compute.targetVpnGateways.patch { identity identity }
+  delete = compute.targetVpnGateways.delete { identity identity }
+}
+type gcp:compute.networkEdgeSecurityService = {
+  create = compute.networkEdgeSecurityServices.insert { identity identity }
+  read = compute.networkEdgeSecurityServices.get { identity identity }
+  update = compute.networkEdgeSecurityServices.patch { identity identity }
+  delete = compute.networkEdgeSecurityServices.delete { identity identity }
+}
+type gcp:compute.network = {
+  create = compute.networks.insert { identity identity }
+  read = compute.networks.get { identity identity }
+  update = compute.networks.patch { identity identity }
+  delete = compute.networks.delete { identity identity }
+}
+type gcp:compute.regionUrlMap = {
+  create = compute.regionUrlMaps.insert { identity identity }
+  read = compute.regionUrlMaps.get { identity identity }
+  update = compute.regionUrlMaps.patch { identity identity }
+  delete = compute.regionUrlMaps.delete { identity identity }
+}
+type gcp:compute.forwardingRule = {
+  create = compute.forwardingRules.insert { identity identity }
+  read = compute.forwardingRules.get { identity identity }
+  update = compute.forwardingRules.patch { identity identity }
+  delete = compute.forwardingRules.delete { identity identity }
+}
+type gcp:compute.targetInstance = {
+  create = compute.targetInstances.insert { identity identity }
+  read = compute.targetInstances.get { identity identity }
+  update = compute.targetInstances.patch { identity identity }
+  delete = compute.targetInstances.delete { identity identity }
+}
+type gcp:compute.targetHttpProxy = {
+  create = compute.targetHttpProxies.insert { identity identity }
+  read = compute.targetHttpProxies.get { identity identity }
+  update = compute.targetHttpProxies.patch { identity identity }
+  delete = compute.targetHttpProxies.delete { identity identity }
+}
+type gcp:compute.externalVpnGateway = {
+  create = compute.externalVpnGateways.insert { identity identity }
+  read = compute.externalVpnGateways.get { identity identity }
+  update = compute.externalVpnGateways.patch { identity identity }
+  delete = compute.externalVpnGateways.delete { identity identity }
+}
+type gcp:compute.machineType = {
+  create = compute.machineTypes.insert { identity identity }
+  read = compute.machineTypes.get { identity identity }
+  update = compute.machineTypes.patch { identity identity }
+  delete = compute.machineTypes.delete { identity identity }
+}
+type gcp:compute.globalNetworkEndpointGroup = {
+  create = compute.globalNetworkEndpointGroups.insert { identity identity }
+  read = compute.globalNetworkEndpointGroups.get { identity identity }
+  update = compute.globalNetworkEndpointGroups.patch { identity identity }
+  delete = compute.globalNetworkEndpointGroups.delete { identity identity }
+}
+type gcp:compute.backendBucket = {
+  create = compute.backendBuckets.insert { identity identity }
+  read = compute.backendBuckets.get { identity identity }
+  update = compute.backendBuckets.patch { identity identity }
+  delete = compute.backendBuckets.delete { identity identity }
+}
+type gcp:compute.regionSecurityPolicy = {
+  create = compute.regionSecurityPolicies.insert { identity identity }
+  read = compute.regionSecurityPolicies.get { identity identity }
+  update = compute.regionSecurityPolicies.patch { identity identity }
+  delete = compute.regionSecurityPolicies.delete { identity identity }
+}
+type gcp:compute.regionInstanceTemplate = {
+  create = compute.regionInstanceTemplates.insert { identity identity }
+  read = compute.regionInstanceTemplates.get { identity identity }
+  update = compute.regionInstanceTemplates.patch { identity identity }
+  delete = compute.regionInstanceTemplates.delete { identity identity }
+}
+type gcp:compute.license = {
+  create = compute.licenses.insert { identity identity }
+  read = compute.licenses.get { identity identity }
+  update = compute.licenses.patch { identity identity }
+  delete = compute.licenses.delete { identity identity }
+}
+type gcp:compute.targetPool = {
+  create = compute.targetPools.insert { identity identity }
+  read = compute.targetPools.get { identity identity }
+  update = compute.targetPools.patch { identity identity }
+  delete = compute.targetPools.delete { identity identity }
+}
+type gcp:compute.regionNetworkFirewallPolicy = {
+  create = compute.regionNetworkFirewallPolicies.insert { identity identity }
+  read = compute.regionNetworkFirewallPolicies.get { identity identity }
+  update = compute.regionNetworkFirewallPolicies.patch { identity identity }
+  delete = compute.regionNetworkFirewallPolicies.delete { identity identity }
+}
+type gcp:compute.regionHealthCheck = {
+  create = compute.regionHealthChecks.insert { identity identity }
+  read = compute.regionHealthChecks.get { identity identity }
+  update = compute.regionHealthChecks.patch { identity identity }
+  delete = compute.regionHealthChecks.delete { identity identity }
+}
+type gcp:compute.backendService = {
+  create = compute.backendServices.insert { identity identity }
+  read = compute.backendServices.get { identity identity }
+  update = compute.backendServices.patch { identity identity }
+  delete = compute.backendServices.delete { identity identity }
+}
+type gcp:compute.nodeTemplate = {
+  create = compute.nodeTemplates.insert { identity identity }
+  read = compute.nodeTemplates.get { identity identity }
+  update = compute.nodeTemplates.patch { identity identity }
+  delete = compute.nodeTemplates.delete { identity identity }
+}
+type gcp:compute.zoneOperation = {
+  create = compute.zoneOperations.insert { identity identity }
+  read = compute.zoneOperations.get { identity identity }
+  update = compute.zoneOperations.patch { identity identity }
+  delete = compute.zoneOperations.delete { identity identity }
+}
+type gcp:compute.urlMap = {
+  create = compute.urlMaps.insert { identity identity }
+  read = compute.urlMaps.get { identity identity }
+  update = compute.urlMaps.patch { identity identity }
+  delete = compute.urlMaps.delete { identity identity }
+}
+type gcp:compute.regionInstanceGroup = {
+  create = compute.regionInstanceGroups.insert { identity identity }
+  read = compute.regionInstanceGroups.get { identity identity }
+  update = compute.regionInstanceGroups.patch { identity identity }
+  delete = compute.regionInstanceGroups.delete { identity identity }
+}
+type gcp:compute.regionDisk = {
+  create = compute.regionDisks.insert { identity identity }
+  read = compute.regionDisks.get { identity identity }
+  update = compute.regionDisks.patch { identity identity }
+  delete = compute.regionDisks.delete { identity identity }
+}
+type gcp:compute.diskType = {
+  create = compute.diskTypes.insert { identity identity }
+  read = compute.diskTypes.get { identity identity }
+  update = compute.diskTypes.patch { identity identity }
+  delete = compute.diskTypes.delete { identity identity }
+}
+type gcp:compute.reservation = {
+  create = compute.reservations.insert { identity identity }
+  read = compute.reservations.get { identity identity }
+  update = compute.reservations.patch { identity identity }
+  delete = compute.reservations.delete { identity identity }
+}
+type gcp:compute.autoscaler = {
+  create = compute.autoscalers.insert { identity identity }
+  read = compute.autoscalers.get { identity identity }
+  update = compute.autoscalers.patch { identity identity }
+  delete = compute.autoscalers.delete { identity identity }
+}
+type gcp:compute.project = {
+  create = compute.projects.insert { identity identity }
+  read = compute.projects.get { identity identity }
+  update = compute.projects.patch { identity identity }
+  delete = compute.projects.delete { identity identity }
+}
+type gcp:compute.machineImage = {
+  create = compute.machineImages.insert { identity identity }
+  read = compute.machineImages.get { identity identity }
+  update = compute.machineImages.patch { identity identity }
+  delete = compute.machineImages.delete { identity identity }
+}
+type gcp:compute.sslCertificate = {
+  create = compute.sslCertificates.insert { identity identity }
+  read = compute.sslCertificates.get { identity identity }
+  update = compute.sslCertificates.patch { identity identity }
+  delete = compute.sslCertificates.delete { identity identity }
+}
+type gcp:compute.regionSslPolicy = {
+  create = compute.regionSslPolicies.insert { identity identity }
+  read = compute.regionSslPolicies.get { identity identity }
+  update = compute.regionSslPolicies.patch { identity identity }
+  delete = compute.regionSslPolicies.delete { identity identity }
+}
+type gcp:compute.regionInstanceGroupManager = {
+  create = compute.regionInstanceGroupManagers.insert { identity identity }
+  read = compute.regionInstanceGroupManagers.get { identity identity }
+  update = compute.regionInstanceGroupManagers.patch { identity identity }
+  delete = compute.regionInstanceGroupManagers.delete { identity identity }
+}
+type gcp:compute.targetGrpcProxy = {
+  create = compute.targetGrpcProxies.insert { identity identity }
+  read = compute.targetGrpcProxies.get { identity identity }
+  update = compute.targetGrpcProxies.patch { identity identity }
+  delete = compute.targetGrpcProxies.delete { identity identity }
+}
+type gcp:compute.interconnect = {
+  create = compute.interconnects.insert { identity identity }
+  read = compute.interconnects.get { identity identity }
+  update = compute.interconnects.patch { identity identity }
+  delete = compute.interconnects.delete { identity identity }
+}

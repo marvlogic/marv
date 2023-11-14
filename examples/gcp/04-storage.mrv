@@ -1,5 +1,7 @@
 #lang marv
 
+import types/gcp/storage
+
 module main {
 
     defaults = {

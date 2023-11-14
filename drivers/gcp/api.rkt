@@ -6,24 +6,20 @@
 (require marv/core/config)
 (require marv/core/globals)
 (require marv/drivers/types)
+(require marv/drivers/utils)
 
-(require (prefix-in compute. marv/drivers/gcp/api/compute/api))
-(require (prefix-in storage. marv/drivers/gcp/api/storage/api))
-(require (prefix-in iam. marv/drivers/gcp/api/iam/api))
-(require (prefix-in secret. marv/drivers/gcp/api/secret-manager/api))
-
-
-; TODO - common module, and abstract setting it too
-(define (gcp-type r) (hash-ref r '$type))
+(require marv/drivers/gcp/operation-handler)
+(require (prefix-in generic: marv/drivers/gcp/generic-api))
+(require (prefix-in sm: marv/drivers/gcp/api/secret-manager/patches))
 
 (provide init-gcp gcp-http-transport)
 
 (define (init-gcp interface-id http-transport)
   (define apis
-    (hash 'compute (compute.init-api interface-id "compute:beta" http-transport)
-          'storage (storage.init-api interface-id "storage:v1" http-transport)
-          'iam (iam.init-api interface-id "iam:v1" http-transport)
-          'secretmanager (secret.init-api interface-id "secretmanager:v1" http-transport)
+    (hash 'compute (generic:init-api interface-id "compute:beta" http-transport compute-api-operation-handler)
+          'iam (generic:init-api interface-id "iam:v1" http-transport iam-api-operation-handler)
+          'storage (generic:init-api interface-id "storage:v1" http-transport compute-api-operation-handler) ; TODO
+          'secretmanager (generic:init-api interface-id "secretmanager:v1" http-transport iam-api-operation-handler sm:patches) ; TODO
           ))
 
   (define/contract (routing op config)
@@ -31,7 +27,6 @@
     (define subtype (car (split-symbol (gcp-type config))))
     (define crudfn (hash-ref apis subtype))
     (crudfn op config))
-
   routing)
 
 (define (gcp-http-transport access-token)
@@ -60,5 +55,3 @@
     (log-marv-info "gcp-http-transport: ~a ~a" method url)
     ((hash-ref methods method) url body))
   handle)
-
-(define (resource-self-link res-state) (hash-ref res-state 'selfLink))

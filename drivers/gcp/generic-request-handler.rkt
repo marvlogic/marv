@@ -6,6 +6,7 @@
 (require marv/drivers/gcp/discovery)
 (require marv/drivers/gcp/transformers)
 (require marv/drivers/gcp/crud)
+(require marv/drivers/utils)
 (require marv/log)
 (require marv/core/config)
 
@@ -19,13 +20,12 @@
   (displayln "..DONE\033[K")
   (flush-output))
 
-(define (mk-request-handler discovery-doc type-map op-handler)
+(define/contract (mk-request-handler discovery-doc type-map-fn op-handler-fn)
+  (disc-doc? procedure? procedure? . -> . procedure?)
 
-  (define (gcp-type r) (hash-ref r '$type))
-
-  (define/contract (generic-request crud-fn config http)
+  (define/contract (request-handler crud-fn config http)
     (procedure? config/c any/c . -> . config/c)
-    (define type-op (crud-fn (type-map (gcp-type config))))
+    (define type-op (crud-fn (type-map-fn (gcp-type config))))
     (log-marv-debug "generic-request-handler: type-op=~a ~a" type-op config)
     (define xfd-resource (apply-request-transformer type-op config) )
     (log-marv-debug "transformed: ~v" xfd-resource)
@@ -35,16 +35,16 @@
       [(symbol? type-op)
        (define api (api-for-type-op discovery-doc type-op))
        (define is-delete? (eq? crud-delete crud-fn))
-       (define response (generic-api-req api xfd-resource http is-delete? op-handler))
+       (define response (do-api-request api xfd-resource http is-delete? op-handler-fn))
        (log-marv-debug "response: ~a" response)
        (define xresp (apply-response-transformer type-op response))
        (log-marv-debug "transformed: ~a" xresp)
        (hash-merge config xresp)]
       [else raise (format "type has no usable CRUD for ~a : ~a" crud-fn type-op )]
       ))
-  generic-request)
+  request-handler)
 
-(define/contract (generic-api-req api resource http is-delete? operation-handler)
+(define/contract (do-api-request api resource http is-delete? operation-handler)
   (disc-api? any/c any/c boolean? procedure? . -> . hash?)
 
   (define (work-it op-resp [poll-delay 3])

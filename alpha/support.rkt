@@ -7,6 +7,7 @@
 (require marv/core/values)
 (require marv/utils/hash)
 (require marv/core/globals)
+(require marv/core/drivers)
 (require marv/utils/base64)
 
 
@@ -55,8 +56,8 @@
   (hash-ref (PARAMS) p def))
 
 (define (def-res id drv attr v)
-  (define r (hash-set* v '$driver drv '$type (string->symbol (string-join (map symbol->string attr) "."))))
-  (add-resource id r))
+  (define r (hash-set* v '$driver drv '$type (join-symbols attr)))
+  (add-resource id ((current-driver) drv 'validate r)))
 
 (define RETURNS (make-parameter (hash)))
 (define (set-return v)
