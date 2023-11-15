@@ -4,6 +4,8 @@
 # Parameters can be separated by commas if you want, but they are currently
 # optional.
 
+import types/gcp/compute
+
 module network-base(defaults name 
         primary-cidr="10.0.1.0/24" 
         proxy-cidr="10.0.2.0/24") {

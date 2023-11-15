@@ -1,5 +1,7 @@
 #lang marv
 
+import types/gcp/compute
+
 import "shared/network-base.mrv" as net
 import "shared/instance-group.mrv" as ig
 import "shared/custom-type-igm.mrv"

@@ -21,6 +21,7 @@
          api-required-params
          api-resource
          api-response-type
+         disc-doc?
          disc-api?)
 
 (define (raise-exn fstr . vs) (apply error 'discovery fstr vs))
@@ -34,7 +35,8 @@
   ((string? string?) (hash?) . ->* . disc-doc?)
   (define disc-url (dict-ref (get-root-discovery int-id) disc-id))
   (with-workspace-file int-id disc-id
-    #:thunk (lambda() (disc-doc(read-json) type-op-patches)) #:url disc-url))
+    #:thunk (lambda() (disc-doc(read-json) type-op-patches))
+    #:url disc-url))
 
 (define (get-root-discovery int-id)
   (with-workspace-file int-id "discovery-index.json"

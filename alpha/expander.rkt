@@ -10,13 +10,11 @@
 (require marv/core/values)
 (require marv/log)
 
-; TODO - swap prefix usage to m- on the provided
+; TODO - swap prefix usage to m- on the provided (define a macro?)
 
 (define-for-syntax (src-location s) (format "~a:~a" (syntax-source s) (syntax-line s)))
 
 (begin-for-syntax
-  ; (define (m-marv-spec stx)
-  ;   (syntax->datum (m-marv-spec2 stx)))
 
   (define (m-marv-spec stx)
     (syntax-parse stx
@@ -263,7 +261,7 @@
       ;     ((~literal driver-id) did:string)
       ;     ((~literal driver-attr) dad:string) cfg)
       ;  (syntax/loc stx (set-res (loop-res-name name lid) did dad cfg))]
-      [else (raise (format "res-decl didn't match: ~a" stx))]))
+      ))
 
   (define (m-module-invoke stx)
     (syntax-parse stx
