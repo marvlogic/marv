@@ -7,6 +7,7 @@
 (require marv/core/values)
 (require marv/utils/hash)
 (require marv/core/globals)
+(require marv/core/drivers)
 (require marv/utils/base64)
 
 
@@ -15,6 +16,7 @@
 
 (provide gen-resources getenv-or-raise
          def-res
+         with-src-handlers
          drv:current-driver-set
          drv:register-type
          set-return
@@ -55,8 +57,16 @@
   (hash-ref (PARAMS) p def))
 
 (define (def-res id drv attr v)
-  (define r (hash-set* v '$driver drv '$type (string->symbol (string-join (map symbol->string attr) "."))))
-  (add-resource id r))
+  (define type (join-symbols attr))
+  (define r (hash-set* v '$driver drv '$type type))
+  (add-resource id ((current-driver) drv 'validate r)))
+
+(define (with-src-handlers src-locn expected given thunk)
+  (define (handle-exn e)
+    (raise-argument-error
+     'type
+     (format "~a at ~a~nActual exception:~n~a~n)" expected src-locn e) given))
+  (with-handlers ([exn? handle-exn]) (thunk)))
 
 (define RETURNS (make-parameter (hash)))
 (define (set-return v)

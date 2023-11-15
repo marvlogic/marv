@@ -36,7 +36,7 @@
 (struct params (required accepted))
 
 ; TODO - using parameters for this isn't necessary
-(define RESOURCES (make-parameter (lambda oo (hash))))
+(define RESOURCES (make-parameter (lambda take-any-params (hash))))
 
 (define/contract (init-module f)
   (string? . -> . void?)

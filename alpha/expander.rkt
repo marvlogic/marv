@@ -12,6 +12,8 @@
 
 ; TODO - swap prefix usage to m- on the provided
 
+(define-for-syntax (src-location s) (format "~a:~a" (syntax-source s) (syntax-line s)))
+
 (begin-for-syntax
   ; (define (m-marv-spec stx)
   ;   (syntax->datum (m-marv-spec2 stx)))
@@ -251,7 +253,10 @@
       [(_ name:expr
           ((~literal driver-id) did:expr)
           ((~literal driver-attr) dad:expr) cfg)
-       (syntax/loc stx (define name (def-res 'name 'did 'dad cfg)))]
+       #`(define name
+           (with-src-handlers #,(src-location stx)  "valid type" 'dad
+             (lambda()(def-res 'name 'did 'dad cfg))))]
+      ;  #`(define name (def-res 'name 'did 'dad cfg))]
 
       ; [(_ name:string
       ;     ((~literal loop-ident) lid:string)
