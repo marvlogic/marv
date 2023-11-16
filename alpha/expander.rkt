@@ -76,7 +76,7 @@
 
   (define (m-module-import stx)
     (syntax-parse stx
-      ; TODO - this shorthand form doesn't work, the provided identifiers aren't seen by the consumer
+      ; TODO - this shorthand form doesn't always work; the provided identifiers aren't seen by the consumer
       [(_ MOD-ID:id) #`(require (lib #,(format "marv/~a.mrv" (syntax->datum #`MOD-ID))))]
       [(_ FILENAME:string) (syntax/loc stx (require FILENAME)) ]
       [(_ FILENAME "as" ALIAS) #`(require (prefix-in #,(format-id #f "~a/" #`ALIAS) FILENAME)) ]
