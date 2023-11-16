@@ -1,0 +1,74 @@
+#lang marv
+import "../common.mrv"
+
+type gcp:sql.sslCert = {
+  create = sql.sslCerts.insert { identity identity }
+  read = sql.sslCerts.get { identity identity }
+  update = sql.sslCerts.patch { identity identity }
+  delete = sql.sslCerts.delete { identity identity }
+}
+
+type gcp:sql.connect = {
+  create = sql.connect.insert { identity identity }
+  read = sql.connect.get { identity identity }
+  update = sql.connect.patch { identity identity }
+  delete = sql.connect.delete { identity identity }
+}
+
+type gcp:sql.instance = {
+  create = sql.instances.insert { identity identity }
+  read = sql.instances.get { identity identity }
+  update = sql.instances.patch { identity identity }
+  delete = sql.instances.delete { identity identity }
+}
+
+type gcp:sql.project.instance = {
+  create = sql.projects.instances.insert { identity identity }
+  read = sql.projects.instances.get { identity identity }
+  update = sql.projects.instances.patch { identity identity }
+  delete = sql.projects.instances.delete { identity identity }
+}
+
+# user-patch(user) = user <- { user  = user.name }
+type gcp:sql.user = {
+  create = sql.users.insert { identity identity }
+  read = sql.users.get { identity identity }
+  update = sql.users.patch { identity identity }
+  delete = sql.users.delete { identity identity }
+}
+
+type gcp:sql.tier = {
+  create = sql.tiers.insert { identity identity }
+  read = sql.tiers.get { identity identity }
+  update = sql.tiers.patch { identity identity }
+  delete = sql.tiers.delete { identity identity }
+}
+
+type gcp:sql.operation = {
+  create = sql.operations.insert { identity identity }
+  read = sql.operations.get { identity identity }
+  update = sql.operations.patch { identity identity }
+  delete = sql.operations.delete { identity identity }
+}
+
+type gcp:sql.database = {
+  create = sql.databases.insert { identity identity }
+  read = sql.databases.get { identity identity }
+  update = sql.databases.patch { identity identity }
+  delete = sql.databases.delete { identity identity }
+}
+
+type gcp:sql.backupRun = {
+  create = sql.backupRuns.insert { identity identity }
+  read = sql.backupRuns.get { identity identity }
+  update = sql.backupRuns.patch { identity identity }
+  delete = sql.backupRuns.delete { identity identity }
+}
+
+type gcp:sql.flag = {
+  create = sql.flags.insert { identity identity }
+  read = sql.flags.get { identity identity }
+  update = sql.flags.patch { identity identity }
+  delete = sql.flags.delete { identity identity }
+}
+

@@ -1,0 +1,32 @@
+#lang marv
+
+import types/gcp/sql
+
+module main(name = "example-07-sql") {
+
+    defaults = {
+        project = env("MARV_GCP_PROJECT")
+        region = env("MARV_GCP_REGION")
+    }
+
+    db-host = gcp:sql.instance defaults <- {
+        name = "example-instance"
+        instanceType = "CLOUD_SQL_INSTANCE"
+        databaseVersion = "POSTGRES_15"
+        settings = {
+            dataDiskSizeGb = 10
+            tier = "db-custom-1-3840"
+        }
+    }
+
+    database =  gcp:sql.database defaults <- {
+        instance = db-host.name
+        name = "my-database"
+    }
+
+    user = gcp:sql.user defaults <- {
+        instance = db-host.name
+        name = "marv-user"
+        password = "super-secret"
+    }
+}

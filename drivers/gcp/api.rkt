@@ -10,7 +10,8 @@
 
 (require marv/drivers/gcp/operation-handler)
 (require (prefix-in generic: marv/drivers/gcp/generic-api))
-(require (prefix-in sm: marv/drivers/gcp/api/secret-manager/patches))
+(require (prefix-in sm: marv/drivers/gcp/patches/secret-manager))
+(require (prefix-in sql: marv/drivers/gcp/patches/sql))
 
 (provide init-gcp gcp-http-transport)
 
@@ -20,6 +21,7 @@
           'iam (generic:init-api interface-id "iam:v1" http-transport iam-api-operation-handler)
           'storage (generic:init-api interface-id "storage:v1" http-transport compute-api-operation-handler) ; TODO
           'secretmanager (generic:init-api interface-id "secretmanager:v1" http-transport iam-api-operation-handler sm:patches) ; TODO
+          'sql (generic:init-api interface-id "sqladmin:v1" http-transport compute-api-operation-handler sql:patches) ; TODO
           ))
 
   (define/contract (routing op config)
