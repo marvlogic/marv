@@ -29,7 +29,6 @@ type gcp:sql.project.instance = {
   delete = sql.projects.instances.delete { identity identity }
 }
 
-# user-patch(user) = user <- { user  = user.name }
 type gcp:sql.user = {
   create = sql.users.insert { identity identity }
   read = sql.users.get { identity identity }
