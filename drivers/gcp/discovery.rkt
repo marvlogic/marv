@@ -7,8 +7,10 @@
 (require racket/set)
 (require racket/match)
 (require racket/string)
-(require uri-template)
 (require racket/dict)
+(require uri-template)
+(require scribble/text/wrap)
+
 (require marv/log)
 (require marv/utils/hash)
 (require marv/core/globals)
@@ -18,10 +20,14 @@
          api-for-type-op
          api-http-method
          api-resource-url
+         api-parameters
          api-required-params
          api-resource
          api-response-type
+         api-request-type
+         api-schema
          disc-doc?
+         show-docs
          disc-api?)
 
 (define (raise-exn fstr . vs) (apply error 'discovery fstr vs))
@@ -132,20 +138,20 @@
   (disc-api? . -> . list?)
   (hash-keys (hash-ref (disc-api-type-api api) 'parameters)))
 
-(define/contract (api-parameters api param-filter)
-  (disc-api? procedure? .  -> . (listof symbol?))
-  (hash-keys(hash-filter (hash-ref (disc-api-type-api api) 'parameters)
-                         (lambda (k v) (param-filter v)))))
+(define/contract (api-parameters api [fltr (lambda(_)#t)])
+  ((disc-api?) (procedure?) .  ->* . hash?)
+  (hash-filter (hash-ref (disc-api-type-api api) 'parameters)
+               (lambda (k v) (fltr v))))
 
 (define/contract (api-required-params api)
   (disc-api? . -> . (listof symbol?))
   (define (required? v) (hash-ref v 'required #f))
-  (api-parameters api required?))
+  (hash-keys(api-parameters api required?)))
 
 (define/contract (api-query-parameters api)
   (disc-api? . -> . (listof symbol?))
   (define (qry? p) (equal? "query" (hash-ref p 'location)))
-  (api-parameters api qry?))
+  (hash-keys(api-parameters api qry?)))
 
 (define/contract (api-resource api config)
   (disc-api? config/c . -> . config/c)
@@ -164,15 +170,36 @@
   (disc-api? . -> . (or/c #f string?))
   (hash-nref (disc-api-type-api api) '(request $ref) #f))
 
-(define/contract (api-schema disc type)
-  (hash? string? . -> . hash?)
-  (hash-nref disc (list 'schemas (string->symbol type) 'properties)))
+(define/contract (api-schema api type)
+  (disc-api? string? . -> . hash?)
+  (hash-nref (disc-api-root api) (list 'schemas (string->symbol type) 'properties)))
 
 (define (api-resource-keys doc)
   (pretty-print
    (make-immutable-hash (map (lambda(k) (cons k k))
                              (hash-keys (hash-ref (disc-doc-root doc) 'resources))))))
 
-; (define comp (load-discovery "gcp" "compute:beta"))
-; (define secret (load-discovery "gcp" "secretmanager:v1"))
-; (define api (api-for-type-op secret 'secretmanager.projects.secrets.create))
+(define (show-docs api type)
+
+  (define (handle-type item)
+    (define type (hash-ref item 'type
+                           (lambda()(hash-ref item '$ref))))
+    (case (string->symbol type)
+      ['array (format "[ ~a ]" (handle-type (hash-ref item 'items)))]
+      ['object
+       (format "{ ~a }"
+               (handle-type
+                (hash-ref item 'properties
+                          (lambda()(hash-ref item 'additionalProperties)))))]
+      [else type]))
+
+  (define (display-attr name stuff)
+    (displayln (format " ~a = ~a" name (handle-type stuff)))
+    (for-each
+     (lambda(s)(displayln (format " # ~a" s)))
+     (wrap-line (hash-ref stuff 'description)))
+    (displayln ""))
+  (displayln (format "~a {" type))
+  (hash-for-each (api-parameters api) display-attr)
+  (hash-for-each (api-schema api type) display-attr)
+  (displayln "}"))
