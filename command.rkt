@@ -37,7 +37,7 @@
    [("--purge")  "Purge (DELETE) all resources" (PURGE #t)]
 
    #:once-any
-   [("--docs") type "Show documentation" (SHOW-DOCS (string->symbol type))]
+   [("--docs") type "Show documentation for a type e.g gcp:compute.network" (SHOW-DOCS (string->symbol type))]
    [("--plan")  "Plan changes" (PLAN-CHANGES #t)]
    [("--apply")  "Apply resources" (APPLY #t)]
    [("--list") "Show the defined resources" (LIST-RESOURCES #t)]

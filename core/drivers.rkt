@@ -76,4 +76,5 @@
 (define DRIVERS (make-parameter (std-drivers)))
 
 (define (display-docs type)
-  ((current-driver) 'gcp 'show-docs (hash '$type type)))
+  (define driver/type (split-symbol type ":"))
+  ((current-driver) (car driver/type) 'show-docs (hash '$type (cadr driver/type))))

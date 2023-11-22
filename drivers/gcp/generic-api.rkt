@@ -74,5 +74,5 @@
   (define real-type (hash-ref (TYPE-MAP) type))
   (define type-op (crud-create real-type))
   (define api (api-for-type-op discovery type-op))
-  (api-display-docs (api-for-type-op discovery type-op) (api-request-type api))
+  (api-display-docs api (api-request-type api))
   (hash))
