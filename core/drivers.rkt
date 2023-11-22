@@ -13,7 +13,8 @@
 (provide register-type
          current-driver-set
          current-driver
-         with-drivers)
+         with-drivers
+         display-docs)
 
 (define/contract (current-driver)
   (-> driver/c)
@@ -73,3 +74,6 @@
     'gcp (init-gcp 'gcp (gcp-http-transport (getenv-or-raise "GCP_ACCESS_TOKEN"))))))
 
 (define DRIVERS (make-parameter (std-drivers)))
+
+(define (display-docs type)
+  ((current-driver) 'gcp 'show-docs (hash '$type type)))

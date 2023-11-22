@@ -27,7 +27,7 @@
          api-request-type
          api-schema
          disc-doc?
-         show-docs
+         api-display-docs
          disc-api?)
 
 (define (raise-exn fstr . vs) (apply error 'discovery fstr vs))
@@ -179,7 +179,7 @@
    (make-immutable-hash (map (lambda(k) (cons k k))
                              (hash-keys (hash-ref (disc-doc-root doc) 'resources))))))
 
-(define (show-docs api type)
+(define (api-display-docs api type)
 
   (define (handle-type item)
     (define type (hash-ref item 'type
