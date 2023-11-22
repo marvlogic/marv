@@ -157,8 +157,7 @@
   (disc-api? config/c . -> . config/c)
   (define req-type (api-request-type api))
   (cond [req-type
-         (define api-root (disc-api-root api))
-         (define schema (api-schema api-root req-type))
+         (define schema (api-schema api req-type))
          (hash-take config (hash-keys schema))]
         [else (hash)]))
 
