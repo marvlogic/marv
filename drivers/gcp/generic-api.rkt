@@ -24,7 +24,7 @@
     (make-driver-crud-fn
      (lambda(cfg) (validate discovery type-map-fn cfg))
      (genrq crud-create) (genrq crud-read) (genrq crud-update) (genrq crud-delete)
-     aux-handler))
+     (lambda(op res) (aux-handler discovery op res))))
   crudfn)
 
 (define/contract (validate discovery type-map-fn cfg)
@@ -41,9 +41,10 @@
   ;   (has-required-api-parameters?)
   cfg)
 
-(define (aux-handler op msg)
+(define (aux-handler discovery op msg)
   (case op
     ['register-type handle-register-type]
+    ['show-docs (lambda (msg)(handle-show-docs discovery msg))]
     [else (raise "Unsupported op/message in storage-api")]))
 
 (define (handle-register-type msg)
@@ -67,3 +68,11 @@
   (symbol? crud? . -> . void)
   (log-marv-info "Registering type: ~a ~a" type crud)
   (TYPE-MAP (hash-set (TYPE-MAP) type crud)))
+
+(define (handle-show-docs discovery msg)
+  (define type (gcp-type msg))
+  (define real-type (hash-ref (TYPE-MAP) type))
+  (define type-op (crud-create real-type))
+  (define api (api-for-type-op discovery type-op))
+  (api-display-docs api (api-request-type api))
+  (hash))
