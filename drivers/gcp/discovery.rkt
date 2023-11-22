@@ -199,6 +199,14 @@
      (lambda(s)(displayln (format " # ~a" s)))
      (wrap-line (hash-ref stuff 'description)))
     (displayln ""))
+  (displayln #<<EOF
+
+# WARNING: This information is auto-generated from discovery-document fields and
+# may not be 100% compatible with marv. However it should be a good starting
+# point for most GCP APIs.
+
+EOF
+             )
   (displayln (format "~a {" type))
   (hash-for-each (api-parameters api) display-attr)
   (hash-for-each (api-schema api type) display-attr)
