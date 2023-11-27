@@ -23,7 +23,7 @@ Start by copy/pasting this code into a new file `hello-world.mrv`:
 
 import types/gcp/storage
 
-module main() {
+module main {
 	hello-bucket = gcp:storage.bucket {
 		project = env("MARV_GCP_PROJECT")
 		region = env("MARV_GCP_REGION")
