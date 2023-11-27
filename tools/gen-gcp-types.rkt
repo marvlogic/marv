@@ -24,3 +24,18 @@ type gcp:~a = {
 EOF
       typ at at at at
       ))))
+
+(define btm
+  #hasheq(
+   (sql.backupRun . sql.backupRuns)
+   (sql.connect . sql.connect)
+   (sql.database . sql.databases)
+   (sql.flag . sql.flags)
+   (sql.instance . sql.instances)
+   (sql.operation . sql.operations)
+   (sql.project.instance . sql.projects.instances)
+   (sql.sslCert . sql.sslCerts)
+   (sql.tier . sql.tiers)
+   (sql.user . sql.users)
+   ))
+(with-output-to-file )

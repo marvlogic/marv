@@ -9,5 +9,5 @@ git clone . $BUILD
 cd $BUILD
 # cp Dockerfile marv.sh $BUILD
 tar zcf marv.tgz alpha/ command.rkt core/ drivers/ examples/ info.rkt main.rkt log.rkt utils/
-docker build -t happyrat/marv:$TAG $BUILD
+docker build -t marvlogic/marv:$TAG $BUILD
 rm -rf $BUILD
