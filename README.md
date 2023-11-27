@@ -49,7 +49,11 @@ need to specify these manually (see attributes marked `imm:` in the
 errors aren't caught until GCP sees the configuration during an `apply` phase. 
 
 - Only supports local state files
-    
+  
+# Documentation
+
+ See https://marvlogic.github.io/marv/
+
 # Marv's DSL (marv-speak)
 
 There's a [tutorial](docs/tutorial/01-bucket-example.md).
