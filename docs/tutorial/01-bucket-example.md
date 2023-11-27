@@ -1,6 +1,17 @@
 # A First Example - hello-bucket
 
-Let's start with "The Ubiquitous Bucket Example" - a recipe that will create a storage bucket in a GCP project. After we've deployed it, we'll walk through the code.
+## Before you start
+
+> Make sure you have [installed and configured](installation.md) `marv`.
+> Also ensure that you have created an `alias` to invoke `marv`:
+>     
+>     alias marv="racket command.rkt"
+
+## Let's start!
+
+We are going to use "The Ubiquitous Bucket Example" - a recipe that will create
+a storage bucket in a GCP project. After we've deployed it, we'll walk through
+the code.
 
 > ## Note
 > You will need a GCP project that you can create your resources in.

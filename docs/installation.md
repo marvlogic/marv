@@ -1,6 +1,6 @@
-# Installation
+# Installation & Setup
 
-## From source - Linux & Mac 
+## Installation from source - Linux & Mac 
 
 - Install Racket from: [https://download.racket-lang.org](https://download.racket-lang.org/)
 - Install the [Google Cloud SDK](https://cloud.google.com/sdk/docs/install-sdk)
@@ -19,7 +19,7 @@ raco pkg install
 
 NB [ ] ...setup aliases
 
-## Using the Docker Image
+## Installation using the Docker Image
 
 Marv is available in a pre-built docker image:
 
@@ -47,3 +47,12 @@ docker run -v `pwd`:/home/marv \
     -it marvlogic/marv:latest /bin/bash
 cd /home/marv
 ```
+
+## Setup
+
+`marv` is not currently installed as a command-line program, you need to run it
+via `racket`. It is much easier to create a shell alias (not needed if using the
+docker image):
+
+
+    alias marv="racket command.rkt"
