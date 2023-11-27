@@ -102,20 +102,6 @@ That completes our first steps with `marv` - in the next section we'll cover mor
 
     marv --purge --apply hello-world.mrv
 
-### Notes
+# MORE TUTORIALS COMING SOON
 
-A `config-object` is a collection of `name = value` pairs enclosed in curly braces:
-
-```
-{
-	name = "hello"
-	xyz = 123
-	a-list = [ "abc" "def"]
-	nested = {
-		foo = "bar"
-	}
-}
-```
-
-
-
+In the meantime, you can look at the [examples](examples) for more information.

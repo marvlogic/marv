@@ -13,20 +13,25 @@ the lifecycle of the resources to keep the infrastructure in sync with code.
 
 __Under active development: Not suitable for production usage__
 
-The code is emerging from its "prototype phase", which is to say that there
-remains a lot of refactoring and improvments to make.
+>The code is emerging from its "prototype phase", which is to say that while it
+is much more stable and usable, there remains a lot of refactoring and
+improvements to make.
 
 ## Features so far...
 
-- Support for GCP Compute, Storage and (partial) IAM APIs (more planned soon)
-- New DSL for describing resources
+- GCP API support for:
+  - Compute 
+  - Storage
+  - IAM (partial)
+  - Secret Manager
+- New DSL for describing resources ([tutorial](docs/tutorial/01-bucket-example.md))
 - Modules, including parameters and returns (outputs)
 - Custom types (for accessing parts of the API not covered in the standard model)
 - Local state file
 
 You could play with this locally in your own GCP projects etc. It might be
-useful for managing small development environments; you would have to manage the
-state file locally.
+useful for managing small development environments and you would have to manage
+the state file (ie keep it safe).
 
 ## Current Limitations
 
@@ -36,12 +41,6 @@ and omissions are:
 - A new DSL subject to change, and lacking in some features such as loops and
 conditions. All are planned though.
 
-- GCP API support for:
-  - Compute 
-  - Storage
-  - IAM (partial)
-  - Secret Manager
-
 - The model doesn't yet know about which fields are immutable on GCP resources; you
 need to specify these manually (see attributes marked `imm:` in the
 [examples](examples/gcp/shared/network-base.mrv)).
@@ -50,7 +49,6 @@ need to specify these manually (see attributes marked `imm:` in the
 errors aren't caught until GCP sees the configuration during an `apply` phase. 
 
 - Only supports local state files
-
     
 # Marv's DSL (marv-speak)
 
@@ -69,4 +67,4 @@ here](alpha/parser.rkt).
 ## Build a standalone
 (deprecated)
 
-    raco exe ++lib net/http-easy ++lang racket/base --collects-path ./ -o marv command.rkt
+    raco exe ++lib net/http-easy ++lang racket/base --collects-path ./ -o marv command.rkt()
