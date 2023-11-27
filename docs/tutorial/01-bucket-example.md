@@ -27,7 +27,7 @@ module main() {
 	hello-bucket = gcp:storage.bucket {
 		project = env("MARV_GCP_PROJECT")
 		region = env("MARV_GCP_REGION")
-		name = imm: strf("~a-hello-world" project)
+        name = imm: strf("~a-hello-world" env("MARV_GCP_PROJECT"))
 	}
 }
 ```
@@ -63,7 +63,7 @@ Next we need to import the types for the GCP storage API - the types have to be 
 
 All resources must be declared inside a module, and there must be a `main` module declared in the top-level file passed on the command line:
 
-    module main() {...}
+    module main {...}
 
 
 Now we come to our bucket’s resource declaration,  in which `hello-bucket`  is a `storage.bucket` resource that is managed by the `GCP` driver:
@@ -83,13 +83,15 @@ Finally, we have the body of our resource declaration:
 {
 	project = env("MARV_GCP_PROJECT")
 	region = env("MARV_GCP_REGION")
-	name = imm: strf("~a-hello-world" project)
+	name = imm: strf("~a-hello-world" env("MARV_GCP_PROJECT"))
 }
 ```
 
 This is a `config-object` which is basically a set of `name=value` attributes, enclosed in `{  }` . `project` and `region` attributes are assigned from the named environment variables. 
 
-`name` is assigned the results of the `strf` function which replaces `~a` by the value of `project` (which was read from the environment). So if `MARV_GCP_PROJECT` is 'my-project' then the bucket's name is `my-project-hello-world`.
+`name` is assigned the results of the `strf` function which replaces `~a` by the
+value of `MARV_GCP_PROJECT` environment variable. So if `MARV_GCP_PROJECT` is
+'my-project' then the bucket's name is `my-project-hello-world`.
 
 `imm:` is a marker to indicate to marv that the `name` attribute is **immutable** -  this means if it changes then the bucket must be recreated.
 
