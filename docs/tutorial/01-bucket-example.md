@@ -45,7 +45,7 @@ Marv should report that it will create the bucket and you can go ahead and deplo
 
     marv --apply hello-world.mrv
 
-Your new bucket is now ready for action! You will also notice that marv has created a **state file** in your current directory - this file is important as it holds details on the resources that have been created, and what attributes were configured. There's more about the state file in a later section.
+Your new bucket is now ready for action! You will also notice that marv has created a **state file** in your current directory - this file is important as it holds details on the resources that have been created, and what attributes were configured.
 
 ## Break it down...
 
@@ -104,4 +104,4 @@ That completes our first steps with `marv` - in the next section we'll cover mor
 
 # MORE TUTORIALS COMING SOON
 
-In the meantime, you can look at the [examples](examples) for more information.
+In the meantime, you can look at the [examples](../../examples) for more information.
