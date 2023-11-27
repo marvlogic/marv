@@ -104,4 +104,4 @@ That completes our first steps with `marv` - in the next section we'll cover mor
 
 # MORE TUTORIALS COMING SOON
 
-In the meantime, you can look at the [examples](/examples) for more information.
+In the meantime, you can look at the [examples](https://github.com/marvlogic/marv/tree/main/examples/gcp) for more information.
