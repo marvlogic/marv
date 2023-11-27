@@ -2,7 +2,7 @@
 
 ## Before you start
 
-> Make sure you have [installed and configured](installation.md) `marv`.
+> Make sure you have [installed and configured](../installation.md) `marv`.
 > Also ensure that you have created an `alias` to invoke `marv`:
 >     
 >     alias marv="racket command.rkt"
@@ -104,4 +104,4 @@ That completes our first steps with `marv` - in the next section we'll cover mor
 
 # MORE TUTORIALS COMING SOON
 
-In the meantime, you can look at the [examples](../../examples) for more information.
+In the meantime, you can look at the [examples](/examples) for more information.
