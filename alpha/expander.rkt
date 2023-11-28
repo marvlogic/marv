@@ -184,10 +184,20 @@
       [(_ "true") (syntax/loc stx val) #'#t]
       [(_ "false") (syntax/loc stx val) #'#f]))
 
+
   (define (m-config-object stx)
+
+    (define-splicing-syntax-class attr-decl
+      #:description "attribute declaration"
+      #:literals (expression)
+      #:attributes (name expr)
+      (pattern (~seq name:id (expression expr)))
+      (pattern (~seq name:id "imm:" (expression e)) #:attr expr #'(ival e)))
+
     (syntax-parse stx
-      [(_ ATTR ...)
-       (syntax/loc stx (make-immutable-hasheq (list ATTR ...)))]
+      [(_ attr:attr-decl ...)
+       #'(let* [(attr.name attr.expr) ...]
+           (make-immutable-hasheq (list (list 'attr.name attr.expr) ...))) ]
       [else (raise "m-config-object")]))
 
   (define (m-alist stx)
