@@ -10,6 +10,8 @@
 (require marv/core/values)
 (require marv/log)
 
+; (require (for-syntax marv/core/values))
+
 ; TODO - swap prefix usage to m- on the provided (define a macro?)
 
 (define-for-syntax (src-location s) (format "~a:~a" (syntax-source s) (syntax-line s)))
@@ -184,20 +186,22 @@
       [(_ "true") (syntax/loc stx val) #'#t]
       [(_ "false") (syntax/loc stx val) #'#f]))
 
-
   (define (m-config-object stx)
 
     (define-splicing-syntax-class attr-decl
       #:description "attribute declaration"
       #:literals (expression)
       #:attributes (name expr)
-      (pattern (~seq name:id (expression expr)))
+      (pattern (~seq name:id (expression e)) #:attr expr #'e)
+      (pattern (~seq name-str:string (expression expr))
+        #:attr name (format-id #f "~a" (syntax-e #'name-str)))
       (pattern (~seq name:id "imm:" (expression e)) #:attr expr #'(ival e)))
+
 
     (syntax-parse stx
       [(_ attr:attr-decl ...)
        #'(let* [(attr.name attr.expr) ...]
-           (make-immutable-hasheq (list (list 'attr.name attr.expr) ...))) ]
+           (make-immutable-hasheq (list (cons 'attr.name attr.expr) ...))) ]
       [else (raise "m-config-object")]))
 
   (define (m-alist stx)
