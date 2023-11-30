@@ -188,20 +188,31 @@
 
   (define (m-config-object stx)
 
+    (define (this-name stx) (format-id #f "this_~a" (syntax-e stx)))
+
     (define-splicing-syntax-class attr-decl
       #:description "attribute declaration"
       #:literals (expression)
-      #:attributes (name expr)
-      (pattern (~seq name:id (expression e)) #:attr expr #'e)
-      (pattern (~seq name-str:string (expression expr))
-        #:attr name (format-id #f "~a" (syntax-e #'name-str)))
-      (pattern (~seq name:id "imm:" (expression e)) #:attr expr #'(ival e)))
-
+      #:attributes (name tname expr raw-expr)
+      (pattern (~seq name:id (expression e))
+        #:attr tname (this-name #'name)
+        #:attr expr #'e
+        #:attr raw-expr #'e)
+      (pattern (~seq aname:string (expression expr))
+        #:attr name (format-id #f "~a" (syntax-e #'aname))
+        #:attr tname (this-name #'aname)
+        #:attr raw-expr #'expr)
+      (pattern (~seq name:id "imm:" (expression e))
+        #:attr tname (this-name #'name)
+        #:attr expr #'(ival e)
+        #:attr raw-expr #'e))
 
     (syntax-parse stx
       [(_ attr:attr-decl ...)
-       #'(let* [(attr.name attr.expr) ...]
-           (make-immutable-hasheq (list (cons 'attr.name attr.expr) ...))) ]
+       ; TODO - this_* declarations don't work when referenced
+       ;  #'(let* ([attr.tname attr.raw-expr] ... )
+       ;      (make-immutable-hasheq (list (cons 'attr.name attr.expr) ...))) ]
+       #'(make-immutable-hasheq (list (cons 'attr.name attr.expr) ...)) ]
       [else (raise "m-config-object")]))
 
   (define (m-alist stx)
