@@ -252,20 +252,6 @@
     (syntax-parse stx
       [(_ keyword) (syntax/loc stx keyword)]))
 
-  (define (m-attr-decl stx)
-    (syntax-parse stx
-      [(_ att-name:string ((~literal expression) EXPR))
-       (syntax/loc stx `(,(string->symbol att-name) . ,(expression EXPR)))]
-      [(_ att-name:expr ((~literal expression) EXPR))
-       (syntax/loc stx `(att-name . ,(expression EXPR)))]
-
-      ; TODO - immutable stuff in the syntax is just temporary until moved to the driver
-      [(_ att-name:string ((~literal expression) EXPR))
-       (syntax/loc stx `(,(string->symbol att-name) . ,(ival (expression EXPR))))]
-      [(_ att-name:expr "imm:" ((~literal expression) EXPR))
-       (syntax/loc stx `(att-name . ,(ival (expression EXPR))))]
-      [else (raise "m-attr-decl")]))
-
   (define (m-reference stx)
     (syntax-parse stx
       [(_ (tgt:id key ...)) (syntax/loc stx (handle-ref tgt 'tgt #'key ...))]
@@ -329,7 +315,6 @@
 (define-syntax config-object m-config-object)
 (define-syntax alist m-alist)
 (define-syntax list-attr m-list-attr)
-(define-syntax attr-decl m-attr-decl)
 (define-syntax keyword m-keyword)
 (define-syntax built-in m-built-in)
 (define-syntax env-read m-env-read)
@@ -351,5 +336,5 @@
          type-decl type-body type-crud-decl type-api-spec
          expression reference statement config-object alist list-attr
          config-expr config-merge config-ident config-take
-         attr-decl keyword built-in env-read pprint strf base64encode base64decode
+         keyword built-in env-read pprint strf base64encode base64decode
          boolean)
