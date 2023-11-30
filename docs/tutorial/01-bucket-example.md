@@ -6,6 +6,7 @@
 > Also ensure that you have created an `alias` to invoke `marv`:
 >     
 >     alias marv="racket command.rkt"
+> **You will need a GCP project that you can create your resources in.**
 
 ## Let's start!
 
@@ -13,22 +14,23 @@ We are going to use "The Ubiquitous Bucket Example" - a recipe that will create
 a storage bucket in a GCP project. After we've deployed it, we'll walk through
 the code.
 
-> ## Note
-> You will need a GCP project that you can create your resources in.
-
 ## The Code
 Start by copy/pasting this code into a new file `hello-world.mrv`:
+
 ```
 #lang marv
 
 import types/gcp/storage
 
 module main {
-	hello-bucket = gcp:storage.bucket {
-		project = env("MARV_GCP_PROJECT")
-		region = env("MARV_GCP_REGION")
-        name = imm: strf("~a-hello-world" env("MARV_GCP_PROJECT"))
-	}
+
+    my-project = env("MARV_GCP_PROJECT")
+
+    hello-bucket = gcp:storage.bucket {
+        project = my-project
+        region = env("MARV_GCP_REGION")
+        name = imm: strf("~a-hello-world" my-project)
+    }
 }
 ```
 
@@ -59,39 +61,45 @@ Next we need to import the types for the GCP storage API - the types have to be 
 
 
 > ## Note
-> The type system is a a central part of what makes marv different from other IAC tools, and there will be much more to say about this in a later section.
+> The type system is a central part of what makes marv different from other
+IAC tools; this will be covered in a separate tutorial.
 
 All resources must be declared inside a module, and there must be a `main` module declared in the top-level file passed on the command line:
 
     module main {...}
 
+First up, we declare a variable that gets its value from the `MARV_GCP_PROJECT`
+environment variable:
+
+    my-project = env("MARV_GCP_PROJECT")
 
 Now we come to our bucket’s resource declaration,  in which `hello-bucket`  is a `storage.bucket` resource that is managed by the `GCP` driver:
 
-	hello-bucket = gcp:storage.bucket ...
+    hello-bucket = gcp:storage.bucket ...
 
 > ## Note
 > A resource declaration is generally of the form:
 > 
->   **name** = **driver**:**type** **config-object**
+>     name = driver:type config-object
 >   
-> A `driver` targets a specific cloud-provider's API; marv currently only supports `dev` and `gcp` (Google Cloud Platform).  `type` is the kind of resource supported by the cloud provider, such as `compute.instance` or `secret-manager.secret`.
+> A `driver` targets a specific cloud-provider's API; marv currently only supports `dev` and `gcp` (Google Cloud Platform).  `type` is the kind of resource supported by the cloud provider, such as `compute.instance` or `secret-manager.secret` (NB this isn't *strictly* true, but
+it suffices for now!)
 
 Finally, we have the body of our resource declaration:
 
 ```
 {
-	project = env("MARV_GCP_PROJECT")
-	region = env("MARV_GCP_REGION")
-	name = imm: strf("~a-hello-world" env("MARV_GCP_PROJECT"))
+    project = my-project
+    region = env("MARV_GCP_REGION")
+    name = imm: strf("~a-hello-world" my-project)
 }
 ```
 
-This is a `config-object` which is basically a set of `name=value` attributes, enclosed in `{  }` . `project` and `region` attributes are assigned from the named environment variables. 
+This is a `config-object` which is basically a set of `name=value` attributes, enclosed in `{  }`. 
 
 `name` is assigned the results of the `strf` function which replaces `~a` by the
-value of `MARV_GCP_PROJECT` environment variable. So if `MARV_GCP_PROJECT` is
-'my-project' then the bucket's name is `my-project-hello-world`.
+value of the `project`, which is from the `MARV_GCP_PROJECT` environment
+variable.
 
 `imm:` is a marker to indicate to marv that the `name` attribute is **immutable** -  this means if it changes then the bucket must be recreated.
 

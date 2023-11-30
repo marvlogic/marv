@@ -31,6 +31,7 @@
 
 (define (init-resources) (list null (hash)))
 
+
 (define (add-resource id res)
   (define idx (car (RESOURCES)))
   (define hs (cadr (RESOURCES)))

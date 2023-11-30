@@ -32,7 +32,7 @@ expression: INTEGER | STRING | IDENTIFIER | reference | config-func-call | boole
 
 boolean: "true" | "false"
 
-config-object: /"{" attr-decl* /"}"
+config-object: /"{" [( STRING | IDENTIFIER | "type" ) /"=" [ "imm:" ] expression]* /"}"
 alist: /"[" expression* /"]"
 
 list-attr: /"[" IDENTIFIER+ /"]"
@@ -49,10 +49,6 @@ config-merge: config-expr ("<-" | "->") config-expr
 config-ident: IDENTIFIER
 config-func-call: IDENTIFIER /"(" expression+ /")"
 config-take: config-expr /"<<" list-attr
-
-; type is explicitly allowed as it's so common in configs, and we need 'type' as a lexical token;
-; also allow STRING to allow user to avoid marv keywords
-attr-decl: ( STRING | IDENTIFIER | "type" ) /"=" [ "imm:" ] expression
 
 reference: DOTTY-IDENT
 
