@@ -1,6 +1,7 @@
 #lang racket/base
 
 (require racket/contract)
+(require racket/match)
 (require marv/log)
 (require marv/core/config)
 (require marv/drivers/utils)
@@ -8,6 +9,7 @@
 (require marv/drivers/gcp/discovery)
 (require marv/drivers/gcp/generic-request-handler)
 (require marv/drivers/gcp/transformers)
+(require marv/core/globals)
 
 (provide init-api)
 
@@ -70,9 +72,12 @@
   (TYPE-MAP (hash-set (TYPE-MAP) type crud)))
 
 (define (handle-show-docs discovery msg)
-  (define type (gcp-type msg))
+  (define type-and-sub (split-symbol (gcp-type msg) "/"))
+  (define type (car type-and-sub))
+  (define subtype (if (eq? 1 (length type-and-sub)) #f (cadr type-and-sub)))
+
   (define real-type (hash-ref (TYPE-MAP) type))
   (define type-op (crud-create real-type))
   (define api (api-for-type-op discovery type-op))
-  (api-display-docs api (api-request-type api))
+  (api-display-docs api (api-request-type api) subtype)
   (hash))

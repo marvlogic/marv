@@ -173,16 +173,22 @@
   (disc-api? string? . -> . hash?)
   (hash-nref (disc-api-root api) (list 'schemas (string->symbol type) 'properties)))
 
+; Utility for printing out resource IDs from a discovery-document
 (define (api-resource-keys doc)
   (pretty-print
    (make-immutable-hash (map (lambda(k) (cons k k))
                              (hash-keys (hash-ref (disc-doc-root doc) 'resources))))))
 
-(define (api-display-docs api type)
+(define (api-display-docs api type [subtype #f])
 
+  ; TODO - descend into nested property structures
   (define (handle-type item)
-    (define type (hash-ref item 'type
-                           (lambda()(hash-ref item '$ref))))
+    (define type
+      (hash-ref item 'type
+                (lambda()
+                  (hash-ref item '$ref
+                            (string-join
+                             (map symbol->string (hash-keys item)) ",")))))
     (case (string->symbol type)
       ['array (format "[ ~a ]" (handle-type (hash-ref item 'items)))]
       ['object
@@ -198,6 +204,19 @@
      (lambda(s)(displayln (format " # ~a" s)))
      (wrap-line (hash-ref stuff 'description)))
     (displayln ""))
+
+  (define (display-root)
+    (displayln (format "~a {" type))
+    (hash-for-each (api-parameters api) display-attr)
+    (hash-for-each  (api-schema api type) display-attr)
+    (displayln "}"))
+
+  (define (display-nested)
+    (define schema-spec (api-schema api type))
+    (displayln (format "~a {" subtype))
+    (hash-for-each (hash-nref schema-spec (list subtype 'properties)) display-attr)
+    (displayln "}"))
+
   (displayln #<<EOF
 
 # WARNING: This information is auto-generated from discovery-document fields and
@@ -206,7 +225,5 @@
 
 EOF
              )
-  (displayln (format "~a {" type))
-  (hash-for-each (api-parameters api) display-attr)
-  (hash-for-each (api-schema api type) display-attr)
-  (displayln "}"))
+
+  (if subtype (display-nested) (display-root)))
