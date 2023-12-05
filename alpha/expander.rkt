@@ -118,9 +118,9 @@
 
   (define (m-type-decl stx)
     (syntax-parse stx
-      [(_ ((~literal driver-id) did:expr)
-          ((~literal driver-attr) datr:expr) body)
-       (syntax/loc stx (drv:register-type 'did 'datr (make-immutable-hash body)))]))
+      [(_ ((~literal type-id) type-id:expr)
+          ((~literal driver-id) did:expr) body)
+       (syntax/loc stx (drv:register-type 'did 'type-id (make-immutable-hash body)))]))
 
   (define (m-type-body stx)
     (syntax-parse stx
@@ -135,17 +135,11 @@
 
   (define (m-type-api-spec stx)
     (syntax-parse stx
-      [(_ ((~literal driver-attr) drv-attr:expr) req-xform-id:identifier resp-xform-id:identifier)
-       (syntax/loc stx `(drv-attr ,req-xform-id ,resp-xform-id))]
-      [else (raise "api-spec")]))
+      #:literals (api-id transformer-id)
+      [(_ (api-id aid:expr) (transformer-id req-xform-id:identifier) (transformer-id resp-xform-id:identifier))
+       (syntax/loc stx `(aid ,req-xform-id ,resp-xform-id))]))
 
-  ; (define (m-config-func-param stx)
-  ;   (syntax-parse stx
-  ;     [(_ id:expr)
-  ;      (syntax/loc stx
-  ;        (define id EXPR))]
-  ;     [else (raise "nowt-var-decl")]))
-
+  (define (m-generic-placeholder stx)stx)
 
   (define (m-built-in stx)
     (syntax-parse stx
@@ -259,19 +253,10 @@
 
   (define (m-res-decl stx)
     (syntax-parse stx
-      [(_ name:expr
-          ((~literal driver-id) did:expr)
-          ((~literal driver-attr) dad:expr) cfg)
+      [(_ name:expr ((~literal type-id) tid:expr) cfg)
        #`(define name
-           (with-src-handlers #,(src-location stx)  "valid type" 'dad
-             (lambda()(def-res 'name 'did 'dad cfg))))]
-      ;  #`(define name (def-res 'name 'did 'dad cfg))]
-
-      ; [(_ name:string
-      ;     ((~literal loop-ident) lid:string)
-      ;     ((~literal driver-id) did:string)
-      ;     ((~literal driver-attr) dad:string) cfg)
-      ;  (syntax/loc stx (set-res (loop-res-name name lid) did dad cfg))]
+           (with-src-handlers #,(src-location stx)  "valid type" 'tid
+             (lambda()(def-res 'name 'tid cfg))))]
       ))
 
   (define (m-module-invoke stx)
@@ -328,10 +313,16 @@
 (define-syntax config-take m-config-take)
 (define-syntax config-ident m-config-ident)
 
+(define-syntax api-id m-generic-placeholder)
+(define-syntax transformer-id m-generic-placeholder)
+(define-syntax driver-id m-generic-placeholder)
+(define-syntax type-id m-generic-placeholder)
+
 (provide marv-spec outer-decl marv-module module-parameter decl var-decl res-decl
          module-invoke named-parameter module-return return-parameter
          module-import
          module-export
+         api-id transformer-id driver-id type-id
          config-func-call config-func-decl
          type-decl type-body type-crud-decl type-api-spec
          expression reference statement config-object alist list-attr

@@ -57,7 +57,8 @@
                             (error:excn (format "Parameter '~a' has not been assigned" p)))])
   (hash-ref (PARAMS) p def))
 
-(define (def-res id drv attr v)
+(define (def-res id attr v)
+  (define drv 'gcp)
   (define type (join-symbols attr))
   (define r (hash-set* v '$driver drv '$type type))
   (add-resource id ((current-driver) drv 'validate r)))

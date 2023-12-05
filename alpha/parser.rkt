@@ -23,10 +23,14 @@ var-decl: IDENTIFIER /"=" expression
 config-func-decl: IDENTIFIER /"(" IDENTIFIER+ /")" /"=" config-expr
 config-func-param: IDENTIFIER
 
-type-decl: /"type" driver-id /":" driver-attr /"=" type-body
+type-decl: /"type" type-id /"using" driver-id /"=" type-body
 type-body: /"{" type-crud-decl+ /"}"
 type-crud-decl: ( "create" | "read" | "update" | "delete" ) /"=" type-api-spec
-type-api-spec: driver-attr /"{" IDENTIFIER IDENTIFIER /"}"
+type-api-spec: api-id /"{" transformer-id transformer-id /"}"
+
+type-id: DOTTY-IDENT
+transformer-id: IDENTIFIER
+api-id: DOTTY-IDENT
 
 expression: INTEGER | STRING | IDENTIFIER | reference | config-func-call | boolean | config-expr | alist | built-in
 
@@ -52,7 +56,7 @@ config-take: config-expr /"<<" list-attr
 
 reference: DOTTY-IDENT
 
-res-decl: IDENTIFIER /"=" driver-id /":" driver-attr config-expr
+res-decl: IDENTIFIER /"=" type-id config-expr
 module-invoke: IDENTIFIER /"=" ( MODULE-IDENTIFIER | IDENTIFIER ) /"(" (named-parameter [ /"," ] )* /")"
 
 ; type is explicitly allowed as it's common, and we need 'type' as a lexical token
