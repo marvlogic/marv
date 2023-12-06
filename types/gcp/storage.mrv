@@ -2,6 +2,8 @@
 
 import "../common.mrv"
 
+export storage-bucket api-conf
+
 api-conf(id) = { api-id=id pre=identity post=identity}
 
 # TODO - check this is valid?
@@ -12,7 +14,7 @@ api-conf(id) = { api-id=id pre=identity post=identity}
 #  delete = storage.projects.delete { identity identity }
 #}
 
-type storage.bucket using gcp =  {
+type storage-bucket using gcp =  {
   create = api-conf("storage.buckets.insert")
   read = api-conf("storage.buckets.get")
   #update = storage.buckets.patch { identity identity }

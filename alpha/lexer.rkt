@@ -33,7 +33,6 @@
    [module-identifier (token 'MODULE-IDENTIFIER (string->symbol lexeme)) ]
    [filename (token 'FILENAME (string->symbol lexeme)) ]
    [dotty-ident (token 'DOTTY-IDENT (string->symbol lexeme)) ]
-   ;    [dotty-ident (token 'DOTTY-IDENT (map string->symbol (string-split lexeme "."))) ]
    [(from/stop-before "#" "\n") (token lexeme #:skip? #t)]
    ;    [(:or "print" "goto" "end"
    ;  "+" ":" ";") (token lexeme lexeme)]

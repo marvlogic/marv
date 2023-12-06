@@ -30,7 +30,7 @@ type-decl: /"type" type-id /"using" driver-id /"=" /"{" [ IDENTIFIER /"=" config
 ; type-api-spec: api-id /"{" transformer-id transformer-id /"}"
 
 verb: IDENTIFIER
-type-id: DOTTY-IDENT
+type-id: IDENTIFIER
 transformer-id: IDENTIFIER
 api-id: DOTTY-IDENT
 

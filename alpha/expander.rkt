@@ -129,22 +129,14 @@
           ((~literal driver-id) did:expr)
           body:type-body ...)
        (syntax/loc stx
-         (define (type-id verb config)
-           (case verb
-             ['body.vid body.cex] ...
-             ))
-         )]))
-
-  (define (m-type-body stx)
-    (syntax-parse stx
-      [(_ crud-decl ...) (syntax/loc stx (list crud-decl ...))]))
-
-  (define (m-type-crud-decl stx)
-    (syntax-parse stx
-      [(_ "create" SPEC) (syntax/loc stx (cons 'create SPEC))]
-      [(_ "read" SPEC) (syntax/loc stx (cons 'read SPEC))]
-      [(_ "update" SPEC) (syntax/loc stx (cons 'update SPEC))]
-      [(_ "delete" SPEC) (syntax/loc stx (cons 'delete SPEC))]))
+         (begin
+           (define (type-id verb config)
+             (case verb
+               ['body.vid body.cex] ...
+               ))
+           (provide type-id)
+           ;  (provide type-id (for-syntax type-id))
+           ))]))
 
   (define (m-type-api-spec stx)
     (syntax-parse stx
@@ -262,21 +254,21 @@
   (define (m-reference stx)
     (syntax-parse stx
       [(_ ref:id)
-       (define splitsym (split-symbol (syntax-e #'ref)))
-       (define rootsym (format-id stx "~a" (car splitsym)))
-       (define rst (datum->syntax stx (cdr splitsym)))
-       ;  #`(handle-ref #,r0 'r '#,rs)])) ; RAW
+       (define splitref (split-symbol (syntax-e #'ref)))
+       (define root (format-id stx "~a" (car splitref)))
+       (define rst (datum->syntax stx (cdr splitref)))
+       ; RAW version:  #`(handle-ref #,r0 'r '#,rs)
        (with-syntax
-           ([root rootsym]
+           ([root root]
             [tail rst])
          (syntax/loc stx (handle-ref root 'root 'tail)))]))
 
   (define (m-res-decl stx)
     (syntax-parse stx
-      [(_ name:expr ((~literal type-id) tid:expr) cfg)
+      [(_ name:expr ((~literal type-id) tid:id) cfg)
        #`(define name
            (with-src-handlers #,(src-location stx)  "valid type" 'tid
-             (lambda()(def-res 'name 'tid cfg))))]
+             (lambda()(def-res 'name tid cfg))))]
       ))
 
   (define (m-module-invoke stx)
@@ -307,8 +299,6 @@
 (define-syntax config-func-decl m-config-func-decl)
 
 (define-syntax type-decl m-type-decl)
-(define-syntax type-body m-type-body)
-(define-syntax type-crud-decl m-type-crud-decl)
 (define-syntax type-api-spec m-type-api-spec)
 
 (define-syntax res-decl m-res-decl)
@@ -345,7 +335,7 @@
          module-export
          api-id transformer-id driver-id type-id
          config-func-call config-func-decl
-         type-decl type-body type-crud-decl type-api-spec
+         type-decl type-api-spec
          expression reference statement config-object alist list-attr
          config-expr config-merge config-ident config-take
          keyword built-in env-read pprint strf base64encode base64decode
