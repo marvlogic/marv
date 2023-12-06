@@ -23,11 +23,13 @@ var-decl: IDENTIFIER /"=" expression
 config-func-decl: IDENTIFIER /"(" IDENTIFIER+ /")" /"=" config-expr
 config-func-param: IDENTIFIER
 
-type-decl: /"type" type-id /"using" driver-id /"=" type-body
-type-body: /"{" type-crud-decl+ /"}"
-type-crud-decl: ( "create" | "read" | "update" | "delete" ) /"=" type-api-spec
-type-api-spec: api-id /"{" transformer-id transformer-id /"}"
+type-decl: /"type" type-id /"using" driver-id /"=" /"{" [ IDENTIFIER /"=" config-expr ]+ /"}"
+; type-body: verb /"=" config-expr
 
+; type-crud-decl: ( "create" | "read" | "update" | "delete" ) /"=" type-api-spec
+; type-api-spec: api-id /"{" transformer-id transformer-id /"}"
+
+verb: IDENTIFIER
 type-id: DOTTY-IDENT
 transformer-id: IDENTIFIER
 api-id: DOTTY-IDENT

@@ -24,7 +24,6 @@
          "module" "private" "import" "export" "as" "return" "strf"
          "base64encode" "using"
          "type" "in" "pprint" "env" "true" "false"
-         "create" "read" "update" "delete"
          "imm:" ) (token lexeme lexeme)]
    [(:= 1 (char-set "[](){}=:,")) lexeme]
    [digits (token 'INTEGER (string->number lexeme))]
@@ -33,7 +32,8 @@
    [identifier (token 'IDENTIFIER (string->symbol lexeme)) ]
    [module-identifier (token 'MODULE-IDENTIFIER (string->symbol lexeme)) ]
    [filename (token 'FILENAME (string->symbol lexeme)) ]
-   [dotty-ident (token 'DOTTY-IDENT (map string->symbol (string-split lexeme "."))) ]
+   [dotty-ident (token 'DOTTY-IDENT (string->symbol lexeme)) ]
+   ;    [dotty-ident (token 'DOTTY-IDENT (map string->symbol (string-split lexeme "."))) ]
    [(from/stop-before "#" "\n") (token lexeme #:skip? #t)]
    ;    [(:or "print" "goto" "end"
    ;  "+" ":" ";") (token lexeme lexeme)]

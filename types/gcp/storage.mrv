@@ -2,59 +2,63 @@
 
 import "../common.mrv"
 
-type storage.project using gcp =  {
-  create = storage.projects.insert { identity identity }
-  read = storage.projects.get { identity identity }
-  update = storage.projects.patch { identity identity }
-  delete = storage.projects.delete { identity identity }
-}
+api-conf(id) = { api-id=id pre=identity post=identity}
+
+# TODO - check this is valid?
+#type storage.project using gcp =  {
+#  create = storage.projects.insert { identity identity }
+#  read = storage.projects.get { identity identity }
+#  update = storage.projects.patch { identity identity }
+#  delete = storage.projects.delete { identity identity }
+#}
 
 type storage.bucket using gcp =  {
-  create = storage.buckets.insert { identity identity }
-  read = storage.buckets.get { identity identity }
-  update = storage.buckets.patch { identity identity }
-  delete = storage.buckets.delete { identity identity }
+  create = api-conf("storage.buckets.insert")
+  read = api-conf("storage.buckets.get")
+  #update = storage.buckets.patch { identity identity }
+  #delete = storage.buckets.delete { identity identity }
 }
 
-type storage.bucketAccessControls using gcp =  {
-  create = storage.bucketAccessControls.insert { identity identity }
-  read = storage.bucketAccessControls.get { identity identity }
-  update = storage.bucketAccessControls.patch { identity identity }
-  delete = storage.bucketAccessControls.delete { identity identity }
-}
-
-type storage.objectAccessControls using gcp =  {
-  create = storage.objectAccessControls.insert { identity identity }
-  read = storage.objectAccessControls.get { identity identity }
-  update = storage.objectAccessControls.patch { identity identity }
-  delete = storage.objectAccessControls.delete { identity identity }
-}
-
-type storage.object using gcp =  {
-  create = storage.objects.insert { identity identity }
-  read = storage.objects.get { identity identity }
-  update = storage.objects.patch { identity identity }
-  delete = storage.objects.delete { identity identity }
-}
-
-type storage.notification using gcp =  {
-  create = storage.notifications.insert { identity identity }
-  read = storage.notifications.get { identity identity }
-  update = storage.notifications.patch { identity identity }
-  delete = storage.notifications.delete { identity identity }
-}
-
-type storage.channel using gcp =  {
-  create = storage.channels.insert { identity identity }
-  read = storage.channels.get { identity identity }
-  update = storage.channels.patch { identity identity }
-  delete = storage.channels.delete { identity identity }
-}
-
-type storage.defaultObjectAccessControls using gcp =  {
-  create = storage.defaultObjectAccessControls.insert { identity identity }
-  read = storage.defaultObjectAccessControls.get { identity identity }
-  update = storage.defaultObjectAccessControls.patch { identity identity }
-  delete = storage.defaultObjectAccessControls.delete { identity identity }
-}
-
+# type storage.bucketAccessControls using gcp =  {
+#   create = storage.bucketAccessControls.insert { identity identity }
+#   read = storage.bucketAccessControls.get { identity identity }
+#   update = storage.bucketAccessControls.patch { identity identity }
+#   delete = storage.bucketAccessControls.delete { identity identity }
+# }
+# 
+# type storage.objectAccessControls using gcp =  {
+#   create = storage.objectAccessControls.insert { identity identity }
+#   read = storage.objectAccessControls.get { identity identity }
+#   update = storage.objectAccessControls.patch { identity identity }
+#   delete = storage.objectAccessControls.delete { identity identity }
+# }
+# 
+# type storage.object using gcp =  {
+#   create = storage.objects.insert { identity identity }
+#   read = storage.objects.get { identity identity }
+#   update = storage.objects.patch { identity identity }
+#   delete = storage.objects.delete { identity identity }
+# }
+# 
+# type storage.notification using gcp =  {
+#   create = storage.notifications.insert { identity identity }
+#   read = storage.notifications.get { identity identity }
+#   update = storage.notifications.patch { identity identity }
+#   delete = storage.notifications.delete { identity identity }
+# }
+# 
+# type storage.channel using gcp =  {
+#   create = storage.channels.insert { identity identity }
+#   read = storage.channels.get { identity identity }
+#   update = storage.channels.patch { identity identity }
+#   delete = storage.channels.delete { identity identity }
+# }
+# 
+# type storage.defaultObjectAccessControls using gcp =  {
+#   create = storage.defaultObjectAccessControls.insert { identity identity }
+#   read = storage.defaultObjectAccessControls.get { identity identity }
+#   update = storage.defaultObjectAccessControls.patch { identity identity }
+#   delete = storage.defaultObjectAccessControls.delete { identity identity }
+# }
+# 
+# 

@@ -2,12 +2,13 @@
 
 (require racket/string)
 (require racket/syntax)
-(require (for-syntax racket/base racket/syntax syntax/parse racket/pretty))
+(require (for-syntax racket/base racket/syntax syntax/parse racket/pretty marv/core/globals))
 
 (require racket/pretty)
 
 (require marv/alpha/support)
 (require marv/core/values)
+(require marv/core/globals)
 (require marv/log)
 
 ; (require (for-syntax marv/core/values))
@@ -117,10 +118,22 @@
       [else (raise "config-func-call")]))
 
   (define (m-type-decl stx)
+
+    (define-splicing-syntax-class type-body
+      #:description "body declaration"
+      #:literals (config-expr)
+      (pattern (~seq vid:id cex)))
+
     (syntax-parse stx
       [(_ ((~literal type-id) type-id:expr)
-          ((~literal driver-id) did:expr) body)
-       (syntax/loc stx (drv:register-type 'did 'type-id (make-immutable-hash body)))]))
+          ((~literal driver-id) did:expr)
+          body:type-body ...)
+       (syntax/loc stx
+         (define (type-id verb config)
+           (case verb
+             ['body.vid body.cex] ...
+             ))
+         )]))
 
   (define (m-type-body stx)
     (syntax-parse stx
@@ -248,8 +261,15 @@
 
   (define (m-reference stx)
     (syntax-parse stx
-      [(_ (tgt:id key ...)) (syntax/loc stx (handle-ref tgt 'tgt #'key ...))]
-      ))
+      [(_ ref:id)
+       (define splitsym (split-symbol (syntax-e #'ref)))
+       (define rootsym (format-id stx "~a" (car splitsym)))
+       (define rst (datum->syntax stx (cdr splitsym)))
+       ;  #`(handle-ref #,r0 'r '#,rs)])) ; RAW
+       (with-syntax
+           ([root rootsym]
+            [tail rst])
+         (syntax/loc stx (handle-ref root 'root 'tail)))]))
 
   (define (m-res-decl stx)
     (syntax-parse stx
@@ -317,6 +337,7 @@
 (define-syntax transformer-id m-generic-placeholder)
 (define-syntax driver-id m-generic-placeholder)
 (define-syntax type-id m-generic-placeholder)
+(define-syntax verb m-generic-placeholder)
 
 (provide marv-spec outer-decl marv-module module-parameter decl var-decl res-decl
          module-invoke named-parameter module-return return-parameter

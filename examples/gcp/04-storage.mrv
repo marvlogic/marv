@@ -8,9 +8,12 @@ module main {
     defaults = {
         project = env("MARV_GCP_PROJECT")
         region = env("MARV_GCP_REGION")
+        nested = { x = 123 }
     }
+    name = defaults.nested.x
 
     bucket = storage.bucket defaults <- {
-        name = strf("~a-mybucket" defaults.project)
+        #name = strf("~a-mybucket" defaults.project)
+        name="abc"
     }
 }

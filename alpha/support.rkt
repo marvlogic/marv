@@ -106,13 +106,12 @@
 (define (make-full-ref full-id attrs)
   (string->symbol (format "~a/~a" full-id attrs)))
 
-(define (handle-ref tgt id . ks)
-  (log-marv-debug "handle-ref ~a.~a -> ~a" id ks tgt)
-  (define ksx (map syntax-e ks))
-  (define (full-ref) (make-full-ref (prefix-mod-id id) (core:list->id ksx)))
+(define (handle-ref tgt id path)
+  (log-marv-debug "handle-ref ~a.~a -> ~a" id path tgt)
+  (define (full-ref) (make-full-ref (prefix-mod-id id) (core:list->id path)))
 
   (cond [(resource? tgt) (ref (full-ref))]
-        [(hash? tgt) (hash-nref tgt ksx)]
+        [(hash? tgt) (hash-nref tgt path)]
         [(future-ref? tgt)
          (define resolved (try-resolve-future-ref (full-ref)))
          (log-marv-debug "(future-ref, being re-linked to ~a)" resolved)
