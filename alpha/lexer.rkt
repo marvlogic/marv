@@ -13,7 +13,7 @@
                                            (:* (:or digits alphabetic (char-set "-_/")))))
 
 (define-lex-abbrev identifier (:seq (:= 1 alphabetic)
-                                    (:* (:or digits alphabetic (char-set "-_")))))
+                                    (:* (:or digits alphabetic (char-set "-_:")))))
 
 (define-lex-abbrev dotty-ident (:seq (:= 1 identifier) (:+ (:seq "." identifier))))
 

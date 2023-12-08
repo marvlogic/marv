@@ -78,11 +78,20 @@
       [else (raise "m-module-return f*")]))
 
   (define (m-module-import stx)
+    (displayln stx)
     (syntax-parse stx
-      ; TODO - this shorthand form doesn't always work; the provided identifiers aren't seen by the consumer
-      [(_ MOD-ID:id) #`(require (lib #,(format "marv/~a.mrv" (syntax->datum #`MOD-ID))))]
+      ; this fix comes courtesy of replies to this:
+      ; https://stackoverflow.com/questions/77621776/hard-coded-require-from-a-racket-macro-doesnt-bind-provided-identifiers
+      [(_ MOD-ID:id)
+       (define mpath (format "marv/~a.mrv" (syntax-e #'MOD-ID)))
+       (datum->syntax stx `(require (lib ,mpath)))]
+
+      [(_ MOD-ID:id "as" ALIAS)
+       (define mpath (format "marv/~a.mrv" (syntax-e #'MOD-ID)))
+       (define alias (format-id #f "~a:" (syntax-e #'ALIAS)))
+       (datum->syntax stx `(require (prefix-in ,alias (lib ,mpath)))) ]
+
       [(_ FILENAME:string) (syntax/loc stx (require FILENAME)) ]
-      [(_ FILENAME "as" ALIAS) #`(require (prefix-in #,(format-id #f "~a/" #`ALIAS) FILENAME)) ]
       [else (raise "m-import")]))
 
   (define (m-return-parameter stx)

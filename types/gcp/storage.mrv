@@ -1,8 +1,11 @@
 #lang marv
 
-import "../common.mrv"
+# import "../common.mrv"
+import types/common
 
 export storage-bucket api-conf
+
+# identity(config) = config
 
 api-conf(id) = { api-id=id pre=identity post=identity}
 
