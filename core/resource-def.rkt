@@ -45,13 +45,11 @@
   (void))
 
 (define/contract (get-module params purge?)
-  ((hash/c symbol? string?) boolean? . -> . rmodule/c)
+  ((hash/c symbol? string?) boolean? . -> . resource-set/c)
   ; (validate-params params)
-  (with-drivers (current-driver-set)
-    (lambda()
-      (define (mk-resource driver-id config) (resource driver-id ((current-driver) driver-id 'validate config)))
-      (define resources ((RESOURCES) 'main mk-resource params))
-      (mk-rmodule (current-driver-set) (if purge? (hash) resources)))))
+  (define resources ((RESOURCES) 'main params))
+  (displayln (RESOURCES))
+  (if purge? (hash) resources))
 
 (define (make-keyword-params params)
   ; TODO: test for check that #t (sorting) works
@@ -77,11 +75,11 @@
 ; TODO - tighten the contracts
 (define/contract (resource-keys rs)
   (any/c . -> . (listof any/c))
-  (hash-keys (rmodule-resources rs)))
+  (hash-keys rs))
 
 (define/contract (resource-ref mod k)
-  (rmodule/c res-id/c . -> . resource/c)
-  (hash-ref (rmodule-resources mod) k))
+  (resource-set/c res-id/c . -> . resource/c)
+  (hash-ref mod k))
 
 ; module-ref returns the resource, or the driver-config if a driver
 (define/contract (module-ref mod k)
@@ -104,7 +102,8 @@
 (define/contract (unwrap-values res)
   (resource/c . -> . resource/c)
   (define (unwrap k v)  (unpack-value v))
-  (resource (resource-driver-id res) (hash-apply (resource-config res) unwrap)))
+  ; TODO41 - refactor to resource-update-config-fn
+  (resource (resource-type-fn res) (hash-apply (resource-config res) unwrap)))
 
 ; TODO - NB, the $resources/$drivers definition stuff has been left in for now,
 ; not sure if it will be needed in future.
@@ -118,7 +117,7 @@
      [else (raise (format "~a: Bad reference format" (ref-path ref)))])))
 
 (define/contract (deref-resource mod r)
-  (rmodule/c resource/c . -> . resource/c)
+  (resource-set/c resource/c . -> . resource/c)
 
   (define (get-ref ref)
     (define-values (res-id attr) (ref-split ref))
@@ -127,4 +126,5 @@
   (define (deref-attr _ a)
     (update-val a (lambda (v) (if (ref? v) (get-ref v) v))))
 
-  (resource (resource-driver-id r) (hash-apply (resource-config r) deref-attr)))
+  ; TODO41 - refactor to resource-update-config-fn
+  (resource (resource-type-fn r) (hash-apply (resource-config r) deref-attr)))

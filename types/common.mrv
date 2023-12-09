@@ -1,5 +1,6 @@
 #lang marv
 
-export identity
+export identity null
 
 identity(config) = config
+null(config) = {}

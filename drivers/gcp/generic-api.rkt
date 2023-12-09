@@ -13,21 +13,9 @@
 
 (provide init-api)
 
-(define TYPE-MAP (make-parameter (hash)))
-
 (define (init-api interface-id api-id http OPERATION-HANDLER [type-op-patches (hash)])
   (define discovery (load-discovery (symbol->string interface-id) api-id type-op-patches))
-  (define (type-map-fn t)
-    (hash-ref (TYPE-MAP) t (lambda()(raise-argument-error 'type "registered type" t))))
-  (define (genrq cf)
-    (lambda(res) ((mk-request-handler discovery type-map-fn OPERATION-HANDLER) cf res http)))
-
-  (define crudfn
-    (make-driver-crud-fn
-     (lambda(cfg) (validate discovery type-map-fn cfg))
-     (genrq crud-create) (genrq crud-read) (genrq crud-update) (genrq crud-delete)
-     (lambda(op res) (aux-handler discovery op res))))
-  crudfn)
+  (mk-request-handler discovery OPERATION-HANDLER))
 
 (define/contract (validate discovery type-map-fn cfg)
   (disc-doc? procedure? config/c   . -> . config/c)
@@ -43,34 +31,7 @@
   ;   (has-required-api-parameters?)
   cfg)
 
-(define (aux-handler discovery op msg)
-  (case op
-    ['register-type handle-register-type]
-    ['show-docs (lambda (msg)(handle-show-docs discovery msg))]
-    [else (raise "Unsupported op/message in storage-api")]))
-
-(define (handle-register-type msg)
-  (define-values (type transformers) (values (hash-ref msg '$type) (hash-ref msg 'transforms)))
-  (log-marv-info "handle-register-type ~a:~a" type transformers)
-  (define apis (map transformer-api-id transformers))
-  (define-values (create-api read-api update-api delete-api) (apply values apis))
-  (register-type type (crud create-api read-api update-api delete-api))
-
-  ; TODO23 - tidy this
-  (define tfns (map transformer-req-fn transformers))
-  (define rfns (map transformer-resp-fn transformers))
-  (for ([a apis]
-        [req tfns]
-        [resp rfns]
-        #:when (procedure? req))
-    (register-transformers (transformer a req resp)))
-  (hash))
-
-(define/contract (register-type type crud)
-  (symbol? crud? . -> . void)
-  (log-marv-info "Registering type: ~a ~a" type crud)
-  (TYPE-MAP (hash-set (TYPE-MAP) type crud)))
-
+(define TYPE-MAP (make-parameter #f))
 (define (handle-show-docs discovery msg)
   (define type-and-sub (split-symbol (gcp-type msg) "/"))
   (define type (car type-and-sub))

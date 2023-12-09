@@ -1,12 +1,11 @@
 #lang racket/base
 (require net/http-easy)
 (require racket/contract)
+(require racket/string)
 
 (require marv/log)
 (require marv/core/config)
-(require marv/core/globals)
 (require marv/drivers/types)
-(require marv/drivers/utils)
 
 (require marv/drivers/gcp/operation-handler)
 (require (prefix-in generic: marv/drivers/gcp/generic-api))
@@ -15,21 +14,26 @@
 
 (provide init-gcp gcp-http-transport)
 
-(define (init-gcp interface-id http-transport)
+;TODO41- need driver-id anymore? only used for with-workspace calls...
+(define (init-gcp driver-id http-transport)
   (define apis
-    (hash 'compute (generic:init-api interface-id "compute:beta" http-transport compute-api-operation-handler)
-          'iam (generic:init-api interface-id "iam:v1" http-transport iam-api-operation-handler)
-          'storage (generic:init-api interface-id "storage:v1" http-transport compute-api-operation-handler) ; TODO
-          'secretmanager (generic:init-api interface-id "secretmanager:v1" http-transport iam-api-operation-handler sm:patches) ; TODO
-          'sql (generic:init-api interface-id "sqladmin:v1" http-transport compute-api-operation-handler sql:patches) ; TODO
+    (hash 'compute (generic:init-api driver-id "compute:beta" http-transport compute-api-operation-handler)
+          'iam (generic:init-api driver-id "iam:v1" http-transport iam-api-operation-handler)
+          'storage (generic:init-api driver-id "storage:v1" http-transport compute-api-operation-handler) ; TODO
+          'secretmanager (generic:init-api driver-id "secretmanager:v1" http-transport iam-api-operation-handler sm:patches) ; TODO
+          'sql (generic:init-api driver-id "sqladmin:v1" http-transport compute-api-operation-handler sql:patches) ; TODO
           ))
 
-  (define/contract (routing op config)
-    (msg-id/c config/c . -> . config/c)
-    (define subtype (car (split-symbol (gcp-type config))))
-    (define crudfn (hash-ref apis subtype))
-    (crudfn op config))
+  (define/contract (routing driver-spec config)
+    (driver-spec/c config/c . -> . driver-resp/c)
+    (define subtype (string->symbol(car (string-split (driver-spec-api driver-spec) "." ))))
+    (define api (hash-ref apis subtype))
+    (api driver-spec config http-transport))
   routing)
+
+(define (driver-spec-api ds) (hash-ref ds 'api-id))
+(define (driver-spec-pre-fn ds) (hash-ref ds 'pre))
+(define (driver-spec-post-fn ds) (hash-ref ds 'post))
 
 (define (gcp-http-transport access-token)
 

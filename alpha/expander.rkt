@@ -51,14 +51,14 @@
        #:with MAYBE-PRIVATE (if (attribute private?) #'(void) #'(provide mod-id))
        (syntax/loc stx
          (begin
-           (define (mod-id resid-prefix mkres params)
+           (define (mod-id resid-prefix params)
              (log-marv-debug "** Generating module: ~a=~a(~a)" resid-prefix 'mod-id params)
              (define rs
                (with-module-ctx resid-prefix params
                  (lambda ()
                    PARAMS ...
                    STMT ...
-                   (define rs (gen-resources mkres))
+                   (define rs (gen-resources))
                    RETURN
                    rs
                    )))
@@ -78,7 +78,6 @@
       [else (raise "m-module-return f*")]))
 
   (define (m-module-import stx)
-    (displayln stx)
     (syntax-parse stx
       ; this fix comes courtesy of replies to this:
       ; https://stackoverflow.com/questions/77621776/hard-coded-require-from-a-racket-macro-doesnt-bind-provided-identifiers
@@ -140,11 +139,13 @@
        (syntax/loc stx
          (begin
            (define (type-id verb config)
+             (log-marv-debug "type-fn ~a.~a called with config ~a" 'type-id verb config)
+             ; TODO - case vs hash?
              (case verb
-               ['body.vid body.cex] ...
+               ['driver 'did]
+               ['type 'type-id]
+               ['body.vid (drv:send-to-driver 'did body.cex config)] ...
                ))
-           (provide type-id)
-           ;  (provide type-id (for-syntax type-id))
            ))]))
 
   (define (m-type-api-spec stx)
@@ -277,7 +278,7 @@
       [(_ name:expr ((~literal type-id) tid:id) cfg)
        #`(define name
            (with-src-handlers #,(src-location stx)  "valid type" 'tid
-             (lambda()(def-res 'name tid cfg))))]
+             (lambda()(def-res tid 'name cfg))))]
       ))
 
   (define (m-module-invoke stx)

@@ -32,7 +32,6 @@
   (get-plan-for mod refresh?))
 
 (define (get-plan-for mod refresh?)
-  (define resources (rmodule-resources mod))
   (define resource-keyset (list->set (resource-keys mod)))
   ; TODO - pass in state, also define hash(id->state) contract types
   (define state-keyset (list->set (state-keys)))
@@ -43,7 +42,7 @@
   (when refresh? (refresh-resources mod (set->list to-refresh)))
 
   ; TODO - pass in state, also define hash(id->state) contract types
-  (define new-module (mk-rmodule (rmodule-drivers mod) (merge-state+resource (mk-id->state) resources)))
+  (define new-module (merge-state+resource (mk-id->state) mod))
   (define ordered-rks (resources-dag-topo mod))
   (define operations
     (foldl
@@ -58,48 +57,50 @@
      (map (lambda (rk) (cons rk (hash-ref operations rk)))
           ordered-rks)))
 
-  (plan resources new-module ordered-ops))
+  (plan mod new-module ordered-ops))
 
 (define (import-resources mod ids)
-  (define (import-one id)
-    (displayln (format "importing ~a" id))
-    (define res
-      (unwrap-values
-       (deref-resource
-        (rmodule (rmodule-drivers mod) (mk-id->state)) (resource-ref mod id))))
-    (define driver-id (resource-driver-id res))
-    (define config ((current-driver) driver-id 'read (resource-config res)))
-    (state-set-ref id (resource driver-id config)))
+  ; (define (import-one id)
+  ;    (displayln (format "importing ~a" id))
+  ;    (define res
+  ;      (unwrap-values
+  ;       (deref-resource
+  ;        (rmodule (rmodule-drivers mod) (mk-id->state)) (resource-ref mod id))))
+  ;    (define driver-id (resource-driver-id res))
+  ;    (define config ((current-driver) driver-id 'read (resource-config res)))
+  ;    (state-set-ref id (resource driver-id config)))
 
-  (map (lambda(id) (import-one id)) ids))
+  ; (map (lambda(id) (null id)) ids))
+  (raise "unimplemented"))
 
 (define (refresh-resources mod ids)
-  (define (readr res)
-    (define did (resource-driver-id res))
-    (resource did ((current-driver) did 'read (resource-config res))))
+  ; (define (readr res)
+  ;   (define did (resource-driver-id res))
+  ;   (resource did ((current-driver) did 'read (resource-config res))))
 
-  (define (refresh k)
-    (displayln (format "Refreshing ~a" k))
-    (define res (state-ref k))
-    (state-set-ref k (readr res)))
-  (for ([i ids]) (refresh i)))
+  ; (define (refresh k)
+  ;   (displayln (format "Refreshing ~a" k))
+  ;   (define res (state-ref k))
+  ;   (state-set-ref k (readr res)))
+  ; (for ([i ids]) (refresh i)))
+  void)
 
 (define (apply-changes mod (refresh? #t))
 
   (define (crudfn op res)
-    (define driver (current-driver))
-    (define driver-id (resource-driver-id res))
-    (resource driver-id (driver driver-id op (resource-config res))))
+    (define type-fn (resource-type-fn res))
+    (type-fn op (resource-config res)))
 
   (define (create id)
-    ; (pretty-print (driver-repr id))
     (display (format "CREATING ~a" id))
     (flush-output)
+    (displayln (driver-repr id))
     (state-set-ref id (crudfn 'create (driver-repr id))))
 
   (define (delete id)
     (display (format "DELETING ~a" id))
     (flush-output)
+    (raise "fix-me delete")
     (crudfn 'delete (state-ref id))
     (state-delete id))
 
@@ -111,8 +112,7 @@
   ; TODO - check if unpacking is done here or should use unwrap fn
   (define (driver-repr id)
     (unwrap-values
-     (deref-resource (rmodule (rmodule-drivers mod) (mk-id->state))
-                     (resource-ref mod id))))
+     (deref-resource (mk-id->state) (resource-ref mod id))))
 
   (define plan (get-plan-for mod refresh?))
 
@@ -180,7 +180,8 @@
   (if (hash-has-key? old-state id)
       (let ((new-res (resource-ref new-module id))
             (old-res (hash-ref old-state id)))
-        (if (eq? (resource-driver-id old-res) (resource-driver-id new-res))
+        (raise "fixme first")
+        (if (eq? (resource-config old-res) (resource-config new-res))
             (diff-resources new-module acc-ops old-res new-res)
             (op-replace "driver changed" (hash))))
       (op-create "New resource!")))

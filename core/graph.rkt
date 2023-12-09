@@ -13,12 +13,12 @@
 (define root '$root)
 
 (define/contract (resources-dag-topo modl)
-  (rmodule/c . -> . (listof res-id/c))
+  (resource-set/c . -> . (listof res-id/c))
   (tsort (resources-dag modl)))
 
 ; TODO - don't need a full module?
 (define/contract (resources-dag modl)
-  (rmodule/c . -> . graph?)
+  (resource-set/c . -> . graph?)
   (define edges (append-map (lambda (k) (resource-edges k (resource-ref modl k))) (resource-keys modl)))
   (define graph (validated-graph edges modl))
   (remove-vertex! graph root)

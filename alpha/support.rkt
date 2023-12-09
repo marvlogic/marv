@@ -9,6 +9,7 @@
 (require marv/core/globals)
 (require marv/core/drivers)
 (require marv/utils/base64)
+(require marv/core/resources)
 
 
 (require (prefix-in core: marv/core/resources))
@@ -17,9 +18,8 @@
 (provide gen-resources getenv-or-raise
          def-res
          with-src-handlers
-         drv:current-driver-set
-         drv:register-type
          set-return
+         drv:send-to-driver
          module-call
          b64enc b64dec
          config-overlay config-reduce handle-ref
@@ -31,13 +31,13 @@
 
 (define (init-resources) (list null (hash)))
 
-
 (define (add-resource id res)
   (define idx (car (RESOURCES)))
   (define hs (cadr (RESOURCES)))
   (when (hash-has-key? hs id) (error:excn (format "~a is already defined" id)))
   (RESOURCES (list (cons id idx) (hash-set hs id res)))
   res)
+
 (define (ordered-resource-ids) (reverse (car (RESOURCES))))
 (define (get-resource id) (hash-ref (cadr (RESOURCES)) id))
 
@@ -57,11 +57,13 @@
                             (error:excn (format "Parameter '~a' has not been assigned" p)))])
   (hash-ref (PARAMS) p def))
 
-(define (def-res id attr v)
-  (define drv 'gcp)
-  (define type (join-symbols attr))
-  (define r (hash-set* v '$driver drv '$type type))
-  (add-resource id ((current-driver) drv 'validate r)))
+(define (def-res type-fn id res)
+  (type-fn 'validate res)
+  ; Temporarily storing ref to the type-fn in the configuration, it will
+  ; be removed later when creating a resource
+  (define rtyped (hash-set res '$type-fn type-fn))
+  (add-resource id rtyped))
+
 
 (define (with-src-handlers src-locn expected given thunk)
   (define (handle-exn e)
@@ -118,7 +120,7 @@
          resolved]
         [else (raise "unsupported ref type")]))
 
-(define (gen-resources mkres)
+(define (gen-resources)
   (log-marv-debug "gen-resources called for these visible resources: ~a" (RESOURCES))
 
   (define (handle-future-ref k v)
@@ -129,12 +131,13 @@
 
   (define (make-resource v)
     (log-marv-debug "  generating ~a" v)
-    (mkres (hash-ref v '$driver) (hash-apply (hash-remove v '$driver) handle-future-ref)))
+    (resource (hash-ref v '$type-fn) (hash-apply (hash-remove v '$type-fn) handle-future-ref)))
 
   (for/fold ([rs (hash)])
             ([k (in-list (ordered-resource-ids))])
     (define res (get-resource k))
-    (cond [(resource? res)
+    (cond [(hash? res)
            (hash-set rs (prefix-mod-id k) (make-resource res))]
           [(procedure? res)
-           (hash-union rs (res (prefix-mod-id k) mkres))])))
+           ; Calling a module
+           (hash-union rs (res (prefix-mod-id k)))])))

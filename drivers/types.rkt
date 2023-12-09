@@ -9,3 +9,5 @@
 (define driver-id/c symbol?)
 (define driver/c procedure?)
 (define driver-set/c (hash/c driver-id/c driver/c))
+(define driver-spec/c hash?)
+(define driver-resp/c hash?)

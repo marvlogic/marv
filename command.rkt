@@ -94,7 +94,7 @@
    (pretty-print(state-get))]
 
   [(LIST-RESOURCES)
-   (pretty-print (rmodule-resources modl))]
+   (pretty-print  modl)]
 
   [(PLAN-CHANGES)
    (define plan (plan-changes modl))

@@ -85,4 +85,5 @@
           [else r]))
 
   (if (not st) rs
-      (resource (resource-driver-id rs) (combine-hash (resource-config st) (resource-config rs)))))
+      ; TODO41 refactor update
+      (resource (resource-type-fn rs) (combine-hash (resource-config st) (resource-config rs)))))

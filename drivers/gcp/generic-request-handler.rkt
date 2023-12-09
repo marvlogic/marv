@@ -7,6 +7,7 @@
 (require marv/drivers/gcp/transformers)
 (require marv/drivers/gcp/crud)
 (require marv/drivers/utils)
+(require marv/drivers/types)
 (require marv/log)
 (require marv/core/config)
 
@@ -20,27 +21,36 @@
   (displayln "..DONE\033[K")
   (flush-output))
 
-(define/contract (mk-request-handler discovery-doc type-map-fn op-handler-fn)
-  (disc-doc? procedure? procedure? . -> . procedure?)
+(define/contract (mk-request-handler discovery-doc op-handler-fn)
+  (disc-doc? procedure? . -> . procedure?)
 
-  (define/contract (request-handler crud-fn config http)
-    (procedure? config/c any/c . -> . config/c)
-    (define type-op (crud-fn (type-map-fn (gcp-type config))))
-    (log-marv-debug "generic-request-handler: type-op=~a ~a" type-op config)
-    (define xfd-resource (apply-request-transformer type-op config) )
+  (define (driver-spec-api ds) (hash-ref ds 'api-id))
+  (define (driver-spec-pre-fn ds) (hash-ref ds 'pre))
+  (define (driver-spec-post-fn ds) (hash-ref ds 'post))
+
+  (define/contract (request-handler api-spec config http)
+    (driver-spec/c config/c any/c . -> . driver-resp/c)
+
+    (define api-id (driver-spec-api api-spec))
+    (define pre (driver-spec-pre-fn api-spec))
+    (define post (driver-spec-post-fn api-spec))
+    (log-marv-debug "generic-request-handler: type-op=~a ~a" api-id config)
+    (define xfd-resource (pre config) )
     (log-marv-debug "transformed: ~v" xfd-resource)
+    ;TODO41 - this cond is not right
     (cond
       ; TODO - hacked, if null operation then we don't do anything
-      [(null? type-op) xfd-resource]
-      [(symbol? type-op)
-       (define api (api-for-type-op discovery-doc type-op))
-       (define is-delete? (eq? crud-delete crud-fn))
+      [(null? api-id) xfd-resource]
+      [(string? api-id)
+       (define api (api-for-type-op discovery-doc (string->symbol api-id)))
+       ;  (define is-delete? (eq? crud-delete crud-fn))
+       (define is-delete? #f)
        (define response (do-api-request api xfd-resource http is-delete? op-handler-fn))
        (log-marv-debug "response: ~a" response)
-       (define xresp (apply-response-transformer type-op response))
+       (define xresp (post response))
        (log-marv-debug "transformed: ~a" xresp)
        (hash-merge config xresp)]
-      [else raise (format "type has no usable CRUD for ~a : ~a" crud-fn type-op )]
+      [else raise (format "type has no usable CRUD for ~a : ~a" 'bah api-id )]
       ))
   request-handler)
 

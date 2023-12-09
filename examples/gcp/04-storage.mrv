@@ -1,17 +1,15 @@
 #lang marv
 
 import types/gcp/storage as gcp
-# import "../../types/gcp/storage.mrv"
 
 module main {
 
     defaults = {
         project = env("MARV_GCP_PROJECT")
         region = env("MARV_GCP_REGION")
-        nested = { x = 123 }
     }
 
-    bucket = gcp:storage-bucket defaults <- {
+    bucket = gcp:bucket defaults <- {
         name = strf("~a-mybucket" defaults.project)
     }
 }

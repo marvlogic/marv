@@ -1,13 +1,22 @@
 #lang marv
 
-# import "../common.mrv"
 import types/common
 
-export storage-bucket api-conf
+export bucket
 
-# identity(config) = config
+api-conf(id) = { api-id=id pre=identity post=identity }
 
-api-conf(id) = { api-id=id pre=identity post=identity}
+# delete(t) = 
+
+add-destructor(cfg) = { destructor = { api-id = strf("storage.~a.delete" cfg.type) config = cfg } }
+
+type bucket using gcp = {
+  validate = api-conf("storage.buckets.insert")
+  create = api-conf("storage.buckets.insert") <- { origin = "gcp:storage.buckets.insert" post = add-destructor }
+  read = api-conf("storage.buckets.get")
+  update = api-conf("storage.buckets.patch")
+  delete = api-conf("storage.buckets.delete") <- { pre = null post = null }
+}
 
 # TODO - check this is valid?
 #type storage.project using gcp =  {
@@ -17,12 +26,6 @@ api-conf(id) = { api-id=id pre=identity post=identity}
 #  delete = storage.projects.delete { identity identity }
 #}
 
-type storage-bucket using gcp =  {
-  create = api-conf("storage.buckets.insert")
-  read = api-conf("storage.buckets.get")
-  #update = storage.buckets.patch { identity identity }
-  #delete = storage.buckets.delete { identity identity }
-}
 
 # type storage.bucketAccessControls using gcp =  {
 #   create = storage.bucketAccessControls.insert { identity identity }
