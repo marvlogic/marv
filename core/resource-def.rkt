@@ -12,6 +12,7 @@
 (require marv/core/drivers)
 (require marv/core/resources)
 (require marv/core/values)
+(require marv/core/config)
 (require marv/utils/hash)
 (require marv/log)
 
@@ -100,10 +101,10 @@
 (define (match-resource-attr? res matchf) (hash-match? res matchf))
 
 (define/contract (unwrap-values res)
-  (resource/c . -> . resource/c)
+  (config/c . -> . config/c)
   (define (unwrap k v)  (unpack-value v))
   ; TODO41 - refactor to resource-update-config-fn
-  (resource (resource-type-fn res) (hash-apply (resource-config res) unwrap)))
+  (hash-apply res unwrap))
 
 ; TODO - NB, the $resources/$drivers definition stuff has been left in for now,
 ; not sure if it will be needed in future.
@@ -116,15 +117,16 @@
      [(list id _ ...) (format "~a" mid)]
      [else (raise (format "~a: Bad reference format" (ref-path ref)))])))
 
+(define config-set/c (hash/c res-id/c config/c))
 (define/contract (deref-resource mod r)
-  (resource-set/c resource/c . -> . resource/c)
+  (config-set/c config/c . -> . config/c)
 
   (define (get-ref ref)
     (define-values (res-id attr) (ref-split ref))
-    (unpack-value (hash-nref (resource-config (resource-ref mod res-id)) (id->list attr))))
+    (unpack-value (hash-nref (hash-ref mod res-id)) (id->list attr)))
 
   (define (deref-attr _ a)
     (update-val a (lambda (v) (if (ref? v) (get-ref v) v))))
 
   ; TODO41 - refactor to resource-update-config-fn
-  (resource (resource-type-fn r) (hash-apply (resource-config r) deref-attr)))
+  (hash-apply r deref-attr))

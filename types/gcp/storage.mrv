@@ -4,15 +4,23 @@ import types/common
 
 export bucket
 
-api-conf(id) = { api-id=id pre=identity post=identity }
+destructor(cfg) = { api-id = strf("storage.~a.delete" cfg.name) config = { name = cfg.name } }
 
-# delete(t) = 
+bucket-origin(cfg) = { type-id="storage.bucket" name=cfg.name }
 
-add-destructor(cfg) = { destructor = { api-id = strf("storage.~a.delete" cfg.type) config = cfg } }
+api-response-xform(resp) = { 
+  config = identity(resp) 
+  destructor = destructor(resp)
+  origin = strf("something-~a" "x")
+}
+
+api-conf(id) = { api-id=id pre=identity post=api-response-xform }
+
 
 type bucket using gcp = {
-  validate = api-conf("storage.buckets.insert")
-  create = api-conf("storage.buckets.insert") <- { origin = "gcp:storage.buckets.insert" post = add-destructor }
+  # TODO41 - how does validate work?
+  # validate = api-conf("storage.buckets.insert")
+  create = api-conf("storage.buckets.insert") 
   read = api-conf("storage.buckets.get")
   update = api-conf("storage.buckets.patch")
   delete = api-conf("storage.buckets.delete") <- { pre = null post = null }

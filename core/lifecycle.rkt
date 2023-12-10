@@ -13,6 +13,7 @@
 (require marv/core/graph)
 (require marv/utils/hash)
 (require marv/core/drivers)
+(require marv/log)
 
 (provide import-resources
          plan-changes
@@ -94,7 +95,6 @@
   (define (create id)
     (display (format "CREATING ~a" id))
     (flush-output)
-    (displayln (driver-repr id))
     (state-set-ref id (crudfn 'create (driver-repr id))))
 
   (define (delete id)
@@ -111,8 +111,9 @@
 
   ; TODO - check if unpacking is done here or should use unwrap fn
   (define (driver-repr id)
-    (unwrap-values
-     (deref-resource (mk-id->state) (resource-ref mod id))))
+    (define res (hash-ref mod id))
+    (resource (resource-type-fn res)
+              (unwrap-values (deref-resource (mk-id->state) (resource-config res)))))
 
   (define plan (get-plan-for mod refresh?))
 
@@ -157,14 +158,15 @@
     [else #f]))
 
 
-(define (diff-resources new-module acc-ops old-res new-res)
-  (define old-cfg (resource-config old-res))
-  (define new-cfg (resource-config new-res))
+(define (diff-resources new-module acc-ops old-cfg new-cfg)
+  ; (define old-cfg (resource-config old-res))
+  ; (define new-cfg (resource-config new-res))
   ; TODO - memoize diffs (store in operation?), also
   ; TODO - make-diff pattern here (see command.rkt) and parameter order
-  (define munged (deref-resource new-module new-res))
+  (define munged (deref-resource new-module new-cfg))
+  (log-marv-debug "deref'd resource: ~a" munged)
   (define (flathash h) (make-immutable-hasheq (hash->flatlist h)))
-  (define diff (make-diff (hash-merge (flathash (resource-config munged))
+  (define diff (make-diff (hash-merge (flathash munged)
                                       (flathash old-cfg)) (flathash old-cfg)))
   (cond
     [(has-immutable-diff? diff) (op-replace "immutable diff" diff)]
@@ -176,21 +178,22 @@
     [else #f]))
 
 (define (operation id old-state new-module acc-ops)
-  ; (log-marv-debug "Checking ~a vs old ~a" id old-state)
+  (log-marv-debug "Checking diffs for ~a" id)
   (if (hash-has-key? old-state id)
-      (let ((new-res (resource-ref new-module id))
+      (let ((new-res (hash-ref new-module id))
             (old-res (hash-ref old-state id)))
-        (raise "fixme first")
-        (if (eq? (resource-config old-res) (resource-config new-res))
-            (diff-resources new-module acc-ops old-res new-res)
-            (op-replace "driver changed" (hash))))
+        (log-marv-debug " old-state: ~a" old-res)
+        (log-marv-debug " new-state: ~a" new-res)
+        (diff-resources new-module acc-ops old-res new-res))
       (op-create "New resource!")))
 
 ; TODO - factor merge into the state module
 (define (merge-state+resource old-resources new-resources)
   (make-immutable-hash
-   (map (lambda(rk) (cons rk (state-merge (hash-ref old-resources rk #f)  (hash-ref new-resources rk))))
-        (hash-keys new-resources))))
+   (map
+    (lambda(rk)
+      (cons rk (state-merge (hash-ref old-resources rk state-empty)  (hash-ref new-resources rk))))
+    (hash-keys new-resources))))
 
 (define (filter-for-diffs meta-keys state-meta-map new-state-meta-map)
   (filter

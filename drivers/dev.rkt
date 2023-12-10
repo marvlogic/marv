@@ -1,38 +1,37 @@
 #lang racket/base
 (require racket/contract)
+(require racket/string)
 
 (require marv/core/config)
 (require marv/drivers/utils)
+(require marv/drivers/types)
+(require marv/log)
 
 (provide init-dev-driver)
 
 (define (init-dev-driver interface-id)
 
-  (define/contract (create resource)
-    (config/c . -> . config/c)
-    (displayln ". DONE")
-    (hash-set* resource
-               'selfLink (format "dev:~a:~a" (hash-ref resource '$type)
-                                 (hash-ref resource 'name 'no-name))))
+  (define/contract (routing driver-spec config)
+    (driver-spec/c config/c . -> . driver-resp/c)
+    (define subtype (string->symbol(car (string-split (driver-spec-api driver-spec) "." ))))
+    (define api (driver-spec-api driver-spec))
+    (define pre (driver-spec-pre-fn driver-spec))
+    (define post (driver-spec-post-fn driver-spec))
+    (log-marv-debug "dev-routing driver:~a config:~a" driver-spec config)
+    (define xform (pre config))
+    (log-marv-debug "xformed: ~a" xform)
+    (define resp (http-transport api "https://local/host/" xform))
+    (define respxform (post resp))
+    (log-marv-debug "xformed resp: ~a" respxform)
+    respxform)
 
-  (define/contract (readr resource-state)
-    (config/c . -> . config/c)
-    resource-state)
+  routing)
 
-  (define/contract (update resource-state)
-    (config/c . -> . config/c)
-    (displayln ". DONE")
-    resource-state)
+(define (driver-spec-api ds) (hash-ref ds 'api-id))
+(define (driver-spec-pre-fn ds) (hash-ref ds 'pre))
+(define (driver-spec-post-fn ds) (hash-ref ds 'post))
 
-  (define/contract (delete resource-state)
-    (config/c . -> . config/c)
-    (displayln ". DONE")
-    resource-state)
-
-  (define/contract (validate res)
-    (config/c . -> . config/c)
-    res)
-
-  (define (http-transport method url res)(displayln (format "~a: ~a\n~a" method url res)))
-
-  (make-driver-crud-fn validate create readr update delete))
+(define (http-transport method url res)
+  (define faked (format "FAKE-HTTP ~a: ~a\n~a" method url res))
+  (displayln faked)
+  (hash-set res 'faked  faked))

@@ -11,6 +11,7 @@
          state-ref-serial
          state-get
          state-merge
+         state-empty
          mk-id->state
          state-delete
          state-for-each)
@@ -25,6 +26,16 @@
   (STATE (hash-set (STATE) 'serial next))
   next)
 
+; TODO41 this is basically the response from the driver:
+; { config, destructor, origin}
+(define state-resource/c hash?)
+
+(define state-empty (hash 'config (hash) 'origin null 'destructor null))
+
+(define (state-resource-config r) (hash-ref r 'config))
+(define (state-resource-origin r) (hash-ref r 'origin))
+(define (state-resource-destructor r) (hash-ref r 'destructor))
+
 (struct state-entry (serial resource) #:prefab)
 
 (define (load-state f)
@@ -38,7 +49,7 @@
     (lambda () (write (STATE)))))
 
 (define/contract (state-set-ref key res)
-  (res-id/c resource/c . -> . void)
+  (res-id/c state-resource/c . -> . void)
   (define resources (RESOURCES))
   (define serial
     (cond [(hash-has-key? resources key) (state-entry-serial(hash-ref resources key))]
@@ -48,7 +59,7 @@
   void)
 
 (define/contract (state-ref k)
-  (res-id/c . -> . resource/c)
+  (res-id/c . -> . state-resource/c)
   (state-entry-resource (hash-ref (RESOURCES) k)))
 
 (define (state-get) (STATE))
@@ -57,7 +68,7 @@
 (define (state-ref-serial k) (state-entry-serial (hash-ref (RESOURCES) k)))
 
 (define/contract (mk-id->state)
-  (-> (hash/c res-id/c resource/c))
+  (-> (hash/c res-id/c state-resource/c))
   (make-immutable-hash
    (hash-map (RESOURCES) (lambda (k v)
                            (cons k (state-entry-resource v))))))
@@ -75,7 +86,7 @@
 
 ; (Deep) Merge a state record (rs) into an existing state, where rs overwrites st
 (define/contract (state-merge st rs)
-  (any/c resource/c . -> . resource/c)
+  (state-resource/c resource/c . -> . state-resource/c)
 
   (define (combine-hash s r)
     (hash-union s r #:combine merge-em))
@@ -84,6 +95,14 @@
     (cond [(and (hash? r) (hash? s)) (combine-hash s r)]
           [else r]))
 
-  (if (not st) rs
-      ; TODO41 refactor update
-      (resource (resource-type-fn rs) (combine-hash (resource-config st) (resource-config rs)))))
+  (define origin (hash 'type "storage.bucket" ))
+  (displayln st)
+  (displayln rs)
+  (define stc (state-resource-config st))
+  (define rsc (resource-config rs))
+
+  (define new-conf
+    (if (eq? state-empty stc) rsc
+        (combine-hash stc rsc)))
+  ; (hash 'origin (state-resource-origin rsc) (state-resource-destructor rsc) 'config new-conf))
+  (hash 'origin "nor" 'destructor "nodes" 'config new-conf))
