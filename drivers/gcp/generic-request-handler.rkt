@@ -25,24 +25,24 @@
     (driver-cmd/c config/c any/c . -> . driver-resp/c)
 
     (define api-id (driver-spec-api api-spec))
-    (define pre (driver-spec-pre-fn api-spec))
-    (define post (driver-spec-post-fn api-spec))
+    ; (define pre (driver-spec-pre-fn api-spec))
+    ; (define post (driver-spec-post-fn api-spec))
     (log-marv-debug "generic-request-handler: type-op=~a ~a" api-id config)
-    (define xfd-resource (pre config) )
-    (log-marv-debug "transformed: ~v" xfd-resource)
+    ; (define xfd-resource (pre config) )
+    ; (log-marv-debug "transformed: ~v" xfd-resource)
     ;TODO41 - this cond is not right
     (cond
       ; TODO - hacked, if null operation then we don't do anything
-      [(null? api-id) xfd-resource]
+      [(null? api-id) config]
       [(string? api-id)
        (define api (api-for-type-op discovery-doc (string->symbol api-id)))
        ;  (define is-delete? (eq? crud-delete crud-fn))
        (define is-delete? #f)
-       (define response (do-api-request api xfd-resource http is-delete? op-handler-fn))
+       (define response (do-api-request api config http is-delete? op-handler-fn))
        (log-marv-debug "response: ~a" response)
-       (define xresp (post response))
-       (log-marv-debug "transformed: ~a" xresp)
-       (hash-merge config xresp)]
+       ;  (define xresp (post response))
+       ;  (log-marv-debug "transformed: ~a" xresp)
+       (hash-merge config response)]
       [else raise (format "type has no usable CRUD for ~a : ~a" 'bah api-id )]
       ))
   request-handler)

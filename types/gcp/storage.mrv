@@ -13,16 +13,21 @@ api-response-xform(resp) = {
   destructor = destructor(resp)
 }
 
-api-conf(id) = { api-id=id pre=identity post=identity }
+api-conf(id op) = { api-id=strf("storage.~a.~a" id op ) pre=identity post=identity }
+
+create(id) = api-conf(id "insert")
+read(id) = api-conf(id "get")
+update(id) = api-conf(id "patch")
+delete(id) = api-conf(id "insert")
 
 only-name(cfg) = cfg << [name]
 
 type bucket using gcp = {
   # TODO41 - how does validate work?
   # validate = api-conf("storage.buckets.insert")
-  create = api-conf("storage.buckets.insert") 
-  read = api-conf("storage.buckets.get")
-  update = api-conf("storage.buckets.patch")
+  create = create("buckets")
+  read = read("buckets")
+  update = update("buckets")
   delete = { api-id="storage.buckets.delete" filter=only-name}
 }
 
