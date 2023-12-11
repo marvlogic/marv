@@ -11,10 +11,9 @@ bucket-origin(cfg) = { type-id="storage.bucket" name=cfg.name }
 api-response-xform(resp) = { 
   config = identity(resp) 
   destructor = destructor(resp)
-  origin = strf("something-~a" "x")
 }
 
-api-conf(id) = { api-id=id pre=identity post=api-response-xform }
+api-conf(id) = { api-id=id pre=identity post=identity }
 
 
 type bucket using gcp = {

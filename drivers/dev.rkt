@@ -32,6 +32,5 @@
 (define (driver-spec-post-fn ds) (hash-ref ds 'post))
 
 (define (http-transport method url res)
-  (define faked (format "FAKE-HTTP ~a: ~a\n~a" method url res))
-  (displayln faked)
-  (hash-set res 'faked  faked))
+  (displayln (format "FAKE-HTTP ~a: ~a ~a" method url res))
+  (hash-set res 'faked (format "~a:~a" method url)))

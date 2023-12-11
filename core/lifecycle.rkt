@@ -75,6 +75,7 @@
   (raise "unimplemented"))
 
 (define (refresh-resources mod ids)
+  ; TODO41
   ; (define (readr res)
   ;   (define did (resource-driver-id res))
   ;   (resource did ((current-driver) did 'read (resource-config res))))
@@ -100,7 +101,6 @@
   (define (delete id)
     (display (format "DELETING ~a" id))
     (flush-output)
-    (raise "fix-me delete")
     (crudfn 'delete (state-ref id))
     (state-delete id))
 
@@ -184,7 +184,9 @@
             (old-res (hash-ref old-state id)))
         (log-marv-debug " old-state: ~a" old-res)
         (log-marv-debug " new-state: ~a" new-res)
-        (diff-resources new-module acc-ops old-res new-res))
+        (define diff (diff-resources new-module acc-ops old-res new-res))
+        (log-marv-debug " diff: ~a" diff)
+        diff)
       (op-create "New resource!")))
 
 ; TODO - factor merge into the state module

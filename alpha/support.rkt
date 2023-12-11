@@ -3,13 +3,16 @@
 (require racket/hash)
 (require racket/string)
 (require racket/pretty)
+(require racket/contract)
 (require marv/log)
 (require marv/core/values)
 (require marv/utils/hash)
 (require marv/core/globals)
 (require marv/core/drivers)
+(require marv/core/config)
 (require marv/utils/base64)
 (require marv/core/resources)
+(require marv/drivers/types)
 
 
 (require (prefix-in core: marv/core/resources))
@@ -19,7 +22,7 @@
          def-res
          with-src-handlers
          set-return
-         drv:send-to-driver
+         send-to-driver
          module-call
          b64enc b64dec
          config-overlay config-reduce handle-ref
@@ -64,6 +67,15 @@
   (define rtyped (hash-set res '$type-fn type-fn))
   (add-resource id rtyped))
 
+(define/contract (send-to-driver driver-id type-id driver-spec config)
+  (driver-id/c symbol? driver-spec/c config/c . -> . driver-resp/c)
+  (log-marv-debug "support-send-to-driver: ~a ~a ~a ~a" driver-id type-id driver-spec config)
+  (define pre (hash-ref driver-spec 'pre))
+  (define post (hash-ref driver-spec 'post))
+  (define cfg (post (drv:send-to-driver driver-id driver-spec (pre config))))
+  (define reply (hash 'config cfg 'origin (format "~a:~a" driver-id type-id)))
+  (log-marv-debug "support-send-to-driver: reply: ~a" reply)
+  reply)
 
 (define (with-src-handlers src-locn expected given thunk)
   (define (handle-exn e)

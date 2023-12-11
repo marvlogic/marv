@@ -9,7 +9,7 @@ module main {
         region = env("MARV_GCP_REGION")
     }
 
-    bucket = gcp:bucket defaults <- {
-        name = strf("~a-mybucket" defaults.project)
-    }
+ #  bucket = gcp:bucket defaults <- {
+ #      name = strf("~a-mybucket" defaults.project)
+ #  }
 }

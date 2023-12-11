@@ -84,7 +84,7 @@
   (resource-exists? m)
   (STATE (hash-set (STATE) 'resources (hash-remove (RESOURCES) m))))
 
-; (Deep) Merge a state record (rs) into an existing state, where rs overwrites st
+; (Deep) Merge a resource's config (rs) into an existing state, where rs overwrites st
 (define/contract (state-merge st rs)
   (state-resource/c resource/c . -> . state-resource/c)
 
@@ -95,7 +95,6 @@
     (cond [(and (hash? r) (hash? s)) (combine-hash s r)]
           [else r]))
 
-  (define origin (hash 'type "storage.bucket" ))
   (displayln st)
   (displayln rs)
   (define stc (state-resource-config st))
@@ -105,4 +104,4 @@
     (if (eq? state-empty stc) rsc
         (combine-hash stc rsc)))
   ; (hash 'origin (state-resource-origin rsc) (state-resource-destructor rsc) 'config new-conf))
-  (hash 'origin "nor" 'destructor "nodes" 'config new-conf))
+  (hash 'origin (hash-ref st 'origin) 'config new-conf))

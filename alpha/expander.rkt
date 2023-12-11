@@ -142,9 +142,10 @@
              (log-marv-debug "type-fn ~a.~a called with config ~a" 'type-id verb config)
              ; TODO - case vs hash?
              (case verb
+               ['origin (hash 'driver 'did 'type 'type-id)]
                ['driver 'did]
                ['type 'type-id]
-               ['body.vid (drv:send-to-driver 'did body.cex config)] ...
+               ['body.vid (send-to-driver 'did 'type-id body.cex config)] ...
                ))
            ))]))
 
