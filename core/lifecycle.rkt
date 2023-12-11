@@ -3,7 +3,7 @@
 (require racket/set)
 (require racket/dict)
 (require racket/match)
-(require racket/pretty)
+(require racket/contract)
 
 (require marv/core/values)
 (require marv/core/state)
@@ -32,24 +32,25 @@
 (define (plan-changes mod (refresh? #t))
   (get-plan-for mod refresh?))
 
-(define (get-plan-for mod refresh?)
-  (define resource-keyset (list->set (resource-keys mod)))
+(define/contract (get-plan-for rsset refresh?)
+  (resource-set/c boolean? . -> . plan?)
+  (define resource-keyset (list->set (resource-keys rsset)))
   ; TODO - pass in state, also define hash(id->state) contract types
   (define state-keyset (list->set (state-keys)))
   (define to-create (set-subtract resource-keyset state-keyset))
   (define to-delete (set-subtract state-keyset resource-keyset))
   (define to-refresh (set-subtract resource-keyset to-delete to-create))
 
-  (when refresh? (refresh-resources mod (set->list to-refresh)))
+  (when refresh? (refresh-resources rsset (set->list to-refresh)))
 
   ; TODO - pass in state, also define hash(id->state) contract types
-  (define new-module (merge-state+resource (mk-id->state) mod))
-  (define ordered-rks (resources-dag-topo mod))
+  (define new-state (state<-resource (state-get-state-set) rsset))
+  (define ordered-rks (resources-dag-topo rsset))
   (define operations
     (foldl
      (lambda (id acc-ops)
        ; TODO - pass in state, also define hash(id->state) contract types
-       (hash-set acc-ops id (operation id (mk-id->state) new-module acc-ops))) (hash) ordered-rks))
+       (hash-set acc-ops id (operation id (state-get-state-set) new-state acc-ops))) (hash) ordered-rks))
 
   (define ordered-ops
     (append
@@ -58,7 +59,7 @@
      (map (lambda (rk) (cons rk (hash-ref operations rk)))
           ordered-rks)))
 
-  (plan mod new-module ordered-ops))
+  (plan rsset new-state ordered-ops))
 
 (define (import-resources mod ids)
   ; (define (import-one id)
@@ -89,31 +90,39 @@
 
 (define (apply-changes mod (refresh? #t))
 
-  (define (crudfn op res)
+  (define (driver-cmd op res)
     (define type-fn (resource-type-fn res))
-    (type-fn op (resource-config res)))
+    (define driver-id (type-fn 'driver res))
+    (define driver-cmd (type-fn op (resource-config res)))
+    (define resp-cfg (send-to-driver driver-id driver-cmd (resource-config res)))
+    resp-cfg)
 
   (define (create id)
     (display (format "CREATING ~a" id))
     (flush-output)
-    (state-set-ref id (crudfn 'create (driver-repr id))))
+    (define res  (driver-repr id))
+    (define type-fn (resource-type-fn res))
+    (define cfg (driver-cmd 'create res))
+    (define origin (type-fn 'origin res))
+    (log-marv-debug "origin: ~a" origin)
+    (state-set-ref id (state-origin origin null) cfg))
 
   (define (delete id)
     (display (format "DELETING ~a" id))
     (flush-output)
-    (crudfn 'delete (state-ref id))
+    (driver-cmd 'delete (state-ref-config id))
     (state-delete id))
 
   (define (update id)
     (display (format "UPDATING ~a" id))
     (flush-output)
-    (state-set-ref id (crudfn 'update (driver-repr id))))
+    (state-set-ref id (state-ref-origin id) (driver-cmd 'update (driver-repr id))))
 
   ; TODO - check if unpacking is done here or should use unwrap fn
   (define (driver-repr id)
     (define res (hash-ref mod id))
     (resource (resource-type-fn res)
-              (unwrap-values (deref-resource (mk-id->state) (resource-config res)))))
+              (unwrap-values (deref-config (state-get-state-set) (resource-config res)))))
 
   (define plan (get-plan-for mod refresh?))
 
@@ -124,19 +133,19 @@
 
   (define (process-op res-op)
     (match res-op
-      [(cons id #f) void]
+      [(cons _ #f) void]
       [(cons id (op-create _)) (create id)]
       [(cons id (op-replace _ _)) (create id)]
       [(cons id (op-update _ _)) (update id)]
       [(cons id (op-delete _)) (delete id)]
-      [else (raise (format "Illegal op: ~a" res-op))]
+      [_ (raise (format "Illegal op: ~a" res-op))]
       ))
 
   (for-each delete-replacements (reverse(plan-ordered-operations plan)))
   (for-each process-op (plan-ordered-operations plan)))
 
 (define (has-immutable-ref-to-replaced-resource? new acc-ops)
-  (define (match? k v)
+  (define (match? _ v)
     (and (iref? v) (op-replace? (hash-ref acc-ops (ref->id v)))))
   (match-resource-attr? new match?))
 
@@ -146,7 +155,7 @@
 (define (ref-updated-attr? test-fn? new acc-ops)
   (define (is-ref-a-diff? ref)
     (diff? (get-ref-diff ref acc-ops)))
-  (define (match? k v)
+  (define (match? _ v)
     (and (test-fn? v) (is-ref-a-diff? v)))
   (match-resource-attr? new match?))
 
@@ -155,15 +164,15 @@
   (match (hash-ref acc-ops id)
     [(op-update _ diff) (hash-ref diff attr #f)]
     [(op-replace _ diff) (hash-ref diff attr #f)]
-    [else #f]))
+    [_ #f]))
 
 
-(define (diff-resources new-module acc-ops old-cfg new-cfg)
+(define (diff-resources new-state acc-ops old-cfg new-cfg)
   ; (define old-cfg (resource-config old-res))
   ; (define new-cfg (resource-config new-res))
   ; TODO - memoize diffs (store in operation?), also
   ; TODO - make-diff pattern here (see command.rkt) and parameter order
-  (define munged (deref-resource new-module new-cfg))
+  (define munged (deref-config new-state new-cfg))
   (log-marv-debug "deref'd resource: ~a" munged)
   (define (flathash h) (make-immutable-hasheq (hash->flatlist h)))
   (define diff (make-diff (hash-merge (flathash munged)
@@ -177,35 +186,31 @@
     [(has-diff? diff) (op-update "updated attribute" diff)]
     [else #f]))
 
-(define (operation id old-state new-module acc-ops)
+(define (operation id current-state new-state acc-ops)
   (log-marv-debug "Checking diffs for ~a" id)
-  (if (hash-has-key? old-state id)
-      (let ((new-res (hash-ref new-module id))
-            (old-res (hash-ref old-state id)))
-        (log-marv-debug " old-state: ~a" old-res)
-        (log-marv-debug " new-state: ~a" new-res)
-        (define diff (diff-resources new-module acc-ops old-res new-res))
-        (log-marv-debug " diff: ~a" diff)
-        diff)
-      (op-create "New resource!")))
+  (cond [(hash-has-key? current-state id)
+         (define new-res-cfg (state-entry-config (hash-ref new-state id)))
+         (define old-res-cfg (state-entry-config (hash-ref current-state id)))
+         (log-marv-debug " old-state: ~a" old-res-cfg)
+         (log-marv-debug " new-state: ~a" new-res-cfg)
+         (define diff (diff-resources new-state acc-ops old-res-cfg new-res-cfg))
+         (log-marv-debug " diff: ~a" diff)
+         diff]
+        [else (op-create "New resource!")]))
 
 ; TODO - factor merge into the state module
-(define (merge-state+resource old-resources new-resources)
+(define/contract (state<-resource current-state new-resources)
+  (state-set/c resource-set/c . -> . state-set/c)
   (make-immutable-hash
    (map
     (lambda(rk)
-      (cons rk (state-merge (hash-ref old-resources rk state-empty)  (hash-ref new-resources rk))))
+      (cons rk (state-merge
+                (hash-ref current-state rk state-empty)
+                (hash-ref new-resources rk))))
     (hash-keys new-resources))))
 
-(define (filter-for-diffs meta-keys state-meta-map new-state-meta-map)
-  (filter
-   (lambda(rk)(has-diff?
-               (make-diff
-                (hash-ref state-meta-map rk) (hash-ref new-state-meta-map rk))))
-   (set->list meta-keys)))
 
 (define (output-plan plan)
-
   (define (report-op rid op)
 
     (define (fmt-diff d)
@@ -229,7 +234,7 @@
                                (report-diff  diff)]
       [(op-replace reason diff) (header rid (format "REPLACE: ~a" reason))
                                 (report-diff diff)]
-      [else void]
+      [_ void]
       ))
 
   (for-each

@@ -2,18 +2,27 @@
 (require racket/hash)
 (require racket/contract)
 (require marv/core/resources)
+(require marv/core/config)
+(require marv/core/values)
+(require marv/utils/hash)
 
 (provide load-state
          save-state
          state-keys
          state-set-ref
          state-ref
+         state-ref-config
+         state-ref-origin
          state-ref-serial
          state-get
+         state-set/c
          state-merge
          state-empty
-         mk-id->state
+         state-origin
+         state-get-state-set
          state-delete
+         deref-config
+         state-entry-config
          state-for-each)
 
 (define STATE (make-parameter (hash 'serial 0 'resources (hash))))
@@ -26,17 +35,11 @@
   (STATE (hash-set (STATE) 'serial next))
   next)
 
-; TODO41 this is basically the response from the driver:
-; { config, destructor, origin}
-(define state-resource/c hash?)
+(struct state-origin (fingerprint destructor-cmd) #:prefab)
+(struct state-entry (serial origin config) #:prefab)
+(define state-empty (state-entry 0 (state-origin 0 null) (hash)))
 
-(define state-empty (hash 'config (hash) 'origin null 'destructor null))
-
-(define (state-resource-config r) (hash-ref r 'config))
-(define (state-resource-origin r) (hash-ref r 'origin))
-(define (state-resource-destructor r) (hash-ref r 'destructor))
-
-(struct state-entry (serial resource) #:prefab)
+(define state-set/c (hash/c res-id/c state-entry? ))
 
 (define (load-state f)
   (cond
@@ -48,33 +51,41 @@
   (with-output-to-file f #:mode 'text #:exists 'replace
     (lambda () (write (STATE)))))
 
-(define/contract (state-set-ref key res)
-  (res-id/c state-resource/c . -> . void)
+(define/contract (state-set-ref key origin config)
+  (res-id/c state-origin? config/c . -> . void)
   (define resources (RESOURCES))
   (define serial
     (cond [(hash-has-key? resources key) (state-entry-serial(hash-ref resources key))]
           [else (next-serial) ]))
   (STATE (hash-set (STATE)
-                   'resources (hash-set resources key (state-entry serial res))))
+                   'resources (hash-set resources key (state-entry serial origin config))))
   void)
 
 (define/contract (state-ref k)
-  (res-id/c . -> . state-resource/c)
-  (state-entry-resource (hash-ref (RESOURCES) k)))
+  (res-id/c . -> . state-entry?)
+  (hash-ref (RESOURCES) k))
+
+(define/contract (state-ref-config k)
+  (res-id/c . -> . config/c)
+  (state-entry-config (hash-ref (RESOURCES) k)))
+
+(define/contract (state-ref-origin k)
+  (res-id/c . -> . state-origin?)
+  (state-entry-origin (hash-ref (RESOURCES) k)))
+
+(define (state-ref-serial k) (state-entry-serial (hash-ref (RESOURCES) k)))
 
 (define (state-get) (STATE))
 (define (state-keys) (hash-keys (RESOURCES)))
 
-(define (state-ref-serial k) (state-entry-serial (hash-ref (RESOURCES) k)))
-
-(define/contract (mk-id->state)
-  (-> (hash/c res-id/c state-resource/c))
-  (make-immutable-hash
-   (hash-map (RESOURCES) (lambda (k v)
-                           (cons k (state-entry-resource v))))))
+(define/contract (state-get-state-set)
+  (-> state-set/c)
+  (RESOURCES))
+; (make-immutable-hash
+;  (hash-map (RESOURCES) (lambda (k v) (cons k (state-entry-config v))))))
 
 (define (state-for-each proc)
-  (define (meta-def-proc k v) (proc k (state-entry-resource v)))
+  (define (meta-def-proc k v) (proc k (state-entry-config v)))
   (hash-for-each (RESOURCES) meta-def-proc))
 
 ; TODO - just booms out
@@ -86,7 +97,7 @@
 
 ; (Deep) Merge a resource's config (rs) into an existing state, where rs overwrites st
 (define/contract (state-merge st rs)
-  (state-resource/c resource/c . -> . state-resource/c)
+  (state-entry? resource/c . -> . state-entry?)
 
   (define (combine-hash s r)
     (hash-union s r #:combine merge-em))
@@ -95,13 +106,23 @@
     (cond [(and (hash? r) (hash? s)) (combine-hash s r)]
           [else r]))
 
-  (displayln st)
-  (displayln rs)
-  (define stc (state-resource-config st))
+  (define stc (state-entry-config st))
   (define rsc (resource-config rs))
 
   (define new-conf
     (if (eq? state-empty stc) rsc
         (combine-hash stc rsc)))
-  ; (hash 'origin (state-resource-origin rsc) (state-resource-destructor rsc) 'config new-conf))
-  (hash 'origin (hash-ref st 'origin) 'config new-conf))
+  (state-entry (state-entry-serial st) (state-entry-origin st) new-conf))
+
+(define/contract (deref-config state cfg)
+  (state-set/c config/c . -> . config/c)
+
+  (define (get-ref ref)
+    (define-values (res-id attr) (ref-split ref))
+    (unpack-value (hash-nref (hash-ref state res-id)) (id->list attr)))
+
+  (define (deref-attr _ a)
+    (update-val a (lambda (v) (if (ref? v) (get-ref v) v))))
+
+  ; TODO41 - refactor to resource-update-config-fn
+  (hash-apply cfg deref-attr))

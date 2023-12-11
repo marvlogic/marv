@@ -3,17 +3,15 @@
 (require racket/string)
 
 (require marv/core/config)
-(require marv/drivers/utils)
 (require marv/drivers/types)
 (require marv/log)
 
 (provide init-dev-driver)
 
-(define (init-dev-driver interface-id)
+(define (init-dev-driver _)
 
   (define/contract (routing driver-spec config)
-    (driver-spec/c config/c . -> . driver-resp/c)
-    (define subtype (string->symbol(car (string-split (driver-spec-api driver-spec) "." ))))
+    (driver-cmd/c config/c . -> . driver-resp/c)
     (define api (driver-spec-api driver-spec))
     (define pre (driver-spec-pre-fn driver-spec))
     (define post (driver-spec-post-fn driver-spec))
@@ -26,10 +24,6 @@
     respxform)
 
   routing)
-
-(define (driver-spec-api ds) (hash-ref ds 'api-id))
-(define (driver-spec-pre-fn ds) (hash-ref ds 'pre))
-(define (driver-spec-post-fn ds) (hash-ref ds 'post))
 
 (define (http-transport method url res)
   (displayln (format "FAKE-HTTP ~a: ~a ~a" method url res))

@@ -145,7 +145,7 @@
                ['origin (hash 'driver 'did 'type 'type-id)]
                ['driver 'did]
                ['type 'type-id]
-               ['body.vid (send-to-driver 'did 'type-id body.cex config)] ...
+               ['body.vid body.cex] ...
                ))
            ))]))
 

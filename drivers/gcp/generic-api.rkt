@@ -1,14 +1,12 @@
 #lang racket/base
 
 (require racket/contract)
-(require racket/match)
 (require marv/log)
 (require marv/core/config)
 (require marv/drivers/utils)
 (require marv/drivers/gcp/crud)
 (require marv/drivers/gcp/discovery)
 (require marv/drivers/gcp/generic-request-handler)
-(require marv/drivers/gcp/transformers)
 (require marv/core/globals)
 
 (provide init-api)

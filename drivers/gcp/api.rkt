@@ -17,23 +17,20 @@
 ;TODO41- need driver-id anymore? only used for with-workspace calls...
 (define (init-gcp driver-id http-transport)
   (define apis
-    (hash 'compute (generic:init-api driver-id "compute:beta" http-transport compute-api-operation-handler)
-          'iam (generic:init-api driver-id "iam:v1" http-transport iam-api-operation-handler)
-          'storage (generic:init-api driver-id "storage:v1" http-transport compute-api-operation-handler) ; TODO
-          'secretmanager (generic:init-api driver-id "secretmanager:v1" http-transport iam-api-operation-handler sm:patches) ; TODO
-          'sql (generic:init-api driver-id "sqladmin:v1" http-transport compute-api-operation-handler sql:patches) ; TODO
-          ))
+    (hash
+     'compute (generic:init-api driver-id "compute:beta" http-transport compute-api-operation-handler)
+     'iam (generic:init-api driver-id "iam:v1" http-transport iam-api-operation-handler)
+     'storage (generic:init-api driver-id "storage:v1" http-transport compute-api-operation-handler) ; TODO
+     'secretmanager (generic:init-api driver-id "secretmanager:v1" http-transport iam-api-operation-handler sm:patches) ; TODO
+     'sql (generic:init-api driver-id "sqladmin:v1" http-transport compute-api-operation-handler sql:patches) ; TODO
+     ))
 
   (define/contract (routing driver-spec config)
-    (driver-spec/c config/c . -> . driver-resp/c)
+    (driver-cmd/c config/c . -> . driver-resp/c)
     (define subtype (string->symbol(car (string-split (driver-spec-api driver-spec) "." ))))
     (define api (hash-ref apis subtype))
     (api driver-spec config http-transport))
   routing)
-
-(define (driver-spec-api ds) (hash-ref ds 'api-id))
-(define (driver-spec-pre-fn ds) (hash-ref ds 'pre))
-(define (driver-spec-post-fn ds) (hash-ref ds 'post))
 
 (define (gcp-http-transport access-token)
 

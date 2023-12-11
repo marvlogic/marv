@@ -31,7 +31,6 @@
          ival ival?
          iref iref?
          match-resource-attr?
-         deref-resource
          (struct-out params))
 
 (struct params (required accepted))
@@ -49,7 +48,6 @@
   ((hash/c symbol? string?) boolean? . -> . resource-set/c)
   ; (validate-params params)
   (define resources ((RESOURCES) 'main params))
-  (displayln (RESOURCES))
   (if purge? (hash) resources))
 
 (define (make-keyword-params params)
@@ -118,15 +116,3 @@
      [else (raise (format "~a: Bad reference format" (ref-path ref)))])))
 
 (define config-set/c (hash/c res-id/c config/c))
-(define/contract (deref-resource mod r)
-  (config-set/c config/c . -> . config/c)
-
-  (define (get-ref ref)
-    (define-values (res-id attr) (ref-split ref))
-    (unpack-value (hash-nref (hash-ref mod res-id)) (id->list attr)))
-
-  (define (deref-attr _ a)
-    (update-val a (lambda (v) (if (ref? v) (get-ref v) v))))
-
-  ; TODO41 - refactor to resource-update-config-fn
-  (hash-apply r deref-attr))

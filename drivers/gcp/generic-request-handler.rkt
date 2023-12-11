@@ -4,9 +4,6 @@
 (require marv/utils/hash)
 (require marv/drivers/gcp/operation-handler)
 (require marv/drivers/gcp/discovery)
-(require marv/drivers/gcp/transformers)
-(require marv/drivers/gcp/crud)
-(require marv/drivers/utils)
 (require marv/drivers/types)
 (require marv/log)
 (require marv/core/config)
@@ -24,12 +21,8 @@
 (define/contract (mk-request-handler discovery-doc op-handler-fn)
   (disc-doc? procedure? . -> . procedure?)
 
-  (define (driver-spec-api ds) (hash-ref ds 'api-id))
-  (define (driver-spec-pre-fn ds) (hash-ref ds 'pre))
-  (define (driver-spec-post-fn ds) (hash-ref ds 'post))
-
   (define/contract (request-handler api-spec config http)
-    (driver-spec/c config/c any/c . -> . driver-resp/c)
+    (driver-cmd/c config/c any/c . -> . driver-resp/c)
 
     (define api-id (driver-spec-api api-spec))
     (define pre (driver-spec-pre-fn api-spec))
