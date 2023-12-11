@@ -4,7 +4,7 @@ import types/common
 
 export bucket
 
-destructor(cfg) = { api-id = strf("storage.~a.delete" cfg.name) config = { name = cfg.name } }
+destructor(res) = { api-id = strf("storage.~a.delete" res) pre = identity}
 
 bucket-origin(cfg) = { type-id="storage.bucket" name=cfg.name }
 
@@ -15,6 +15,7 @@ api-response-xform(resp) = {
 
 api-conf(id) = { api-id=id pre=identity post=identity }
 
+only-name(cfg) = cfg << [name]
 
 type bucket using gcp = {
   # TODO41 - how does validate work?
@@ -22,7 +23,7 @@ type bucket using gcp = {
   create = api-conf("storage.buckets.insert") 
   read = api-conf("storage.buckets.get")
   update = api-conf("storage.buckets.patch")
-  delete = api-conf("storage.buckets.delete") <- { pre = null post = null }
+  delete = { api-id="storage.buckets.delete" filter=only-name}
 }
 
 # TODO - check this is valid?

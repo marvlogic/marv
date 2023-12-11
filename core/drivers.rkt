@@ -18,8 +18,8 @@
   (driver-id/c driver-cmd/c config/c . -> . driver-resp/c)
   (log-marv-debug "send-to-driver: ~a ~a ~a" driver-id driver-cmd config)
   (define driver-fn (hash-ref (DRIVERS) driver-id))
-  (define pre (hash-ref driver-cmd 'pre))
-  (define post (hash-ref driver-cmd 'post))
+  (define pre (driver-spec-pre-fn driver-cmd))
+  (define post (driver-spec-post-fn driver-cmd))
   (post (driver-fn driver-cmd (pre config))))
 
 (define (std-drivers)

@@ -14,6 +14,9 @@
          state-ref-config
          state-ref-origin
          state-ref-serial
+         state-ref-destructor-cmd
+         state-origin-destructor-cmd
+         state-origin-fingerprint
          state-get
          state-set/c
          state-merge
@@ -74,6 +77,8 @@
   (state-entry-origin (hash-ref (RESOURCES) k)))
 
 (define (state-ref-serial k) (state-entry-serial (hash-ref (RESOURCES) k)))
+
+(define state-ref-destructor-cmd (compose1 state-origin-destructor-cmd state-ref-origin))
 
 (define (state-get) (STATE))
 (define (state-keys) (hash-keys (RESOURCES)))

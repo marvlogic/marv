@@ -146,6 +146,10 @@
                ['driver 'did]
                ['type 'type-id]
                ['body.vid body.cex] ...
+               ['destructor
+                (define delcfg (type-id 'delete config))
+                (define flt (hash-ref delcfg 'filter))
+                (hash 'cmd (hash-remove delcfg 'filter) 'config (flt config))]
                ))
            ))]))
 
