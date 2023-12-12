@@ -22,12 +22,14 @@ delete(id) = api-conf(id "insert")
 
 only-name(cfg) = cfg << [name]
 
+add-labels(cfg) = cfg <- { labels = { "test" = "ac" }}
+
 type bucket using gcp = {
   # TODO41 - how does validate work?
   # validate = api-conf("storage.buckets.insert")
   create = create("buckets")
   read = read("buckets")
-  update = update("buckets")
+  update = update("buckets") # <- { pre = add-labels }
   delete = { api-id="storage.buckets.delete" filter=only-name}
 }
 

@@ -37,24 +37,23 @@
       [(string? api-id)
        (define api (api-for-type-op discovery-doc (string->symbol api-id)))
        ;  (define is-delete? (eq? crud-delete crud-fn))
-       (define is-delete? #f)
-       (define response (do-api-request api config http is-delete? op-handler-fn))
+       (define response (do-api-request api config http op-handler-fn))
        (log-marv-debug "response: ~a" response)
        ;  (define xresp (post response))
        ;  (log-marv-debug "transformed: ~a" xresp)
-       (hash-merge config response)]
+       response]
       [else raise (format "type has no usable CRUD for ~a : ~a" 'bah api-id )]
       ))
   request-handler)
 
-(define/contract (do-api-request api resource http is-delete? operation-handler)
-  (disc-api? any/c any/c boolean? procedure? . -> . hash?)
+(define/contract (do-api-request api resource http operation-handler)
+  (disc-api? any/c any/c procedure? . -> . hash?)
 
   (define (work-it op-resp [poll-delay 3])
     (case (op-status-flag op-resp)
-      ['success (define fin (if is-delete? (hash) ((op-status-final-response op-resp) http)))
+      ['success (define fin ((op-status-final-response op-resp) http))
                 (success-output)
-                fin]
+                (if (eof-object? fin) (hash) fin)]
       ['running (running-output poll-delay)
                 (sleep poll-delay)
                 (work-it ((op-status-poll-next op-resp) http) (add1 poll-delay))]

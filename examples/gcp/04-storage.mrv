@@ -11,5 +11,6 @@ module main {
 
     bucket = gcp:bucket defaults <- {
         name = strf("~a-mybucket" defaults.project)
+        labels = {"test"="123"}
     }
 }

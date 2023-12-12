@@ -44,13 +44,14 @@
   (when refresh? (refresh-resources rsset (set->list to-refresh)))
 
   ; TODO - pass in state, also define hash(id->state) contract types
-  (define new-state (state<-resource (state-get-state-set) rsset))
+  (define current-state (state-get-state-set))
+  (define new-state (state<-resource current-state rsset))
   (define ordered-rks (resources-dag-topo rsset))
   (define operations
     (foldl
      (lambda (id acc-ops)
        ; TODO - pass in state, also define hash(id->state) contract types
-       (hash-set acc-ops id (operation id (state-get-state-set) new-state acc-ops))) (hash) ordered-rks))
+       (hash-set acc-ops id (operation id current-state new-state acc-ops))) (hash) ordered-rks))
 
   (define ordered-ops
     (append
@@ -90,6 +91,9 @@
   (define resp-cfg (send-to-driver driver-id cmd (resource-config res)))
   resp-cfg)
 
+(define (merge-reply-resource resp-cfg res-cfg)
+  (hash-merge resp-cfg res-cfg))
+
 (define (apply-changes mod (refresh? #t))
 
   (define (create id)
@@ -97,11 +101,12 @@
     (flush-output)
     (define res  (driver-repr id))
     (define type-fn (resource-type-fn res))
-    (define cfg (send-driver-cmd 'create res))
+    (define reply-cfg (send-driver-cmd 'create res))
     (define origin (type-fn 'origin res))
-    (define destructor (type-fn 'destructor cfg))
+    (define destructor (type-fn 'destructor reply-cfg))
     (log-marv-debug "origin: ~a" origin)
-    (state-set-ref id (state-origin origin destructor) cfg))
+    (state-set-ref id (state-origin origin destructor)
+                   (merge-reply-resource reply-cfg (resource-config res))))
 
   (define (delete id)
     (display (format "DELETING ~a" id))
@@ -117,7 +122,10 @@
   (define (update id)
     (display (format "UPDATING ~a" id))
     (flush-output)
-    (state-set-ref id (state-ref-origin id) (send-driver-cmd 'update (driver-repr id))))
+    (define res (driver-repr id))
+    (define reply-cfg (send-driver-cmd 'update res))
+    (state-set-ref id (state-ref-origin id)
+                   (merge-reply-resource reply-cfg (resource-config res))))
 
   ; TODO - check if unpacking is done here or should use unwrap fn
   (define (driver-repr id)
@@ -190,11 +198,11 @@
 (define (operation id current-state new-state acc-ops)
   (log-marv-debug "Checking diffs for ~a" id)
   (cond [(hash-has-key? current-state id)
-         (define new-res-cfg (state-entry-config (hash-ref new-state id)))
-         (define old-res-cfg (state-entry-config (hash-ref current-state id)))
-         (log-marv-debug " old-state: ~a" old-res-cfg)
-         (log-marv-debug " new-state: ~a" new-res-cfg)
-         (define diff (diff-resources new-state acc-ops old-res-cfg new-res-cfg))
+         (define current-cfg (state-entry-config (hash-ref current-state id)))
+         (define new-cfg (state-entry-config (hash-ref new-state id)))
+         (log-marv-debug " old-state: ~a" current-cfg)
+         (log-marv-debug " new-state: ~a" new-cfg)
+         (define diff (diff-resources new-state acc-ops current-cfg new-cfg))
          (log-marv-debug " diff: ~a" diff)
          diff]
         [else (op-create "New resource!")]))
