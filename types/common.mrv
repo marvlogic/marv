@@ -1,9 +1,10 @@
 #lang marv
 
-export identity null api-base
+export identity null api-base pass-thru
 
 identity(config) = config
 null(config) = {}
+pass-thru(old new) = new
 
 # TODO41 - belongs to GCP section
 api-base(api id op pre post) = { api-id=strf("~a.~a.~a" api id op ) pre=pre post=post }
