@@ -7,8 +7,9 @@
 (define driver/c procedure?)
 (define driver-set/c (hash/c driver-id/c driver/c))
 
-; TODO41 rename to driver-cmd
 (define driver-cmd/c hash?)
+
+; TODO41 - vs config/c ?
 (define driver-resp/c hash?)
 
 (define (driver-spec-api ds) (hash-ref ds 'api-id))

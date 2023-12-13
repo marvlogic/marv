@@ -4,23 +4,14 @@ import types/common
 
 export bucket
 
-destructor(res) = { api-id = strf("storage.~a.delete" res) pre = identity}
-
-bucket-origin(cfg) = { type-id="storage.bucket" name=cfg.name }
-
-api-response-xform(resp) = { 
-  config = identity(resp) 
-  destructor = destructor(resp)
-}
-
 post-bucket(orig new) = new <- { project = orig.project  region = orig.region}
 
-api-conf(id op) = { api-id=strf("storage.~a.~a" id op ) pre=identity post=post-bucket }
+api(id op) = { api-id=strf("storage.~a.~a" id op ) pre=identity post=post-bucket }
 
-create(id) = api-conf(id "insert")
-read(id) = api-conf(id "get")
-update(id) = api-conf(id "patch")
-delete(id) = api-conf(id "insert")
+create(id) = api(id "insert")
+read(id) = api(id "get")
+update(id) = api(id "patch")
+delete(id) = api(id "insert")
 
 only-name(cfg) = cfg << [name]
 
@@ -28,10 +19,12 @@ add-labels(cfg) = cfg <- { labels = { "test" = "ac" }}
 
 type bucket using gcp = {
   # TODO41 - how does validate work?
-  # validate = api-conf("storage.buckets.insert")
+  # validate = api("storage.buckets.insert")
   create = create("buckets")
   read = read("buckets")
   update = update("buckets") # <- { pre = add-labels }
+
+  # delete returns a destructor-config
   delete = { api-id="storage.buckets.delete" filter=only-name}
 }
 

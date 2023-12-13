@@ -62,19 +62,20 @@
 
   (plan rsset new-state ordered-ops))
 
+; TODO41 - import
 (define (import-resources mod ids)
-  ; (define (import-one id)
-  ;    (displayln (format "importing ~a" id))
-  ;    (define res
-  ;      (unwrap-values
-  ;       (deref-resource
-  ;        (rmodule (rmodule-drivers mod) (mk-id->state)) (resource-ref mod id))))
-  ;    (define driver-id (resource-driver-id res))
-  ;    (define config ((current-driver) driver-id 'read (resource-config res)))
-  ;    (state-set-ref id (resource driver-id config)))
-
-  ; (map (lambda(id) (null id)) ids))
   (raise "unimplemented"))
+; (define (import-one id)
+;    (displayln (format "importing ~a" id))
+;    (define res
+;      (unwrap-values
+;       (deref-resource
+;        (rmodule (rmodule-drivers mod) (mk-id->state)) (resource-ref mod id))))
+;    (define driver-id (resource-driver-id res))
+;    (define config ((current-driver) driver-id 'read (resource-config res)))
+;    (state-set-ref id (resource driver-id config)))
+
+; (map (lambda(id) (null id)) ids))
 
 (define (refresh-resources rsset ids)
   (define (refresh k)
@@ -91,9 +92,6 @@
   (define cmd (type-fn op (resource-config res)))
   (define resp-cfg (send-to-driver driver-id cmd (resource-config res)))
   resp-cfg)
-
-(define (merge-reply-resource resp-cfg res-cfg)
-  (hash-merge resp-cfg res-cfg))
 
 (define (apply-changes mod (refresh? #t))
 
@@ -124,6 +122,7 @@
     (flush-output)
     (define res (driver-repr id))
     (define reply-cfg (send-driver-cmd 'update res))
+    ;TODO41 - what if origin changes? Is origin in reply?
     (state-set-ref id (state-ref-origin id) reply-cfg))
 
   ; TODO - check if unpacking is done here or should use unwrap fn
@@ -196,6 +195,7 @@
 
 (define (operation id current-state new-state acc-ops)
   (log-marv-debug "Checking diffs for ~a" id)
+  ;TODO41 - origin changes
   (cond [(hash-has-key? current-state id)
          (define current-cfg (state-entry-config (hash-ref current-state id)))
          (define new-cfg (state-entry-config (hash-ref new-state id)))

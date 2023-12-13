@@ -1,6 +1,9 @@
 #lang marv
 
-export identity null
+export identity null api-base
 
 identity(config) = config
 null(config) = {}
+
+# TODO41 - belongs to GCP section
+api-base(api id op pre post) = { api-id=strf("~a.~a.~a" api id op ) pre=pre post=post }

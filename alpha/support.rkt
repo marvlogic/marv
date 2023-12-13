@@ -100,7 +100,6 @@
                    (lambda() (log-marv-warn "future-ref not yet resolved (~a)" id)(future-ref id))))
   (hash-ref (RETURNS) id fail))
 
-(define (resource? res) (and (hash? res) (hash-has-key? res '$driver)))
 
 (struct future-ref (ref) #:prefab)
 
@@ -120,6 +119,9 @@
 (define (handle-ref tgt id path)
   (log-marv-debug "handle-ref ~a.~a -> ~a" id path tgt)
   (define (full-ref) (make-full-ref (prefix-mod-id id) (core:list->id path)))
+
+  ;TODO41- sort out dep on $type-fn
+  (define (resource? res) (and (hash? res) (hash-has-key? res '$type-fn)))
 
   (cond [(resource? tgt) (ref (full-ref))]
         [(hash? tgt) (hash-nref tgt path)]
