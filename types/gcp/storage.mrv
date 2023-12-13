@@ -13,7 +13,9 @@ api-response-xform(resp) = {
   destructor = destructor(resp)
 }
 
-api-conf(id op) = { api-id=strf("storage.~a.~a" id op ) pre=identity post=identity }
+post-bucket(orig new) = new <- { project = orig.project  region = orig.region}
+
+api-conf(id op) = { api-id=strf("storage.~a.~a" id op ) pre=identity post=post-bucket }
 
 create(id) = api-conf(id "insert")
 read(id) = api-conf(id "get")

@@ -11,8 +11,6 @@
 (define driver-cmd/c hash?)
 (define driver-resp/c hash?)
 
-(define (nullfn x) x)
-
 (define (driver-spec-api ds) (hash-ref ds 'api-id))
-(define (driver-spec-pre-fn ds) (hash-ref ds 'pre (lambda()nullfn)))
-(define (driver-spec-post-fn ds) (hash-ref ds 'post (lambda()nullfn)))
+(define (driver-spec-pre-fn ds) (hash-ref ds 'pre (lambda()(lambda(x)x))))
+(define (driver-spec-post-fn ds) (hash-ref ds 'post (lambda()(lambda(x y)y))))

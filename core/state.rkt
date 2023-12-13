@@ -107,6 +107,7 @@
   (define (combine-hash s r)
     (hash-union s r #:combine merge-em))
 
+  ; TODO41 - not sure if this is desired, e.g. can't empty a set of labels
   (define (merge-em s r)
     (cond [(and (hash? r) (hash? s)) (combine-hash s r)]
           [else r]))

@@ -80,7 +80,8 @@
   (define (refresh k)
     (displayln (format "Refreshing ~a" k))
     (define res (resource-ref rsset k))
-    (state-set-ref k (state-ref-origin k) (send-driver-cmd 'read res)))
+    (define resp (send-driver-cmd 'read res))
+    (state-set-ref k (state-ref-origin k) resp))
   (for ([i ids]) (refresh i)))
 
 (define/contract (send-driver-cmd op res)
@@ -105,8 +106,7 @@
     (define origin (type-fn 'origin res))
     (define destructor (type-fn 'destructor reply-cfg))
     (log-marv-debug "origin: ~a" origin)
-    (state-set-ref id (state-origin origin destructor)
-                   (merge-reply-resource reply-cfg (resource-config res))))
+    (state-set-ref id (state-origin origin destructor) reply-cfg))
 
   (define (delete id)
     (display (format "DELETING ~a" id))
@@ -124,8 +124,7 @@
     (flush-output)
     (define res (driver-repr id))
     (define reply-cfg (send-driver-cmd 'update res))
-    (state-set-ref id (state-ref-origin id)
-                   (merge-reply-resource reply-cfg (resource-config res))))
+    (state-set-ref id (state-ref-origin id) reply-cfg))
 
   ; TODO - check if unpacking is done here or should use unwrap fn
   (define (driver-repr id)
@@ -200,7 +199,7 @@
   (cond [(hash-has-key? current-state id)
          (define current-cfg (state-entry-config (hash-ref current-state id)))
          (define new-cfg (state-entry-config (hash-ref new-state id)))
-         (log-marv-debug " old-state: ~a" current-cfg)
+         (log-marv-debug " current-state: ~a" current-cfg)
          (log-marv-debug " new-state: ~a" new-cfg)
          (define diff (diff-resources new-state acc-ops current-cfg new-cfg))
          (log-marv-debug " diff: ~a" diff)

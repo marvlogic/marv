@@ -20,7 +20,7 @@
   (define driver-fn (hash-ref (DRIVERS) driver-id))
   (define pre (driver-spec-pre-fn driver-cmd))
   (define post (driver-spec-post-fn driver-cmd))
-  (post (driver-fn driver-cmd (pre config))))
+  (post config (driver-fn driver-cmd (pre config))))
 
 (define (std-drivers)
   (if
