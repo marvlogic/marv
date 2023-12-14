@@ -125,7 +125,7 @@
 
   (define (get-ref ref)
     (define-values (res-id attr) (ref-split ref))
-    (unpack-value (hash-nref (hash-ref state res-id)) (id->list attr)))
+    (unpack-value (hash-nref (state-ref-config res-id) (id->list attr))))
 
   (define (deref-attr _ a)
     (update-val a (lambda (v) (if (ref? v) (get-ref v) v))))

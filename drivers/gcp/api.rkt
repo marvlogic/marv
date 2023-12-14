@@ -27,6 +27,7 @@
 
   (define/contract (routing driver-spec config)
     (driver-cmd/c config/c . -> . driver-resp/c)
+    (log-marv-debug " gcp routing called: ~a" driver-spec)
     (define subtype (string->symbol(car (string-split (driver-spec-api driver-spec) "." ))))
     (define api (hash-ref apis subtype))
     (api driver-spec config http-transport))

@@ -148,7 +148,7 @@
                ['body.vid body.cex] ...
                ['destructor
                 (define delcfg (type-id 'delete config))
-                (define flt (hash-ref delcfg 'filter))
+                (define flt (hash-ref delcfg 'filter (lambda()(lambda(x)x))))
                 (hash 'cmd (hash-remove delcfg 'filter) 'config (flt config))]
                ))
            ))]))

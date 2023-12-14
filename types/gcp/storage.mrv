@@ -4,7 +4,7 @@ import types/common
 
 export bucket
 
-post-bucket(orig new) = new <- { project = orig.project  region = orig.region}
+post-bucket(orig new) = new <- { project = orig.project region = orig.region}
 
 api(id op) = { api-id=strf("storage.~a.~a" id op ) pre=identity post=post-bucket }
 
