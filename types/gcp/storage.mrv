@@ -1,82 +1,16 @@
 #lang marv
 
 import types/common
+import types/gcp/_auto/storage as _auto
 
 export bucket
 
 post-bucket(orig new) = new <- { project = orig.project region = orig.region}
 
-api(id op) = { api-id=strf("storage.~a.~a" id op ) pre=identity post=post-bucket }
-
-create(id) = api(id "insert")
-read(id) = api(id "get")
-update(id) = api(id "patch")
-delete(id) = api(id "insert")
-
+# ??
 only-name(cfg) = cfg << [name]
 
-add-labels(cfg) = cfg <- { labels = { "test" = "ac" }}
-
-type bucket using gcp = {
-  # TODO41 - how does validate work?
-  # validate = api("storage.buckets.insert")
-  create = create("buckets")
-  read = read("buckets")
-  update = update("buckets") # <- { pre = add-labels }
-
-  # delete returns a destructor-config
-  delete = { api-id="storage.buckets.delete" filter=only-name}
+type bucket extends _auto:bucket = {
+  create(_) = { post = post-bucket }
+  read(_) = { post = post-bucket }
 }
-
-# TODO - check this is valid?
-#type storage.project using gcp =  {
-#  create = storage.projects.insert { identity identity }
-#  read = storage.projects.get { identity identity }
-#  update = storage.projects.patch { identity identity }
-#  delete = storage.projects.delete { identity identity }
-#}
-
-
-# type storage.bucketAccessControls using gcp =  {
-#   create = storage.bucketAccessControls.insert { identity identity }
-#   read = storage.bucketAccessControls.get { identity identity }
-#   update = storage.bucketAccessControls.patch { identity identity }
-#   delete = storage.bucketAccessControls.delete { identity identity }
-# }
-# 
-# type storage.objectAccessControls using gcp =  {
-#   create = storage.objectAccessControls.insert { identity identity }
-#   read = storage.objectAccessControls.get { identity identity }
-#   update = storage.objectAccessControls.patch { identity identity }
-#   delete = storage.objectAccessControls.delete { identity identity }
-# }
-# 
-# type storage.object using gcp =  {
-#   create = storage.objects.insert { identity identity }
-#   read = storage.objects.get { identity identity }
-#   update = storage.objects.patch { identity identity }
-#   delete = storage.objects.delete { identity identity }
-# }
-# 
-# type storage.notification using gcp =  {
-#   create = storage.notifications.insert { identity identity }
-#   read = storage.notifications.get { identity identity }
-#   update = storage.notifications.patch { identity identity }
-#   delete = storage.notifications.delete { identity identity }
-# }
-# 
-# type storage.channel using gcp =  {
-#   create = storage.channels.insert { identity identity }
-#   read = storage.channels.get { identity identity }
-#   update = storage.channels.patch { identity identity }
-#   delete = storage.channels.delete { identity identity }
-# }
-# 
-# type storage.defaultObjectAccessControls using gcp =  {
-#   create = storage.defaultObjectAccessControls.insert { identity identity }
-#   read = storage.defaultObjectAccessControls.get { identity identity }
-#   update = storage.defaultObjectAccessControls.patch { identity identity }
-#   delete = storage.defaultObjectAccessControls.delete { identity identity }
-# }
-# 
-# 

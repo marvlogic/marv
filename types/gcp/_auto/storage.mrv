@@ -1,0 +1,75 @@
+#lang marv
+
+import types/common
+
+export bucket
+
+# ??
+only-name(cfg) = cfg << [name]
+
+# Auto
+type bucket using gcp = {
+  # TODO41 - how does validate work?
+  # validate = api("storage.buckets.insert")
+
+  create(cfg) = { api-id = "storage.buckets.insert" }
+  read(cfg) = { api-id = "storage.buckets.get" }
+  update(cfg) = { api-id = "storage.buckets.patch" }
+
+  # Auto-how?
+  # delete returns a destructor-config
+  delete(cfg) = { api-id="storage.buckets.delete"  name=cfg.name }
+}
+
+# TODO - check this is valid?
+#type project using gcp =  {
+#  create = storage.projects.insert 
+#  read = storage.projects.get 
+#  update = storage.projects.patch 
+#  delete = storage.projects.delete 
+#}
+
+
+# type bucketAccessControls using gcp =  {
+#   create = storage.bucketAccessControls.insert 
+#   read = storage.bucketAccessControls.get 
+#   update = storage.bucketAccessControls.patch 
+#   delete = storage.bucketAccessControls.delete 
+# }
+# 
+# type objectAccessControls using gcp =  {
+#   create = storage.objectAccessControls.insert 
+#   read = storage.objectAccessControls.get 
+#   update = storage.objectAccessControls.patch 
+#   delete = storage.objectAccessControls.delete 
+# }
+# 
+# type object using gcp =  {
+#   create = storage.objects.insert 
+#   read = storage.objects.get 
+#   update = storage.objects.patch 
+#   delete = storage.objects.delete 
+# }
+# 
+# type notification using gcp =  {
+#   create = storage.notifications.insert 
+#   read = storage.notifications.get 
+#   update = storage.notifications.patch 
+#   delete = storage.notifications.delete 
+# }
+# 
+# type channel using gcp =  {
+#   create = storage.channels.insert 
+#   read = storage.channels.get 
+#   update = storage.channels.patch 
+#   delete = storage.channels.delete 
+# }
+# 
+# type defaultObjectAccessControls using gcp =  {
+#   create = storage.defaultObjectAccessControls.insert 
+#   read = storage.defaultObjectAccessControls.get 
+#   update = storage.defaultObjectAccessControls.patch 
+#   delete = storage.defaultObjectAccessControls.delete 
+# }
+# 
+# 

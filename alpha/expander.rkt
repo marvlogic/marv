@@ -36,8 +36,17 @@
       [else (raise "nowt-outer-decl")]))
 
   (define (m-module-export stx)
+
+    (define-splicing-syntax-class export-spec
+      #:description "export specification"
+      #:attributes (spec)
+      (pattern (~seq src-name:id "as" export-alias)
+        #:attr spec #'(rename-out [src-name export-alias]))
+      (pattern (~seq src-name:id)
+        #:attr spec #'src-name))
+
     (syntax-parse stx
-      [(_ IDS ...) (syntax/loc stx (provide IDS ...))]
+      [(_ spec:export-spec ...) (syntax/loc stx (provide spec.spec ...))]
       [else (raise "nowt-module-export")]))
 
   (define (m-marv-module stx)
@@ -130,28 +139,40 @@
     (define-splicing-syntax-class type-body
       #:description "body declaration"
       #:literals (config-expr)
-      (pattern (~seq vid:id cex)))
+      (pattern (~seq func-id:id param-id:id confex)))
 
     (syntax-parse stx
-      [(_ ((~literal type-id) type-id:expr)
-          ((~literal driver-id) did:expr)
+      [(_ ((~literal type-id) type-id:expr) "using" ((~literal driver-id) did:expr)
           body:type-body ...)
        (syntax/loc stx
          (begin
            (define (type-id verb config)
              (log-marv-debug "type-fn ~a.~a called with config ~a" 'type-id verb config)
              ; TODO - case vs hash?
+             (define (body.func-id body.param-id) body.confex) ...
              (case verb
                ['origin (hash 'driver 'did 'type 'type-id)]
                ['driver 'did]
                ['type 'type-id]
-               ['body.vid body.cex] ...
+               ['body.func-id (body.func-id config)] ...
                ['destructor
                 (define delcfg (type-id 'delete config))
                 (define flt (hash-ref delcfg 'filter (lambda()(lambda(x)x))))
                 (hash 'cmd (hash-remove delcfg 'filter) 'config (flt config))]
+               [else (hash)]
                ))
-           ))]))
+           ))]
+      [(_ ((~literal type-id) type-id:expr) "extends" base-id:id body:type-body ...)
+       (syntax/loc stx
+         (begin
+           (define (type-id verb config)
+             (log-marv-debug "type-fn ~a.~a called with config ~a" 'type-id verb config)
+             (define (body.func-id body.param-id) body.confex) ...
+             (case verb
+               ['body.func-id (config-overlay (body.func-id config) (base-id verb config))] ...
+               [else (base-id verb config)])
+             )))]
+      ))
 
   (define (m-type-api-spec stx)
     (syntax-parse stx

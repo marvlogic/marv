@@ -4,9 +4,9 @@ marv-spec: module-import* module-export* outer-decl* marv-module*
 
 module-import: /"import" [ STRING | MODULE-IDENTIFIER ] [ "as" IDENTIFIER ]
 
-outer-decl: config-func-decl | type-decl
+outer-decl: config-func-decl | type-decl | var-decl
 
-module-export: /"export" IDENTIFIER+
+module-export: /"export" [ IDENTIFIER+ [ "as" IDENTIFIER ] ]+
 
 marv-module: [ "private" ] /"module" IDENTIFIER ["(" module-parameter+ ")"] /"{" statement* [ module-return ] /"}"
 module-parameter: IDENTIFIER [ "=" expression ]
@@ -23,7 +23,12 @@ var-decl: IDENTIFIER /"=" expression
 config-func-decl: IDENTIFIER /"(" IDENTIFIER+ /")" /"=" config-expr
 config-func-param: IDENTIFIER
 
-type-decl: /"type" type-id /"using" driver-id /"=" /"{" [ IDENTIFIER /"=" config-expr ]+ /"}"
+; type-config-func-decl:
+
+type-decl: /"type" type-id ("using" driver-id | "extends" IDENTIFIER ) /"=" /"{" [IDENTIFIER /"(" IDENTIFIER /")" /"=" config-expr]+ /"}"
+
+;[ IDENTIFIER ( "=" | "|=" ) config-expr ]+ /"}"
+
 ; type-body: verb /"=" config-expr
 
 ; type-crud-decl: ( "create" | "read" | "update" | "delete" ) /"=" type-api-spec

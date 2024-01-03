@@ -25,6 +25,7 @@
          send-to-driver
          module-call
          b64enc b64dec
+         handle-override
          config-overlay config-reduce handle-ref
          with-module-ctx
          get-param)
@@ -115,6 +116,11 @@
 
 (define (make-full-ref full-id attrs)
   (string->symbol (format "~a/~a" full-id attrs)))
+
+(define (handle-override base op verb confex)
+  (case op
+    ['equals confex]
+    ['overlay (config-overlay confex (base verb))]))
 
 (define (handle-ref tgt id path)
   (log-marv-debug "handle-ref ~a.~a -> ~a" id path tgt)

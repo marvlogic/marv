@@ -12,7 +12,7 @@
 (define-lex-abbrev module-identifier (:seq (:= 1 alphabetic)
                                            (:* (:or digits alphabetic (char-set "-_/")))))
 
-(define-lex-abbrev identifier (:seq (:= 1 alphabetic)
+(define-lex-abbrev identifier (:seq (:= 1 (:or "_" alphabetic))
                                     (:* (:or digits alphabetic (char-set "-_:")))))
 
 (define-lex-abbrev dotty-ident (:seq (:= 1 identifier) (:+ (:seq "." identifier))))
@@ -22,7 +22,7 @@
    ;    ["\n" (token 'NEWLINE lexeme)]
    [(:or "for/list" "->" "<-" "<<" ">>"
          "module" "private" "import" "export" "as" "return" "strf"
-         "base64encode" "using"
+         "base64encode" "using" "extends" "|="
          "type" "in" "pprint" "env" "true" "false"
          "imm:" ) (token lexeme lexeme)]
    [(:= 1 (char-set "[](){}=:,")) lexeme]
