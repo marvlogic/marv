@@ -18,7 +18,7 @@ type _bucket = {
 
   # Auto-how?
   # delete returns a destructor-config
-  delete(cfg) = { api-id="storage.buckets.delete" name = cfg.name }
+  delete(cfg) = { api-id="storage.buckets.delete" config = { name = cfg.name } }
 }
 
 type bucket = _bucket | gcp-base

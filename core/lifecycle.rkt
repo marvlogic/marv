@@ -121,8 +121,7 @@
     (define destroy (state-ref-destructor-cmd id))
     (define origin (state-origin-fingerprint (state-ref-origin id)))
     (define driver-id (hash-ref origin 'driver))
-    (define cmd (hash-ref destroy 'cmd))
-    (send-to-driver driver-id cmd)
+    (send-to-driver (string->symbol driver-id) destroy)
     (state-delete id))
 
   (define (update id)
