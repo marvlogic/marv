@@ -159,17 +159,27 @@
                 (define delcfg (type-id 'delete config))
                 (define flt (hash-ref delcfg 'filter (lambda()(lambda(x)x))))
                 (hash 'cmd (hash-remove delcfg 'filter) 'config (flt config))]
-               [else (hash)]
+               [else config]
                ))
            ))]
-      [(_ ((~literal type-id) type-id:expr) "extends" base-id:id body:type-body ...)
+      [(_ ((~literal type-id) type-id:expr) "overlays" base-id:id body:type-body ...)
        (syntax/loc stx
          (begin
            (define (type-id verb config)
-             (log-marv-debug "type-fn ~a.~a called with config ~a" 'type-id verb config)
+             (log-marv-debug "type-fn ~a.~a overlays called with config ~a" 'type-id verb config)
              (define (body.func-id body.param-id) body.confex) ...
              (case verb
                ['body.func-id (config-overlay (body.func-id config) (base-id verb config))] ...
+               [else (base-id verb config)])
+             )))]
+      [(_ ((~literal type-id) type-id:expr) "abstracts" base-id:id body:type-body ...)
+       (syntax/loc stx
+         (begin
+           (define (type-id verb config)
+             (log-marv-debug "type-fn ~a.~a abstraction called with config ~a" 'type-id verb config)
+             (define (body.func-id body.param-id) body.confex) ...
+             (case verb
+               ['body.func-id (base-id verb (body.func-id config))] ...
                [else (base-id verb config)])
              )))]
       ))
