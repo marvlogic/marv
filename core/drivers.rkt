@@ -14,13 +14,13 @@
          driver-resp/c
          display-docs)
 
-(define/contract (send-to-driver driver-id driver-cmd config)
-  (driver-id/c driver-cmd/c config/c . -> . driver-resp/c)
-  (log-marv-debug "send-to-driver: ~a ~a ~a" driver-id driver-cmd config)
+(define/contract (send-to-driver driver-id driver-cmd)
+  (driver-id/c driver-cmd/c . -> . driver-resp/c)
+  (log-marv-debug "send-to-driver: ~a ~a" driver-id driver-cmd)
   (define driver-fn (hash-ref (DRIVERS) driver-id))
-  (define pre (driver-spec-pre-fn driver-cmd))
-  (define post (driver-spec-post-fn driver-cmd))
-  (post config (driver-fn driver-cmd (pre config))))
+  ; (define pre (driver-spec-pre-fn driver-cmd))
+  ; (define post (driver-spec-post-fn driver-cmd))
+  (driver-fn driver-cmd))
 
 (define (std-drivers)
   (if

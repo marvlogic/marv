@@ -22,10 +22,10 @@
    ;    ["\n" (token 'NEWLINE lexeme)]
    [(:or "for/list" "->" "<-" "<<" ">>"
          "module" "private" "import" "export" "as" "return" "strf"
-         "base64encode" "using" "extends" "|="
+         "base64encode" "using" "overlays" "abstracts"
          "type" "in" "pprint" "env" "true" "false"
          "imm:" ) (token lexeme lexeme)]
-   [(:= 1 (char-set "[](){}=:,")) lexeme]
+   [(:= 1 (char-set "[](){}=:,|")) lexeme]
    [digits (token 'INTEGER (string->number lexeme))]
    [whitespace (token lexeme #:skip? #t)]
    [";" (token lexeme #:skip? #t)]

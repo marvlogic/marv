@@ -21,15 +21,12 @@
 (define/contract (mk-request-handler discovery-doc op-handler-fn)
   (disc-doc? procedure? . -> . procedure?)
 
-  (define/contract (request-handler api-spec config http)
-    (driver-cmd/c config/c any/c . -> . driver-resp/c)
+  (define/contract (request-handler cmd http)
+    (driver-cmd/c any/c . -> . driver-resp/c)
 
-    (define api-id (driver-spec-api api-spec))
-    ; (define pre (driver-spec-pre-fn api-spec))
-    ; (define post (driver-spec-post-fn api-spec))
+    (define api-id (driver-spec-api cmd))
+    (define config (hash-ref cmd 'config))
     (log-marv-debug "generic-request-handler: type-op=~a ~a" api-id config)
-    ; (define xfd-resource (pre config) )
-    ; (log-marv-debug "transformed: ~v" xfd-resource)
     ;TODO41 - this cond is not right
     (cond
       ; TODO - hacked, if null operation then we don't do anything

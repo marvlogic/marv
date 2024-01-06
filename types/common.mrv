@@ -1,6 +1,7 @@
 #lang marv
 
 export identity null api-base pass-thru add-project-region
+export gcp-base
 
 identity(config) = config
 null(config) = {}
@@ -8,6 +9,13 @@ pass-thru(old new) = new
 
 # TODO41 - belongs to GCP section
 api-base(api id op pre post) = { api-id=strf("~a.~a.~a" api id op ) pre=pre post=post }
+
+type gcp-base = {
+    origin(cfg) = { driver = "gcp"}
+    create(cfg) = cfg <- { origin = { driver = "gcp" }}
+    # delete(cfg) = { delete = "yes" }
+}
+
 
 add-project-region(orig new) = new <- { project=orig.project region=orig.region }
 

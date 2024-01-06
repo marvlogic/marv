@@ -141,46 +141,46 @@
       #:literals (config-expr)
       (pattern (~seq func-id:id param-id:id confex)))
 
+    (define-splicing-syntax-class composition
+      #:description "type composition"
+      (pattern (~seq "|" type-id:id)))
+
     (syntax-parse stx
-      [(_ ((~literal type-id) type-id:expr) "using" ((~literal driver-id) did:expr)
+      [(_ ((~literal type-id) type-id:expr) (~optional (~seq "using" ((~literal driver-id) did:expr)))
           body:type-body ...)
-       (syntax/loc stx
-         (begin
-           (define (type-id verb config)
-             (log-marv-debug "type-fn ~a.~a called with config ~a" 'type-id verb config)
-             ; TODO - case vs hash?
-             (define (body.func-id body.param-id) body.confex) ...
-             (case verb
-               ['origin (hash 'driver 'did 'type 'type-id)]
-               ['driver 'did]
-               ['type 'type-id]
-               ['body.func-id (body.func-id config)] ...
-               ['destructor
-                (define delcfg (type-id 'delete config))
-                (define flt (hash-ref delcfg 'filter (lambda()(lambda(x)x))))
-                (hash 'cmd (hash-remove delcfg 'filter) 'config (flt config))]
-               [else config]
-               ))
-           ))]
-      [(_ ((~literal type-id) type-id:expr) "overlays" base-id:id body:type-body ...)
-       (syntax/loc stx
-         (begin
-           (define (type-id verb config)
-             (log-marv-debug "type-fn ~a.~a overlays called with config ~a" 'type-id verb config)
-             (define (body.func-id body.param-id) body.confex) ...
-             (case verb
-               ['body.func-id (config-overlay (body.func-id config) (base-id verb config))] ...
-               [else (base-id verb config)])
+       (with-syntax ([srcloc (src-location stx)])
+         (syntax/loc stx
+           (begin
+             (define (type-id verb config)
+               (log-marv-debug "type-fn ~a.~a:~a~n  called with config ~a" 'type-id verb srcloc config)
+               ; TODO - case vs hash?
+               (define (body.func-id body.param-id) body.confex) ...
+               (case verb
+                 ; ???? driver config in base type?
+                 ; Special cases/shortcuts
+                 ;  ['origin (hash-ref config 'origin)]
+                 ['driver (hash-ref (hash-ref config 'origin) 'driver)]
+                 ['type 'type-id]
+                 ['body.func-id (body.func-id config)] ...
+                 ['destructor
+                  (define delcfg (type-id 'delete config))
+                  (define flt (hash-ref delcfg 'filter (lambda()(lambda(x)x))))
+                  (hash 'cmd (hash-remove delcfg 'filter) 'config (flt config))]
+                 [else config]
+                 ))
              )))]
-      [(_ ((~literal type-id) type-id:expr) "abstracts" base-id:id body:type-body ...)
-       (syntax/loc stx
-         (begin
-           (define (type-id verb config)
-             (log-marv-debug "type-fn ~a.~a abstraction called with config ~a" 'type-id verb config)
-             (define (body.func-id body.param-id) body.confex) ...
-             (case verb
-               ['body.func-id (base-id verb (body.func-id config))] ...
-               [else (base-id verb config)])
+      [(_ ((~literal type-id) type-id:expr) base-id:id comp:composition ...)
+       (with-syntax ([srcloc (src-location stx)])
+         (syntax/loc stx
+           (begin
+             (define (type-id verb config)
+               (log-marv-debug "type-fn ~a.~a:~a ~n  composition called with config ~a" 'type-id verb srcloc config)
+               ;  (define basis (base-id verb config))
+               ;  (define (comp.type-id cfg) (comp.type-id verb cfg)) ...
+               (define fns (list base-id comp.type-id ...))
+               (define fin (for/fold ([c config]) ([f fns]) (f verb c)))
+               (log-marv-debug "type-fn ~a.~a:~a~n  composition results in config ~a" 'type-id verb srcloc fin)
+               fin)
              )))]
       ))
 

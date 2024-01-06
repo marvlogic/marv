@@ -111,7 +111,8 @@
                          (mod-proc (prefix-mod-id var-id) mkres params)))
   (future-ref #f))
 
-(define (config-overlay left right) (hash-union left right #:combine (lambda (v0 _) v0)))
+(define (config-overlay top bottom) (hash-union top bottom #:combine (lambda (t _) t)))
+
 (define (config-reduce cfg attrs) (hash-take cfg attrs))
 
 (define (make-full-ref full-id attrs)

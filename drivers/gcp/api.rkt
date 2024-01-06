@@ -25,12 +25,12 @@
      'sql (generic:init-api driver-id "sqladmin:v1" http-transport compute-api-operation-handler sql:patches) ; TODO
      ))
 
-  (define/contract (routing driver-spec config)
-    (driver-cmd/c config/c . -> . driver-resp/c)
-    (log-marv-debug " gcp routing called: ~a" driver-spec)
-    (define subtype (string->symbol(car (string-split (driver-spec-api driver-spec) "." ))))
+  (define/contract (routing driver-cmd)
+    (driver-cmd/c . -> . driver-resp/c)
+    (log-marv-debug " gcp routing called: ~a" driver-cmd)
+    (define subtype (string->symbol(car (string-split (driver-spec-api driver-cmd) "." ))))
     (define api (hash-ref apis subtype))
-    (api driver-spec config http-transport))
+    (api driver-cmd http-transport))
   routing)
 
 (define (gcp-http-transport access-token)

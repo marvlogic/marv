@@ -8,18 +8,20 @@ export bucket
 only-name(cfg) = cfg << [name]
 
 # Auto
-type bucket using gcp = {
+type _bucket = {
   # TODO41 - how does validate work?
   # validate = api("storage.buckets.insert")
 
-  create(cfg) = { api-id = "storage.buckets.insert" }
-  read(cfg) = { api-id = "storage.buckets.get" }
-  update(cfg) = { api-id = "storage.buckets.patch" }
+  create(cfg) = { api-id = "storage.buckets.insert" config=cfg }
+  read(cfg) = { api-id = "storage.buckets.get" config=cfg }
+  update(cfg) = { api-id = "storage.buckets.patch" config=cfg}
 
   # Auto-how?
   # delete returns a destructor-config
-  delete(cfg) = { api-id="storage.buckets.delete"  name=cfg.name }
+  delete(cfg) = { api-id="storage.buckets.delete" name = cfg.name }
 }
+
+type bucket = _bucket | gcp-base
 
 # TODO - check this is valid?
 #type project using gcp =  {

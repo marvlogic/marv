@@ -3,14 +3,31 @@
 import types/common
 import types/gcp/_auto/storage as _auto
 
-export bucket
+export bucket nearlineb
 
 post-bucket(orig new) = new <- { project = orig.project region = orig.region}
 
 # ??
 only-name(cfg) = cfg << [name]
 
-type bucket extends _auto:bucket = {
-  create(_) = { post = post-bucket }
-  read(_) = { post = post-bucket }
+type bucket = _auto:bucket
+# type bucket overlays _auto:bucket = {
+#   delete(cfg) = { api-id="storage.buckets.delete" filter=only-name }
+#   post-create(cfg) = post-bucket
+#   post-read(cfg) = post-bucket
+# }
+
+type _nearlineb = {
+  create(cfg) = { name = cfg.name storageClass = "NEARLINE" }
+  read(cfg) = { name = cfg.name }
+  update(cfg) = { name = cfg.name}
 }
+
+type _policy1 = {
+  create(cfg) = { name = cfg.name storageClass = "NEARLINE" }
+  read(cfg) = { name = cfg.name }
+  update(cfg) = { name = cfg.name}
+}
+
+
+type nearlineb =  _nearlineb | _auto:bucket 

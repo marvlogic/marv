@@ -10,9 +10,10 @@
 
 (define (init-dev-driver _)
 
-  (define/contract (routing driver-spec config)
-    (driver-cmd/c config/c . -> . driver-resp/c)
+  (define/contract (routing driver-spec)
+    (driver-cmd/c . -> . driver-resp/c)
     (define api (driver-spec-api driver-spec))
+    (define config (hash-ref driver-spec 'config))
     (log-marv-debug "dev-routing driver:~a config:~a" driver-spec config)
     (define resp (http-transport (format "https://local/~a" api) config))
     resp)

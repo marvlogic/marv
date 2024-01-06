@@ -25,9 +25,9 @@ config-func-param: IDENTIFIER
 
 ; type-config-func-decl:
 
-type-decl: /"type" type-id ("using" driver-id | "extends" IDENTIFIER ) /"=" /"{" [IDENTIFIER /"(" IDENTIFIER /")" /"=" config-expr]+ /"}"
-
-;[ IDENTIFIER ( "=" | "|=" ) config-expr ]+ /"}"
+type-decl: /"type" type-id
+( [ "using" driver-id ] /"=" /"{" [IDENTIFIER /"(" IDENTIFIER /")" /"=" config-expr]+ /"}" |
+/"=" IDENTIFIER [ "|" IDENTIFIER ]+)
 
 ; type-body: verb /"=" config-expr
 
