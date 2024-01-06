@@ -83,17 +83,16 @@
 
     (define res (resource-ref rsset k))
     (define type-fn (resource-type-fn res))
-    (define driver-id (type-fn 'driver res))
     (define cmd (type-fn 'read (resource-config res)))
+    ;TODO41
+    (define driver-id (string->symbol(hash-ref (hash-ref cmd 'origin) 'driver)))
     (define resp-cfg (send-to-driver driver-id cmd))
     (state-set-ref k (state-ref-origin k) resp-cfg))
   ;TODO41 driver response through 'state verb
   (for ([i ids]) (refresh i)))
 
-(define/contract (send-driver-cmd op res)
-  (symbol? resource/c . -> . driver-resp/c)
-  (define type-fn (resource-type-fn res))
-  (define cmd (type-fn op (resource-config res)))
+(define/contract (send-driver-cmd cmd)
+  (driver-cmd/c . -> . driver-resp/c)
   ;TODO41
   (define driver-id (string->symbol(hash-ref (hash-ref cmd 'origin) 'driver)))
   (define resp-cfg (send-to-driver driver-id cmd))
@@ -106,10 +105,10 @@
     (flush-output)
     (define res (driver-repr id))
     (define type-fn (resource-type-fn res))
-
-    (define reply-cfg (send-driver-cmd 'create res))
-    (log-marv-debug "  creation message: ~a" reply-cfg)
-    (define origin (type-fn 'origin res))
+    (define cmd (type-fn 'create (resource-config res)))
+    (define reply-cfg (send-driver-cmd cmd))
+    (log-marv-debug "  creation reply: ~a" reply-cfg)
+    (define origin (hash-ref cmd 'origin))
     ;TODO41 - need to use the returned configuration somehow...
     (define destructor (type-fn 'delete (resource-config res)))
     (log-marv-debug "  origin: ~a" origin)
@@ -120,15 +119,17 @@
     (flush-output)
     (define destroy (state-ref-destructor-cmd id))
     (define origin (state-origin-fingerprint (state-ref-origin id)))
-    (define driver-id (hash-ref origin 'driver))
-    (send-to-driver (string->symbol driver-id) destroy)
+    (define driver-id (string->symbol (hash-ref origin 'driver)))
+    (send-to-driver driver-id destroy)
     (state-delete id))
 
   (define (update id)
     (display (format "UPDATING ~a" id))
     (flush-output)
     (define res (driver-repr id))
-    (define reply-cfg (send-driver-cmd 'update res))
+    (define type-fn (resource-type-fn res))
+    (define cmd (type-fn 'update (resource-config res)))
+    (define reply-cfg (send-driver-cmd cmd))
     ;TODO41 - what if origin changes? Is origin in reply?
     (state-set-ref id (state-ref-origin id) reply-cfg))
 
