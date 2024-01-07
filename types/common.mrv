@@ -11,12 +11,8 @@ pass-thru(old new) = new
 api-base(api id op pre post) = { api-id=strf("~a.~a.~a" api id op ) pre=pre post=post }
 
 type gcp-base = {
-    create(cfg) = cfg <- { origin = { driver = "gcp" }}
-    read(cfg) = cfg <- { origin = { driver = "gcp" }}
-    update(cfg) = cfg <- { origin = { driver = "gcp" }}
-    # delete(cfg) = { delete = "yes" }
+    origin(cfg) = cfg <- { driver = "gcp" }
 }
-
 
 add-project-region(orig new) = new <- { project=orig.project region=orig.region }
 

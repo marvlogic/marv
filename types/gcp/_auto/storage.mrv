@@ -12,6 +12,8 @@ type _bucket = {
   # TODO41 - how does validate work?
   # validate = api("storage.buckets.insert")
 
+  origin(cfg) = { gcp-api = "storage.buckets.insert"  name = cfg.name }
+
   create(cfg) = { api-id = "storage.buckets.insert" config=cfg }
   read(cfg) = { api-id = "storage.buckets.get" config=cfg }
   update(cfg) = { api-id = "storage.buckets.patch" config=cfg}

@@ -11,11 +11,6 @@ post-bucket(orig new) = new <- { project = orig.project region = orig.region}
 only-name(cfg) = cfg << [name]
 
 type bucket = _auto:bucket
-# type bucket overlays _auto:bucket = {
-#   delete(cfg) = { api-id="storage.buckets.delete" filter=only-name }
-#   post-create(cfg) = post-bucket
-#   post-read(cfg) = post-bucket
-# }
 
 type _nearlineb = {
   create(cfg) = { name = cfg.name storageClass = "NEARLINE" }
@@ -30,4 +25,4 @@ type _policy1 = {
 }
 
 
-type nearlineb =  _nearlineb | _auto:bucket 
+type nearlineb =  _nearlineb | bucket 

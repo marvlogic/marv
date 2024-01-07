@@ -9,7 +9,11 @@ module main {
         region = env("MARV_GCP_REGION")
     }
 
-    bucket = gcp:nearlineb defaults <- {
+    bucket = gcp:bucket defaults <- {
+        name = strf("~a-mybucket" defaults.project)
+        # storageClass = "NEARLINE"
+    }
+    bucket2 = gcp:nearlineb defaults <- {
         name = strf("~a-mybucket" defaults.project)
         # storageClass = "NEARLINE"
     }
