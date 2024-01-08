@@ -13,8 +13,9 @@ module main {
         name = strf("~a-mybucket" defaults.project)
         # storageClass = "NEARLINE"
     }
-    bucket2 = gcp:nearlineb defaults <- {
-        name = strf("~a-mybucket" defaults.project)
-        # storageClass = "NEARLINE"
-    }
+    
+    #bucket2 = gcp:nearlineb defaults <- {
+    #    name = strf("~a-mybucket" defaults.project)
+    #    # storageClass = "NEARLINE"
+    #}
 }

@@ -2,6 +2,14 @@
 
 (provide (all-defined-out))
 
+(require marv/drivers/gcp/discovery)
+
+(define compute  (load-discovery "gcp" "compute:beta"))
+(define iam  (load-discovery "gcp" "iam:v1"))
+(define storage  (load-discovery "gcp" "storage:v1"))
+(define secretmanager  (load-discovery "gcp" "secretmanager:v1"))
+(define sql  (load-discovery "gcp" "sqladmin:v1"))
+
 (define (gen-types base-type-map)
   (displayln #<<EOF
 #lang marv
@@ -25,17 +33,5 @@ EOF
       typ at at at at
       ))))
 
-(define btm
-  #hasheq(
-   (sql.backupRun . sql.backupRuns)
-   (sql.connect . sql.connect)
-   (sql.database . sql.databases)
-   (sql.flag . sql.flags)
-   (sql.instance . sql.instances)
-   (sql.operation . sql.operations)
-   (sql.project.instance . sql.projects.instances)
-   (sql.sslCert . sql.sslCerts)
-   (sql.tier . sql.tiers)
-   (sql.user . sql.users)
-   ))
-(with-output-to-file )
+
+;(with-output-to-file )

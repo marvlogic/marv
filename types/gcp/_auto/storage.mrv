@@ -1,79 +1,24 @@
 #lang marv
 
-import types/common
+## DO NOT EDIT!
+## EVERYTHING IN THIS FILE IS AUTO-GENERATED!
 
-export bucket
+export buckets
 
 # ??
 only-name(cfg) = cfg << [name]
 
 # Auto
-type _bucket = {
-  # TODO41 - how does validate work?
-  # validate = api("storage.buckets.insert")
+type buckets = {
 
-  origin(cfg) = { gcp-api = "storage.buckets.insert"  name = cfg.name }
+  # TODO41 - origin/name
+  origin(cfg)= cfg <- { driver="gcp" gcp-api="storage.buckets.insert" name=cfg.name }
 
-  create(cfg) = { api-id = "storage.buckets.insert" config=cfg }
-  read(cfg) = { api-id = "storage.buckets.get" config=cfg }
-  update(cfg) = { api-id = "storage.buckets.patch" config=cfg}
+  create(cfg)={ api-id="storage.buckets.insert" config=cfg }
+  read(cfg)={ api-id="storage.buckets.get" config=cfg }
+  update(cfg)={ api-id="storage.buckets.patch" config=cfg}
 
   # Auto-how?
   # delete returns a destructor-config
-  delete(cfg) = { api-id="storage.buckets.delete" config = { name = cfg.name } }
+  delete(cfg)={ api-id="storage.buckets.delete" config={ name=cfg.name } }
 }
-
-type bucket = _bucket | gcp-base
-
-# TODO - check this is valid?
-#type project using gcp =  {
-#  create = storage.projects.insert 
-#  read = storage.projects.get 
-#  update = storage.projects.patch 
-#  delete = storage.projects.delete 
-#}
-
-
-# type bucketAccessControls using gcp =  {
-#   create = storage.bucketAccessControls.insert 
-#   read = storage.bucketAccessControls.get 
-#   update = storage.bucketAccessControls.patch 
-#   delete = storage.bucketAccessControls.delete 
-# }
-# 
-# type objectAccessControls using gcp =  {
-#   create = storage.objectAccessControls.insert 
-#   read = storage.objectAccessControls.get 
-#   update = storage.objectAccessControls.patch 
-#   delete = storage.objectAccessControls.delete 
-# }
-# 
-# type object using gcp =  {
-#   create = storage.objects.insert 
-#   read = storage.objects.get 
-#   update = storage.objects.patch 
-#   delete = storage.objects.delete 
-# }
-# 
-# type notification using gcp =  {
-#   create = storage.notifications.insert 
-#   read = storage.notifications.get 
-#   update = storage.notifications.patch 
-#   delete = storage.notifications.delete 
-# }
-# 
-# type channel using gcp =  {
-#   create = storage.channels.insert 
-#   read = storage.channels.get 
-#   update = storage.channels.patch 
-#   delete = storage.channels.delete 
-# }
-# 
-# type defaultObjectAccessControls using gcp =  {
-#   create = storage.defaultObjectAccessControls.insert 
-#   read = storage.defaultObjectAccessControls.get 
-#   update = storage.defaultObjectAccessControls.patch 
-#   delete = storage.defaultObjectAccessControls.delete 
-# }
-# 
-# 

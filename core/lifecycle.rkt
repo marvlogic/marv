@@ -87,12 +87,14 @@
 
     (define res (resource-ref rsset k))
     (define type-fn (resource-type-fn res))
-    (define cmd (type-fn 'read (resource-config res)))
+    (define res-cfg (resource-config res))
+    (define cmd (type-fn 'read res-cfg))
     ;TODO41
     (define driver-id (get-driver-id type-fn res))
     (define resp-cfg (send-to-driver driver-id cmd))
-    (state-set-ref k (state-ref-origin k) resp-cfg))
-  ;TODO41 driver response through 'state verb
+    (define state-cfg (type-fn 'state (hash 'response resp-cfg 'original res-cfg)))
+    (state-set-ref k (state-ref-origin k) state-cfg))
+  ;TODO41 factor driver response through 'state verb with create code below
   (for ([i ids]) (refresh i)))
 
 (define/contract (send-driver-cmd driver-id cmd)
@@ -107,8 +109,9 @@
     (flush-output)
     (define res (driver-repr id))
     (define type-fn (resource-type-fn res))
+    (define res-cfg (resource-config res))
     (define driver-id (get-driver-id type-fn res))
-    (define cmd (type-fn 'create (resource-config res)))
+    (define cmd (type-fn 'create res-cfg))
     (define reply-cfg (send-driver-cmd driver-id cmd))
     (log-marv-debug "  creation reply: ~a" reply-cfg)
 
@@ -119,7 +122,8 @@
     ;TODO41 - need to use the returned configuration somehow...
     (define destructor (type-fn 'delete (resource-config res)))
     (log-marv-debug "  origin: ~a" origin)
-    (state-set-ref id (state-origin origin destructor) reply-cfg))
+    (define state-cfg (type-fn 'state (hash 'response reply-cfg 'original res-cfg)))
+    (state-set-ref id (state-origin origin destructor) state-cfg))
 
   (define (delete id)
     (display (format "DELETING ~a" id))

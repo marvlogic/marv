@@ -3,26 +3,14 @@
 import types/common
 import types/gcp/_auto/storage as _auto
 
-export bucket nearlineb
+export bucket 
 
-post-bucket(orig new) = new <- { project = orig.project region = orig.region}
-
-# ??
 only-name(cfg) = cfg << [name]
 
-type bucket = _auto:bucket
-
-type _nearlineb = {
-  create(cfg) = { name = cfg.name storageClass = "NEARLINE" }
-  read(cfg) = { name = cfg.name }
-  update(cfg) = { name = cfg.name}
+  # TODO41 - how does validate work?
+  # validate = api("storage.buckets.insert")
+type _base = {
+  state(cfg)=cfg.response <- { region=cfg.original.region project=cfg.original.project }
 }
 
-type _policy1 = {
-  create(cfg) = { name = cfg.name storageClass = "NEARLINE" }
-  read(cfg) = { name = cfg.name }
-  update(cfg) = { name = cfg.name}
-}
-
-
-type nearlineb =  _nearlineb | bucket 
+type bucket =  _base | _auto:buckets

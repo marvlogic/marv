@@ -26,7 +26,7 @@ config-func-param: IDENTIFIER
 ; type-config-func-decl:
 
 type-decl: /"type" type-id
-( [ "using" driver-id ] /"=" /"{" [IDENTIFIER /"(" IDENTIFIER /")" /"=" config-expr]+ /"}" |
+( /"=" /"{" [IDENTIFIER /"(" IDENTIFIER /")" /"=" config-expr]+ /"}" |
 /"=" IDENTIFIER [ "|" IDENTIFIER ]+)
 
 ; type-body: verb /"=" config-expr
@@ -55,7 +55,7 @@ strf: /"strf" /"(" STRING expression+ /")"
 base64encode: /"base64encode" /"(" expression /")"
 base64decode: /"base64decode" /"(" expression /")"
 
-config-expr: config-object | config-ident | config-merge | config-func-call | config-take
+config-expr: config-object | reference | config-ident | config-merge | config-func-call | config-take
 config-merge: config-expr ("<-" | "->") config-expr
 config-ident: IDENTIFIER
 config-func-call: IDENTIFIER /"(" expression+ /")"

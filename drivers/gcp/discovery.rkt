@@ -28,6 +28,7 @@
          api-schema
          disc-doc?
          api-display-docs
+         api-resource-keys
          disc-api?)
 
 (define (raise-exn fstr . vs) (apply error 'discovery fstr vs))
@@ -174,10 +175,9 @@
   (hash-nref (disc-api-root api) (list 'schemas (string->symbol type) 'properties)))
 
 ; Utility for printing out resource IDs from a discovery-document
-(define (api-resource-keys doc)
+(define (api-resource-keys doc [prefix ""])
   (pretty-print
-   (make-immutable-hash (map (lambda(k) (cons k k))
-                             (hash-keys (hash-ref (disc-doc-root doc) 'resources))))))
+   (map (lambda(k) (string->symbol(format "~a~a" prefix k))) (hash-keys (hash-ref (disc-doc-root doc) 'resources)))))
 
 (define (api-display-docs api type [subtype #f])
 

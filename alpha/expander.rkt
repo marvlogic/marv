@@ -146,22 +146,18 @@
       (pattern (~seq "|" type-id:id)))
 
     (syntax-parse stx
-      [(_ ((~literal type-id) type-id:expr) (~optional (~seq "using" ((~literal driver-id) did:expr)))
+      [(_ ((~literal type-id) type-id:expr)
           body:type-body ...)
        (with-syntax ([srcloc (src-location stx)])
          (syntax/loc stx
            (begin
              (define (type-id verb config)
                (log-marv-debug "type-fn ~a.~a:~a~n  called with config ~a" 'type-id verb srcloc config)
-               ; TODO - case vs hash?
                (define (body.func-id body.param-id) body.confex) ...
                (case verb
-                 ; ???? driver config in base type?
-                 ; Special cases/shortcuts
-                 ;  ['origin (hash-ref config 'origin)]
-                 ['driver (hash-ref (hash-ref config 'origin) 'driver)]
                  ['type 'type-id]
                  ['body.func-id (body.func-id config)] ...
+                 ; TODO41 - mechanism?
                  ['destructor
                   (define delcfg (type-id 'delete config))
                   (define flt (hash-ref delcfg 'filter (lambda()(lambda(x)x))))
@@ -175,8 +171,6 @@
            (begin
              (define (type-id verb config)
                (log-marv-debug "type-fn ~a.~a:~a ~n  composition called with config ~a" 'type-id verb srcloc config)
-               ;  (define basis (base-id verb config))
-               ;  (define (comp.type-id cfg) (comp.type-id verb cfg)) ...
                (define fns (list base-id comp.type-id ...))
                (define fin (for/fold ([c config]) ([f fns]) (f verb c)))
                (log-marv-debug "type-fn ~a.~a:~a~n  composition results in config ~a" 'type-id verb srcloc fin)
