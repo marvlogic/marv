@@ -1,15 +1,14 @@
 #lang marv
 
-import types/common
 import types/gcp/_auto/storage as _auto
 
 export bucket 
 
-only-name(cfg) = cfg << [name]
+# TODO41 - how does validate work?
+# validate = api("storage.buckets.insert")
 
-  # TODO41 - how does validate work?
-  # validate = api("storage.buckets.insert")
 type _base = {
+  origin(cfg)= { name=cfg.name }
   state(cfg)=cfg.response <- { region=cfg.original.region project=cfg.original.project }
 }
 

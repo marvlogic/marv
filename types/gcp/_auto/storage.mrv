@@ -1,24 +1,82 @@
 #lang marv
+## AUTO-GENERATED FILE - DO NOT EDIT!
+type objects = {
+  origin(cfg)= cfg <- { driver="gcp" api="storage.objects.insert" name=cfg.name }
 
-## DO NOT EDIT!
-## EVERYTHING IN THIS FILE IS AUTO-GENERATED!
+  create(cfg)={ api-id="storage.objects.insert" config=cfg }
+  read(cfg)={ api-id="storage.objects.get" config=cfg }
+  update(cfg)={ api-id="storage.objects.patch" config=cfg}
+  delete(cfg)={ api-id="storage.objects.delete" config={ name=cfg.name } }
+}
+export objects
 
-export buckets
+type defaultObjectAccessControls = {
+  origin(cfg)= cfg <- { driver="gcp" api="storage.defaultObjectAccessControls.insert" name=cfg.name }
 
-# ??
-only-name(cfg) = cfg << [name]
+  create(cfg)={ api-id="storage.defaultObjectAccessControls.insert" config=cfg }
+  read(cfg)={ api-id="storage.defaultObjectAccessControls.get" config=cfg }
+  update(cfg)={ api-id="storage.defaultObjectAccessControls.patch" config=cfg}
+  delete(cfg)={ api-id="storage.defaultObjectAccessControls.delete" config={ name=cfg.name } }
+}
+export defaultObjectAccessControls
 
-# Auto
+type channels = {
+  origin(cfg)= cfg <- { driver="gcp" api="storage.channels.insert" name=cfg.name }
+
+  create(cfg)={ api-id="storage.channels.insert" config=cfg }
+  read(cfg)={ api-id="storage.channels.get" config=cfg }
+  update(cfg)={ api-id="storage.channels.patch" config=cfg}
+  delete(cfg)={ api-id="storage.channels.delete" config={ name=cfg.name } }
+}
+export channels
+
 type buckets = {
-
-  # TODO41 - origin/name
-  origin(cfg)= cfg <- { driver="gcp" gcp-api="storage.buckets.insert" name=cfg.name }
+  origin(cfg)= cfg <- { driver="gcp" api="storage.buckets.insert" name=cfg.name }
 
   create(cfg)={ api-id="storage.buckets.insert" config=cfg }
   read(cfg)={ api-id="storage.buckets.get" config=cfg }
   update(cfg)={ api-id="storage.buckets.patch" config=cfg}
-
-  # Auto-how?
-  # delete returns a destructor-config
   delete(cfg)={ api-id="storage.buckets.delete" config={ name=cfg.name } }
 }
+export buckets
+
+type bucketAccessControls = {
+  origin(cfg)= cfg <- { driver="gcp" api="storage.bucketAccessControls.insert" name=cfg.name }
+
+  create(cfg)={ api-id="storage.bucketAccessControls.insert" config=cfg }
+  read(cfg)={ api-id="storage.bucketAccessControls.get" config=cfg }
+  update(cfg)={ api-id="storage.bucketAccessControls.patch" config=cfg}
+  delete(cfg)={ api-id="storage.bucketAccessControls.delete" config={ name=cfg.name } }
+}
+export bucketAccessControls
+
+type objectAccessControls = {
+  origin(cfg)= cfg <- { driver="gcp" api="storage.objectAccessControls.insert" name=cfg.name }
+
+  create(cfg)={ api-id="storage.objectAccessControls.insert" config=cfg }
+  read(cfg)={ api-id="storage.objectAccessControls.get" config=cfg }
+  update(cfg)={ api-id="storage.objectAccessControls.patch" config=cfg}
+  delete(cfg)={ api-id="storage.objectAccessControls.delete" config={ name=cfg.name } }
+}
+export objectAccessControls
+
+type projects = {
+  origin(cfg)= cfg <- { driver="gcp" api="storage.projects.insert" name=cfg.name }
+
+  create(cfg)={ api-id="storage.projects.insert" config=cfg }
+  read(cfg)={ api-id="storage.projects.get" config=cfg }
+  update(cfg)={ api-id="storage.projects.patch" config=cfg}
+  delete(cfg)={ api-id="storage.projects.delete" config={ name=cfg.name } }
+}
+export projects
+
+type notifications = {
+  origin(cfg)= cfg <- { driver="gcp" api="storage.notifications.insert" name=cfg.name }
+
+  create(cfg)={ api-id="storage.notifications.insert" config=cfg }
+  read(cfg)={ api-id="storage.notifications.get" config=cfg }
+  update(cfg)={ api-id="storage.notifications.patch" config=cfg}
+  delete(cfg)={ api-id="storage.notifications.delete" config={ name=cfg.name } }
+}
+export notifications
+

@@ -174,10 +174,10 @@
   (disc-api? string? . -> . hash?)
   (hash-nref (disc-api-root api) (list 'schemas (string->symbol type) 'properties)))
 
-; Utility for printing out resource IDs from a discovery-document
+; Utility for getting resource IDs from a discovery-document
+;TODO41 - might not get everything esp in secrets
 (define (api-resource-keys doc [prefix ""])
-  (pretty-print
-   (map (lambda(k) (string->symbol(format "~a~a" prefix k))) (hash-keys (hash-ref (disc-doc-root doc) 'resources)))))
+  (map (lambda(k) (string->symbol(format "~a~a" prefix k))) (hash-keys (hash-ref (disc-doc-root doc) 'resources))))
 
 (define (api-display-docs api type [subtype #f])
 
