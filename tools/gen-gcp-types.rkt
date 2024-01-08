@@ -23,8 +23,7 @@ EOF
      (format
       #<<EOF
 type ~a = {
-  origin(cfg)= cfg <- { driver="gcp" api="~a" name=cfg.name }
-
+  origin(cfg)= cfg <- { driver="gcp" api="~a" }
   create(cfg)={ api-id="~a" config=cfg }
   read(cfg)={ api-id="~a" config=cfg }
   update(cfg)={ api-id="~a" config=cfg}
@@ -38,5 +37,6 @@ EOF
 
 
 ;(with-output-to-file )
+; (with-output-to-file )
 
 (define (gen-storage) (gen-types (api-resource-keys storage) "storage" "insert" "get" "patch" "delete"))
