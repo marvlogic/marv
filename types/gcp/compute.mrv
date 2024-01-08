@@ -1,550 +1,308 @@
 #lang marv
 
-import "../common.mrv"
+import types/gcp/_auto/compute as _auto
 
-type gcp:compute.instance = {
-  create = compute.instances.insert { identity identity }
-  read = compute.instances.get { identity identity }
-  update = compute.instances.patch { identity identity }
-  delete = compute.instances.delete { identity identity }
-}
-type gcp:compute.vpnGateway = {
-  create = compute.vpnGateways.insert { identity identity }
-  read = compute.vpnGateways.get { identity identity }
-  update = compute.vpnGateways.patch { identity identity }
-  delete = compute.vpnGateways.delete { identity identity }
-}
-type gcp:compute.interconnectLocation = {
-  create = compute.interconnectLocations.insert { identity identity }
-  read = compute.interconnectLocations.get { identity identity }
-  update = compute.interconnectLocations.patch { identity identity }
-  delete = compute.interconnectLocations.delete { identity identity }
-}
-type gcp:compute.targetHttpsProxy = {
-  create = compute.targetHttpsProxies.insert { identity identity }
-  read = compute.targetHttpsProxies.get { identity identity }
-  update = compute.targetHttpsProxies.patch { identity identity }
-  delete = compute.targetHttpsProxies.delete { identity identity }
-}
-type gcp:compute.router = {
-  create = compute.routers.insert { identity identity }
-  read = compute.routers.get { identity identity }
-  update = compute.routers.patch { identity identity }
-  delete = compute.routers.delete { identity identity }
-}
-type gcp:compute.regionAutoscaler = {
-  create = compute.regionAutoscalers.insert { identity identity }
-  read = compute.regionAutoscalers.get { identity identity }
-  update = compute.regionAutoscalers.patch { identity identity }
-  delete = compute.regionAutoscalers.delete { identity identity }
-}
-type gcp:compute.networkFirewallPolicy = {
-  create = compute.networkFirewallPolicies.insert { identity identity }
-  read = compute.networkFirewallPolicies.get { identity identity }
-  update = compute.networkFirewallPolicies.patch { identity identity }
-  delete = compute.networkFirewallPolicies.delete { identity identity }
-}
-type gcp:compute.networkAttachment = {
-  create = compute.networkAttachments.insert { identity identity }
-  read = compute.networkAttachments.get { identity identity }
-  update = compute.networkAttachments.patch { identity identity }
-  delete = compute.networkAttachments.delete { identity identity }
-}
-type gcp:compute.instanceGroup = {
-  create = compute.instanceGroups.insert { identity identity }
-  read = compute.instanceGroups.get { identity identity }
-  update = compute.instanceGroups.patch { identity identity }
-  delete = compute.instanceGroups.delete { identity identity }
-}
-type gcp:compute.securityPolicy = {
-  create = compute.securityPolicies.insert { identity identity }
-  read = compute.securityPolicies.get { identity identity }
-  update = compute.securityPolicies.patch { identity identity }
-  delete = compute.securityPolicies.delete { identity identity }
-}
-type gcp:compute.globalAddress = {
-  create = compute.globalAddresses.insert { identity identity }
-  read = compute.globalAddresses.get { identity identity }
-  update = compute.globalAddresses.patch { identity identity }
-  delete = compute.globalAddresses.delete { identity identity }
-}
-type gcp:compute.globalOrganizationOperation = {
-  create = compute.globalOrganizationOperations.insert { identity identity }
-  read = compute.globalOrganizationOperations.get { identity identity }
-  update = compute.globalOrganizationOperations.patch { identity identity }
-  delete = compute.globalOrganizationOperations.delete { identity identity }
-}
-type gcp:compute.regionHealthCheckService = {
-  create = compute.regionHealthCheckServices.insert { identity identity }
-  read = compute.regionHealthCheckServices.get { identity identity }
-  update = compute.regionHealthCheckServices.patch { identity identity }
-  delete = compute.regionHealthCheckServices.delete { identity identity }
-}
-type gcp:compute.packetMirroring = {
-  create = compute.packetMirrorings.insert { identity identity }
-  read = compute.packetMirrorings.get { identity identity }
-  update = compute.packetMirrorings.patch { identity identity }
-  delete = compute.packetMirrorings.delete { identity identity }
-}
-type gcp:compute.healthCheck = {
-  create = compute.healthChecks.insert { identity identity }
-  read = compute.healthChecks.get { identity identity }
-  update = compute.healthChecks.patch { identity identity }
-  delete = compute.healthChecks.delete { identity identity }
-}
-type gcp:compute.address = {
-  create = compute.addresses.insert { identity identity }
-  read = compute.addresses.get { identity identity }
-  update = compute.addresses.patch { identity identity }
-  delete = compute.addresses.delete { identity identity }
-}
-type gcp:compute.route = {
-  create = compute.routes.insert { identity identity }
-  read = compute.routes.get { identity identity }
-  update = compute.routes.patch { identity identity }
-  delete = compute.routes.delete { identity identity }
-}
-type gcp:compute.instanceGroupManager = {
-  create = compute.instanceGroupManagers.insert { identity identity }
-  read = compute.instanceGroupManagers.get { identity identity }
-  update = compute.instanceGroupManagers.patch { identity identity }
-  delete = compute.instanceGroupManagers.delete { identity identity }
-}
-type gcp:compute.interconnectAttachment = {
-  create = compute.interconnectAttachments.insert { identity identity }
-  read = compute.interconnectAttachments.get { identity identity }
-  update = compute.interconnectAttachments.patch { identity identity }
-  delete = compute.interconnectAttachments.delete { identity identity }
-}
-type gcp:compute.image = {
-  create = compute.images.insert { identity identity }
-  read = compute.images.get { identity identity }
-  update = compute.images.patch { identity identity }
-  delete = compute.images.delete { identity identity }
-}
-type gcp:compute.regionNotificationEndpoint = {
-  create = compute.regionNotificationEndpoints.insert { identity identity }
-  read = compute.regionNotificationEndpoints.get { identity identity }
-  update = compute.regionNotificationEndpoints.patch { identity identity }
-  delete = compute.regionNotificationEndpoints.delete { identity identity }
-}
-type gcp:compute.resourcePolicy = {
-  create = compute.resourcePolicies.insert { identity identity }
-  read = compute.resourcePolicies.get { identity identity }
-  update = compute.resourcePolicies.patch { identity identity }
-  delete = compute.resourcePolicies.delete { identity identity }
-}
-type gcp:compute.regionTargetHttpProxy = {
-  create = compute.regionTargetHttpProxies.insert { identity identity }
-  read = compute.regionTargetHttpProxies.get { identity identity }
-  update = compute.regionTargetHttpProxies.patch { identity identity }
-  delete = compute.regionTargetHttpProxies.delete { identity identity }
-}
-type gcp:compute.targetTcpProxy = {
-  create = compute.targetTcpProxies.insert { identity identity }
-  read = compute.targetTcpProxies.get { identity identity }
-  update = compute.targetTcpProxies.patch { identity identity }
-  delete = compute.targetTcpProxies.delete { identity identity }
-}
-type gcp:compute.regionInstance = {
-  create = compute.regionInstances.insert { identity identity }
-  read = compute.regionInstances.get { identity identity }
-  update = compute.regionInstances.patch { identity identity }
-  delete = compute.regionInstances.delete { identity identity }
-}
-type gcp:compute.globalPublicDelegatedPrefix = {
-  create = compute.globalPublicDelegatedPrefixes.insert { identity identity }
-  read = compute.globalPublicDelegatedPrefixes.get { identity identity }
-  update = compute.globalPublicDelegatedPrefixes.patch { identity identity }
-  delete = compute.globalPublicDelegatedPrefixes.delete { identity identity }
-}
-type gcp:compute.networkEndpointGroup = {
-  create = compute.networkEndpointGroups.insert { identity identity }
-  read = compute.networkEndpointGroups.get { identity identity }
-  update = compute.networkEndpointGroups.patch { identity identity }
-  delete = compute.networkEndpointGroups.delete { identity identity }
-}
-type gcp:compute.zone = {
-  create = compute.zones.insert { identity identity }
-  read = compute.zones.get { identity identity }
-  update = compute.zones.patch { identity identity }
-  delete = compute.zones.delete { identity identity }
-}
-type gcp:compute.regionTargetHttpsProxy = {
-  create = compute.regionTargetHttpsProxies.insert { identity identity }
-  read = compute.regionTargetHttpsProxies.get { identity identity }
-  update = compute.regionTargetHttpsProxies.patch { identity identity }
-  delete = compute.regionTargetHttpsProxies.delete { identity identity }
-}
-type gcp:compute.firewall = {
-  create = compute.firewalls.insert { identity identity }
-  read = compute.firewalls.get { identity identity }
-  update = compute.firewalls.patch { identity identity }
-  delete = compute.firewalls.delete { identity identity }
-}
-type gcp:compute.sslPolicy = {
-  create = compute.sslPolicies.insert { identity identity }
-  read = compute.sslPolicies.get { identity identity }
-  update = compute.sslPolicies.patch { identity identity }
-  delete = compute.sslPolicies.delete { identity identity }
-}
-type gcp:compute.globalOperation = {
-  create = compute.globalOperations.insert { identity identity }
-  read = compute.globalOperations.get { identity identity }
-  update = compute.globalOperations.patch { identity identity }
-  delete = compute.globalOperations.delete { identity identity }
-}
-type gcp:compute.subnetwork = {
-  create = compute.subnetworks.insert { identity identity }
-  read = compute.subnetworks.get { identity identity }
-  update = compute.subnetworks.patch { identity identity }
-  delete = compute.subnetworks.delete { identity identity }
-}
-type gcp:compute.vpnTunnel = {
-  create = compute.vpnTunnels.insert { identity identity }
-  read = compute.vpnTunnels.get { identity identity }
-  update = compute.vpnTunnels.patch { identity identity }
-  delete = compute.vpnTunnels.delete { identity identity }
-}
-type gcp:compute.imageFamilyView = {
-  create = compute.imageFamilyViews.insert { identity identity }
-  read = compute.imageFamilyViews.get { identity identity }
-  update = compute.imageFamilyViews.patch { identity identity }
-  delete = compute.imageFamilyViews.delete { identity identity }
-}
-type gcp:compute.globalForwardingRule = {
-  create = compute.globalForwardingRules.insert { identity identity }
-  read = compute.globalForwardingRules.get { identity identity }
-  update = compute.globalForwardingRules.patch { identity identity }
-  delete = compute.globalForwardingRules.delete { identity identity }
-}
-type gcp:compute.nodeType = {
-  create = compute.nodeTypes.insert { identity identity }
-  read = compute.nodeTypes.get { identity identity }
-  update = compute.nodeTypes.patch { identity identity }
-  delete = compute.nodeTypes.delete { identity identity }
-}
-type gcp:compute.nodeGroup = {
-  create = compute.nodeGroups.insert { identity identity }
-  read = compute.nodeGroups.get { identity identity }
-  update = compute.nodeGroups.patch { identity identity }
-  delete = compute.nodeGroups.delete { identity identity }
-}
-type gcp:compute.targetSslProxy = {
-  create = compute.targetSslProxies.insert { identity identity }
-  read = compute.targetSslProxies.get { identity identity }
-  update = compute.targetSslProxies.patch { identity identity }
-  delete = compute.targetSslProxies.delete { identity identity }
-}
-type gcp:compute.regionTargetTcpProxy = {
-  create = compute.regionTargetTcpProxies.insert { identity identity }
-  read = compute.regionTargetTcpProxies.get { identity identity }
-  update = compute.regionTargetTcpProxies.patch { identity identity }
-  delete = compute.regionTargetTcpProxies.delete { identity identity }
-}
-type gcp:compute.regionNetworkEndpointGroup = {
-  create = compute.regionNetworkEndpointGroups.insert { identity identity }
-  read = compute.regionNetworkEndpointGroups.get { identity identity }
-  update = compute.regionNetworkEndpointGroups.patch { identity identity }
-  delete = compute.regionNetworkEndpointGroups.delete { identity identity }
-}
-type gcp:compute.licenseCode = {
-  create = compute.licenseCodes.insert { identity identity }
-  read = compute.licenseCodes.get { identity identity }
-  update = compute.licenseCodes.patch { identity identity }
-  delete = compute.licenseCodes.delete { identity identity }
-}
-type gcp:compute.publicAdvertisedPrefixe = {
-  create = compute.publicAdvertisedPrefixes.insert { identity identity }
-  read = compute.publicAdvertisedPrefixes.get { identity identity }
-  update = compute.publicAdvertisedPrefixes.patch { identity identity }
-  delete = compute.publicAdvertisedPrefixes.delete { identity identity }
-}
-type gcp:compute.firewallPolicy = {
-  create = compute.firewallPolicies.insert { identity identity }
-  read = compute.firewallPolicies.get { identity identity }
-  update = compute.firewallPolicies.patch { identity identity }
-  delete = compute.firewallPolicies.delete { identity identity }
-}
-type gcp:compute.region = {
-  create = compute.regions.insert { identity identity }
-  read = compute.regions.get { identity identity }
-  update = compute.regions.patch { identity identity }
-  delete = compute.regions.delete { identity identity }
-}
-type gcp:compute.regionDiskType = {
-  create = compute.regionDiskTypes.insert { identity identity }
-  read = compute.regionDiskTypes.get { identity identity }
-  update = compute.regionDiskTypes.patch { identity identity }
-  delete = compute.regionDiskTypes.delete { identity identity }
-}
-type gcp:compute.disk = {
-  create = compute.disks.insert { identity identity }
-  read = compute.disks.get { identity identity }
-  update = compute.disks.patch { identity identity }
-  delete = compute.disks.delete { identity identity }
-}
-type gcp:compute.serviceAttachment = {
-  create = compute.serviceAttachments.insert { identity identity }
-  read = compute.serviceAttachments.get { identity identity }
-  update = compute.serviceAttachments.patch { identity identity }
-  delete = compute.serviceAttachments.delete { identity identity }
-}
-type gcp:compute.regionBackendService = {
-  create = compute.regionBackendServices.insert { identity identity }
-  read = compute.regionBackendServices.get { identity identity }
-  update = compute.regionBackendServices.patch { identity identity }
-  delete = compute.regionBackendServices.delete { identity identity }
-}
-type gcp:compute.httpsHealthCheck = {
-  create = compute.httpsHealthChecks.insert { identity identity }
-  read = compute.httpsHealthChecks.get { identity identity }
-  update = compute.httpsHealthChecks.patch { identity identity }
-  delete = compute.httpsHealthChecks.delete { identity identity }
-}
-type gcp:compute.acceleratorType = {
-  create = compute.acceleratorTypes.insert { identity identity }
-  read = compute.acceleratorTypes.get { identity identity }
-  update = compute.acceleratorTypes.patch { identity identity }
-  delete = compute.acceleratorTypes.delete { identity identity }
-}
-type gcp:compute.publicDelegatedPrefixe = {
-  create = compute.publicDelegatedPrefixes.insert { identity identity }
-  read = compute.publicDelegatedPrefixes.get { identity identity }
-  update = compute.publicDelegatedPrefixes.patch { identity identity }
-  delete = compute.publicDelegatedPrefixes.delete { identity identity }
-}
-type gcp:compute.regionSslCertificate = {
-  create = compute.regionSslCertificates.insert { identity identity }
-  read = compute.regionSslCertificates.get { identity identity }
-  update = compute.regionSslCertificates.patch { identity identity }
-  delete = compute.regionSslCertificates.delete { identity identity }
-}
-type gcp:compute.instanceTemplate = {
-  create = compute.instanceTemplates.insert { identity identity }
-  read = compute.instanceTemplates.get { identity identity }
-  update = compute.instanceTemplates.patch { identity identity }
-  delete = compute.instanceTemplates.delete { identity identity }
-}
-type gcp:compute.snapshot = {
-  create = compute.snapshots.insert { identity identity }
-  read = compute.snapshots.get { identity identity }
-  update = compute.snapshots.patch { identity identity }
-  delete = compute.snapshots.delete { identity identity }
-}
-type gcp:compute.httpHealthCheck = {
-  create = compute.httpHealthChecks.insert { identity identity }
-  read = compute.httpHealthChecks.get { identity identity }
-  update = compute.httpHealthChecks.patch { identity identity }
-  delete = compute.httpHealthChecks.delete { identity identity }
-}
-type gcp:compute.regionCommitment = {
-  create = compute.regionCommitments.insert { identity identity }
-  read = compute.regionCommitments.get { identity identity }
-  update = compute.regionCommitments.patch { identity identity }
-  delete = compute.regionCommitments.delete { identity identity }
-}
-type gcp:compute.regionOperation = {
-  create = compute.regionOperations.insert { identity identity }
-  read = compute.regionOperations.get { identity identity }
-  update = compute.regionOperations.patch { identity identity }
-  delete = compute.regionOperations.delete { identity identity }
-}
-type gcp:compute.targetVpnGateway = {
-  create = compute.targetVpnGateways.insert { identity identity }
-  read = compute.targetVpnGateways.get { identity identity }
-  update = compute.targetVpnGateways.patch { identity identity }
-  delete = compute.targetVpnGateways.delete { identity identity }
-}
-type gcp:compute.networkEdgeSecurityService = {
-  create = compute.networkEdgeSecurityServices.insert { identity identity }
-  read = compute.networkEdgeSecurityServices.get { identity identity }
-  update = compute.networkEdgeSecurityServices.patch { identity identity }
-  delete = compute.networkEdgeSecurityServices.delete { identity identity }
-}
-type gcp:compute.network = {
-  create = compute.networks.insert { identity identity }
-  read = compute.networks.get { identity identity }
-  update = compute.networks.patch { identity identity }
-  delete = compute.networks.delete { identity identity }
-}
-type gcp:compute.regionUrlMap = {
-  create = compute.regionUrlMaps.insert { identity identity }
-  read = compute.regionUrlMaps.get { identity identity }
-  update = compute.regionUrlMaps.patch { identity identity }
-  delete = compute.regionUrlMaps.delete { identity identity }
-}
-type gcp:compute.forwardingRule = {
-  create = compute.forwardingRules.insert { identity identity }
-  read = compute.forwardingRules.get { identity identity }
-  update = compute.forwardingRules.patch { identity identity }
-  delete = compute.forwardingRules.delete { identity identity }
-}
-type gcp:compute.targetInstance = {
-  create = compute.targetInstances.insert { identity identity }
-  read = compute.targetInstances.get { identity identity }
-  update = compute.targetInstances.patch { identity identity }
-  delete = compute.targetInstances.delete { identity identity }
-}
-type gcp:compute.targetHttpProxy = {
-  create = compute.targetHttpProxies.insert { identity identity }
-  read = compute.targetHttpProxies.get { identity identity }
-  update = compute.targetHttpProxies.patch { identity identity }
-  delete = compute.targetHttpProxies.delete { identity identity }
-}
-type gcp:compute.externalVpnGateway = {
-  create = compute.externalVpnGateways.insert { identity identity }
-  read = compute.externalVpnGateways.get { identity identity }
-  update = compute.externalVpnGateways.patch { identity identity }
-  delete = compute.externalVpnGateways.delete { identity identity }
-}
-type gcp:compute.machineType = {
-  create = compute.machineTypes.insert { identity identity }
-  read = compute.machineTypes.get { identity identity }
-  update = compute.machineTypes.patch { identity identity }
-  delete = compute.machineTypes.delete { identity identity }
-}
-type gcp:compute.globalNetworkEndpointGroup = {
-  create = compute.globalNetworkEndpointGroups.insert { identity identity }
-  read = compute.globalNetworkEndpointGroups.get { identity identity }
-  update = compute.globalNetworkEndpointGroups.patch { identity identity }
-  delete = compute.globalNetworkEndpointGroups.delete { identity identity }
-}
-type gcp:compute.backendBucket = {
-  create = compute.backendBuckets.insert { identity identity }
-  read = compute.backendBuckets.get { identity identity }
-  update = compute.backendBuckets.patch { identity identity }
-  delete = compute.backendBuckets.delete { identity identity }
-}
-type gcp:compute.regionSecurityPolicy = {
-  create = compute.regionSecurityPolicies.insert { identity identity }
-  read = compute.regionSecurityPolicies.get { identity identity }
-  update = compute.regionSecurityPolicies.patch { identity identity }
-  delete = compute.regionSecurityPolicies.delete { identity identity }
-}
-type gcp:compute.regionInstanceTemplate = {
-  create = compute.regionInstanceTemplates.insert { identity identity }
-  read = compute.regionInstanceTemplates.get { identity identity }
-  update = compute.regionInstanceTemplates.patch { identity identity }
-  delete = compute.regionInstanceTemplates.delete { identity identity }
-}
-type gcp:compute.license = {
-  create = compute.licenses.insert { identity identity }
-  read = compute.licenses.get { identity identity }
-  update = compute.licenses.patch { identity identity }
-  delete = compute.licenses.delete { identity identity }
-}
-type gcp:compute.targetPool = {
-  create = compute.targetPools.insert { identity identity }
-  read = compute.targetPools.get { identity identity }
-  update = compute.targetPools.patch { identity identity }
-  delete = compute.targetPools.delete { identity identity }
-}
-type gcp:compute.regionNetworkFirewallPolicy = {
-  create = compute.regionNetworkFirewallPolicies.insert { identity identity }
-  read = compute.regionNetworkFirewallPolicies.get { identity identity }
-  update = compute.regionNetworkFirewallPolicies.patch { identity identity }
-  delete = compute.regionNetworkFirewallPolicies.delete { identity identity }
-}
-type gcp:compute.regionHealthCheck = {
-  create = compute.regionHealthChecks.insert { identity identity }
-  read = compute.regionHealthChecks.get { identity identity }
-  update = compute.regionHealthChecks.patch { identity identity }
-  delete = compute.regionHealthChecks.delete { identity identity }
-}
-type gcp:compute.backendService = {
-  create = compute.backendServices.insert { identity identity }
-  read = compute.backendServices.get { identity identity }
-  update = compute.backendServices.patch { identity identity }
-  delete = compute.backendServices.delete { identity identity }
-}
-type gcp:compute.nodeTemplate = {
-  create = compute.nodeTemplates.insert { identity identity }
-  read = compute.nodeTemplates.get { identity identity }
-  update = compute.nodeTemplates.patch { identity identity }
-  delete = compute.nodeTemplates.delete { identity identity }
-}
-type gcp:compute.zoneOperation = {
-  create = compute.zoneOperations.insert { identity identity }
-  read = compute.zoneOperations.get { identity identity }
-  update = compute.zoneOperations.patch { identity identity }
-  delete = compute.zoneOperations.delete { identity identity }
-}
-type gcp:compute.urlMap = {
-  create = compute.urlMaps.insert { identity identity }
-  read = compute.urlMaps.get { identity identity }
-  update = compute.urlMaps.patch { identity identity }
-  delete = compute.urlMaps.delete { identity identity }
-}
-type gcp:compute.regionInstanceGroup = {
-  create = compute.regionInstanceGroups.insert { identity identity }
-  read = compute.regionInstanceGroups.get { identity identity }
-  update = compute.regionInstanceGroups.patch { identity identity }
-  delete = compute.regionInstanceGroups.delete { identity identity }
-}
-type gcp:compute.regionDisk = {
-  create = compute.regionDisks.insert { identity identity }
-  read = compute.regionDisks.get { identity identity }
-  update = compute.regionDisks.patch { identity identity }
-  delete = compute.regionDisks.delete { identity identity }
-}
-type gcp:compute.diskType = {
-  create = compute.diskTypes.insert { identity identity }
-  read = compute.diskTypes.get { identity identity }
-  update = compute.diskTypes.patch { identity identity }
-  delete = compute.diskTypes.delete { identity identity }
-}
-type gcp:compute.reservation = {
-  create = compute.reservations.insert { identity identity }
-  read = compute.reservations.get { identity identity }
-  update = compute.reservations.patch { identity identity }
-  delete = compute.reservations.delete { identity identity }
-}
-type gcp:compute.autoscaler = {
-  create = compute.autoscalers.insert { identity identity }
-  read = compute.autoscalers.get { identity identity }
-  update = compute.autoscalers.patch { identity identity }
-  delete = compute.autoscalers.delete { identity identity }
-}
-type gcp:compute.project = {
-  create = compute.projects.insert { identity identity }
-  read = compute.projects.get { identity identity }
-  update = compute.projects.patch { identity identity }
-  delete = compute.projects.delete { identity identity }
-}
-type gcp:compute.machineImage = {
-  create = compute.machineImages.insert { identity identity }
-  read = compute.machineImages.get { identity identity }
-  update = compute.machineImages.patch { identity identity }
-  delete = compute.machineImages.delete { identity identity }
-}
-type gcp:compute.sslCertificate = {
-  create = compute.sslCertificates.insert { identity identity }
-  read = compute.sslCertificates.get { identity identity }
-  update = compute.sslCertificates.patch { identity identity }
-  delete = compute.sslCertificates.delete { identity identity }
-}
-type gcp:compute.regionSslPolicy = {
-  create = compute.regionSslPolicies.insert { identity identity }
-  read = compute.regionSslPolicies.get { identity identity }
-  update = compute.regionSslPolicies.patch { identity identity }
-  delete = compute.regionSslPolicies.delete { identity identity }
-}
-type gcp:compute.regionInstanceGroupManager = {
-  create = compute.regionInstanceGroupManagers.insert { identity identity }
-  read = compute.regionInstanceGroupManagers.get { identity identity }
-  update = compute.regionInstanceGroupManagers.patch { identity identity }
-  delete = compute.regionInstanceGroupManagers.delete { identity identity }
-}
-type gcp:compute.targetGrpcProxy = {
-  create = compute.targetGrpcProxies.insert { identity identity }
-  read = compute.targetGrpcProxies.get { identity identity }
-  update = compute.targetGrpcProxies.patch { identity identity }
-  delete = compute.targetGrpcProxies.delete { identity identity }
-}
-type gcp:compute.interconnect = {
-  create = compute.interconnects.insert { identity identity }
-  read = compute.interconnects.get { identity identity }
-  update = compute.interconnects.patch { identity identity }
-  delete = compute.interconnects.delete { identity identity }
-}
+type _base = {
+  origin(cfg)= { name=cfg.name }
+  state(cfg)=cfg.response <- { region=cfg.original.region project=cfg.original.project }
+}
+
+type regionDisk =  _base | _auto:regionDisks
+export regionDisk
+
+type interconnectLocation =  _base | _auto:interconnectLocations
+export interconnectLocation
+
+type instanceGroupManagerResizeRequest =  _base | _auto:instanceGroupManagerResizeRequests
+export instanceGroupManagerResizeRequest
+
+type regionNetworkFirewallPolicy =  _base | _auto:regionNetworkFirewallPolicies
+export regionNetworkFirewallPolicy
+
+type regionUrlMap =  _base | _auto:regionUrlMaps
+export regionUrlMap
+
+type machineType =  _base | _auto:machineTypes
+export machineType
+
+type serviceAttachment =  _base | _auto:serviceAttachments
+export serviceAttachment
+
+type regionInstanceTemplate =  _base | _auto:regionInstanceTemplates
+export regionInstanceTemplate
+
+type targetInstance =  _base | _auto:targetInstances
+export targetInstance
+
+type imageFamilyView =  _base | _auto:imageFamilyViews
+export imageFamilyView
+
+type targetSslProxy =  _base | _auto:targetSslProxies
+export targetSslProxy
+
+type licenseCode =  _base | _auto:licenseCodes
+export licenseCode
+
+type forwardingRule =  _base | _auto:forwardingRules
+export forwardingRule
+
+type regionDiskType =  _base | _auto:regionDiskTypes
+export regionDiskType
+
+type vpnGateway =  _base | _auto:vpnGateways
+export vpnGateway
+
+type networkFirewallPolicy =  _base | _auto:networkFirewallPolicies
+export networkFirewallPolicy
+
+type organizationSecurityPolicy =  _base | _auto:organizationSecurityPolicies
+export organizationSecurityPolicy
+
+type externalVpnGateway =  _base | _auto:externalVpnGateways
+export externalVpnGateway
+
+type targetTcpProxy =  _base | _auto:targetTcpProxies
+export targetTcpProxy
+
+type urlMap =  _base | _auto:urlMaps
+export urlMap
+
+type healthCheck =  _base | _auto:healthChecks
+export healthCheck
+
+type backendBucket =  _base | _auto:backendBuckets
+export backendBucket
+
+type networkEdgeSecurityService =  _base | _auto:networkEdgeSecurityServices
+export networkEdgeSecurityService
+
+type zone =  _base | _auto:zones
+export zone
+
+type regionHealthCheckService =  _base | _auto:regionHealthCheckServices
+export regionHealthCheckService
+
+type subnetwork =  _base | _auto:subnetworks
+export subnetwork
+
+type region =  _base | _auto:regions
+export region
+
+type interconnectAttachment =  _base | _auto:interconnectAttachments
+export interconnectAttachment
+
+type regionSecurityPolicy =  _base | _auto:regionSecurityPolicies
+export regionSecurityPolicy
+
+type globalNetworkEndpointGroup =  _base | _auto:globalNetworkEndpointGroups
+export globalNetworkEndpointGroup
+
+type firewall =  _base | _auto:firewalls
+export firewall
+
+type interconnectRemoteLocation =  _base | _auto:interconnectRemoteLocations
+export interconnectRemoteLocation
+
+type targetVpnGateway =  _base | _auto:targetVpnGateways
+export targetVpnGateway
+
+type backendService =  _base | _auto:backendServices
+export backendService
+
+type regionSslCertificate =  _base | _auto:regionSslCertificates
+export regionSslCertificate
+
+type httpsHealthCheck =  _base | _auto:httpsHealthChecks
+export httpsHealthCheck
+
+type regionInstanceGroupManager =  _base | _auto:regionInstanceGroupManagers
+export regionInstanceGroupManager
+
+type globalOrganizationOperation =  _base | _auto:globalOrganizationOperations
+export globalOrganizationOperation
+
+type snapshot =  _base | _auto:snapshots
+export snapshot
+
+type globalPublicDelegatedPrefixe =  _base | _auto:globalPublicDelegatedPrefixes
+export globalPublicDelegatedPrefixe
+
+type resourcePolicy =  _base | _auto:resourcePolicies
+export resourcePolicy
+
+type snapshotSetting =  _base | _auto:snapshotSettings
+export snapshotSetting
+
+type globalForwardingRule =  _base | _auto:globalForwardingRules
+export globalForwardingRule
+
+type acceleratorType =  _base | _auto:acceleratorTypes
+export acceleratorType
+
+type nodeGroup =  _base | _auto:nodeGroups
+export nodeGroup
+
+type regionCommitment =  _base | _auto:regionCommitments
+export regionCommitment
+
+type regionHealthCheck =  _base | _auto:regionHealthChecks
+export regionHealthCheck
+
+type packetMirroring =  _base | _auto:packetMirrorings
+export packetMirroring
+
+type regionNotificationEndpoint =  _base | _auto:regionNotificationEndpoints
+export regionNotificationEndpoint
+
+type regionTargetHttpProxy =  _base | _auto:regionTargetHttpProxies
+export regionTargetHttpProxy
+
+type zoneOperation =  _base | _auto:zoneOperations
+export zoneOperation
+
+type regionNetworkEndpointGroup =  _base | _auto:regionNetworkEndpointGroups
+export regionNetworkEndpointGroup
+
+type disk =  _base | _auto:disks
+export disk
+
+type router =  _base | _auto:routers
+export router
+
+type regionZone =  _base | _auto:regionZones
+export regionZone
+
+type globalAddresse =  _base | _auto:globalAddresses
+export globalAddresse
+
+type publicAdvertisedPrefixe =  _base | _auto:publicAdvertisedPrefixes
+export publicAdvertisedPrefixe
+
+type instantSnapshot =  _base | _auto:instantSnapshots
+export instantSnapshot
+
+type sslCertificate =  _base | _auto:sslCertificates
+export sslCertificate
+
+type futureReservation =  _base | _auto:futureReservations
+export futureReservation
+
+type autoscaler =  _base | _auto:autoscalers
+export autoscaler
+
+type instance =  _base | _auto:instances
+export instance
+
+type httpHealthCheck =  _base | _auto:httpHealthChecks
+export httpHealthCheck
+
+type regionTargetHttpsProxy =  _base | _auto:regionTargetHttpsProxies
+export regionTargetHttpsProxy
+
+type instanceGroup =  _base | _auto:instanceGroups
+export instanceGroup
+
+type image =  _base | _auto:images
+export image
+
+type targetGrpcProxy =  _base | _auto:targetGrpcProxies
+export targetGrpcProxy
+
+type sslPolicy =  _base | _auto:sslPolicies
+export sslPolicy
+
+type regionOperation =  _base | _auto:regionOperations
+export regionOperation
+
+type networkEndpointGroup =  _base | _auto:networkEndpointGroups
+export networkEndpointGroup
+
+type regionAutoscaler =  _base | _auto:regionAutoscalers
+export regionAutoscaler
+
+type regionInstanceGroup =  _base | _auto:regionInstanceGroups
+export regionInstanceGroup
+
+type regionSslPolicy =  _base | _auto:regionSslPolicies
+export regionSslPolicy
+
+type firewallPolicy =  _base | _auto:firewallPolicies
+export firewallPolicy
+
+type project =  _base | _auto:projects
+export project
+
+type targetHttpProxy =  _base | _auto:targetHttpProxies
+export targetHttpProxy
+
+type targetPool =  _base | _auto:targetPools
+export targetPool
+
+type targetHttpsProxy =  _base | _auto:targetHttpsProxies
+export targetHttpsProxy
+
+type regionBackendService =  _base | _auto:regionBackendServices
+export regionBackendService
+
+type route =  _base | _auto:routes
+export route
+
+type networkAttachment =  _base | _auto:networkAttachments
+export networkAttachment
+
+type license =  _base | _auto:licenses
+export license
+
+type publicDelegatedPrefixe =  _base | _auto:publicDelegatedPrefixes
+export publicDelegatedPrefixe
+
+type reservation =  _base | _auto:reservations
+export reservation
+
+type addresse =  _base | _auto:addresses
+export addresse
+
+type machineImage =  _base | _auto:machineImages
+export machineImage
+
+type interconnect =  _base | _auto:interconnects
+export interconnect
+
+type instanceSetting =  _base | _auto:instanceSettings
+export instanceSetting
+
+type instanceGroupManager =  _base | _auto:instanceGroupManagers
+export instanceGroupManager
+
+type diskType =  _base | _auto:diskTypes
+export diskType
+
+type regionInstance =  _base | _auto:regionInstances
+export regionInstance
+
+type securityPolicy =  _base | _auto:securityPolicies
+export securityPolicy
+
+type nodeTemplate =  _base | _auto:nodeTemplates
+export nodeTemplate
+
+type nodeType =  _base | _auto:nodeTypes
+export nodeType
+
+type regionInstantSnapshot =  _base | _auto:regionInstantSnapshots
+export regionInstantSnapshot
+
+type instanceTemplate =  _base | _auto:instanceTemplates
+export instanceTemplate
+
+type network =  _base | _auto:networks
+export network
+
+type vpnTunnel =  _base | _auto:vpnTunnels
+export vpnTunnel
+
+type globalOperation =  _base | _auto:globalOperations
+export globalOperation
+
+type regionTargetTcpProxy =  _base | _auto:regionTargetTcpProxies
+export regionTargetTcpProxy

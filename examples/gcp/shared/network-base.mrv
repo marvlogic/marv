@@ -4,7 +4,7 @@
 # Parameters can be separated by commas if you want, but they are currently
 # optional.
 
-import types/gcp/compute
+import types/gcp/compute as compute
 
 module network-base(defaults name 
         primary-cidr="10.0.1.0/24" 
@@ -34,7 +34,7 @@ module network-base(defaults name
     # So here we will create a VPC network, using the 'defaults' as a basis but
     # merging them with the CONFIG-OBJECT (between { and })
     
-    vpc = gcp:compute.network defaults <- {
+    vpc = compute:network defaults <- {
 
         # imm: declares that this attribute is immutable; if it changes, then the
         # resource will need to be recreated.  (this is a work-around because
@@ -63,13 +63,13 @@ module network-base(defaults name
         network = imm: vpc.selfLink
     }
 
-    primary-sn = gcp:compute.subnetwork vpc-defaults <- {
+    primary-sn = compute:subnetwork vpc-defaults <- {
         name = strf("~a-primary" name)
         description = strf("Primary subnet for ~a" name)
         ipCidrRange =  imm: primary-cidr
     }
 
-    proxy-sn = gcp:compute.subnetwork vpc-defaults <- {
+    proxy-sn = compute:subnetwork vpc-defaults <- {
         name = strf("~a-proxy" name)
         description = strf("Proxy subnet for ~a" name)
         ipCidrRange = imm: proxy-cidr
@@ -80,7 +80,7 @@ module network-base(defaults name
     # lists are space separated
     google-source-range = [ "130.211.0.0/22" "35.191.0.0/16" ]
     
-    fw-health-check = gcp:compute.firewall vpc-defaults <- {
+    fw-health-check = compute:firewall vpc-defaults <- {
         name = strf("~a-fw-allow-health-check" name)
         sourceRanges = google-source-range
         targetTags =  [ "load-balanced-backend" ]
@@ -88,7 +88,7 @@ module network-base(defaults name
         direction = "INGRESS"
     }
 
-    fw-proxies = gcp:compute.firewall vpc-defaults <- {
+    fw-proxies = compute:firewall vpc-defaults <- {
         name = strf("~a-fw-allow-proxies" name)
         sourceRanges = [ proxy-sn.ipCidrRange ]
         targetTags =  [ "load-balanced-backend" ]

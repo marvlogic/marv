@@ -1,0 +1,902 @@
+#lang marv
+## AUTO-GENERATED FILE - DO NOT EDIT!
+type regionDisks = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.regionDisks.insert" }
+  create(cfg)={ api-id="compute.regionDisks.insert" config=cfg }
+  read(cfg)={ api-id="compute.regionDisks.get" config=cfg }
+  update(cfg)={ api-id="compute.regionDisks.patch" config=cfg}
+  delete(cfg)={ api-id="compute.regionDisks.delete" config={ name=cfg.name } }
+}
+export regionDisks
+
+type interconnectLocations = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.interconnectLocations.insert" }
+  create(cfg)={ api-id="compute.interconnectLocations.insert" config=cfg }
+  read(cfg)={ api-id="compute.interconnectLocations.get" config=cfg }
+  update(cfg)={ api-id="compute.interconnectLocations.patch" config=cfg}
+  delete(cfg)={ api-id="compute.interconnectLocations.delete" config={ name=cfg.name } }
+}
+export interconnectLocations
+
+type instanceGroupManagerResizeRequests = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.instanceGroupManagerResizeRequests.insert" }
+  create(cfg)={ api-id="compute.instanceGroupManagerResizeRequests.insert" config=cfg }
+  read(cfg)={ api-id="compute.instanceGroupManagerResizeRequests.get" config=cfg }
+  update(cfg)={ api-id="compute.instanceGroupManagerResizeRequests.patch" config=cfg}
+  delete(cfg)={ api-id="compute.instanceGroupManagerResizeRequests.delete" config={ name=cfg.name } }
+}
+export instanceGroupManagerResizeRequests
+
+type regionNetworkFirewallPolicies = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.regionNetworkFirewallPolicies.insert" }
+  create(cfg)={ api-id="compute.regionNetworkFirewallPolicies.insert" config=cfg }
+  read(cfg)={ api-id="compute.regionNetworkFirewallPolicies.get" config=cfg }
+  update(cfg)={ api-id="compute.regionNetworkFirewallPolicies.patch" config=cfg}
+  delete(cfg)={ api-id="compute.regionNetworkFirewallPolicies.delete" config={ name=cfg.name } }
+}
+export regionNetworkFirewallPolicies
+
+type regionUrlMaps = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.regionUrlMaps.insert" }
+  create(cfg)={ api-id="compute.regionUrlMaps.insert" config=cfg }
+  read(cfg)={ api-id="compute.regionUrlMaps.get" config=cfg }
+  update(cfg)={ api-id="compute.regionUrlMaps.patch" config=cfg}
+  delete(cfg)={ api-id="compute.regionUrlMaps.delete" config={ name=cfg.name } }
+}
+export regionUrlMaps
+
+type machineTypes = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.machineTypes.insert" }
+  create(cfg)={ api-id="compute.machineTypes.insert" config=cfg }
+  read(cfg)={ api-id="compute.machineTypes.get" config=cfg }
+  update(cfg)={ api-id="compute.machineTypes.patch" config=cfg}
+  delete(cfg)={ api-id="compute.machineTypes.delete" config={ name=cfg.name } }
+}
+export machineTypes
+
+type serviceAttachments = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.serviceAttachments.insert" }
+  create(cfg)={ api-id="compute.serviceAttachments.insert" config=cfg }
+  read(cfg)={ api-id="compute.serviceAttachments.get" config=cfg }
+  update(cfg)={ api-id="compute.serviceAttachments.patch" config=cfg}
+  delete(cfg)={ api-id="compute.serviceAttachments.delete" config={ name=cfg.name } }
+}
+export serviceAttachments
+
+type regionInstanceTemplates = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.regionInstanceTemplates.insert" }
+  create(cfg)={ api-id="compute.regionInstanceTemplates.insert" config=cfg }
+  read(cfg)={ api-id="compute.regionInstanceTemplates.get" config=cfg }
+  update(cfg)={ api-id="compute.regionInstanceTemplates.patch" config=cfg}
+  delete(cfg)={ api-id="compute.regionInstanceTemplates.delete" config={ name=cfg.name } }
+}
+export regionInstanceTemplates
+
+type targetInstances = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.targetInstances.insert" }
+  create(cfg)={ api-id="compute.targetInstances.insert" config=cfg }
+  read(cfg)={ api-id="compute.targetInstances.get" config=cfg }
+  update(cfg)={ api-id="compute.targetInstances.patch" config=cfg}
+  delete(cfg)={ api-id="compute.targetInstances.delete" config={ name=cfg.name } }
+}
+export targetInstances
+
+type imageFamilyViews = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.imageFamilyViews.insert" }
+  create(cfg)={ api-id="compute.imageFamilyViews.insert" config=cfg }
+  read(cfg)={ api-id="compute.imageFamilyViews.get" config=cfg }
+  update(cfg)={ api-id="compute.imageFamilyViews.patch" config=cfg}
+  delete(cfg)={ api-id="compute.imageFamilyViews.delete" config={ name=cfg.name } }
+}
+export imageFamilyViews
+
+type targetSslProxies = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.targetSslProxies.insert" }
+  create(cfg)={ api-id="compute.targetSslProxies.insert" config=cfg }
+  read(cfg)={ api-id="compute.targetSslProxies.get" config=cfg }
+  update(cfg)={ api-id="compute.targetSslProxies.patch" config=cfg}
+  delete(cfg)={ api-id="compute.targetSslProxies.delete" config={ name=cfg.name } }
+}
+export targetSslProxies
+
+type licenseCodes = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.licenseCodes.insert" }
+  create(cfg)={ api-id="compute.licenseCodes.insert" config=cfg }
+  read(cfg)={ api-id="compute.licenseCodes.get" config=cfg }
+  update(cfg)={ api-id="compute.licenseCodes.patch" config=cfg}
+  delete(cfg)={ api-id="compute.licenseCodes.delete" config={ name=cfg.name } }
+}
+export licenseCodes
+
+type forwardingRules = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.forwardingRules.insert" }
+  create(cfg)={ api-id="compute.forwardingRules.insert" config=cfg }
+  read(cfg)={ api-id="compute.forwardingRules.get" config=cfg }
+  update(cfg)={ api-id="compute.forwardingRules.patch" config=cfg}
+  delete(cfg)={ api-id="compute.forwardingRules.delete" config={ name=cfg.name } }
+}
+export forwardingRules
+
+type regionDiskTypes = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.regionDiskTypes.insert" }
+  create(cfg)={ api-id="compute.regionDiskTypes.insert" config=cfg }
+  read(cfg)={ api-id="compute.regionDiskTypes.get" config=cfg }
+  update(cfg)={ api-id="compute.regionDiskTypes.patch" config=cfg}
+  delete(cfg)={ api-id="compute.regionDiskTypes.delete" config={ name=cfg.name } }
+}
+export regionDiskTypes
+
+type vpnGateways = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.vpnGateways.insert" }
+  create(cfg)={ api-id="compute.vpnGateways.insert" config=cfg }
+  read(cfg)={ api-id="compute.vpnGateways.get" config=cfg }
+  update(cfg)={ api-id="compute.vpnGateways.patch" config=cfg}
+  delete(cfg)={ api-id="compute.vpnGateways.delete" config={ name=cfg.name } }
+}
+export vpnGateways
+
+type networkFirewallPolicies = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.networkFirewallPolicies.insert" }
+  create(cfg)={ api-id="compute.networkFirewallPolicies.insert" config=cfg }
+  read(cfg)={ api-id="compute.networkFirewallPolicies.get" config=cfg }
+  update(cfg)={ api-id="compute.networkFirewallPolicies.patch" config=cfg}
+  delete(cfg)={ api-id="compute.networkFirewallPolicies.delete" config={ name=cfg.name } }
+}
+export networkFirewallPolicies
+
+type organizationSecurityPolicies = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.organizationSecurityPolicies.insert" }
+  create(cfg)={ api-id="compute.organizationSecurityPolicies.insert" config=cfg }
+  read(cfg)={ api-id="compute.organizationSecurityPolicies.get" config=cfg }
+  update(cfg)={ api-id="compute.organizationSecurityPolicies.patch" config=cfg}
+  delete(cfg)={ api-id="compute.organizationSecurityPolicies.delete" config={ name=cfg.name } }
+}
+export organizationSecurityPolicies
+
+type externalVpnGateways = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.externalVpnGateways.insert" }
+  create(cfg)={ api-id="compute.externalVpnGateways.insert" config=cfg }
+  read(cfg)={ api-id="compute.externalVpnGateways.get" config=cfg }
+  update(cfg)={ api-id="compute.externalVpnGateways.patch" config=cfg}
+  delete(cfg)={ api-id="compute.externalVpnGateways.delete" config={ name=cfg.name } }
+}
+export externalVpnGateways
+
+type targetTcpProxies = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.targetTcpProxies.insert" }
+  create(cfg)={ api-id="compute.targetTcpProxies.insert" config=cfg }
+  read(cfg)={ api-id="compute.targetTcpProxies.get" config=cfg }
+  update(cfg)={ api-id="compute.targetTcpProxies.patch" config=cfg}
+  delete(cfg)={ api-id="compute.targetTcpProxies.delete" config={ name=cfg.name } }
+}
+export targetTcpProxies
+
+type urlMaps = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.urlMaps.insert" }
+  create(cfg)={ api-id="compute.urlMaps.insert" config=cfg }
+  read(cfg)={ api-id="compute.urlMaps.get" config=cfg }
+  update(cfg)={ api-id="compute.urlMaps.patch" config=cfg}
+  delete(cfg)={ api-id="compute.urlMaps.delete" config={ name=cfg.name } }
+}
+export urlMaps
+
+type healthChecks = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.healthChecks.insert" }
+  create(cfg)={ api-id="compute.healthChecks.insert" config=cfg }
+  read(cfg)={ api-id="compute.healthChecks.get" config=cfg }
+  update(cfg)={ api-id="compute.healthChecks.patch" config=cfg}
+  delete(cfg)={ api-id="compute.healthChecks.delete" config={ name=cfg.name } }
+}
+export healthChecks
+
+type backendBuckets = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.backendBuckets.insert" }
+  create(cfg)={ api-id="compute.backendBuckets.insert" config=cfg }
+  read(cfg)={ api-id="compute.backendBuckets.get" config=cfg }
+  update(cfg)={ api-id="compute.backendBuckets.patch" config=cfg}
+  delete(cfg)={ api-id="compute.backendBuckets.delete" config={ name=cfg.name } }
+}
+export backendBuckets
+
+type networkEdgeSecurityServices = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.networkEdgeSecurityServices.insert" }
+  create(cfg)={ api-id="compute.networkEdgeSecurityServices.insert" config=cfg }
+  read(cfg)={ api-id="compute.networkEdgeSecurityServices.get" config=cfg }
+  update(cfg)={ api-id="compute.networkEdgeSecurityServices.patch" config=cfg}
+  delete(cfg)={ api-id="compute.networkEdgeSecurityServices.delete" config={ name=cfg.name } }
+}
+export networkEdgeSecurityServices
+
+type zones = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.zones.insert" }
+  create(cfg)={ api-id="compute.zones.insert" config=cfg }
+  read(cfg)={ api-id="compute.zones.get" config=cfg }
+  update(cfg)={ api-id="compute.zones.patch" config=cfg}
+  delete(cfg)={ api-id="compute.zones.delete" config={ name=cfg.name } }
+}
+export zones
+
+type regionHealthCheckServices = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.regionHealthCheckServices.insert" }
+  create(cfg)={ api-id="compute.regionHealthCheckServices.insert" config=cfg }
+  read(cfg)={ api-id="compute.regionHealthCheckServices.get" config=cfg }
+  update(cfg)={ api-id="compute.regionHealthCheckServices.patch" config=cfg}
+  delete(cfg)={ api-id="compute.regionHealthCheckServices.delete" config={ name=cfg.name } }
+}
+export regionHealthCheckServices
+
+type subnetworks = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.subnetworks.insert" }
+  create(cfg)={ api-id="compute.subnetworks.insert" config=cfg }
+  read(cfg)={ api-id="compute.subnetworks.get" config=cfg }
+  update(cfg)={ api-id="compute.subnetworks.patch" config=cfg}
+  delete(cfg)={ api-id="compute.subnetworks.delete" config={ name=cfg.name } }
+}
+export subnetworks
+
+type regions = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.regions.insert" }
+  create(cfg)={ api-id="compute.regions.insert" config=cfg }
+  read(cfg)={ api-id="compute.regions.get" config=cfg }
+  update(cfg)={ api-id="compute.regions.patch" config=cfg}
+  delete(cfg)={ api-id="compute.regions.delete" config={ name=cfg.name } }
+}
+export regions
+
+type interconnectAttachments = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.interconnectAttachments.insert" }
+  create(cfg)={ api-id="compute.interconnectAttachments.insert" config=cfg }
+  read(cfg)={ api-id="compute.interconnectAttachments.get" config=cfg }
+  update(cfg)={ api-id="compute.interconnectAttachments.patch" config=cfg}
+  delete(cfg)={ api-id="compute.interconnectAttachments.delete" config={ name=cfg.name } }
+}
+export interconnectAttachments
+
+type regionSecurityPolicies = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.regionSecurityPolicies.insert" }
+  create(cfg)={ api-id="compute.regionSecurityPolicies.insert" config=cfg }
+  read(cfg)={ api-id="compute.regionSecurityPolicies.get" config=cfg }
+  update(cfg)={ api-id="compute.regionSecurityPolicies.patch" config=cfg}
+  delete(cfg)={ api-id="compute.regionSecurityPolicies.delete" config={ name=cfg.name } }
+}
+export regionSecurityPolicies
+
+type globalNetworkEndpointGroups = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.globalNetworkEndpointGroups.insert" }
+  create(cfg)={ api-id="compute.globalNetworkEndpointGroups.insert" config=cfg }
+  read(cfg)={ api-id="compute.globalNetworkEndpointGroups.get" config=cfg }
+  update(cfg)={ api-id="compute.globalNetworkEndpointGroups.patch" config=cfg}
+  delete(cfg)={ api-id="compute.globalNetworkEndpointGroups.delete" config={ name=cfg.name } }
+}
+export globalNetworkEndpointGroups
+
+type firewalls = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.firewalls.insert" }
+  create(cfg)={ api-id="compute.firewalls.insert" config=cfg }
+  read(cfg)={ api-id="compute.firewalls.get" config=cfg }
+  update(cfg)={ api-id="compute.firewalls.patch" config=cfg}
+  delete(cfg)={ api-id="compute.firewalls.delete" config={ name=cfg.name } }
+}
+export firewalls
+
+type interconnectRemoteLocations = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.interconnectRemoteLocations.insert" }
+  create(cfg)={ api-id="compute.interconnectRemoteLocations.insert" config=cfg }
+  read(cfg)={ api-id="compute.interconnectRemoteLocations.get" config=cfg }
+  update(cfg)={ api-id="compute.interconnectRemoteLocations.patch" config=cfg}
+  delete(cfg)={ api-id="compute.interconnectRemoteLocations.delete" config={ name=cfg.name } }
+}
+export interconnectRemoteLocations
+
+type targetVpnGateways = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.targetVpnGateways.insert" }
+  create(cfg)={ api-id="compute.targetVpnGateways.insert" config=cfg }
+  read(cfg)={ api-id="compute.targetVpnGateways.get" config=cfg }
+  update(cfg)={ api-id="compute.targetVpnGateways.patch" config=cfg}
+  delete(cfg)={ api-id="compute.targetVpnGateways.delete" config={ name=cfg.name } }
+}
+export targetVpnGateways
+
+type backendServices = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.backendServices.insert" }
+  create(cfg)={ api-id="compute.backendServices.insert" config=cfg }
+  read(cfg)={ api-id="compute.backendServices.get" config=cfg }
+  update(cfg)={ api-id="compute.backendServices.patch" config=cfg}
+  delete(cfg)={ api-id="compute.backendServices.delete" config={ name=cfg.name } }
+}
+export backendServices
+
+type regionSslCertificates = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.regionSslCertificates.insert" }
+  create(cfg)={ api-id="compute.regionSslCertificates.insert" config=cfg }
+  read(cfg)={ api-id="compute.regionSslCertificates.get" config=cfg }
+  update(cfg)={ api-id="compute.regionSslCertificates.patch" config=cfg}
+  delete(cfg)={ api-id="compute.regionSslCertificates.delete" config={ name=cfg.name } }
+}
+export regionSslCertificates
+
+type httpsHealthChecks = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.httpsHealthChecks.insert" }
+  create(cfg)={ api-id="compute.httpsHealthChecks.insert" config=cfg }
+  read(cfg)={ api-id="compute.httpsHealthChecks.get" config=cfg }
+  update(cfg)={ api-id="compute.httpsHealthChecks.patch" config=cfg}
+  delete(cfg)={ api-id="compute.httpsHealthChecks.delete" config={ name=cfg.name } }
+}
+export httpsHealthChecks
+
+type regionInstanceGroupManagers = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.regionInstanceGroupManagers.insert" }
+  create(cfg)={ api-id="compute.regionInstanceGroupManagers.insert" config=cfg }
+  read(cfg)={ api-id="compute.regionInstanceGroupManagers.get" config=cfg }
+  update(cfg)={ api-id="compute.regionInstanceGroupManagers.patch" config=cfg}
+  delete(cfg)={ api-id="compute.regionInstanceGroupManagers.delete" config={ name=cfg.name } }
+}
+export regionInstanceGroupManagers
+
+type globalOrganizationOperations = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.globalOrganizationOperations.insert" }
+  create(cfg)={ api-id="compute.globalOrganizationOperations.insert" config=cfg }
+  read(cfg)={ api-id="compute.globalOrganizationOperations.get" config=cfg }
+  update(cfg)={ api-id="compute.globalOrganizationOperations.patch" config=cfg}
+  delete(cfg)={ api-id="compute.globalOrganizationOperations.delete" config={ name=cfg.name } }
+}
+export globalOrganizationOperations
+
+type snapshots = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.snapshots.insert" }
+  create(cfg)={ api-id="compute.snapshots.insert" config=cfg }
+  read(cfg)={ api-id="compute.snapshots.get" config=cfg }
+  update(cfg)={ api-id="compute.snapshots.patch" config=cfg}
+  delete(cfg)={ api-id="compute.snapshots.delete" config={ name=cfg.name } }
+}
+export snapshots
+
+type globalPublicDelegatedPrefixes = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.globalPublicDelegatedPrefixes.insert" }
+  create(cfg)={ api-id="compute.globalPublicDelegatedPrefixes.insert" config=cfg }
+  read(cfg)={ api-id="compute.globalPublicDelegatedPrefixes.get" config=cfg }
+  update(cfg)={ api-id="compute.globalPublicDelegatedPrefixes.patch" config=cfg}
+  delete(cfg)={ api-id="compute.globalPublicDelegatedPrefixes.delete" config={ name=cfg.name } }
+}
+export globalPublicDelegatedPrefixes
+
+type resourcePolicies = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.resourcePolicies.insert" }
+  create(cfg)={ api-id="compute.resourcePolicies.insert" config=cfg }
+  read(cfg)={ api-id="compute.resourcePolicies.get" config=cfg }
+  update(cfg)={ api-id="compute.resourcePolicies.patch" config=cfg}
+  delete(cfg)={ api-id="compute.resourcePolicies.delete" config={ name=cfg.name } }
+}
+export resourcePolicies
+
+type snapshotSettings = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.snapshotSettings.insert" }
+  create(cfg)={ api-id="compute.snapshotSettings.insert" config=cfg }
+  read(cfg)={ api-id="compute.snapshotSettings.get" config=cfg }
+  update(cfg)={ api-id="compute.snapshotSettings.patch" config=cfg}
+  delete(cfg)={ api-id="compute.snapshotSettings.delete" config={ name=cfg.name } }
+}
+export snapshotSettings
+
+type globalForwardingRules = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.globalForwardingRules.insert" }
+  create(cfg)={ api-id="compute.globalForwardingRules.insert" config=cfg }
+  read(cfg)={ api-id="compute.globalForwardingRules.get" config=cfg }
+  update(cfg)={ api-id="compute.globalForwardingRules.patch" config=cfg}
+  delete(cfg)={ api-id="compute.globalForwardingRules.delete" config={ name=cfg.name } }
+}
+export globalForwardingRules
+
+type acceleratorTypes = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.acceleratorTypes.insert" }
+  create(cfg)={ api-id="compute.acceleratorTypes.insert" config=cfg }
+  read(cfg)={ api-id="compute.acceleratorTypes.get" config=cfg }
+  update(cfg)={ api-id="compute.acceleratorTypes.patch" config=cfg}
+  delete(cfg)={ api-id="compute.acceleratorTypes.delete" config={ name=cfg.name } }
+}
+export acceleratorTypes
+
+type nodeGroups = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.nodeGroups.insert" }
+  create(cfg)={ api-id="compute.nodeGroups.insert" config=cfg }
+  read(cfg)={ api-id="compute.nodeGroups.get" config=cfg }
+  update(cfg)={ api-id="compute.nodeGroups.patch" config=cfg}
+  delete(cfg)={ api-id="compute.nodeGroups.delete" config={ name=cfg.name } }
+}
+export nodeGroups
+
+type regionCommitments = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.regionCommitments.insert" }
+  create(cfg)={ api-id="compute.regionCommitments.insert" config=cfg }
+  read(cfg)={ api-id="compute.regionCommitments.get" config=cfg }
+  update(cfg)={ api-id="compute.regionCommitments.patch" config=cfg}
+  delete(cfg)={ api-id="compute.regionCommitments.delete" config={ name=cfg.name } }
+}
+export regionCommitments
+
+type regionHealthChecks = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.regionHealthChecks.insert" }
+  create(cfg)={ api-id="compute.regionHealthChecks.insert" config=cfg }
+  read(cfg)={ api-id="compute.regionHealthChecks.get" config=cfg }
+  update(cfg)={ api-id="compute.regionHealthChecks.patch" config=cfg}
+  delete(cfg)={ api-id="compute.regionHealthChecks.delete" config={ name=cfg.name } }
+}
+export regionHealthChecks
+
+type packetMirrorings = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.packetMirrorings.insert" }
+  create(cfg)={ api-id="compute.packetMirrorings.insert" config=cfg }
+  read(cfg)={ api-id="compute.packetMirrorings.get" config=cfg }
+  update(cfg)={ api-id="compute.packetMirrorings.patch" config=cfg}
+  delete(cfg)={ api-id="compute.packetMirrorings.delete" config={ name=cfg.name } }
+}
+export packetMirrorings
+
+type regionNotificationEndpoints = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.regionNotificationEndpoints.insert" }
+  create(cfg)={ api-id="compute.regionNotificationEndpoints.insert" config=cfg }
+  read(cfg)={ api-id="compute.regionNotificationEndpoints.get" config=cfg }
+  update(cfg)={ api-id="compute.regionNotificationEndpoints.patch" config=cfg}
+  delete(cfg)={ api-id="compute.regionNotificationEndpoints.delete" config={ name=cfg.name } }
+}
+export regionNotificationEndpoints
+
+type regionTargetHttpProxies = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.regionTargetHttpProxies.insert" }
+  create(cfg)={ api-id="compute.regionTargetHttpProxies.insert" config=cfg }
+  read(cfg)={ api-id="compute.regionTargetHttpProxies.get" config=cfg }
+  update(cfg)={ api-id="compute.regionTargetHttpProxies.patch" config=cfg}
+  delete(cfg)={ api-id="compute.regionTargetHttpProxies.delete" config={ name=cfg.name } }
+}
+export regionTargetHttpProxies
+
+type zoneOperations = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.zoneOperations.insert" }
+  create(cfg)={ api-id="compute.zoneOperations.insert" config=cfg }
+  read(cfg)={ api-id="compute.zoneOperations.get" config=cfg }
+  update(cfg)={ api-id="compute.zoneOperations.patch" config=cfg}
+  delete(cfg)={ api-id="compute.zoneOperations.delete" config={ name=cfg.name } }
+}
+export zoneOperations
+
+type regionNetworkEndpointGroups = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.regionNetworkEndpointGroups.insert" }
+  create(cfg)={ api-id="compute.regionNetworkEndpointGroups.insert" config=cfg }
+  read(cfg)={ api-id="compute.regionNetworkEndpointGroups.get" config=cfg }
+  update(cfg)={ api-id="compute.regionNetworkEndpointGroups.patch" config=cfg}
+  delete(cfg)={ api-id="compute.regionNetworkEndpointGroups.delete" config={ name=cfg.name } }
+}
+export regionNetworkEndpointGroups
+
+type disks = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.disks.insert" }
+  create(cfg)={ api-id="compute.disks.insert" config=cfg }
+  read(cfg)={ api-id="compute.disks.get" config=cfg }
+  update(cfg)={ api-id="compute.disks.patch" config=cfg}
+  delete(cfg)={ api-id="compute.disks.delete" config={ name=cfg.name } }
+}
+export disks
+
+type routers = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.routers.insert" }
+  create(cfg)={ api-id="compute.routers.insert" config=cfg }
+  read(cfg)={ api-id="compute.routers.get" config=cfg }
+  update(cfg)={ api-id="compute.routers.patch" config=cfg}
+  delete(cfg)={ api-id="compute.routers.delete" config={ name=cfg.name } }
+}
+export routers
+
+type regionZones = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.regionZones.insert" }
+  create(cfg)={ api-id="compute.regionZones.insert" config=cfg }
+  read(cfg)={ api-id="compute.regionZones.get" config=cfg }
+  update(cfg)={ api-id="compute.regionZones.patch" config=cfg}
+  delete(cfg)={ api-id="compute.regionZones.delete" config={ name=cfg.name } }
+}
+export regionZones
+
+type globalAddresses = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.globalAddresses.insert" }
+  create(cfg)={ api-id="compute.globalAddresses.insert" config=cfg }
+  read(cfg)={ api-id="compute.globalAddresses.get" config=cfg }
+  update(cfg)={ api-id="compute.globalAddresses.patch" config=cfg}
+  delete(cfg)={ api-id="compute.globalAddresses.delete" config={ name=cfg.name } }
+}
+export globalAddresses
+
+type publicAdvertisedPrefixes = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.publicAdvertisedPrefixes.insert" }
+  create(cfg)={ api-id="compute.publicAdvertisedPrefixes.insert" config=cfg }
+  read(cfg)={ api-id="compute.publicAdvertisedPrefixes.get" config=cfg }
+  update(cfg)={ api-id="compute.publicAdvertisedPrefixes.patch" config=cfg}
+  delete(cfg)={ api-id="compute.publicAdvertisedPrefixes.delete" config={ name=cfg.name } }
+}
+export publicAdvertisedPrefixes
+
+type instantSnapshots = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.instantSnapshots.insert" }
+  create(cfg)={ api-id="compute.instantSnapshots.insert" config=cfg }
+  read(cfg)={ api-id="compute.instantSnapshots.get" config=cfg }
+  update(cfg)={ api-id="compute.instantSnapshots.patch" config=cfg}
+  delete(cfg)={ api-id="compute.instantSnapshots.delete" config={ name=cfg.name } }
+}
+export instantSnapshots
+
+type sslCertificates = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.sslCertificates.insert" }
+  create(cfg)={ api-id="compute.sslCertificates.insert" config=cfg }
+  read(cfg)={ api-id="compute.sslCertificates.get" config=cfg }
+  update(cfg)={ api-id="compute.sslCertificates.patch" config=cfg}
+  delete(cfg)={ api-id="compute.sslCertificates.delete" config={ name=cfg.name } }
+}
+export sslCertificates
+
+type futureReservations = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.futureReservations.insert" }
+  create(cfg)={ api-id="compute.futureReservations.insert" config=cfg }
+  read(cfg)={ api-id="compute.futureReservations.get" config=cfg }
+  update(cfg)={ api-id="compute.futureReservations.patch" config=cfg}
+  delete(cfg)={ api-id="compute.futureReservations.delete" config={ name=cfg.name } }
+}
+export futureReservations
+
+type autoscalers = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.autoscalers.insert" }
+  create(cfg)={ api-id="compute.autoscalers.insert" config=cfg }
+  read(cfg)={ api-id="compute.autoscalers.get" config=cfg }
+  update(cfg)={ api-id="compute.autoscalers.patch" config=cfg}
+  delete(cfg)={ api-id="compute.autoscalers.delete" config={ name=cfg.name } }
+}
+export autoscalers
+
+type instances = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.instances.insert" }
+  create(cfg)={ api-id="compute.instances.insert" config=cfg }
+  read(cfg)={ api-id="compute.instances.get" config=cfg }
+  update(cfg)={ api-id="compute.instances.patch" config=cfg}
+  delete(cfg)={ api-id="compute.instances.delete" config={ name=cfg.name } }
+}
+export instances
+
+type httpHealthChecks = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.httpHealthChecks.insert" }
+  create(cfg)={ api-id="compute.httpHealthChecks.insert" config=cfg }
+  read(cfg)={ api-id="compute.httpHealthChecks.get" config=cfg }
+  update(cfg)={ api-id="compute.httpHealthChecks.patch" config=cfg}
+  delete(cfg)={ api-id="compute.httpHealthChecks.delete" config={ name=cfg.name } }
+}
+export httpHealthChecks
+
+type regionTargetHttpsProxies = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.regionTargetHttpsProxies.insert" }
+  create(cfg)={ api-id="compute.regionTargetHttpsProxies.insert" config=cfg }
+  read(cfg)={ api-id="compute.regionTargetHttpsProxies.get" config=cfg }
+  update(cfg)={ api-id="compute.regionTargetHttpsProxies.patch" config=cfg}
+  delete(cfg)={ api-id="compute.regionTargetHttpsProxies.delete" config={ name=cfg.name } }
+}
+export regionTargetHttpsProxies
+
+type instanceGroups = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.instanceGroups.insert" }
+  create(cfg)={ api-id="compute.instanceGroups.insert" config=cfg }
+  read(cfg)={ api-id="compute.instanceGroups.get" config=cfg }
+  update(cfg)={ api-id="compute.instanceGroups.patch" config=cfg}
+  delete(cfg)={ api-id="compute.instanceGroups.delete" config={ name=cfg.name } }
+}
+export instanceGroups
+
+type images = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.images.insert" }
+  create(cfg)={ api-id="compute.images.insert" config=cfg }
+  read(cfg)={ api-id="compute.images.get" config=cfg }
+  update(cfg)={ api-id="compute.images.patch" config=cfg}
+  delete(cfg)={ api-id="compute.images.delete" config={ name=cfg.name } }
+}
+export images
+
+type targetGrpcProxies = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.targetGrpcProxies.insert" }
+  create(cfg)={ api-id="compute.targetGrpcProxies.insert" config=cfg }
+  read(cfg)={ api-id="compute.targetGrpcProxies.get" config=cfg }
+  update(cfg)={ api-id="compute.targetGrpcProxies.patch" config=cfg}
+  delete(cfg)={ api-id="compute.targetGrpcProxies.delete" config={ name=cfg.name } }
+}
+export targetGrpcProxies
+
+type sslPolicies = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.sslPolicies.insert" }
+  create(cfg)={ api-id="compute.sslPolicies.insert" config=cfg }
+  read(cfg)={ api-id="compute.sslPolicies.get" config=cfg }
+  update(cfg)={ api-id="compute.sslPolicies.patch" config=cfg}
+  delete(cfg)={ api-id="compute.sslPolicies.delete" config={ name=cfg.name } }
+}
+export sslPolicies
+
+type regionOperations = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.regionOperations.insert" }
+  create(cfg)={ api-id="compute.regionOperations.insert" config=cfg }
+  read(cfg)={ api-id="compute.regionOperations.get" config=cfg }
+  update(cfg)={ api-id="compute.regionOperations.patch" config=cfg}
+  delete(cfg)={ api-id="compute.regionOperations.delete" config={ name=cfg.name } }
+}
+export regionOperations
+
+type networkEndpointGroups = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.networkEndpointGroups.insert" }
+  create(cfg)={ api-id="compute.networkEndpointGroups.insert" config=cfg }
+  read(cfg)={ api-id="compute.networkEndpointGroups.get" config=cfg }
+  update(cfg)={ api-id="compute.networkEndpointGroups.patch" config=cfg}
+  delete(cfg)={ api-id="compute.networkEndpointGroups.delete" config={ name=cfg.name } }
+}
+export networkEndpointGroups
+
+type regionAutoscalers = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.regionAutoscalers.insert" }
+  create(cfg)={ api-id="compute.regionAutoscalers.insert" config=cfg }
+  read(cfg)={ api-id="compute.regionAutoscalers.get" config=cfg }
+  update(cfg)={ api-id="compute.regionAutoscalers.patch" config=cfg}
+  delete(cfg)={ api-id="compute.regionAutoscalers.delete" config={ name=cfg.name } }
+}
+export regionAutoscalers
+
+type regionInstanceGroups = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.regionInstanceGroups.insert" }
+  create(cfg)={ api-id="compute.regionInstanceGroups.insert" config=cfg }
+  read(cfg)={ api-id="compute.regionInstanceGroups.get" config=cfg }
+  update(cfg)={ api-id="compute.regionInstanceGroups.patch" config=cfg}
+  delete(cfg)={ api-id="compute.regionInstanceGroups.delete" config={ name=cfg.name } }
+}
+export regionInstanceGroups
+
+type regionSslPolicies = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.regionSslPolicies.insert" }
+  create(cfg)={ api-id="compute.regionSslPolicies.insert" config=cfg }
+  read(cfg)={ api-id="compute.regionSslPolicies.get" config=cfg }
+  update(cfg)={ api-id="compute.regionSslPolicies.patch" config=cfg}
+  delete(cfg)={ api-id="compute.regionSslPolicies.delete" config={ name=cfg.name } }
+}
+export regionSslPolicies
+
+type firewallPolicies = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.firewallPolicies.insert" }
+  create(cfg)={ api-id="compute.firewallPolicies.insert" config=cfg }
+  read(cfg)={ api-id="compute.firewallPolicies.get" config=cfg }
+  update(cfg)={ api-id="compute.firewallPolicies.patch" config=cfg}
+  delete(cfg)={ api-id="compute.firewallPolicies.delete" config={ name=cfg.name } }
+}
+export firewallPolicies
+
+type projects = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.projects.insert" }
+  create(cfg)={ api-id="compute.projects.insert" config=cfg }
+  read(cfg)={ api-id="compute.projects.get" config=cfg }
+  update(cfg)={ api-id="compute.projects.patch" config=cfg}
+  delete(cfg)={ api-id="compute.projects.delete" config={ name=cfg.name } }
+}
+export projects
+
+type targetHttpProxies = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.targetHttpProxies.insert" }
+  create(cfg)={ api-id="compute.targetHttpProxies.insert" config=cfg }
+  read(cfg)={ api-id="compute.targetHttpProxies.get" config=cfg }
+  update(cfg)={ api-id="compute.targetHttpProxies.patch" config=cfg}
+  delete(cfg)={ api-id="compute.targetHttpProxies.delete" config={ name=cfg.name } }
+}
+export targetHttpProxies
+
+type targetPools = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.targetPools.insert" }
+  create(cfg)={ api-id="compute.targetPools.insert" config=cfg }
+  read(cfg)={ api-id="compute.targetPools.get" config=cfg }
+  update(cfg)={ api-id="compute.targetPools.patch" config=cfg}
+  delete(cfg)={ api-id="compute.targetPools.delete" config={ name=cfg.name } }
+}
+export targetPools
+
+type targetHttpsProxies = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.targetHttpsProxies.insert" }
+  create(cfg)={ api-id="compute.targetHttpsProxies.insert" config=cfg }
+  read(cfg)={ api-id="compute.targetHttpsProxies.get" config=cfg }
+  update(cfg)={ api-id="compute.targetHttpsProxies.patch" config=cfg}
+  delete(cfg)={ api-id="compute.targetHttpsProxies.delete" config={ name=cfg.name } }
+}
+export targetHttpsProxies
+
+type regionBackendServices = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.regionBackendServices.insert" }
+  create(cfg)={ api-id="compute.regionBackendServices.insert" config=cfg }
+  read(cfg)={ api-id="compute.regionBackendServices.get" config=cfg }
+  update(cfg)={ api-id="compute.regionBackendServices.patch" config=cfg}
+  delete(cfg)={ api-id="compute.regionBackendServices.delete" config={ name=cfg.name } }
+}
+export regionBackendServices
+
+type routes = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.routes.insert" }
+  create(cfg)={ api-id="compute.routes.insert" config=cfg }
+  read(cfg)={ api-id="compute.routes.get" config=cfg }
+  update(cfg)={ api-id="compute.routes.patch" config=cfg}
+  delete(cfg)={ api-id="compute.routes.delete" config={ name=cfg.name } }
+}
+export routes
+
+type networkAttachments = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.networkAttachments.insert" }
+  create(cfg)={ api-id="compute.networkAttachments.insert" config=cfg }
+  read(cfg)={ api-id="compute.networkAttachments.get" config=cfg }
+  update(cfg)={ api-id="compute.networkAttachments.patch" config=cfg}
+  delete(cfg)={ api-id="compute.networkAttachments.delete" config={ name=cfg.name } }
+}
+export networkAttachments
+
+type licenses = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.licenses.insert" }
+  create(cfg)={ api-id="compute.licenses.insert" config=cfg }
+  read(cfg)={ api-id="compute.licenses.get" config=cfg }
+  update(cfg)={ api-id="compute.licenses.patch" config=cfg}
+  delete(cfg)={ api-id="compute.licenses.delete" config={ name=cfg.name } }
+}
+export licenses
+
+type publicDelegatedPrefixes = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.publicDelegatedPrefixes.insert" }
+  create(cfg)={ api-id="compute.publicDelegatedPrefixes.insert" config=cfg }
+  read(cfg)={ api-id="compute.publicDelegatedPrefixes.get" config=cfg }
+  update(cfg)={ api-id="compute.publicDelegatedPrefixes.patch" config=cfg}
+  delete(cfg)={ api-id="compute.publicDelegatedPrefixes.delete" config={ name=cfg.name } }
+}
+export publicDelegatedPrefixes
+
+type reservations = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.reservations.insert" }
+  create(cfg)={ api-id="compute.reservations.insert" config=cfg }
+  read(cfg)={ api-id="compute.reservations.get" config=cfg }
+  update(cfg)={ api-id="compute.reservations.patch" config=cfg}
+  delete(cfg)={ api-id="compute.reservations.delete" config={ name=cfg.name } }
+}
+export reservations
+
+type addresses = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.addresses.insert" }
+  create(cfg)={ api-id="compute.addresses.insert" config=cfg }
+  read(cfg)={ api-id="compute.addresses.get" config=cfg }
+  update(cfg)={ api-id="compute.addresses.patch" config=cfg}
+  delete(cfg)={ api-id="compute.addresses.delete" config={ name=cfg.name } }
+}
+export addresses
+
+type machineImages = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.machineImages.insert" }
+  create(cfg)={ api-id="compute.machineImages.insert" config=cfg }
+  read(cfg)={ api-id="compute.machineImages.get" config=cfg }
+  update(cfg)={ api-id="compute.machineImages.patch" config=cfg}
+  delete(cfg)={ api-id="compute.machineImages.delete" config={ name=cfg.name } }
+}
+export machineImages
+
+type interconnects = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.interconnects.insert" }
+  create(cfg)={ api-id="compute.interconnects.insert" config=cfg }
+  read(cfg)={ api-id="compute.interconnects.get" config=cfg }
+  update(cfg)={ api-id="compute.interconnects.patch" config=cfg}
+  delete(cfg)={ api-id="compute.interconnects.delete" config={ name=cfg.name } }
+}
+export interconnects
+
+type instanceSettings = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.instanceSettings.insert" }
+  create(cfg)={ api-id="compute.instanceSettings.insert" config=cfg }
+  read(cfg)={ api-id="compute.instanceSettings.get" config=cfg }
+  update(cfg)={ api-id="compute.instanceSettings.patch" config=cfg}
+  delete(cfg)={ api-id="compute.instanceSettings.delete" config={ name=cfg.name } }
+}
+export instanceSettings
+
+type instanceGroupManagers = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.instanceGroupManagers.insert" }
+  create(cfg)={ api-id="compute.instanceGroupManagers.insert" config=cfg }
+  read(cfg)={ api-id="compute.instanceGroupManagers.get" config=cfg }
+  update(cfg)={ api-id="compute.instanceGroupManagers.patch" config=cfg}
+  delete(cfg)={ api-id="compute.instanceGroupManagers.delete" config={ name=cfg.name } }
+}
+export instanceGroupManagers
+
+type diskTypes = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.diskTypes.insert" }
+  create(cfg)={ api-id="compute.diskTypes.insert" config=cfg }
+  read(cfg)={ api-id="compute.diskTypes.get" config=cfg }
+  update(cfg)={ api-id="compute.diskTypes.patch" config=cfg}
+  delete(cfg)={ api-id="compute.diskTypes.delete" config={ name=cfg.name } }
+}
+export diskTypes
+
+type regionInstances = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.regionInstances.insert" }
+  create(cfg)={ api-id="compute.regionInstances.insert" config=cfg }
+  read(cfg)={ api-id="compute.regionInstances.get" config=cfg }
+  update(cfg)={ api-id="compute.regionInstances.patch" config=cfg}
+  delete(cfg)={ api-id="compute.regionInstances.delete" config={ name=cfg.name } }
+}
+export regionInstances
+
+type securityPolicies = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.securityPolicies.insert" }
+  create(cfg)={ api-id="compute.securityPolicies.insert" config=cfg }
+  read(cfg)={ api-id="compute.securityPolicies.get" config=cfg }
+  update(cfg)={ api-id="compute.securityPolicies.patch" config=cfg}
+  delete(cfg)={ api-id="compute.securityPolicies.delete" config={ name=cfg.name } }
+}
+export securityPolicies
+
+type nodeTemplates = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.nodeTemplates.insert" }
+  create(cfg)={ api-id="compute.nodeTemplates.insert" config=cfg }
+  read(cfg)={ api-id="compute.nodeTemplates.get" config=cfg }
+  update(cfg)={ api-id="compute.nodeTemplates.patch" config=cfg}
+  delete(cfg)={ api-id="compute.nodeTemplates.delete" config={ name=cfg.name } }
+}
+export nodeTemplates
+
+type nodeTypes = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.nodeTypes.insert" }
+  create(cfg)={ api-id="compute.nodeTypes.insert" config=cfg }
+  read(cfg)={ api-id="compute.nodeTypes.get" config=cfg }
+  update(cfg)={ api-id="compute.nodeTypes.patch" config=cfg}
+  delete(cfg)={ api-id="compute.nodeTypes.delete" config={ name=cfg.name } }
+}
+export nodeTypes
+
+type regionInstantSnapshots = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.regionInstantSnapshots.insert" }
+  create(cfg)={ api-id="compute.regionInstantSnapshots.insert" config=cfg }
+  read(cfg)={ api-id="compute.regionInstantSnapshots.get" config=cfg }
+  update(cfg)={ api-id="compute.regionInstantSnapshots.patch" config=cfg}
+  delete(cfg)={ api-id="compute.regionInstantSnapshots.delete" config={ name=cfg.name } }
+}
+export regionInstantSnapshots
+
+type instanceTemplates = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.instanceTemplates.insert" }
+  create(cfg)={ api-id="compute.instanceTemplates.insert" config=cfg }
+  read(cfg)={ api-id="compute.instanceTemplates.get" config=cfg }
+  update(cfg)={ api-id="compute.instanceTemplates.patch" config=cfg}
+  delete(cfg)={ api-id="compute.instanceTemplates.delete" config={ name=cfg.name } }
+}
+export instanceTemplates
+
+type networks = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.networks.insert" }
+  create(cfg)={ api-id="compute.networks.insert" config=cfg }
+  read(cfg)={ api-id="compute.networks.get" config=cfg }
+  update(cfg)={ api-id="compute.networks.patch" config=cfg}
+  delete(cfg)={ api-id="compute.networks.delete" config={ name=cfg.name } }
+}
+export networks
+
+type vpnTunnels = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.vpnTunnels.insert" }
+  create(cfg)={ api-id="compute.vpnTunnels.insert" config=cfg }
+  read(cfg)={ api-id="compute.vpnTunnels.get" config=cfg }
+  update(cfg)={ api-id="compute.vpnTunnels.patch" config=cfg}
+  delete(cfg)={ api-id="compute.vpnTunnels.delete" config={ name=cfg.name } }
+}
+export vpnTunnels
+
+type globalOperations = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.globalOperations.insert" }
+  create(cfg)={ api-id="compute.globalOperations.insert" config=cfg }
+  read(cfg)={ api-id="compute.globalOperations.get" config=cfg }
+  update(cfg)={ api-id="compute.globalOperations.patch" config=cfg}
+  delete(cfg)={ api-id="compute.globalOperations.delete" config={ name=cfg.name } }
+}
+export globalOperations
+
+type regionTargetTcpProxies = {
+  origin(cfg)= cfg <- { driver="gcp" api="compute.regionTargetTcpProxies.insert" }
+  create(cfg)={ api-id="compute.regionTargetTcpProxies.insert" config=cfg }
+  read(cfg)={ api-id="compute.regionTargetTcpProxies.get" config=cfg }
+  update(cfg)={ api-id="compute.regionTargetTcpProxies.patch" config=cfg}
+  delete(cfg)={ api-id="compute.regionTargetTcpProxies.delete" config={ name=cfg.name } }
+}
+export regionTargetTcpProxies
+

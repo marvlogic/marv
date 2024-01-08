@@ -6,6 +6,27 @@ create-sa-name(cfg) = cfg <- {
     name = strf("projects/~a" cfg.project)
 }
 
+import types/gcp/_auto/iam as _auto
+
+type permission =  _base | _auto:permissions
+export permission
+
+type location =  _base | _auto:locations
+export location
+
+type iamPolicy =  _base | _auto:iamPolicies
+export iamPolicy
+
+type project =  _base | _auto:projects
+export project
+
+type role =  _base | _auto:roles
+export role
+
+type organization =  _base | _auto:organizations
+export organization
+
+
 type gcp:iam.serviceAccount = {
     create = iam.projects.serviceAccounts.create { create-sa-name identity }
     read = iam.projects.serviceAccounts.get { identity identity }

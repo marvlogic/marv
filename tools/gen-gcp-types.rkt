@@ -2,6 +2,7 @@
 
 (provide (all-defined-out))
 
+(require racket/string)
 (require marv/drivers/gcp/discovery)
 
 (define compute  (load-discovery "gcp" "compute:beta"))
@@ -35,8 +36,39 @@ EOF
       t (api-id create) (api-id create) (api-id read) (api-id update) (api-id delete) t
       ))))
 
+(define (singularise str)
+  (cond [(string-suffix? str "ies") (string-append (string-trim str "ies") "y")]
+        [else (string-trim #:left? #f str "s")]))
 
-;(with-output-to-file )
-; (with-output-to-file )
+(define (gen-shim api-name types)
+  (displayln (format #<<EOF
+#lang marv
 
-(define (gen-storage) (gen-types (api-resource-keys storage) "storage" "insert" "get" "patch" "delete"))
+import types/gcp/_auto/~a as _auto
+EOF
+                     api-name))
+  (for ([t (in-list types)])
+    (define sgl (singularise (symbol->string t)))
+
+    (displayln (format #<<EOF
+type ~a =  _base | _auto:~a
+export ~a
+
+EOF
+                       sgl t sgl))))
+
+
+(define (gen-all)
+
+  (define (gen-auto-file api api-name create read update delete)
+    (define (gen) (gen-types (api-resource-keys api) api-name create read update delete))
+    (define (shim) (gen-shim api-name (api-resource-keys api)))
+    (with-output-to-file #:exists 'replace (format "types/gcp/_auto/~a.mrv" api-name) gen)
+    (with-output-to-file #:exists 'replace (format "types/gcp/~a-shim.mrv" api-name) shim))
+
+  (gen-auto-file storage "storage" "insert" "get" "patch" "delete")
+  (gen-auto-file compute "compute" "insert" "get" "patch" "delete")
+  (gen-auto-file iam "iam" "create" "get" "patch" "delete")
+  (gen-auto-file secretmanager "secretmanager" "create" "get" "patch" "delete")
+  (gen-auto-file sql "sql" "insert" "get" "patch" "delete")
+  )

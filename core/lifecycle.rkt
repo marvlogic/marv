@@ -87,7 +87,8 @@
 
     (define res (resource-ref rsset k))
     (define type-fn (resource-type-fn res))
-    (define res-cfg (resource-config res))
+    ; TODO41 - similar code to driver-repr
+    (define res-cfg (unwrap-values (deref-config (state-get-state-set) (resource-config res))))
     (define cmd (type-fn 'read res-cfg))
     ;TODO41
     (define driver-id (get-driver-id type-fn res))
@@ -146,6 +147,7 @@
     (state-set-ref id (state-ref-origin id) reply-cfg))
 
   ; TODO - check if unpacking is done here or should use unwrap fn
+  ; TODO41 - driver-repr name?
   (define (driver-repr id)
     (define res (hash-ref mod id))
     (resource (resource-type-fn res)

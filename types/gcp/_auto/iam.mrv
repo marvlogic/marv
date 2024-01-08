@@ -1,0 +1,56 @@
+#lang marv
+## AUTO-GENERATED FILE - DO NOT EDIT!
+type permissions = {
+  origin(cfg)= cfg <- { driver="gcp" api="iam.permissions.create" }
+  create(cfg)={ api-id="iam.permissions.create" config=cfg }
+  read(cfg)={ api-id="iam.permissions.get" config=cfg }
+  update(cfg)={ api-id="iam.permissions.patch" config=cfg}
+  delete(cfg)={ api-id="iam.permissions.delete" config={ name=cfg.name } }
+}
+export permissions
+
+type locations = {
+  origin(cfg)= cfg <- { driver="gcp" api="iam.locations.create" }
+  create(cfg)={ api-id="iam.locations.create" config=cfg }
+  read(cfg)={ api-id="iam.locations.get" config=cfg }
+  update(cfg)={ api-id="iam.locations.patch" config=cfg}
+  delete(cfg)={ api-id="iam.locations.delete" config={ name=cfg.name } }
+}
+export locations
+
+type iamPolicies = {
+  origin(cfg)= cfg <- { driver="gcp" api="iam.iamPolicies.create" }
+  create(cfg)={ api-id="iam.iamPolicies.create" config=cfg }
+  read(cfg)={ api-id="iam.iamPolicies.get" config=cfg }
+  update(cfg)={ api-id="iam.iamPolicies.patch" config=cfg}
+  delete(cfg)={ api-id="iam.iamPolicies.delete" config={ name=cfg.name } }
+}
+export iamPolicies
+
+type projects = {
+  origin(cfg)= cfg <- { driver="gcp" api="iam.projects.create" }
+  create(cfg)={ api-id="iam.projects.create" config=cfg }
+  read(cfg)={ api-id="iam.projects.get" config=cfg }
+  update(cfg)={ api-id="iam.projects.patch" config=cfg}
+  delete(cfg)={ api-id="iam.projects.delete" config={ name=cfg.name } }
+}
+export projects
+
+type roles = {
+  origin(cfg)= cfg <- { driver="gcp" api="iam.roles.create" }
+  create(cfg)={ api-id="iam.roles.create" config=cfg }
+  read(cfg)={ api-id="iam.roles.get" config=cfg }
+  update(cfg)={ api-id="iam.roles.patch" config=cfg}
+  delete(cfg)={ api-id="iam.roles.delete" config={ name=cfg.name } }
+}
+export roles
+
+type organizations = {
+  origin(cfg)= cfg <- { driver="gcp" api="iam.organizations.create" }
+  create(cfg)={ api-id="iam.organizations.create" config=cfg }
+  read(cfg)={ api-id="iam.organizations.get" config=cfg }
+  update(cfg)={ api-id="iam.organizations.patch" config=cfg}
+  delete(cfg)={ api-id="iam.organizations.delete" config={ name=cfg.name } }
+}
+export organizations
+

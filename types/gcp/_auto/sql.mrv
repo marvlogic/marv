@@ -1,0 +1,92 @@
+#lang marv
+## AUTO-GENERATED FILE - DO NOT EDIT!
+type flags = {
+  origin(cfg)= cfg <- { driver="gcp" api="sql.flags.insert" }
+  create(cfg)={ api-id="sql.flags.insert" config=cfg }
+  read(cfg)={ api-id="sql.flags.get" config=cfg }
+  update(cfg)={ api-id="sql.flags.patch" config=cfg}
+  delete(cfg)={ api-id="sql.flags.delete" config={ name=cfg.name } }
+}
+export flags
+
+type users = {
+  origin(cfg)= cfg <- { driver="gcp" api="sql.users.insert" }
+  create(cfg)={ api-id="sql.users.insert" config=cfg }
+  read(cfg)={ api-id="sql.users.get" config=cfg }
+  update(cfg)={ api-id="sql.users.patch" config=cfg}
+  delete(cfg)={ api-id="sql.users.delete" config={ name=cfg.name } }
+}
+export users
+
+type sslCerts = {
+  origin(cfg)= cfg <- { driver="gcp" api="sql.sslCerts.insert" }
+  create(cfg)={ api-id="sql.sslCerts.insert" config=cfg }
+  read(cfg)={ api-id="sql.sslCerts.get" config=cfg }
+  update(cfg)={ api-id="sql.sslCerts.patch" config=cfg}
+  delete(cfg)={ api-id="sql.sslCerts.delete" config={ name=cfg.name } }
+}
+export sslCerts
+
+type connect = {
+  origin(cfg)= cfg <- { driver="gcp" api="sql.connect.insert" }
+  create(cfg)={ api-id="sql.connect.insert" config=cfg }
+  read(cfg)={ api-id="sql.connect.get" config=cfg }
+  update(cfg)={ api-id="sql.connect.patch" config=cfg}
+  delete(cfg)={ api-id="sql.connect.delete" config={ name=cfg.name } }
+}
+export connect
+
+type projects = {
+  origin(cfg)= cfg <- { driver="gcp" api="sql.projects.insert" }
+  create(cfg)={ api-id="sql.projects.insert" config=cfg }
+  read(cfg)={ api-id="sql.projects.get" config=cfg }
+  update(cfg)={ api-id="sql.projects.patch" config=cfg}
+  delete(cfg)={ api-id="sql.projects.delete" config={ name=cfg.name } }
+}
+export projects
+
+type backupRuns = {
+  origin(cfg)= cfg <- { driver="gcp" api="sql.backupRuns.insert" }
+  create(cfg)={ api-id="sql.backupRuns.insert" config=cfg }
+  read(cfg)={ api-id="sql.backupRuns.get" config=cfg }
+  update(cfg)={ api-id="sql.backupRuns.patch" config=cfg}
+  delete(cfg)={ api-id="sql.backupRuns.delete" config={ name=cfg.name } }
+}
+export backupRuns
+
+type instances = {
+  origin(cfg)= cfg <- { driver="gcp" api="sql.instances.insert" }
+  create(cfg)={ api-id="sql.instances.insert" config=cfg }
+  read(cfg)={ api-id="sql.instances.get" config=cfg }
+  update(cfg)={ api-id="sql.instances.patch" config=cfg}
+  delete(cfg)={ api-id="sql.instances.delete" config={ name=cfg.name } }
+}
+export instances
+
+type tiers = {
+  origin(cfg)= cfg <- { driver="gcp" api="sql.tiers.insert" }
+  create(cfg)={ api-id="sql.tiers.insert" config=cfg }
+  read(cfg)={ api-id="sql.tiers.get" config=cfg }
+  update(cfg)={ api-id="sql.tiers.patch" config=cfg}
+  delete(cfg)={ api-id="sql.tiers.delete" config={ name=cfg.name } }
+}
+export tiers
+
+type databases = {
+  origin(cfg)= cfg <- { driver="gcp" api="sql.databases.insert" }
+  create(cfg)={ api-id="sql.databases.insert" config=cfg }
+  read(cfg)={ api-id="sql.databases.get" config=cfg }
+  update(cfg)={ api-id="sql.databases.patch" config=cfg}
+  delete(cfg)={ api-id="sql.databases.delete" config={ name=cfg.name } }
+}
+export databases
+
+type operations = {
+  origin(cfg)= cfg <- { driver="gcp" api="sql.operations.insert" }
+  create(cfg)={ api-id="sql.operations.insert" config=cfg }
+  read(cfg)={ api-id="sql.operations.get" config=cfg }
+  update(cfg)={ api-id="sql.operations.patch" config=cfg}
+  delete(cfg)={ api-id="sql.operations.delete" config={ name=cfg.name } }
+}
+export operations
+

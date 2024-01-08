@@ -22,4 +22,4 @@
 
 (define (http-transport url res)
   (displayln (format "FAKE-HTTP ~a: ~a" url res))
-  (hash-set res 'faked (format "~a" url)))
+  (hash-set res 'selfLink (format "~a" url)))

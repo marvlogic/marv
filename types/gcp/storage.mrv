@@ -2,8 +2,6 @@
 
 import types/gcp/_auto/storage as _auto
 
-export bucket 
-
 # TODO41 - how does validate work?
 # validate = api("storage.buckets.insert")
 
@@ -13,3 +11,4 @@ type _base = {
 }
 
 type bucket =  _base | _auto:buckets
+export bucket 

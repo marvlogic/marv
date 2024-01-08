@@ -3,8 +3,8 @@
 # All Marv specifications start with the line '#lang marv' - this is what tells
 # Racket to look for the marv DSL.
 
-# Importing another marv module set. In this example the modules that are
-# imported will be prefixed with 'net/' 
+# Importing another marv module set. The modules that are imported will be
+# prefixed with 'net:' 
 
 import "shared/network-base.mrv" as net
 
@@ -28,7 +28,7 @@ module main(name = "example-01-networking") {
     # Parameters are passed as named pairs (x=y) and can be optionally separated
     # by commas.
 
-    network = net/network-base(defaults = defaults, name = name, primary-cidr="10.0.1.0/24")
+    network = net:network-base(defaults = defaults, name = name, primary-cidr="10.0.1.0/24")
 
     # The network-base module returns values that can be referenced:
     # e.g. network.vpc

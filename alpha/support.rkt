@@ -106,9 +106,9 @@
 
 (define (module-call var-id mod-proc params)
   (log-marv-debug "Registering future invocation of ~a=~a(~a)" (prefix-mod-id var-id) mod-proc params)
-  (add-resource var-id (lambda(id-prefix mkres)
+  (add-resource var-id (lambda(id-prefix)
                          (log-marv-debug "calling ~a (~a)" var-id mod-proc)
-                         (mod-proc (prefix-mod-id var-id) mkres params)))
+                         (mod-proc (prefix-mod-id var-id) params)))
   (future-ref #f))
 
 (define (config-overlay top bottom) (hash-union top bottom #:combine (lambda (t _) t)))

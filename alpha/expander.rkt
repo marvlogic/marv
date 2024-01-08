@@ -100,6 +100,10 @@
        (datum->syntax stx `(require (prefix-in ,alias (lib ,mpath)))) ]
 
       [(_ FILENAME:string) (syntax/loc stx (require FILENAME)) ]
+      [(_ FILENAME:string "as" ALIAS)
+       (define alias (format-id #f "~a:" (syntax-e #'ALIAS)))
+       (define filename (syntax-e #'FILENAME))
+       (datum->syntax stx `(require (prefix-in ,alias ,filename))) ]
       [else (raise "m-import")]))
 
   (define (m-return-parameter stx)
