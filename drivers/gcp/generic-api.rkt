@@ -11,9 +11,8 @@
 
 (provide init-api)
 
-(define (init-api interface-id api-id http OPERATION-HANDLER [type-op-patches (hash)])
-  (define discovery (load-discovery (symbol->string interface-id) api-id type-op-patches))
-  (mk-request-handler discovery OPERATION-HANDLER))
+(define (init-api  http OPERATION-HANDLER)
+  (mk-request-handler OPERATION-HANDLER))
 
 (define/contract (validate discovery type-map-fn cfg)
   (disc-doc? procedure? config/c   . -> . config/c)

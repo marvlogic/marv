@@ -20,6 +20,7 @@
          api-for-type-op
          api-http-method
          api-resource-url
+         api-resource-url-base
          api-parameters
          api-required-params
          api-resource
@@ -55,13 +56,14 @@
 
 ; TODO - better name for type-op stuff?
 (define/contract (api-for-type-op discovery type-op)
-  (disc-doc? symbol? . -> . disc-api?)
+  ; TODO41 - contract here is wrong
+  (disc-doc? symbol? . -> . (or/c boolean? disc-api?))
 
   (define (consult-discovery-doc)
     (define (find-api res-tree type-path)
       (define hs (hash-ref res-tree 'resources))
       (match type-path
-        [(list t op) (hash-nref hs (list t 'methods op))]
+        [(list t op) (hash-nref hs (list t 'methods op) #f)]
         [(list t ts ...) (find-api (hash-ref hs t) ts)]))
 
     ; TODO14 - exception handling
@@ -74,24 +76,54 @@
     ; document path "resources.projects.resources.serviceAccounts.methods.get"
     ; should have an API with id = "iam.projects.serviceAccount.get"
 
-    (define api-id (string->symbol (hash-ref api 'id)))
-    (when (not (eq? api-id type-op))
-      (raise-exn "API for ~v did not match in API's id field (~v)" type-op api-id))
+    ; (define api-id (string->symbol (hash-ref api 'id)))
+    ; (when (not (eq? api-id type-op))
+    ;   (raise-exn "API for ~v did not match in API's id field (~v)" type-op api-id))
     api)
 
   (define patches (disc-doc-type-op-patches discovery))
-  (disc-api (disc-doc-root discovery) (hash-ref patches type-op consult-discovery-doc)))
+  (define api (hash-ref patches type-op consult-discovery-doc))
+  (cond [api (disc-api (disc-doc-root discovery) api)]
+        [else #f]))
 
 (define/contract (api-http-method api)
   (disc-api? . -> . symbol?)
   (string->symbol(hash-ref (disc-api-type-api api) 'httpMethod)))
 
+(define/contract (api-resource-url-base api)
+  (disc-api? . -> . string?)
+
+  (define reqd-params (api-required-params api))
+
+  ; for apis (secret-manager, storage) that have required query parameters, but
+  ; don't have the template variables for them in the 'path' setting:
+
+  (define query-params-str
+    (match (set-intersect reqd-params (api-query-parameters api))
+      [(list qps ..1) (string-join
+                       (for/list ([q qps]) (format "~a={~a}" q q))
+                       "&" #:before-first "?")]
+      [else ""]))
+
+  (define path (format "~a~a" (hash-ref (disc-api-type-api api) 'path) query-params-str))
+  (define api-root (disc-api-root api))
+  (define url
+    (format "~a~a~a"
+            (hash-ref api-root 'rootUrl)
+            (hash-ref api-root 'servicePath)
+            path))
+  (log-marv-debug "url: ~v" url)
+  url)
+
 (define/contract (api-resource-url api config)
   (disc-api? config/c . -> . string?)
 
-  ; NB this area is bound to give problems in the future, because assumptions are
-  ; made for all APIs that we can provide a missing required-parameter by using
-  ; the 'name' attribute from a resource config
+  ; NB this area is bound to give problems in the future, because assumptions
+  ; are made for all APIs that we can provide a missing required-parameter by
+  ; using the 'name' attribute from a resource config
+  ;
+  ; TODO41 - hence thinking that generating code for a complete API (not using
+  ; lookup) would be better in the long run?
 
   (define reqd-params (api-required-params api))
   (define config-params (hash-take config reqd-params))
@@ -175,7 +207,7 @@
   (hash-nref (disc-api-root api) (list 'schemas (string->symbol type) 'properties)))
 
 ; Utility for getting resource IDs from a discovery-document
-;TODO41 - might not get everything esp in secrets
+;TODO41 - might not get everything esp in secrets; requires depth
 (define (api-resource-keys doc [prefix ""])
   (map (lambda(k) (string->symbol(format "~a~a" prefix k))) (hash-keys (hash-ref (disc-doc-root doc) 'resources))))
 

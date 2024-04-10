@@ -28,7 +28,7 @@
     'gcp (init-dev-driver 'dev))
    (hash
     'dev (init-dev-driver 'dev)
-    'gcp (init-gcp 'gcp (gcp-http-transport (getenv-or-raise "GCP_ACCESS_TOKEN"))))))
+    'gcp (init-gcp (gcp-http-transport (getenv-or-raise "GCP_ACCESS_TOKEN"))))))
 
 (define DRIVERS (make-parameter (std-drivers)))
 

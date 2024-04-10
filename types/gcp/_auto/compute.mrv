@@ -1,902 +1,5422 @@
 #lang marv
 ## AUTO-GENERATED FILE - DO NOT EDIT!
 type regionDisks = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.regionDisks.insert" }
-  create(cfg)={ api-id="compute.regionDisks.insert" config=cfg }
-  read(cfg)={ api-id="compute.regionDisks.get" config=cfg }
-  update(cfg)={ api-id="compute.regionDisks.patch" config=cfg}
-  delete(cfg)={ api-id="compute.regionDisks.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="Disk"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/disks"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="Disk"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/disks"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Disk"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/disks/{disk}"
+   required=["(disk region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/disks/{disk}"
+   required=["(disk region project)"]
+  }
+ }
 }
 export regionDisks
 
 type interconnectLocations = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.interconnectLocations.insert" }
-  create(cfg)={ api-id="compute.interconnectLocations.insert" config=cfg }
-  read(cfg)={ api-id="compute.interconnectLocations.get" config=cfg }
-  update(cfg)={ api-id="compute.interconnectLocations.patch" config=cfg}
-  delete(cfg)={ api-id="compute.interconnectLocations.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="InterconnectLocation"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/interconnectLocations/{interconnectLocation}"
+   required=["(project interconnectLocation)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
 }
 export interconnectLocations
 
 type instanceGroupManagerResizeRequests = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.instanceGroupManagerResizeRequests.insert" }
-  create(cfg)={ api-id="compute.instanceGroupManagerResizeRequests.insert" config=cfg }
-  read(cfg)={ api-id="compute.instanceGroupManagerResizeRequests.get" config=cfg }
-  update(cfg)={ api-id="compute.instanceGroupManagerResizeRequests.patch" config=cfg}
-  delete(cfg)={ api-id="compute.instanceGroupManagerResizeRequests.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="InstanceGroupManagerResizeRequest"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/instanceGroupManagers/{instanceGroupManager}/resizeRequests"
+   required=["(instanceGroupManager zone project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="InstanceGroupManagerResizeRequest"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/instanceGroupManagers/{instanceGroupManager}/resizeRequests"
+   required=["(instanceGroupManager zone project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="InstanceGroupManagerResizeRequest"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/instanceGroupManagers/{instanceGroupManager}/resizeRequests/{resizeRequest}"
+   required=["(instanceGroupManager resizeRequest zone project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/instanceGroupManagers/{instanceGroupManager}/resizeRequests/{resizeRequest}"
+   required=["(instanceGroupManager resizeRequest zone project)"]
+  }
+ }
 }
 export instanceGroupManagerResizeRequests
 
 type regionNetworkFirewallPolicies = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.regionNetworkFirewallPolicies.insert" }
-  create(cfg)={ api-id="compute.regionNetworkFirewallPolicies.insert" config=cfg }
-  read(cfg)={ api-id="compute.regionNetworkFirewallPolicies.get" config=cfg }
-  update(cfg)={ api-id="compute.regionNetworkFirewallPolicies.patch" config=cfg}
-  delete(cfg)={ api-id="compute.regionNetworkFirewallPolicies.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="FirewallPolicy"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/firewallPolicies"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="FirewallPolicy"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/firewallPolicies"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="FirewallPolicy"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/firewallPolicies/{firewallPolicy}"
+   required=["(firewallPolicy region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="FirewallPolicy"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/firewallPolicies/{firewallPolicy}"
+   required=["(firewallPolicy region project)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/firewallPolicies/{firewallPolicy}"
+   required=["(firewallPolicy region project)"]
+  }
+ }
 }
 export regionNetworkFirewallPolicies
 
 type regionUrlMaps = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.regionUrlMaps.insert" }
-  create(cfg)={ api-id="compute.regionUrlMaps.insert" config=cfg }
-  read(cfg)={ api-id="compute.regionUrlMaps.get" config=cfg }
-  update(cfg)={ api-id="compute.regionUrlMaps.patch" config=cfg}
-  delete(cfg)={ api-id="compute.regionUrlMaps.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="UrlMap"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/urlMaps"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="UrlMap"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/urlMaps"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="UrlMap"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/urlMaps/{urlMap}"
+   required=["(urlMap region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="UrlMap"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/urlMaps/{urlMap}"
+   required=["(urlMap region project)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/urlMaps/{urlMap}"
+   required=["(urlMap region project)"]
+  }
+ }
 }
 export regionUrlMaps
 
 type machineTypes = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.machineTypes.insert" }
-  create(cfg)={ api-id="compute.machineTypes.insert" config=cfg }
-  read(cfg)={ api-id="compute.machineTypes.get" config=cfg }
-  update(cfg)={ api-id="compute.machineTypes.patch" config=cfg}
-  delete(cfg)={ api-id="compute.machineTypes.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="MachineType"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/machineTypes/{machineType}"
+   required=["(zone project machineType)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
 }
 export machineTypes
 
 type serviceAttachments = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.serviceAttachments.insert" }
-  create(cfg)={ api-id="compute.serviceAttachments.insert" config=cfg }
-  read(cfg)={ api-id="compute.serviceAttachments.get" config=cfg }
-  update(cfg)={ api-id="compute.serviceAttachments.patch" config=cfg}
-  delete(cfg)={ api-id="compute.serviceAttachments.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="ServiceAttachment"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/serviceAttachments"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="ServiceAttachment"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/serviceAttachments"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="ServiceAttachment"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/serviceAttachments/{serviceAttachment}"
+   required=["(serviceAttachment region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="ServiceAttachment"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/serviceAttachments/{serviceAttachment}"
+   required=["(serviceAttachment region project)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/serviceAttachments/{serviceAttachment}"
+   required=["(serviceAttachment region project)"]
+  }
+ }
 }
 export serviceAttachments
 
 type regionInstanceTemplates = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.regionInstanceTemplates.insert" }
-  create(cfg)={ api-id="compute.regionInstanceTemplates.insert" config=cfg }
-  read(cfg)={ api-id="compute.regionInstanceTemplates.get" config=cfg }
-  update(cfg)={ api-id="compute.regionInstanceTemplates.patch" config=cfg}
-  delete(cfg)={ api-id="compute.regionInstanceTemplates.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="InstanceTemplate"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/instanceTemplates"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="InstanceTemplate"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/instanceTemplates"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="InstanceTemplate"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/instanceTemplates/{instanceTemplate}"
+   required=["(instanceTemplate region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/instanceTemplates/{instanceTemplate}"
+   required=["(instanceTemplate region project)"]
+  }
+ }
 }
 export regionInstanceTemplates
 
 type targetInstances = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.targetInstances.insert" }
-  create(cfg)={ api-id="compute.targetInstances.insert" config=cfg }
-  read(cfg)={ api-id="compute.targetInstances.get" config=cfg }
-  update(cfg)={ api-id="compute.targetInstances.patch" config=cfg}
-  delete(cfg)={ api-id="compute.targetInstances.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="TargetInstance"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/targetInstances"
+   required=["(zone project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="TargetInstance"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/targetInstances"
+   required=["(zone project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="TargetInstance"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/targetInstances/{targetInstance}"
+   required=["(targetInstance zone project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/targetInstances/{targetInstance}"
+   required=["(targetInstance zone project)"]
+  }
+ }
 }
 export targetInstances
 
 type imageFamilyViews = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.imageFamilyViews.insert" }
-  create(cfg)={ api-id="compute.imageFamilyViews.insert" config=cfg }
-  read(cfg)={ api-id="compute.imageFamilyViews.get" config=cfg }
-  update(cfg)={ api-id="compute.imageFamilyViews.patch" config=cfg}
-  delete(cfg)={ api-id="compute.imageFamilyViews.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="ImageFamilyView"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/imageFamilyViews/{family}"
+   required=["(family zone project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
 }
 export imageFamilyViews
 
 type targetSslProxies = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.targetSslProxies.insert" }
-  create(cfg)={ api-id="compute.targetSslProxies.insert" config=cfg }
-  read(cfg)={ api-id="compute.targetSslProxies.get" config=cfg }
-  update(cfg)={ api-id="compute.targetSslProxies.patch" config=cfg}
-  delete(cfg)={ api-id="compute.targetSslProxies.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="TargetSslProxy"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/targetSslProxies"
+   required=["(project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="TargetSslProxy"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/targetSslProxies"
+   required=["(project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="TargetSslProxy"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/targetSslProxies/{targetSslProxy}"
+   required=["(project targetSslProxy)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/targetSslProxies/{targetSslProxy}"
+   required=["(project targetSslProxy)"]
+  }
+ }
 }
 export targetSslProxies
 
 type licenseCodes = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.licenseCodes.insert" }
-  create(cfg)={ api-id="compute.licenseCodes.insert" config=cfg }
-  read(cfg)={ api-id="compute.licenseCodes.get" config=cfg }
-  update(cfg)={ api-id="compute.licenseCodes.patch" config=cfg}
-  delete(cfg)={ api-id="compute.licenseCodes.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="LicenseCode"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/licenseCodes/{licenseCode}"
+   required=["(project licenseCode)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
 }
 export licenseCodes
 
 type forwardingRules = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.forwardingRules.insert" }
-  create(cfg)={ api-id="compute.forwardingRules.insert" config=cfg }
-  read(cfg)={ api-id="compute.forwardingRules.get" config=cfg }
-  update(cfg)={ api-id="compute.forwardingRules.patch" config=cfg}
-  delete(cfg)={ api-id="compute.forwardingRules.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="ForwardingRule"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/forwardingRules"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="ForwardingRule"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/forwardingRules"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="ForwardingRule"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/forwardingRules/{forwardingRule}"
+   required=["(forwardingRule region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="ForwardingRule"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/forwardingRules/{forwardingRule}"
+   required=["(forwardingRule region project)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/forwardingRules/{forwardingRule}"
+   required=["(forwardingRule region project)"]
+  }
+ }
 }
 export forwardingRules
 
 type regionDiskTypes = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.regionDiskTypes.insert" }
-  create(cfg)={ api-id="compute.regionDiskTypes.insert" config=cfg }
-  read(cfg)={ api-id="compute.regionDiskTypes.get" config=cfg }
-  update(cfg)={ api-id="compute.regionDiskTypes.patch" config=cfg}
-  delete(cfg)={ api-id="compute.regionDiskTypes.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="DiskType"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/diskTypes/{diskType}"
+   required=["(diskType region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
 }
 export regionDiskTypes
 
 type vpnGateways = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.vpnGateways.insert" }
-  create(cfg)={ api-id="compute.vpnGateways.insert" config=cfg }
-  read(cfg)={ api-id="compute.vpnGateways.get" config=cfg }
-  update(cfg)={ api-id="compute.vpnGateways.patch" config=cfg}
-  delete(cfg)={ api-id="compute.vpnGateways.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="VpnGateway"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/vpnGateways"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="VpnGateway"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/vpnGateways"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="VpnGateway"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/vpnGateways/{vpnGateway}"
+   required=["(vpnGateway region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/vpnGateways/{vpnGateway}"
+   required=["(vpnGateway region project)"]
+  }
+ }
 }
 export vpnGateways
 
 type networkFirewallPolicies = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.networkFirewallPolicies.insert" }
-  create(cfg)={ api-id="compute.networkFirewallPolicies.insert" config=cfg }
-  read(cfg)={ api-id="compute.networkFirewallPolicies.get" config=cfg }
-  update(cfg)={ api-id="compute.networkFirewallPolicies.patch" config=cfg}
-  delete(cfg)={ api-id="compute.networkFirewallPolicies.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="FirewallPolicy"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/firewallPolicies"
+   required=["(project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="FirewallPolicy"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/firewallPolicies"
+   required=["(project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="FirewallPolicy"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/firewallPolicies/{firewallPolicy}"
+   required=["(project firewallPolicy)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="FirewallPolicy"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/firewallPolicies/{firewallPolicy}"
+   required=["(project firewallPolicy)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/firewallPolicies/{firewallPolicy}"
+   required=["(project firewallPolicy)"]
+  }
+ }
 }
 export networkFirewallPolicies
 
 type organizationSecurityPolicies = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.organizationSecurityPolicies.insert" }
-  create(cfg)={ api-id="compute.organizationSecurityPolicies.insert" config=cfg }
-  read(cfg)={ api-id="compute.organizationSecurityPolicies.get" config=cfg }
-  update(cfg)={ api-id="compute.organizationSecurityPolicies.patch" config=cfg}
-  delete(cfg)={ api-id="compute.organizationSecurityPolicies.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="SecurityPolicy"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/locations/global/securityPolicies"
+   required=["()"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="SecurityPolicy"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/locations/global/securityPolicies"
+   required=["()"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="SecurityPolicy"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/locations/global/securityPolicies/{securityPolicy}"
+   required=["(securityPolicy)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="SecurityPolicy"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/locations/global/securityPolicies/{securityPolicy}"
+   required=["(securityPolicy)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/locations/global/securityPolicies/{securityPolicy}"
+   required=["(securityPolicy)"]
+  }
+ }
 }
 export organizationSecurityPolicies
 
 type externalVpnGateways = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.externalVpnGateways.insert" }
-  create(cfg)={ api-id="compute.externalVpnGateways.insert" config=cfg }
-  read(cfg)={ api-id="compute.externalVpnGateways.get" config=cfg }
-  update(cfg)={ api-id="compute.externalVpnGateways.patch" config=cfg}
-  delete(cfg)={ api-id="compute.externalVpnGateways.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="ExternalVpnGateway"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/externalVpnGateways"
+   required=["(project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="ExternalVpnGateway"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/externalVpnGateways"
+   required=["(project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="ExternalVpnGateway"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/externalVpnGateways/{externalVpnGateway}"
+   required=["(project externalVpnGateway)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/externalVpnGateways/{externalVpnGateway}"
+   required=["(project externalVpnGateway)"]
+  }
+ }
 }
 export externalVpnGateways
 
 type targetTcpProxies = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.targetTcpProxies.insert" }
-  create(cfg)={ api-id="compute.targetTcpProxies.insert" config=cfg }
-  read(cfg)={ api-id="compute.targetTcpProxies.get" config=cfg }
-  update(cfg)={ api-id="compute.targetTcpProxies.patch" config=cfg}
-  delete(cfg)={ api-id="compute.targetTcpProxies.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="TargetTcpProxy"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/targetTcpProxies"
+   required=["(project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="TargetTcpProxy"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/targetTcpProxies"
+   required=["(project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="TargetTcpProxy"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/targetTcpProxies/{targetTcpProxy}"
+   required=["(project targetTcpProxy)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/targetTcpProxies/{targetTcpProxy}"
+   required=["(project targetTcpProxy)"]
+  }
+ }
 }
 export targetTcpProxies
 
 type urlMaps = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.urlMaps.insert" }
-  create(cfg)={ api-id="compute.urlMaps.insert" config=cfg }
-  read(cfg)={ api-id="compute.urlMaps.get" config=cfg }
-  update(cfg)={ api-id="compute.urlMaps.patch" config=cfg}
-  delete(cfg)={ api-id="compute.urlMaps.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="UrlMap"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/urlMaps"
+   required=["(project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="UrlMap"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/urlMaps"
+   required=["(project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="UrlMap"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/urlMaps/{urlMap}"
+   required=["(project urlMap)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="UrlMap"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/urlMaps/{urlMap}"
+   required=["(project urlMap)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/urlMaps/{urlMap}"
+   required=["(project urlMap)"]
+  }
+ }
 }
 export urlMaps
 
 type healthChecks = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.healthChecks.insert" }
-  create(cfg)={ api-id="compute.healthChecks.insert" config=cfg }
-  read(cfg)={ api-id="compute.healthChecks.get" config=cfg }
-  update(cfg)={ api-id="compute.healthChecks.patch" config=cfg}
-  delete(cfg)={ api-id="compute.healthChecks.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="HealthCheck"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/healthChecks"
+   required=["(project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="HealthCheck"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/healthChecks"
+   required=["(project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="HealthCheck"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/healthChecks/{healthCheck}"
+   required=["(project healthCheck)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="HealthCheck"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/healthChecks/{healthCheck}"
+   required=["(project healthCheck)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/healthChecks/{healthCheck}"
+   required=["(project healthCheck)"]
+  }
+ }
 }
 export healthChecks
 
 type backendBuckets = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.backendBuckets.insert" }
-  create(cfg)={ api-id="compute.backendBuckets.insert" config=cfg }
-  read(cfg)={ api-id="compute.backendBuckets.get" config=cfg }
-  update(cfg)={ api-id="compute.backendBuckets.patch" config=cfg}
-  delete(cfg)={ api-id="compute.backendBuckets.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="BackendBucket"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/backendBuckets"
+   required=["(project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="BackendBucket"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/backendBuckets"
+   required=["(project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="BackendBucket"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/backendBuckets/{backendBucket}"
+   required=["(project backendBucket)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="BackendBucket"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/backendBuckets/{backendBucket}"
+   required=["(project backendBucket)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/backendBuckets/{backendBucket}"
+   required=["(project backendBucket)"]
+  }
+ }
 }
 export backendBuckets
 
 type networkEdgeSecurityServices = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.networkEdgeSecurityServices.insert" }
-  create(cfg)={ api-id="compute.networkEdgeSecurityServices.insert" config=cfg }
-  read(cfg)={ api-id="compute.networkEdgeSecurityServices.get" config=cfg }
-  update(cfg)={ api-id="compute.networkEdgeSecurityServices.patch" config=cfg}
-  delete(cfg)={ api-id="compute.networkEdgeSecurityServices.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="NetworkEdgeSecurityService"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/networkEdgeSecurityServices"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="NetworkEdgeSecurityService"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/networkEdgeSecurityServices"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="NetworkEdgeSecurityService"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/networkEdgeSecurityServices/{networkEdgeSecurityService}"
+   required=["(networkEdgeSecurityService region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="NetworkEdgeSecurityService"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/networkEdgeSecurityServices/{networkEdgeSecurityService}"
+   required=["(networkEdgeSecurityService region project)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/networkEdgeSecurityServices/{networkEdgeSecurityService}"
+   required=["(networkEdgeSecurityService region project)"]
+  }
+ }
 }
 export networkEdgeSecurityServices
 
 type zones = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.zones.insert" }
-  create(cfg)={ api-id="compute.zones.insert" config=cfg }
-  read(cfg)={ api-id="compute.zones.get" config=cfg }
-  update(cfg)={ api-id="compute.zones.patch" config=cfg}
-  delete(cfg)={ api-id="compute.zones.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Zone"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}"
+   required=["(zone project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
 }
 export zones
 
 type regionHealthCheckServices = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.regionHealthCheckServices.insert" }
-  create(cfg)={ api-id="compute.regionHealthCheckServices.insert" config=cfg }
-  read(cfg)={ api-id="compute.regionHealthCheckServices.get" config=cfg }
-  update(cfg)={ api-id="compute.regionHealthCheckServices.patch" config=cfg}
-  delete(cfg)={ api-id="compute.regionHealthCheckServices.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="HealthCheckService"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/healthCheckServices"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="HealthCheckService"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/healthCheckServices"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="HealthCheckService"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/healthCheckServices/{healthCheckService}"
+   required=["(healthCheckService region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="HealthCheckService"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/healthCheckServices/{healthCheckService}"
+   required=["(healthCheckService region project)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/healthCheckServices/{healthCheckService}"
+   required=["(healthCheckService region project)"]
+  }
+ }
 }
 export regionHealthCheckServices
 
 type subnetworks = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.subnetworks.insert" }
-  create(cfg)={ api-id="compute.subnetworks.insert" config=cfg }
-  read(cfg)={ api-id="compute.subnetworks.get" config=cfg }
-  update(cfg)={ api-id="compute.subnetworks.patch" config=cfg}
-  delete(cfg)={ api-id="compute.subnetworks.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="Subnetwork"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/subnetworks"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="Subnetwork"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/subnetworks"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Subnetwork"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/subnetworks/{subnetwork}"
+   required=["(subnetwork region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="Subnetwork"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/subnetworks/{subnetwork}"
+   required=["(subnetwork region project)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/subnetworks/{subnetwork}"
+   required=["(subnetwork region project)"]
+  }
+ }
 }
 export subnetworks
 
 type regions = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.regions.insert" }
-  create(cfg)={ api-id="compute.regions.insert" config=cfg }
-  read(cfg)={ api-id="compute.regions.get" config=cfg }
-  update(cfg)={ api-id="compute.regions.patch" config=cfg}
-  delete(cfg)={ api-id="compute.regions.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Region"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}"
+   required=["(region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
 }
 export regions
 
 type interconnectAttachments = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.interconnectAttachments.insert" }
-  create(cfg)={ api-id="compute.interconnectAttachments.insert" config=cfg }
-  read(cfg)={ api-id="compute.interconnectAttachments.get" config=cfg }
-  update(cfg)={ api-id="compute.interconnectAttachments.patch" config=cfg}
-  delete(cfg)={ api-id="compute.interconnectAttachments.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="InterconnectAttachment"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/interconnectAttachments"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="InterconnectAttachment"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/interconnectAttachments"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="InterconnectAttachment"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/interconnectAttachments/{interconnectAttachment}"
+   required=["(interconnectAttachment region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="InterconnectAttachment"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/interconnectAttachments/{interconnectAttachment}"
+   required=["(interconnectAttachment region project)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/interconnectAttachments/{interconnectAttachment}"
+   required=["(interconnectAttachment region project)"]
+  }
+ }
 }
 export interconnectAttachments
 
 type regionSecurityPolicies = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.regionSecurityPolicies.insert" }
-  create(cfg)={ api-id="compute.regionSecurityPolicies.insert" config=cfg }
-  read(cfg)={ api-id="compute.regionSecurityPolicies.get" config=cfg }
-  update(cfg)={ api-id="compute.regionSecurityPolicies.patch" config=cfg}
-  delete(cfg)={ api-id="compute.regionSecurityPolicies.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="SecurityPolicy"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/securityPolicies"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="SecurityPolicy"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/securityPolicies"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="SecurityPolicy"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/securityPolicies/{securityPolicy}"
+   required=["(securityPolicy region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="SecurityPolicy"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/securityPolicies/{securityPolicy}"
+   required=["(securityPolicy region project)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/securityPolicies/{securityPolicy}"
+   required=["(securityPolicy region project)"]
+  }
+ }
 }
 export regionSecurityPolicies
 
 type globalNetworkEndpointGroups = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.globalNetworkEndpointGroups.insert" }
-  create(cfg)={ api-id="compute.globalNetworkEndpointGroups.insert" config=cfg }
-  read(cfg)={ api-id="compute.globalNetworkEndpointGroups.get" config=cfg }
-  update(cfg)={ api-id="compute.globalNetworkEndpointGroups.patch" config=cfg}
-  delete(cfg)={ api-id="compute.globalNetworkEndpointGroups.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="NetworkEndpointGroup"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/networkEndpointGroups"
+   required=["(project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="NetworkEndpointGroup"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/networkEndpointGroups"
+   required=["(project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="NetworkEndpointGroup"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/networkEndpointGroups/{networkEndpointGroup}"
+   required=["(project networkEndpointGroup)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/networkEndpointGroups/{networkEndpointGroup}"
+   required=["(project networkEndpointGroup)"]
+  }
+ }
 }
 export globalNetworkEndpointGroups
 
 type firewalls = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.firewalls.insert" }
-  create(cfg)={ api-id="compute.firewalls.insert" config=cfg }
-  read(cfg)={ api-id="compute.firewalls.get" config=cfg }
-  update(cfg)={ api-id="compute.firewalls.patch" config=cfg}
-  delete(cfg)={ api-id="compute.firewalls.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="Firewall"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/firewalls"
+   required=["(project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="Firewall"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/firewalls"
+   required=["(project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Firewall"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/firewalls/{firewall}"
+   required=["(firewall project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="Firewall"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/firewalls/{firewall}"
+   required=["(firewall project)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/firewalls/{firewall}"
+   required=["(firewall project)"]
+  }
+ }
 }
 export firewalls
 
 type interconnectRemoteLocations = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.interconnectRemoteLocations.insert" }
-  create(cfg)={ api-id="compute.interconnectRemoteLocations.insert" config=cfg }
-  read(cfg)={ api-id="compute.interconnectRemoteLocations.get" config=cfg }
-  update(cfg)={ api-id="compute.interconnectRemoteLocations.patch" config=cfg}
-  delete(cfg)={ api-id="compute.interconnectRemoteLocations.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="InterconnectRemoteLocation"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/interconnectRemoteLocations/{interconnectRemoteLocation}"
+   required=["(project interconnectRemoteLocation)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
 }
 export interconnectRemoteLocations
 
 type targetVpnGateways = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.targetVpnGateways.insert" }
-  create(cfg)={ api-id="compute.targetVpnGateways.insert" config=cfg }
-  read(cfg)={ api-id="compute.targetVpnGateways.get" config=cfg }
-  update(cfg)={ api-id="compute.targetVpnGateways.patch" config=cfg}
-  delete(cfg)={ api-id="compute.targetVpnGateways.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="TargetVpnGateway"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/targetVpnGateways"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="TargetVpnGateway"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/targetVpnGateways"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="TargetVpnGateway"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/targetVpnGateways/{targetVpnGateway}"
+   required=["(targetVpnGateway region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/targetVpnGateways/{targetVpnGateway}"
+   required=["(targetVpnGateway region project)"]
+  }
+ }
 }
 export targetVpnGateways
 
 type backendServices = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.backendServices.insert" }
-  create(cfg)={ api-id="compute.backendServices.insert" config=cfg }
-  read(cfg)={ api-id="compute.backendServices.get" config=cfg }
-  update(cfg)={ api-id="compute.backendServices.patch" config=cfg}
-  delete(cfg)={ api-id="compute.backendServices.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="BackendService"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/backendServices"
+   required=["(project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="BackendService"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/backendServices"
+   required=["(project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="BackendService"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/backendServices/{backendService}"
+   required=["(project backendService)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="BackendService"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/backendServices/{backendService}"
+   required=["(project backendService)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/backendServices/{backendService}"
+   required=["(project backendService)"]
+  }
+ }
 }
 export backendServices
 
 type regionSslCertificates = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.regionSslCertificates.insert" }
-  create(cfg)={ api-id="compute.regionSslCertificates.insert" config=cfg }
-  read(cfg)={ api-id="compute.regionSslCertificates.get" config=cfg }
-  update(cfg)={ api-id="compute.regionSslCertificates.patch" config=cfg}
-  delete(cfg)={ api-id="compute.regionSslCertificates.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="SslCertificate"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/sslCertificates"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="SslCertificate"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/sslCertificates"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="SslCertificate"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/sslCertificates/{sslCertificate}"
+   required=["(sslCertificate region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/sslCertificates/{sslCertificate}"
+   required=["(sslCertificate region project)"]
+  }
+ }
 }
 export regionSslCertificates
 
 type httpsHealthChecks = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.httpsHealthChecks.insert" }
-  create(cfg)={ api-id="compute.httpsHealthChecks.insert" config=cfg }
-  read(cfg)={ api-id="compute.httpsHealthChecks.get" config=cfg }
-  update(cfg)={ api-id="compute.httpsHealthChecks.patch" config=cfg}
-  delete(cfg)={ api-id="compute.httpsHealthChecks.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="HttpsHealthCheck"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/httpsHealthChecks"
+   required=["(project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="HttpsHealthCheck"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/httpsHealthChecks"
+   required=["(project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="HttpsHealthCheck"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/httpsHealthChecks/{httpsHealthCheck}"
+   required=["(httpsHealthCheck project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="HttpsHealthCheck"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/httpsHealthChecks/{httpsHealthCheck}"
+   required=["(httpsHealthCheck project)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/httpsHealthChecks/{httpsHealthCheck}"
+   required=["(httpsHealthCheck project)"]
+  }
+ }
 }
 export httpsHealthChecks
 
 type regionInstanceGroupManagers = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.regionInstanceGroupManagers.insert" }
-  create(cfg)={ api-id="compute.regionInstanceGroupManagers.insert" config=cfg }
-  read(cfg)={ api-id="compute.regionInstanceGroupManagers.get" config=cfg }
-  update(cfg)={ api-id="compute.regionInstanceGroupManagers.patch" config=cfg}
-  delete(cfg)={ api-id="compute.regionInstanceGroupManagers.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="InstanceGroupManager"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/instanceGroupManagers"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="InstanceGroupManager"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/instanceGroupManagers"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="InstanceGroupManager"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/instanceGroupManagers/{instanceGroupManager}"
+   required=["(instanceGroupManager region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="InstanceGroupManager"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/instanceGroupManagers/{instanceGroupManager}"
+   required=["(instanceGroupManager region project)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/instanceGroupManagers/{instanceGroupManager}"
+   required=["(instanceGroupManager region project)"]
+  }
+ }
 }
 export regionInstanceGroupManagers
 
 type globalOrganizationOperations = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.globalOrganizationOperations.insert" }
-  create(cfg)={ api-id="compute.globalOrganizationOperations.insert" config=cfg }
-  read(cfg)={ api-id="compute.globalOrganizationOperations.get" config=cfg }
-  update(cfg)={ api-id="compute.globalOrganizationOperations.patch" config=cfg}
-  delete(cfg)={ api-id="compute.globalOrganizationOperations.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/locations/global/operations/{operation}"
+   required=["(operation)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="#f"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/locations/global/operations/{operation}"
+   required=["(operation)"]
+  }
+ }
 }
 export globalOrganizationOperations
 
 type snapshots = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.snapshots.insert" }
-  create(cfg)={ api-id="compute.snapshots.insert" config=cfg }
-  read(cfg)={ api-id="compute.snapshots.get" config=cfg }
-  update(cfg)={ api-id="compute.snapshots.patch" config=cfg}
-  delete(cfg)={ api-id="compute.snapshots.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="Snapshot"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/snapshots"
+   required=["(project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="Snapshot"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/snapshots"
+   required=["(project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Snapshot"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/snapshots/{snapshot}"
+   required=["(project snapshot)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/snapshots/{snapshot}"
+   required=["(project snapshot)"]
+  }
+ }
 }
 export snapshots
 
 type globalPublicDelegatedPrefixes = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.globalPublicDelegatedPrefixes.insert" }
-  create(cfg)={ api-id="compute.globalPublicDelegatedPrefixes.insert" config=cfg }
-  read(cfg)={ api-id="compute.globalPublicDelegatedPrefixes.get" config=cfg }
-  update(cfg)={ api-id="compute.globalPublicDelegatedPrefixes.patch" config=cfg}
-  delete(cfg)={ api-id="compute.globalPublicDelegatedPrefixes.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="PublicDelegatedPrefix"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/publicDelegatedPrefixes"
+   required=["(project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="PublicDelegatedPrefix"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/publicDelegatedPrefixes"
+   required=["(project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="PublicDelegatedPrefix"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/publicDelegatedPrefixes/{publicDelegatedPrefix}"
+   required=["(project publicDelegatedPrefix)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="PublicDelegatedPrefix"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/publicDelegatedPrefixes/{publicDelegatedPrefix}"
+   required=["(project publicDelegatedPrefix)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/publicDelegatedPrefixes/{publicDelegatedPrefix}"
+   required=["(project publicDelegatedPrefix)"]
+  }
+ }
 }
 export globalPublicDelegatedPrefixes
 
 type resourcePolicies = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.resourcePolicies.insert" }
-  create(cfg)={ api-id="compute.resourcePolicies.insert" config=cfg }
-  read(cfg)={ api-id="compute.resourcePolicies.get" config=cfg }
-  update(cfg)={ api-id="compute.resourcePolicies.patch" config=cfg}
-  delete(cfg)={ api-id="compute.resourcePolicies.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="ResourcePolicy"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/resourcePolicies"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="ResourcePolicy"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/resourcePolicies"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="ResourcePolicy"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/resourcePolicies/{resourcePolicy}"
+   required=["(resourcePolicy region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="ResourcePolicy"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/resourcePolicies/{resourcePolicy}"
+   required=["(resourcePolicy region project)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/resourcePolicies/{resourcePolicy}"
+   required=["(resourcePolicy region project)"]
+  }
+ }
 }
 export resourcePolicies
 
 type snapshotSettings = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.snapshotSettings.insert" }
-  create(cfg)={ api-id="compute.snapshotSettings.insert" config=cfg }
-  read(cfg)={ api-id="compute.snapshotSettings.get" config=cfg }
-  update(cfg)={ api-id="compute.snapshotSettings.patch" config=cfg}
-  delete(cfg)={ api-id="compute.snapshotSettings.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="SnapshotSettings"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/snapshotSettings"
+   required=["(project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="SnapshotSettings"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/snapshotSettings"
+   required=["(project)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
 }
 export snapshotSettings
 
 type globalForwardingRules = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.globalForwardingRules.insert" }
-  create(cfg)={ api-id="compute.globalForwardingRules.insert" config=cfg }
-  read(cfg)={ api-id="compute.globalForwardingRules.get" config=cfg }
-  update(cfg)={ api-id="compute.globalForwardingRules.patch" config=cfg}
-  delete(cfg)={ api-id="compute.globalForwardingRules.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="ForwardingRule"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/forwardingRules"
+   required=["(project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="ForwardingRule"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/forwardingRules"
+   required=["(project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="ForwardingRule"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/forwardingRules/{forwardingRule}"
+   required=["(project forwardingRule)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="ForwardingRule"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/forwardingRules/{forwardingRule}"
+   required=["(project forwardingRule)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/forwardingRules/{forwardingRule}"
+   required=["(project forwardingRule)"]
+  }
+ }
 }
 export globalForwardingRules
 
 type acceleratorTypes = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.acceleratorTypes.insert" }
-  create(cfg)={ api-id="compute.acceleratorTypes.insert" config=cfg }
-  read(cfg)={ api-id="compute.acceleratorTypes.get" config=cfg }
-  update(cfg)={ api-id="compute.acceleratorTypes.patch" config=cfg}
-  delete(cfg)={ api-id="compute.acceleratorTypes.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="AcceleratorType"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/acceleratorTypes/{acceleratorType}"
+   required=["(acceleratorType zone project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
 }
 export acceleratorTypes
 
 type nodeGroups = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.nodeGroups.insert" }
-  create(cfg)={ api-id="compute.nodeGroups.insert" config=cfg }
-  read(cfg)={ api-id="compute.nodeGroups.get" config=cfg }
-  update(cfg)={ api-id="compute.nodeGroups.patch" config=cfg}
-  delete(cfg)={ api-id="compute.nodeGroups.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="NodeGroup"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/nodeGroups?initialNodeCount={initialNodeCount}"
+   required=["(initialNodeCount zone project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="NodeGroup"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/nodeGroups?initialNodeCount={initialNodeCount}"
+   required=["(initialNodeCount zone project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="NodeGroup"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/nodeGroups/{nodeGroup}"
+   required=["(nodeGroup zone project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="NodeGroup"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/nodeGroups/{nodeGroup}"
+   required=["(nodeGroup zone project)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/nodeGroups/{nodeGroup}"
+   required=["(nodeGroup zone project)"]
+  }
+ }
 }
 export nodeGroups
 
 type regionCommitments = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.regionCommitments.insert" }
-  create(cfg)={ api-id="compute.regionCommitments.insert" config=cfg }
-  read(cfg)={ api-id="compute.regionCommitments.get" config=cfg }
-  update(cfg)={ api-id="compute.regionCommitments.patch" config=cfg}
-  delete(cfg)={ api-id="compute.regionCommitments.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="Commitment"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/commitments"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="Commitment"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/commitments"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Commitment"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/commitments/{commitment}"
+   required=["(commitment region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
 }
 export regionCommitments
 
 type regionHealthChecks = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.regionHealthChecks.insert" }
-  create(cfg)={ api-id="compute.regionHealthChecks.insert" config=cfg }
-  read(cfg)={ api-id="compute.regionHealthChecks.get" config=cfg }
-  update(cfg)={ api-id="compute.regionHealthChecks.patch" config=cfg}
-  delete(cfg)={ api-id="compute.regionHealthChecks.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="HealthCheck"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/healthChecks"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="HealthCheck"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/healthChecks"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="HealthCheck"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/healthChecks/{healthCheck}"
+   required=["(healthCheck region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="HealthCheck"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/healthChecks/{healthCheck}"
+   required=["(healthCheck region project)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/healthChecks/{healthCheck}"
+   required=["(healthCheck region project)"]
+  }
+ }
 }
 export regionHealthChecks
 
 type packetMirrorings = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.packetMirrorings.insert" }
-  create(cfg)={ api-id="compute.packetMirrorings.insert" config=cfg }
-  read(cfg)={ api-id="compute.packetMirrorings.get" config=cfg }
-  update(cfg)={ api-id="compute.packetMirrorings.patch" config=cfg}
-  delete(cfg)={ api-id="compute.packetMirrorings.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="PacketMirroring"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/packetMirrorings"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="PacketMirroring"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/packetMirrorings"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="PacketMirroring"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/packetMirrorings/{packetMirroring}"
+   required=["(packetMirroring region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="PacketMirroring"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/packetMirrorings/{packetMirroring}"
+   required=["(packetMirroring region project)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/packetMirrorings/{packetMirroring}"
+   required=["(packetMirroring region project)"]
+  }
+ }
 }
 export packetMirrorings
 
 type regionNotificationEndpoints = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.regionNotificationEndpoints.insert" }
-  create(cfg)={ api-id="compute.regionNotificationEndpoints.insert" config=cfg }
-  read(cfg)={ api-id="compute.regionNotificationEndpoints.get" config=cfg }
-  update(cfg)={ api-id="compute.regionNotificationEndpoints.patch" config=cfg}
-  delete(cfg)={ api-id="compute.regionNotificationEndpoints.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="NotificationEndpoint"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/notificationEndpoints"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="NotificationEndpoint"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/notificationEndpoints"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="NotificationEndpoint"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/notificationEndpoints/{notificationEndpoint}"
+   required=["(notificationEndpoint region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/notificationEndpoints/{notificationEndpoint}"
+   required=["(notificationEndpoint region project)"]
+  }
+ }
 }
 export regionNotificationEndpoints
 
 type regionTargetHttpProxies = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.regionTargetHttpProxies.insert" }
-  create(cfg)={ api-id="compute.regionTargetHttpProxies.insert" config=cfg }
-  read(cfg)={ api-id="compute.regionTargetHttpProxies.get" config=cfg }
-  update(cfg)={ api-id="compute.regionTargetHttpProxies.patch" config=cfg}
-  delete(cfg)={ api-id="compute.regionTargetHttpProxies.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="TargetHttpProxy"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/targetHttpProxies"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="TargetHttpProxy"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/targetHttpProxies"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="TargetHttpProxy"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/targetHttpProxies/{targetHttpProxy}"
+   required=["(targetHttpProxy region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/targetHttpProxies/{targetHttpProxy}"
+   required=["(targetHttpProxy region project)"]
+  }
+ }
 }
 export regionTargetHttpProxies
 
 type zoneOperations = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.zoneOperations.insert" }
-  create(cfg)={ api-id="compute.zoneOperations.insert" config=cfg }
-  read(cfg)={ api-id="compute.zoneOperations.get" config=cfg }
-  update(cfg)={ api-id="compute.zoneOperations.patch" config=cfg}
-  delete(cfg)={ api-id="compute.zoneOperations.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/operations/{operation}"
+   required=["(operation zone project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="#f"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/operations/{operation}"
+   required=["(operation zone project)"]
+  }
+ }
 }
 export zoneOperations
 
 type regionNetworkEndpointGroups = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.regionNetworkEndpointGroups.insert" }
-  create(cfg)={ api-id="compute.regionNetworkEndpointGroups.insert" config=cfg }
-  read(cfg)={ api-id="compute.regionNetworkEndpointGroups.get" config=cfg }
-  update(cfg)={ api-id="compute.regionNetworkEndpointGroups.patch" config=cfg}
-  delete(cfg)={ api-id="compute.regionNetworkEndpointGroups.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="NetworkEndpointGroup"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/networkEndpointGroups"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="NetworkEndpointGroup"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/networkEndpointGroups"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="NetworkEndpointGroup"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/networkEndpointGroups/{networkEndpointGroup}"
+   required=["(networkEndpointGroup region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/networkEndpointGroups/{networkEndpointGroup}"
+   required=["(networkEndpointGroup region project)"]
+  }
+ }
 }
 export regionNetworkEndpointGroups
 
 type disks = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.disks.insert" }
-  create(cfg)={ api-id="compute.disks.insert" config=cfg }
-  read(cfg)={ api-id="compute.disks.get" config=cfg }
-  update(cfg)={ api-id="compute.disks.patch" config=cfg}
-  delete(cfg)={ api-id="compute.disks.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="Disk"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/disks"
+   required=["(zone project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="Disk"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/disks"
+   required=["(zone project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Disk"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/disks/{disk}"
+   required=["(disk zone project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/disks/{disk}"
+   required=["(disk zone project)"]
+  }
+ }
 }
 export disks
 
 type routers = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.routers.insert" }
-  create(cfg)={ api-id="compute.routers.insert" config=cfg }
-  read(cfg)={ api-id="compute.routers.get" config=cfg }
-  update(cfg)={ api-id="compute.routers.patch" config=cfg}
-  delete(cfg)={ api-id="compute.routers.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="Router"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/routers"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="Router"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/routers"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Router"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/routers/{router}"
+   required=["(router region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="Router"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/routers/{router}"
+   required=["(router region project)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/routers/{router}"
+   required=["(router region project)"]
+  }
+ }
 }
 export routers
 
 type regionZones = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.regionZones.insert" }
-  create(cfg)={ api-id="compute.regionZones.insert" config=cfg }
-  read(cfg)={ api-id="compute.regionZones.get" config=cfg }
-  update(cfg)={ api-id="compute.regionZones.patch" config=cfg}
-  delete(cfg)={ api-id="compute.regionZones.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
 }
 export regionZones
 
 type globalAddresses = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.globalAddresses.insert" }
-  create(cfg)={ api-id="compute.globalAddresses.insert" config=cfg }
-  read(cfg)={ api-id="compute.globalAddresses.get" config=cfg }
-  update(cfg)={ api-id="compute.globalAddresses.patch" config=cfg}
-  delete(cfg)={ api-id="compute.globalAddresses.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="Address"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/addresses"
+   required=["(project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="Address"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/addresses"
+   required=["(project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Address"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/addresses/{address}"
+   required=["(project address)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/addresses/{address}"
+   required=["(project address)"]
+  }
+ }
 }
 export globalAddresses
 
 type publicAdvertisedPrefixes = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.publicAdvertisedPrefixes.insert" }
-  create(cfg)={ api-id="compute.publicAdvertisedPrefixes.insert" config=cfg }
-  read(cfg)={ api-id="compute.publicAdvertisedPrefixes.get" config=cfg }
-  update(cfg)={ api-id="compute.publicAdvertisedPrefixes.patch" config=cfg}
-  delete(cfg)={ api-id="compute.publicAdvertisedPrefixes.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="PublicAdvertisedPrefix"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/publicAdvertisedPrefixes"
+   required=["(project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="PublicAdvertisedPrefix"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/publicAdvertisedPrefixes"
+   required=["(project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="PublicAdvertisedPrefix"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/publicAdvertisedPrefixes/{publicAdvertisedPrefix}"
+   required=["(project publicAdvertisedPrefix)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="PublicAdvertisedPrefix"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/publicAdvertisedPrefixes/{publicAdvertisedPrefix}"
+   required=["(project publicAdvertisedPrefix)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/publicAdvertisedPrefixes/{publicAdvertisedPrefix}"
+   required=["(project publicAdvertisedPrefix)"]
+  }
+ }
 }
 export publicAdvertisedPrefixes
 
 type instantSnapshots = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.instantSnapshots.insert" }
-  create(cfg)={ api-id="compute.instantSnapshots.insert" config=cfg }
-  read(cfg)={ api-id="compute.instantSnapshots.get" config=cfg }
-  update(cfg)={ api-id="compute.instantSnapshots.patch" config=cfg}
-  delete(cfg)={ api-id="compute.instantSnapshots.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="InstantSnapshot"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/instantSnapshots"
+   required=["(zone project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="InstantSnapshot"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/instantSnapshots"
+   required=["(zone project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="InstantSnapshot"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/instantSnapshots/{instantSnapshot}"
+   required=["(zone instantSnapshot project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/instantSnapshots/{instantSnapshot}"
+   required=["(zone instantSnapshot project)"]
+  }
+ }
 }
 export instantSnapshots
 
 type sslCertificates = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.sslCertificates.insert" }
-  create(cfg)={ api-id="compute.sslCertificates.insert" config=cfg }
-  read(cfg)={ api-id="compute.sslCertificates.get" config=cfg }
-  update(cfg)={ api-id="compute.sslCertificates.patch" config=cfg}
-  delete(cfg)={ api-id="compute.sslCertificates.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="SslCertificate"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/sslCertificates"
+   required=["(project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="SslCertificate"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/sslCertificates"
+   required=["(project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="SslCertificate"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/sslCertificates/{sslCertificate}"
+   required=["(project sslCertificate)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/sslCertificates/{sslCertificate}"
+   required=["(project sslCertificate)"]
+  }
+ }
 }
 export sslCertificates
 
 type futureReservations = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.futureReservations.insert" }
-  create(cfg)={ api-id="compute.futureReservations.insert" config=cfg }
-  read(cfg)={ api-id="compute.futureReservations.get" config=cfg }
-  update(cfg)={ api-id="compute.futureReservations.patch" config=cfg}
-  delete(cfg)={ api-id="compute.futureReservations.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="FutureReservation"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/futureReservations"
+   required=["(zone project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="FutureReservation"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/futureReservations"
+   required=["(zone project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="FutureReservation"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/futureReservations/{futureReservation}"
+   required=["(futureReservation zone project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/futureReservations/{futureReservation}"
+   required=["(futureReservation zone project)"]
+  }
+ }
 }
 export futureReservations
 
 type autoscalers = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.autoscalers.insert" }
-  create(cfg)={ api-id="compute.autoscalers.insert" config=cfg }
-  read(cfg)={ api-id="compute.autoscalers.get" config=cfg }
-  update(cfg)={ api-id="compute.autoscalers.patch" config=cfg}
-  delete(cfg)={ api-id="compute.autoscalers.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="Autoscaler"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/autoscalers"
+   required=["(zone project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="Autoscaler"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/autoscalers"
+   required=["(zone project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Autoscaler"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/autoscalers/{autoscaler}"
+   required=["(autoscaler zone project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="Autoscaler"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/autoscalers"
+   required=["(zone project)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/autoscalers/{autoscaler}"
+   required=["(autoscaler zone project)"]
+  }
+ }
 }
 export autoscalers
 
 type instances = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.instances.insert" }
-  create(cfg)={ api-id="compute.instances.insert" config=cfg }
-  read(cfg)={ api-id="compute.instances.get" config=cfg }
-  update(cfg)={ api-id="compute.instances.patch" config=cfg}
-  delete(cfg)={ api-id="compute.instances.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="Instance"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/instances"
+   required=["(zone project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="Instance"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/instances"
+   required=["(zone project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Instance"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/instances/{instance}"
+   required=["(instance zone project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/instances/{instance}"
+   required=["(instance zone project)"]
+  }
+ }
 }
 export instances
 
 type httpHealthChecks = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.httpHealthChecks.insert" }
-  create(cfg)={ api-id="compute.httpHealthChecks.insert" config=cfg }
-  read(cfg)={ api-id="compute.httpHealthChecks.get" config=cfg }
-  update(cfg)={ api-id="compute.httpHealthChecks.patch" config=cfg}
-  delete(cfg)={ api-id="compute.httpHealthChecks.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="HttpHealthCheck"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/httpHealthChecks"
+   required=["(project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="HttpHealthCheck"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/httpHealthChecks"
+   required=["(project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="HttpHealthCheck"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/httpHealthChecks/{httpHealthCheck}"
+   required=["(project httpHealthCheck)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="HttpHealthCheck"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/httpHealthChecks/{httpHealthCheck}"
+   required=["(project httpHealthCheck)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/httpHealthChecks/{httpHealthCheck}"
+   required=["(project httpHealthCheck)"]
+  }
+ }
 }
 export httpHealthChecks
 
 type regionTargetHttpsProxies = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.regionTargetHttpsProxies.insert" }
-  create(cfg)={ api-id="compute.regionTargetHttpsProxies.insert" config=cfg }
-  read(cfg)={ api-id="compute.regionTargetHttpsProxies.get" config=cfg }
-  update(cfg)={ api-id="compute.regionTargetHttpsProxies.patch" config=cfg}
-  delete(cfg)={ api-id="compute.regionTargetHttpsProxies.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="TargetHttpsProxy"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/targetHttpsProxies"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="TargetHttpsProxy"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/targetHttpsProxies"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="TargetHttpsProxy"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/targetHttpsProxies/{targetHttpsProxy}"
+   required=["(targetHttpsProxy region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="TargetHttpsProxy"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/targetHttpsProxies/{targetHttpsProxy}"
+   required=["(targetHttpsProxy region project)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/targetHttpsProxies/{targetHttpsProxy}"
+   required=["(targetHttpsProxy region project)"]
+  }
+ }
 }
 export regionTargetHttpsProxies
 
 type instanceGroups = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.instanceGroups.insert" }
-  create(cfg)={ api-id="compute.instanceGroups.insert" config=cfg }
-  read(cfg)={ api-id="compute.instanceGroups.get" config=cfg }
-  update(cfg)={ api-id="compute.instanceGroups.patch" config=cfg}
-  delete(cfg)={ api-id="compute.instanceGroups.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="InstanceGroup"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/instanceGroups"
+   required=["(zone project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="InstanceGroup"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/instanceGroups"
+   required=["(zone project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="InstanceGroup"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/instanceGroups/{instanceGroup}"
+   required=["(instanceGroup zone project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/instanceGroups/{instanceGroup}"
+   required=["(instanceGroup zone project)"]
+  }
+ }
 }
 export instanceGroups
 
 type images = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.images.insert" }
-  create(cfg)={ api-id="compute.images.insert" config=cfg }
-  read(cfg)={ api-id="compute.images.get" config=cfg }
-  update(cfg)={ api-id="compute.images.patch" config=cfg}
-  delete(cfg)={ api-id="compute.images.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="Image"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/images"
+   required=["(project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="Image"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/images"
+   required=["(project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Image"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/images/{image}"
+   required=["(project image)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="Image"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/images/{image}"
+   required=["(project image)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/images/{image}"
+   required=["(project image)"]
+  }
+ }
 }
 export images
 
 type targetGrpcProxies = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.targetGrpcProxies.insert" }
-  create(cfg)={ api-id="compute.targetGrpcProxies.insert" config=cfg }
-  read(cfg)={ api-id="compute.targetGrpcProxies.get" config=cfg }
-  update(cfg)={ api-id="compute.targetGrpcProxies.patch" config=cfg}
-  delete(cfg)={ api-id="compute.targetGrpcProxies.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="TargetGrpcProxy"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/targetGrpcProxies"
+   required=["(project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="TargetGrpcProxy"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/targetGrpcProxies"
+   required=["(project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="TargetGrpcProxy"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/targetGrpcProxies/{targetGrpcProxy}"
+   required=["(project targetGrpcProxy)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="TargetGrpcProxy"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/targetGrpcProxies/{targetGrpcProxy}"
+   required=["(project targetGrpcProxy)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/targetGrpcProxies/{targetGrpcProxy}"
+   required=["(project targetGrpcProxy)"]
+  }
+ }
 }
 export targetGrpcProxies
 
 type sslPolicies = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.sslPolicies.insert" }
-  create(cfg)={ api-id="compute.sslPolicies.insert" config=cfg }
-  read(cfg)={ api-id="compute.sslPolicies.get" config=cfg }
-  update(cfg)={ api-id="compute.sslPolicies.patch" config=cfg}
-  delete(cfg)={ api-id="compute.sslPolicies.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="SslPolicy"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/sslPolicies"
+   required=["(project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="SslPolicy"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/sslPolicies"
+   required=["(project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="SslPolicy"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/sslPolicies/{sslPolicy}"
+   required=["(project sslPolicy)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="SslPolicy"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/sslPolicies/{sslPolicy}"
+   required=["(project sslPolicy)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/sslPolicies/{sslPolicy}"
+   required=["(project sslPolicy)"]
+  }
+ }
 }
 export sslPolicies
 
 type regionOperations = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.regionOperations.insert" }
-  create(cfg)={ api-id="compute.regionOperations.insert" config=cfg }
-  read(cfg)={ api-id="compute.regionOperations.get" config=cfg }
-  update(cfg)={ api-id="compute.regionOperations.patch" config=cfg}
-  delete(cfg)={ api-id="compute.regionOperations.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/operations/{operation}"
+   required=["(operation region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="#f"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/operations/{operation}"
+   required=["(operation region project)"]
+  }
+ }
 }
 export regionOperations
 
 type networkEndpointGroups = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.networkEndpointGroups.insert" }
-  create(cfg)={ api-id="compute.networkEndpointGroups.insert" config=cfg }
-  read(cfg)={ api-id="compute.networkEndpointGroups.get" config=cfg }
-  update(cfg)={ api-id="compute.networkEndpointGroups.patch" config=cfg}
-  delete(cfg)={ api-id="compute.networkEndpointGroups.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="NetworkEndpointGroup"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/networkEndpointGroups"
+   required=["(zone project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="NetworkEndpointGroup"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/networkEndpointGroups"
+   required=["(zone project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="NetworkEndpointGroup"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/networkEndpointGroups/{networkEndpointGroup}"
+   required=["(networkEndpointGroup zone project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/networkEndpointGroups/{networkEndpointGroup}"
+   required=["(networkEndpointGroup zone project)"]
+  }
+ }
 }
 export networkEndpointGroups
 
 type regionAutoscalers = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.regionAutoscalers.insert" }
-  create(cfg)={ api-id="compute.regionAutoscalers.insert" config=cfg }
-  read(cfg)={ api-id="compute.regionAutoscalers.get" config=cfg }
-  update(cfg)={ api-id="compute.regionAutoscalers.patch" config=cfg}
-  delete(cfg)={ api-id="compute.regionAutoscalers.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="Autoscaler"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/autoscalers"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="Autoscaler"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/autoscalers"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Autoscaler"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/autoscalers/{autoscaler}"
+   required=["(autoscaler region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="Autoscaler"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/autoscalers"
+   required=["(region project)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/autoscalers/{autoscaler}"
+   required=["(autoscaler region project)"]
+  }
+ }
 }
 export regionAutoscalers
 
 type regionInstanceGroups = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.regionInstanceGroups.insert" }
-  create(cfg)={ api-id="compute.regionInstanceGroups.insert" config=cfg }
-  read(cfg)={ api-id="compute.regionInstanceGroups.get" config=cfg }
-  update(cfg)={ api-id="compute.regionInstanceGroups.patch" config=cfg}
-  delete(cfg)={ api-id="compute.regionInstanceGroups.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="InstanceGroup"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/instanceGroups/{instanceGroup}"
+   required=["(instanceGroup region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
 }
 export regionInstanceGroups
 
 type regionSslPolicies = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.regionSslPolicies.insert" }
-  create(cfg)={ api-id="compute.regionSslPolicies.insert" config=cfg }
-  read(cfg)={ api-id="compute.regionSslPolicies.get" config=cfg }
-  update(cfg)={ api-id="compute.regionSslPolicies.patch" config=cfg}
-  delete(cfg)={ api-id="compute.regionSslPolicies.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="SslPolicy"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/sslPolicies"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="SslPolicy"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/sslPolicies"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="SslPolicy"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/sslPolicies/{sslPolicy}"
+   required=["(sslPolicy region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="SslPolicy"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/sslPolicies/{sslPolicy}"
+   required=["(sslPolicy region project)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/sslPolicies/{sslPolicy}"
+   required=["(sslPolicy region project)"]
+  }
+ }
 }
 export regionSslPolicies
 
 type firewallPolicies = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.firewallPolicies.insert" }
-  create(cfg)={ api-id="compute.firewallPolicies.insert" config=cfg }
-  read(cfg)={ api-id="compute.firewallPolicies.get" config=cfg }
-  update(cfg)={ api-id="compute.firewallPolicies.patch" config=cfg}
-  delete(cfg)={ api-id="compute.firewallPolicies.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="FirewallPolicy"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/locations/global/firewallPolicies"
+   required=["()"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="FirewallPolicy"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/locations/global/firewallPolicies"
+   required=["()"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="FirewallPolicy"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/locations/global/firewallPolicies/{firewallPolicy}"
+   required=["(firewallPolicy)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="FirewallPolicy"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/locations/global/firewallPolicies/{firewallPolicy}"
+   required=["(firewallPolicy)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/locations/global/firewallPolicies/{firewallPolicy}"
+   required=["(firewallPolicy)"]
+  }
+ }
 }
 export firewallPolicies
 
 type projects = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.projects.insert" }
-  create(cfg)={ api-id="compute.projects.insert" config=cfg }
-  read(cfg)={ api-id="compute.projects.get" config=cfg }
-  update(cfg)={ api-id="compute.projects.patch" config=cfg}
-  delete(cfg)={ api-id="compute.projects.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Project"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}"
+   required=["(project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
 }
 export projects
 
 type targetHttpProxies = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.targetHttpProxies.insert" }
-  create(cfg)={ api-id="compute.targetHttpProxies.insert" config=cfg }
-  read(cfg)={ api-id="compute.targetHttpProxies.get" config=cfg }
-  update(cfg)={ api-id="compute.targetHttpProxies.patch" config=cfg}
-  delete(cfg)={ api-id="compute.targetHttpProxies.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="TargetHttpProxy"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/targetHttpProxies"
+   required=["(project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="TargetHttpProxy"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/targetHttpProxies"
+   required=["(project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="TargetHttpProxy"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/targetHttpProxies/{targetHttpProxy}"
+   required=["(project targetHttpProxy)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="TargetHttpProxy"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/targetHttpProxies/{targetHttpProxy}"
+   required=["(project targetHttpProxy)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/targetHttpProxies/{targetHttpProxy}"
+   required=["(project targetHttpProxy)"]
+  }
+ }
 }
 export targetHttpProxies
 
 type targetPools = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.targetPools.insert" }
-  create(cfg)={ api-id="compute.targetPools.insert" config=cfg }
-  read(cfg)={ api-id="compute.targetPools.get" config=cfg }
-  update(cfg)={ api-id="compute.targetPools.patch" config=cfg}
-  delete(cfg)={ api-id="compute.targetPools.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="TargetPool"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/targetPools"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="TargetPool"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/targetPools"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="TargetPool"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/targetPools/{targetPool}"
+   required=["(targetPool region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/targetPools/{targetPool}"
+   required=["(targetPool region project)"]
+  }
+ }
 }
 export targetPools
 
 type targetHttpsProxies = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.targetHttpsProxies.insert" }
-  create(cfg)={ api-id="compute.targetHttpsProxies.insert" config=cfg }
-  read(cfg)={ api-id="compute.targetHttpsProxies.get" config=cfg }
-  update(cfg)={ api-id="compute.targetHttpsProxies.patch" config=cfg}
-  delete(cfg)={ api-id="compute.targetHttpsProxies.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="TargetHttpsProxy"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/targetHttpsProxies"
+   required=["(project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="TargetHttpsProxy"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/targetHttpsProxies"
+   required=["(project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="TargetHttpsProxy"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/targetHttpsProxies/{targetHttpsProxy}"
+   required=["(project targetHttpsProxy)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="TargetHttpsProxy"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/targetHttpsProxies/{targetHttpsProxy}"
+   required=["(project targetHttpsProxy)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/targetHttpsProxies/{targetHttpsProxy}"
+   required=["(project targetHttpsProxy)"]
+  }
+ }
 }
 export targetHttpsProxies
 
 type regionBackendServices = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.regionBackendServices.insert" }
-  create(cfg)={ api-id="compute.regionBackendServices.insert" config=cfg }
-  read(cfg)={ api-id="compute.regionBackendServices.get" config=cfg }
-  update(cfg)={ api-id="compute.regionBackendServices.patch" config=cfg}
-  delete(cfg)={ api-id="compute.regionBackendServices.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="BackendService"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/backendServices"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="BackendService"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/backendServices"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="BackendService"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/backendServices/{backendService}"
+   required=["(backendService region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="BackendService"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/backendServices/{backendService}"
+   required=["(backendService region project)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/backendServices/{backendService}"
+   required=["(backendService region project)"]
+  }
+ }
 }
 export regionBackendServices
 
 type routes = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.routes.insert" }
-  create(cfg)={ api-id="compute.routes.insert" config=cfg }
-  read(cfg)={ api-id="compute.routes.get" config=cfg }
-  update(cfg)={ api-id="compute.routes.patch" config=cfg}
-  delete(cfg)={ api-id="compute.routes.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="Route"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/routes"
+   required=["(project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="Route"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/routes"
+   required=["(project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Route"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/routes/{route}"
+   required=["(project route)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/routes/{route}"
+   required=["(project route)"]
+  }
+ }
 }
 export routes
 
 type networkAttachments = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.networkAttachments.insert" }
-  create(cfg)={ api-id="compute.networkAttachments.insert" config=cfg }
-  read(cfg)={ api-id="compute.networkAttachments.get" config=cfg }
-  update(cfg)={ api-id="compute.networkAttachments.patch" config=cfg}
-  delete(cfg)={ api-id="compute.networkAttachments.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="NetworkAttachment"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/networkAttachments"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="NetworkAttachment"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/networkAttachments"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="NetworkAttachment"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/networkAttachments/{networkAttachment}"
+   required=["(networkAttachment region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="NetworkAttachment"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/networkAttachments/{networkAttachment}"
+   required=["(networkAttachment region project)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/networkAttachments/{networkAttachment}"
+   required=["(networkAttachment region project)"]
+  }
+ }
 }
 export networkAttachments
 
 type licenses = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.licenses.insert" }
-  create(cfg)={ api-id="compute.licenses.insert" config=cfg }
-  read(cfg)={ api-id="compute.licenses.get" config=cfg }
-  update(cfg)={ api-id="compute.licenses.patch" config=cfg}
-  delete(cfg)={ api-id="compute.licenses.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="License"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/licenses"
+   required=["(project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="License"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/licenses"
+   required=["(project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="License"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/licenses/{license}"
+   required=["(license project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/licenses/{license}"
+   required=["(license project)"]
+  }
+ }
 }
 export licenses
 
 type publicDelegatedPrefixes = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.publicDelegatedPrefixes.insert" }
-  create(cfg)={ api-id="compute.publicDelegatedPrefixes.insert" config=cfg }
-  read(cfg)={ api-id="compute.publicDelegatedPrefixes.get" config=cfg }
-  update(cfg)={ api-id="compute.publicDelegatedPrefixes.patch" config=cfg}
-  delete(cfg)={ api-id="compute.publicDelegatedPrefixes.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="PublicDelegatedPrefix"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/publicDelegatedPrefixes"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="PublicDelegatedPrefix"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/publicDelegatedPrefixes"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="PublicDelegatedPrefix"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/publicDelegatedPrefixes/{publicDelegatedPrefix}"
+   required=["(publicDelegatedPrefix region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="PublicDelegatedPrefix"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/publicDelegatedPrefixes/{publicDelegatedPrefix}"
+   required=["(publicDelegatedPrefix region project)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/publicDelegatedPrefixes/{publicDelegatedPrefix}"
+   required=["(publicDelegatedPrefix region project)"]
+  }
+ }
 }
 export publicDelegatedPrefixes
 
 type reservations = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.reservations.insert" }
-  create(cfg)={ api-id="compute.reservations.insert" config=cfg }
-  read(cfg)={ api-id="compute.reservations.get" config=cfg }
-  update(cfg)={ api-id="compute.reservations.patch" config=cfg}
-  delete(cfg)={ api-id="compute.reservations.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="Reservation"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/reservations"
+   required=["(zone project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="Reservation"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/reservations"
+   required=["(zone project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Reservation"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/reservations/{reservation}"
+   required=["(zone reservation project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/reservations/{reservation}"
+   required=["(zone reservation project)"]
+  }
+ }
 }
 export reservations
 
 type addresses = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.addresses.insert" }
-  create(cfg)={ api-id="compute.addresses.insert" config=cfg }
-  read(cfg)={ api-id="compute.addresses.get" config=cfg }
-  update(cfg)={ api-id="compute.addresses.patch" config=cfg}
-  delete(cfg)={ api-id="compute.addresses.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="Address"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/addresses"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="Address"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/addresses"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Address"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/addresses/{address}"
+   required=["(address region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/addresses/{address}"
+   required=["(address region project)"]
+  }
+ }
 }
 export addresses
 
 type machineImages = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.machineImages.insert" }
-  create(cfg)={ api-id="compute.machineImages.insert" config=cfg }
-  read(cfg)={ api-id="compute.machineImages.get" config=cfg }
-  update(cfg)={ api-id="compute.machineImages.patch" config=cfg}
-  delete(cfg)={ api-id="compute.machineImages.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="MachineImage"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/machineImages"
+   required=["(project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="MachineImage"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/machineImages"
+   required=["(project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="MachineImage"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/machineImages/{machineImage}"
+   required=["(project machineImage)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/machineImages/{machineImage}"
+   required=["(project machineImage)"]
+  }
+ }
 }
 export machineImages
 
 type interconnects = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.interconnects.insert" }
-  create(cfg)={ api-id="compute.interconnects.insert" config=cfg }
-  read(cfg)={ api-id="compute.interconnects.get" config=cfg }
-  update(cfg)={ api-id="compute.interconnects.patch" config=cfg}
-  delete(cfg)={ api-id="compute.interconnects.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="Interconnect"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/interconnects"
+   required=["(project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="Interconnect"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/interconnects"
+   required=["(project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Interconnect"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/interconnects/{interconnect}"
+   required=["(project interconnect)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="Interconnect"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/interconnects/{interconnect}"
+   required=["(project interconnect)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/interconnects/{interconnect}"
+   required=["(project interconnect)"]
+  }
+ }
 }
 export interconnects
 
 type instanceSettings = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.instanceSettings.insert" }
-  create(cfg)={ api-id="compute.instanceSettings.insert" config=cfg }
-  read(cfg)={ api-id="compute.instanceSettings.get" config=cfg }
-  update(cfg)={ api-id="compute.instanceSettings.patch" config=cfg}
-  delete(cfg)={ api-id="compute.instanceSettings.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="InstanceSettings"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/instanceSettings"
+   required=["(zone project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="InstanceSettings"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/instanceSettings"
+   required=["(zone project)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
 }
 export instanceSettings
 
 type instanceGroupManagers = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.instanceGroupManagers.insert" }
-  create(cfg)={ api-id="compute.instanceGroupManagers.insert" config=cfg }
-  read(cfg)={ api-id="compute.instanceGroupManagers.get" config=cfg }
-  update(cfg)={ api-id="compute.instanceGroupManagers.patch" config=cfg}
-  delete(cfg)={ api-id="compute.instanceGroupManagers.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="InstanceGroupManager"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/instanceGroupManagers"
+   required=["(zone project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="InstanceGroupManager"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/instanceGroupManagers"
+   required=["(zone project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="InstanceGroupManager"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/instanceGroupManagers/{instanceGroupManager}"
+   required=["(instanceGroupManager zone project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="InstanceGroupManager"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/instanceGroupManagers/{instanceGroupManager}"
+   required=["(instanceGroupManager zone project)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/instanceGroupManagers/{instanceGroupManager}"
+   required=["(instanceGroupManager zone project)"]
+  }
+ }
 }
 export instanceGroupManagers
 
 type diskTypes = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.diskTypes.insert" }
-  create(cfg)={ api-id="compute.diskTypes.insert" config=cfg }
-  read(cfg)={ api-id="compute.diskTypes.get" config=cfg }
-  update(cfg)={ api-id="compute.diskTypes.patch" config=cfg}
-  delete(cfg)={ api-id="compute.diskTypes.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="DiskType"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/diskTypes/{diskType}"
+   required=["(diskType zone project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
 }
 export diskTypes
 
 type regionInstances = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.regionInstances.insert" }
-  create(cfg)={ api-id="compute.regionInstances.insert" config=cfg }
-  read(cfg)={ api-id="compute.regionInstances.get" config=cfg }
-  update(cfg)={ api-id="compute.regionInstances.patch" config=cfg}
-  delete(cfg)={ api-id="compute.regionInstances.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
 }
 export regionInstances
 
 type securityPolicies = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.securityPolicies.insert" }
-  create(cfg)={ api-id="compute.securityPolicies.insert" config=cfg }
-  read(cfg)={ api-id="compute.securityPolicies.get" config=cfg }
-  update(cfg)={ api-id="compute.securityPolicies.patch" config=cfg}
-  delete(cfg)={ api-id="compute.securityPolicies.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="SecurityPolicy"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/securityPolicies"
+   required=["(project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="SecurityPolicy"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/securityPolicies"
+   required=["(project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="SecurityPolicy"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/securityPolicies/{securityPolicy}"
+   required=["(project securityPolicy)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="SecurityPolicy"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/securityPolicies/{securityPolicy}"
+   required=["(project securityPolicy)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/securityPolicies/{securityPolicy}"
+   required=["(project securityPolicy)"]
+  }
+ }
 }
 export securityPolicies
 
 type nodeTemplates = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.nodeTemplates.insert" }
-  create(cfg)={ api-id="compute.nodeTemplates.insert" config=cfg }
-  read(cfg)={ api-id="compute.nodeTemplates.get" config=cfg }
-  update(cfg)={ api-id="compute.nodeTemplates.patch" config=cfg}
-  delete(cfg)={ api-id="compute.nodeTemplates.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="NodeTemplate"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/nodeTemplates"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="NodeTemplate"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/nodeTemplates"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="NodeTemplate"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/nodeTemplates/{nodeTemplate}"
+   required=["(nodeTemplate region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/nodeTemplates/{nodeTemplate}"
+   required=["(nodeTemplate region project)"]
+  }
+ }
 }
 export nodeTemplates
 
 type nodeTypes = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.nodeTypes.insert" }
-  create(cfg)={ api-id="compute.nodeTypes.insert" config=cfg }
-  read(cfg)={ api-id="compute.nodeTypes.get" config=cfg }
-  update(cfg)={ api-id="compute.nodeTypes.patch" config=cfg}
-  delete(cfg)={ api-id="compute.nodeTypes.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="NodeType"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/zones/{zone}/nodeTypes/{nodeType}"
+   required=["(nodeType zone project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
 }
 export nodeTypes
 
 type regionInstantSnapshots = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.regionInstantSnapshots.insert" }
-  create(cfg)={ api-id="compute.regionInstantSnapshots.insert" config=cfg }
-  read(cfg)={ api-id="compute.regionInstantSnapshots.get" config=cfg }
-  update(cfg)={ api-id="compute.regionInstantSnapshots.patch" config=cfg}
-  delete(cfg)={ api-id="compute.regionInstantSnapshots.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="InstantSnapshot"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/instantSnapshots"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="InstantSnapshot"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/instantSnapshots"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="InstantSnapshot"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/instantSnapshots/{instantSnapshot}"
+   required=["(region instantSnapshot project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/instantSnapshots/{instantSnapshot}"
+   required=["(region instantSnapshot project)"]
+  }
+ }
 }
 export regionInstantSnapshots
 
 type instanceTemplates = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.instanceTemplates.insert" }
-  create(cfg)={ api-id="compute.instanceTemplates.insert" config=cfg }
-  read(cfg)={ api-id="compute.instanceTemplates.get" config=cfg }
-  update(cfg)={ api-id="compute.instanceTemplates.patch" config=cfg}
-  delete(cfg)={ api-id="compute.instanceTemplates.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="InstanceTemplate"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/instanceTemplates"
+   required=["(project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="InstanceTemplate"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/instanceTemplates"
+   required=["(project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="InstanceTemplate"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/instanceTemplates/{instanceTemplate}"
+   required=["(project instanceTemplate)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/instanceTemplates/{instanceTemplate}"
+   required=["(project instanceTemplate)"]
+  }
+ }
 }
 export instanceTemplates
 
 type networks = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.networks.insert" }
-  create(cfg)={ api-id="compute.networks.insert" config=cfg }
-  read(cfg)={ api-id="compute.networks.get" config=cfg }
-  update(cfg)={ api-id="compute.networks.patch" config=cfg}
-  delete(cfg)={ api-id="compute.networks.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="Network"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/networks"
+   required=["(project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="Network"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/networks"
+   required=["(project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Network"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/networks/{network}"
+   required=["(project network)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="Network"
+   response-type="Operation"
+   method="PATCH"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/networks/{network}"
+   required=["(project network)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/networks/{network}"
+   required=["(project network)"]
+  }
+ }
 }
 export networks
 
 type vpnTunnels = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.vpnTunnels.insert" }
-  create(cfg)={ api-id="compute.vpnTunnels.insert" config=cfg }
-  read(cfg)={ api-id="compute.vpnTunnels.get" config=cfg }
-  update(cfg)={ api-id="compute.vpnTunnels.patch" config=cfg}
-  delete(cfg)={ api-id="compute.vpnTunnels.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="VpnTunnel"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/vpnTunnels"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="VpnTunnel"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/vpnTunnels"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="VpnTunnel"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/vpnTunnels/{vpnTunnel}"
+   required=["(vpnTunnel region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/vpnTunnels/{vpnTunnel}"
+   required=["(vpnTunnel region project)"]
+  }
+ }
 }
 export vpnTunnels
 
 type globalOperations = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.globalOperations.insert" }
-  create(cfg)={ api-id="compute.globalOperations.insert" config=cfg }
-  read(cfg)={ api-id="compute.globalOperations.get" config=cfg }
-  update(cfg)={ api-id="compute.globalOperations.patch" config=cfg}
-  delete(cfg)={ api-id="compute.globalOperations.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/operations/{operation}"
+   required=["(project operation)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="#f"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/global/operations/{operation}"
+   required=["(project operation)"]
+  }
+ }
 }
 export globalOperations
 
 type regionTargetTcpProxies = {
-  origin(cfg)= cfg <- { driver="gcp" api="compute.regionTargetTcpProxies.insert" }
-  create(cfg)={ api-id="compute.regionTargetTcpProxies.insert" config=cfg }
-  read(cfg)={ api-id="compute.regionTargetTcpProxies.get" config=cfg }
-  update(cfg)={ api-id="compute.regionTargetTcpProxies.patch" config=cfg}
-  delete(cfg)={ api-id="compute.regionTargetTcpProxies.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+  api={
+   api-id="compute"
+   request-type="TargetTcpProxy"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/targetTcpProxies"
+   required=["(region project)"]
+  }
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="TargetTcpProxy"
+   response-type="Operation"
+   method="POST"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/targetTcpProxies"
+   required=["(region project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="TargetTcpProxy"
+   method="GET"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/targetTcpProxies/{targetTcpProxy}"
+   required=["(targetTcpProxy region project)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id="compute"
+   request-type="#f"
+   response-type="Operation"
+   method="DELETE"
+   url="https://compute.googleapis.com/compute/beta/projects/{project}/regions/{region}/targetTcpProxies/{targetTcpProxy}"
+   required=["(targetTcpProxy region project)"]
+  }
+ }
 }
 export regionTargetTcpProxies
 

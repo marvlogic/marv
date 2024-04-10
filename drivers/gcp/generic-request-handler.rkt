@@ -3,7 +3,6 @@
 (require racket/contract)
 (require marv/utils/hash)
 (require marv/drivers/gcp/operation-handler)
-(require marv/drivers/gcp/discovery)
 (require marv/drivers/types)
 (require marv/log)
 (require marv/core/config)
@@ -18,33 +17,33 @@
   (displayln "..DONE\033[K")
   (flush-output))
 
-(define/contract (mk-request-handler discovery-doc op-handler-fn)
-  (disc-doc? procedure? . -> . procedure?)
+(define/contract (mk-request-handler op-handler-fn)
+  (procedure? . -> . procedure?)
 
   (define/contract (request-handler cmd http)
     (driver-cmd/c any/c . -> . driver-resp/c)
 
-    (define api-id (driver-spec-api cmd))
+    (define api (driver-spec-api cmd))
     (define config (hash-ref cmd 'config))
-    (log-marv-debug "generic-request-handler: type-op=~a ~a" api-id config)
+    (log-marv-debug "generic-request-handler: type-op=~a ~a" api config)
     ;TODO41 - this cond is not right
     (cond
       ; TODO - hacked, if null operation then we don't do anything
-      [(null? api-id) config]
-      [(string? api-id)
-       (define api (api-for-type-op discovery-doc (string->symbol api-id)))
+      [(null? api) config]
+      [(hash? api)
        ;  (define is-delete? (eq? crud-delete crud-fn))
        (define response (do-api-request api config http op-handler-fn))
        (log-marv-debug "response: ~a" response)
        ;  (define xresp (post response))
        ;  (log-marv-debug "transformed: ~a" xresp)
        response]
-      [else raise (format "type has no usable CRUD for ~a : ~a" 'bah api-id )]
+      [else raise (format "type has no usable CRUD for ~a : ~a" 'bah api )]
       ))
   request-handler)
 
 (define/contract (do-api-request api resource http operation-handler)
-  (disc-api? any/c any/c procedure? . -> . hash?)
+  ; TODO41-define API type/contracts
+  (hash? hash? any/c procedure? . -> . hash?)
 
   (define (work-it op-resp [poll-delay 3])
     (case (op-status-flag op-resp)
@@ -57,11 +56,13 @@
       ['errored (raise (format "Operation failed with errors: ~v" (op-status-errors op-resp)))]
       [else (raise (format "indeterminate op state: ~v" op-resp))]
       ))
-  (define api-shaped-resource (api-resource api resource))
+  ; TODO41
+  ; (define api-shaped-resource (api-resource api resource))
+  (define api-shaped-resource resource)
   (log-marv-debug "api-shaped: ~v" api-shaped-resource)
   (define initial-response
     (operation-handler (api-response-type api)
                        (http (api-http-method api)
-                             (api-resource-url api resource)
+                             (api-url api resource)
                              api-shaped-resource)))
   (work-it initial-response))

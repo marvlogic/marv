@@ -14,22 +14,21 @@
 
 (provide init-gcp gcp-http-transport)
 
-;TODO41- need driver-id anymore? only used for with-workspace calls...
-(define (init-gcp driver-id http-transport)
+(define (init-gcp http-transport)
   (define apis
     (hash
-     'compute (generic:init-api driver-id "compute:beta" http-transport compute-api-operation-handler)
-     'iam (generic:init-api driver-id "iam:v1" http-transport iam-api-operation-handler)
-     'storage (generic:init-api driver-id "storage:v1" http-transport compute-api-operation-handler) ; TODO
-     'secretmanager (generic:init-api driver-id "secretmanager:v1" http-transport iam-api-operation-handler sm:patches) ; TODO
-     'sql (generic:init-api driver-id "sqladmin:v1" http-transport compute-api-operation-handler sql:patches) ; TODO
+     "compute" (generic:init-api http-transport compute-api-operation-handler)
+     "iam" (generic:init-api  http-transport iam-api-operation-handler)
+     "storage" (generic:init-api  http-transport compute-api-operation-handler)
+     "secretmanager" (generic:init-api  http-transport iam-api-operation-handler)
+     "sql" (generic:init-api http-transport compute-api-operation-handler)
      ))
 
   (define/contract (routing driver-cmd)
     (driver-cmd/c . -> . driver-resp/c)
-    (log-marv-debug " gcp routing called: ~a" driver-cmd)
-    (define subtype (string->symbol(car (string-split (driver-spec-api driver-cmd) "." ))))
-    (define api (hash-ref apis subtype))
+    (log-marv-debug " GCP routing called: ~a" driver-cmd)
+    (define gcp-api (hash-ref (driver-spec-api driver-cmd) 'api-id))
+    (define api (hash-ref apis gcp-api))
     (api driver-cmd http-transport))
   routing)
 
