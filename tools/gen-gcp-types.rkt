@@ -3,14 +3,17 @@
 (provide (all-defined-out))
 
 (require racket/string)
+(require racket/list)
 (require marv/drivers/gcp/discovery)
+(require racket/match)
+(require marv/utils/hash)
+(require marv/core/globals)
 
 (define compute  (load-discovery "gcp" "compute:beta"))
 (define iam  (load-discovery "gcp" "iam:v1"))
 (define storage  (load-discovery "gcp" "storage:v1"))
 (define secretmanager  (load-discovery "gcp" "secretmanager:v1"))
 (define sql  (load-discovery "gcp" "sqladmin:v1"))
-
 
 (define (gen-types disc prefix create read update delete)
   ; (define types '("regionDisks"));(api-resource-keys disc))
@@ -113,7 +116,7 @@ EOF
   ; (gen-auto-file storage "storage" "insert" "get" "patch" "delete")
   (gen-auto-file compute "compute" "insert" "get" "patch" "delete")
   ; (gen-auto-file iam "iam" "create" "get" "patch" "delete")
-  ; (gen-auto-file secretmanager "secretmanager" "create" "get" "patch" "delete")
+  (gen-auto-file secretmanager "secretmanager" "create" "get" "patch" "delete")
   ; (gen-auto-file sql "sql" "insert" "get" "patch" "delete")
   )
 

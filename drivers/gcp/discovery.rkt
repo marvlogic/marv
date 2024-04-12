@@ -17,6 +17,8 @@
 (require marv/core/config)
 
 (provide load-discovery
+         get-discovery-resources
+         api-by-resource-path
          api-for-type-op
          api-http-method
          api-resource-url
@@ -53,6 +55,29 @@
                (lambda (disc-ent) (cons (dict-ref disc-ent 'id) (dict-ref disc-ent 'discoveryRestUrl)))
                (dict-ref (read-json) 'items)))
     #:url ROOT-DISCOVERY))
+
+(define/contract (get-discovery-resources doc)
+  (disc-doc?  . -> . (listof string?))
+
+  (define (extract hs path)
+    (for/fold ([found-names '()])
+              ([(key value) (in-hash hs)])
+      (cond
+        [(hash? value)
+         (define keypath (format "~a/~a" path key))
+         (define next-found-names (if (hash-has-key? value 'methods) (cons keypath found-names) found-names))
+         (append next-found-names (extract value keypath))]
+        [else found-names])))
+  (extract (disc-doc-root doc) ""))
+
+(define/contract (api-by-resource-path doc path)
+  (disc-doc? string? . -> . disc-api?)
+
+  (define (descend hs ks)
+    (match ks
+      [(list k) (hash-ref hs k)]
+      [(list k ks2 ...)(descend (hash-ref hs k) ks2)]))
+  (disc-api doc (descend (disc-doc-root doc) (map string->symbol (string-split path "/")))))
 
 ; TODO - better name for type-op stuff?
 (define/contract (api-for-type-op discovery type-op)
@@ -104,8 +129,8 @@
                        (for/list ([q qps]) (format "~a={~a}" q q))
                        "&" #:before-first "?")]
       [else ""]))
-
-  (define path (format "~a~a" (hash-ref (disc-api-type-api api) 'path) query-params-str))
+  (define base-path (regexp-replace #rx"{[a-zA-Z0-9]*}$" (hash-ref (disc-api-type-api api) 'path) "{name}"))
+  (define path (format "~a~a" base-path query-params-str))
   (define api-root (disc-api-root api))
   (define url
     (format "~a~a~a"
