@@ -70,14 +70,18 @@
         [else found-names])))
   (extract (disc-doc-root doc) ""))
 
-(define/contract (api-by-resource-path doc path)
-  (disc-doc? string? . -> . disc-api?)
+(define/contract (api-by-resource-path disc res-path method)
+  ; TODO41- or/c return type, here and above
+  (disc-doc? string? string? . -> . (or/c boolean? disc-api?))
 
   (define (descend hs ks)
     (match ks
-      [(list k) (hash-ref hs k)]
-      [(list k ks2 ...)(descend (hash-ref hs k) ks2)]))
-  (disc-api doc (descend (disc-doc-root doc) (map string->symbol (string-split path "/")))))
+      [(list k) (hash-ref hs k #f)]
+      [(list k kss ...)(descend (hash-ref hs k) kss)]))
+
+  (define foundit (descend (disc-doc-root disc)
+                           (map string->symbol (append (string-split res-path "/") (list "methods" method)))))
+  (if foundit (disc-api (disc-doc-root disc) foundit) #f))
 
 ; TODO - better name for type-op stuff?
 (define/contract (api-for-type-op discovery type-op)

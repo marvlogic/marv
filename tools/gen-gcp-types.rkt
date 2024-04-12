@@ -15,29 +15,33 @@
 (define secretmanager  (load-discovery "gcp" "secretmanager:v1"))
 (define sql  (load-discovery "gcp" "sqladmin:v1"))
 
+; (get-discovery-resources secretmanager)
+; (api-by-resource-path secretmanager "/resources/projects/resources/secrets" "create")
+
 (define (gen-types disc prefix create read update delete)
-  ; (define types '("regionDisks"));(api-resource-keys disc))
-  (define types (api-resource-keys disc))
-  (displayln #<<EOF
+  (define types (get-discovery-resources disc))
+  (displayln (format #<<EOF
 #lang marv
 ## AUTO-GENERATED FILE - DO NOT EDIT!
+API-ID="~a"
 EOF
-             )
-  (for ([t (in-list types)])
+
+                     prefix))
+  (for ([res-path (in-list types)])
+    ; TODO41- filter out empty apis
     (define (api-spec verb)
-      (define api-id (string->symbol(format "~a.~a.~a" prefix t verb)))
-      (define api (api-for-type-op disc api-id))
+      (define api (api-by-resource-path disc res-path verb))
       (define spec
         (cond
           [(disc-api? api)
-           (format "api-id=\"~a\"|request-type=\"~a\"|response-type=\"~a\"|method=\"~a\"|url=\"~a\"|required=[\"~a\"]"
-                   prefix
+           (format "api-id=API-ID|request-type=\"~a\"|response-type=\"~a\"|method=\"~a\"|url=\"~a\"|required=[\"~a\"]"
                    (api-request-type api) (api-response-type api) (api-http-method api)
                    (api-resource-url-base api)
                    (map symbol->string (api-required-params api)))]
           [else ""]))
       (string-replace spec "|" "\n   "))
 
+    (define type (last (string-split res-path "/")))
     (displayln
      (format
       #<<EOF
@@ -77,7 +81,7 @@ type ~a = {
 export ~a
 
 EOF
-      t (api-spec create) (api-spec create) (api-spec read) (api-spec update) (api-spec delete) t
+      type (api-spec create) (api-spec create) (api-spec read) (api-spec update) (api-spec delete) type
       ))))
 
 (define (singularise str)
