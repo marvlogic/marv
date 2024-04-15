@@ -24,6 +24,7 @@
   (cond
     [is-operation?
      (define done? (equal? "DONE" (hash-ref resp 'status)))
+     (define delete? (equal? "delete" (hash-ref resp 'operationType #f)))
      (define errors (hash-nref resp '(error items) #f))
      (define poll-next
        (and (not done?)
@@ -31,10 +32,12 @@
               (compute-api-operation-handler
                "Operation"
                (http 'GET (hash-ref resp 'selfLink) '())))))
-     (define completed (and done?
-                            (not errors)
-                            (lambda(http) (http 'GET (hash-ref resp 'targetLink) '()))))
-     (op-status done?  errors poll-next completed)]
+     (define completed
+       (and done?
+            (not errors)
+            (if delete? (lambda(_)(hash))
+                (lambda(http) (http 'GET (hash-ref resp 'targetLink) '())))))
+     (op-status done? errors poll-next completed)]
     [else (op-success resp)]))
 
 ; TODO - same code?
@@ -43,6 +46,7 @@
   (cond
     [is-operation?
      (define done? (equal? "DONE" (hash-ref resp 'status)))
+     (define delete? (equal? "delete" (hash-ref resp 'operationType #f)))
      (define errors (hash-nref resp '(error items) #f))
      (define poll-next
        (and (not done?)
@@ -50,8 +54,11 @@
               (compute-api-operation-handler
                "Operation"
                (http 'GET (hash-ref resp 'selfLink) '())))))
-     (define completed (and done?
-                            (not errors)
-                            (lambda(http) (http 'GET (hash-ref resp 'targetLink) '()))))
+     (define completed
+       (and done?
+            (not errors)
+            (if delete? (lambda(_)(hash))
+                (lambda(http) (http 'GET (hash-ref resp 'targetLink) '())))))
+
      (op-status done?  errors poll-next completed)]
     [else (op-success resp)]))

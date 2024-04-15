@@ -7,7 +7,11 @@ type _base = {
   state(cfg)=cfg.response <- { region=cfg.original.region project=cfg.original.project }
 }
 
-type regionDisk =  _base | _auto:regionDisks
+type url-fixup = {
+  read(cfg) = cfg <- { api=cfg.api <- { url="rewrite-me" }}
+}
+
+type regionDisk =  _base | _auto:regionDisks | url-fixup
 export regionDisk
 
 type interconnectLocation =  _base | _auto:interconnectLocations

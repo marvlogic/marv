@@ -117,11 +117,11 @@ EOF
     (with-output-to-file #:exists 'replace (format "types/gcp/_auto/~a.mrv" api-name) gen)
     (with-output-to-file #:exists 'replace (format "types/gcp/~a-shim.mrv" api-name) shim))
 
-  ; (gen-auto-file storage "storage" "insert" "get" "patch" "delete")
+  (gen-auto-file storage "storage" "insert" "get" "patch" "delete")
   (gen-auto-file compute "compute" "insert" "get" "patch" "delete")
-  ; (gen-auto-file iam "iam" "create" "get" "patch" "delete")
+  (gen-auto-file iam "iam" "create" "get" "patch" "delete")
   (gen-auto-file secretmanager "secretmanager" "create" "get" "patch" "delete")
-  ; (gen-auto-file sql "sql" "insert" "get" "patch" "delete")
+  (gen-auto-file sql "sql" "insert" "get" "patch" "delete")
   )
 
 ; (gen-types compute "compute" "insert" "get" "patch" "delete")
