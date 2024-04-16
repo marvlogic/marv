@@ -40,7 +40,7 @@
      (op-status done? errors poll-next completed)]
     [else (op-success resp)]))
 
-; TODO - same code?
+; TODO41 - same code?
 (define (iam-api-operation-handler response-type resp)
   (define is-operation? (equal? "Operation" response-type))
   (cond
@@ -51,7 +51,7 @@
      (define poll-next
        (and (not done?)
             (lambda(http)
-              (compute-api-operation-handler
+              (iam-api-operation-handler
                "Operation"
                (http 'GET (hash-ref resp 'selfLink) '())))))
      (define completed

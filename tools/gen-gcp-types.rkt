@@ -18,7 +18,16 @@
 ; (get-discovery-resources secretmanager)
 ; (api-by-resource-path secretmanager "/resources/projects/resources/secrets" "create")
 
-(define (gen-types disc prefix create read update delete)
+(define res-spec-verbs
+  (hash
+   "/resources/projects/resources/secrets/resources/versions"
+   '("/resources/projects/resources/secrets:addVersion"
+     ":access"
+     "/resources/projects/resources/secrets:addVersion"
+     ":destroy")
+   ))
+
+(define (gen-types disc api-id api-create api-read api-update api-delete)
   (define types (get-discovery-resources disc))
   (displayln (format #<<EOF
 #lang marv
@@ -26,11 +35,17 @@
 API-ID="~a"
 EOF
 
-                     prefix))
+                     api-id))
   (for ([res-path (in-list types)])
     ; TODO41- filter out empty apis
+
+    (define (parse-verb->api v)
+      (match (string-split v ":")
+        [(list path method) (api-by-resource-path disc path method)]
+        [(list method) (api-by-resource-path disc res-path method)]))
+
     (define (api-spec verb)
-      (define api (api-by-resource-path disc res-path verb))
+      (define api (parse-verb->api verb))
       (define spec
         (cond
           [(disc-api? api)
@@ -42,9 +57,12 @@ EOF
       (string-replace spec "|" "\n   "))
 
     (define type (last (string-split res-path "/")))
+    (define-values (create read update delete)
+      (apply values (hash-ref res-spec-verbs res-path (list api-create api-read api-update api-delete))))
     (displayln
      (format
       #<<EOF
+# ~a
 type ~a = {
  # TODO41 - destructors
  origin(cfg)= cfg <- {
@@ -81,14 +99,15 @@ type ~a = {
 export ~a
 
 EOF
-      type (api-spec create) (api-spec create) (api-spec read) (api-spec update) (api-spec delete) type
+      res-path type (api-spec create) (api-spec create) (api-spec read) (api-spec update) (api-spec delete) type
       ))))
 
 (define (singularise str)
   (cond [(string-suffix? str "ies") (string-append (string-trim str "ies") "y")]
         [else (string-trim #:left? #f str "s")]))
 
-(define (gen-shim api-name types)
+(define (gen-shim disc api-name)
+  (define types (get-discovery-resources disc))
   (displayln (format #<<EOF
 #lang marv
 
@@ -99,21 +118,22 @@ import types/gcp/_auto/~a as _auto
 EOF
                      api-name))
   (for ([t (in-list types)])
-    (define sgl (singularise (symbol->string t)))
+    (define type(last (string-split t "/")))
+    (define sgl (singularise type))
 
     (displayln (format #<<EOF
 type ~a =  _base | _auto:~a
 export ~a
 
 EOF
-                       sgl t sgl))))
+                       sgl type sgl))))
 
 
 (define (gen-all)
 
   (define (gen-auto-file disc api-name create read update delete)
     (define (gen) (gen-types disc api-name create read update delete))
-    (define (shim) (gen-shim api-name (api-resource-keys disc)))
+    (define (shim) (gen-shim disc api-name))
     (with-output-to-file #:exists 'replace (format "types/gcp/_auto/~a.mrv" api-name) gen)
     (with-output-to-file #:exists 'replace (format "types/gcp/~a-shim.mrv" api-name) shim))
 

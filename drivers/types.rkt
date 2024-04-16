@@ -22,7 +22,12 @@
 (define (driver-spec-pre-fn ds) (hash-ref ds 'pre (lambda()(lambda(x)x))))
 (define (driver-spec-post-fn ds) (hash-ref ds 'post (lambda()(lambda(x y)y))))
 
-(define (api-request-type a) (hash-ref a 'request-type))
+(define (api-request-type api r)
+  (define rt (hash-ref api 'request-type))
+  (cond
+    [(procedure? rt) (rt r)]
+    [else r]))
+
 (define (api-response-type a) (hash-ref a 'response-type))
 (define (api-http-method a) (string->symbol(hash-ref a 'method)))
 
