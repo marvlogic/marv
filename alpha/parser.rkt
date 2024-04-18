@@ -46,7 +46,7 @@ boolean: "true" | "false"
 config-object: /"{" [( STRING | IDENTIFIER | "type" ) /"=" [ "imm:" ] expression]* /"}"
 alist: /"[" expression* /"]"
 
-list-attr: /"[" IDENTIFIER+ /"]"
+list-attr: /"[" IDENTIFIER* /"]"
 
 built-in: env-read | strf | base64encode | base64decode
 env-read: /"env" /"(" STRING /")"

@@ -57,8 +57,7 @@
       [else (raise (format "indeterminate op state: ~v" op-resp))]
       ))
   ; TODO41
-  ; (define api-shaped-resource (api-resource api resource))
-  (define api-shaped-resource (api-request-type api resource))
+  (define api-shaped-resource (api-request-body api))
   (log-marv-debug "api-shaped: ~v" api-shaped-resource)
   (define initial-response
     (operation-handler (api-response-type api)

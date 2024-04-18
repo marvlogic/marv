@@ -161,7 +161,7 @@
                (case verb
                  ['type 'type-id]
                  ['body.func-id (body.func-id config)] ...
-                 ; TODO41 - mechanism?
+                 ; TODO41 - mechanism; think this is redundant code
                  ['destructor
                   (define delcfg (type-id 'delete config))
                   (define flt (hash-ref delcfg 'filter (lambda()(lambda(x)x))))

@@ -18,6 +18,47 @@
 ; (get-discovery-resources secretmanager)
 ; (api-by-resource-path secretmanager "/resources/projects/resources/secrets" "create")
 
+(define (gen-all)
+
+  (define (gen-auto-file disc api-name create read update delete)
+    (define (schemas) (gen-schemas disc))
+    (define (gen) (gen-types disc api-name create read update delete))
+    (define (shim) (gen-shim disc api-name))
+    (with-output-to-file #:exists 'replace (format "types/gcp/_auto/~a-schema.mrv" api-name) schemas)
+    (with-output-to-file #:exists 'replace (format "types/gcp/_auto/~a.mrv" api-name) gen)
+    (with-output-to-file #:exists 'replace (format "types/gcp/~a-shim.mrv" api-name) shim))
+
+  (gen-auto-file storage "storage" "insert" "get" "patch" "delete")
+  (gen-auto-file compute "compute" "insert" "get" "patch" "delete")
+  (gen-auto-file iam "iam" "create" "get" "patch" "delete")
+  (gen-auto-file secretmanager "secretmanager" "create" "get" "patch" "delete")
+  (gen-auto-file sql "sql" "insert" "get" "patch" "delete")
+  )
+
+(define (gen-schemas disc)
+  (displayln #<<EOF
+#lang marv
+## AUTO-GENERATED FILE - DO NOT EDIT!
+
+EOF
+             )
+  (for ([type (disc-schemas disc)])
+    (define schema (get-disc-schema disc type))
+    (define properties (hash-keys (hash-ref schema 'properties)))
+    (displayln
+     (format #<<EOF
+
+# Schema for ~a
+~a(c)=c << [~a]
+export ~a
+EOF
+             type type  (symbols->string properties) type )))
+  (displayln "schemas={")
+  (for ([type (disc-schemas disc)])
+    (displayln (format "  ~a=~a" type type)))
+  (displayln "}\nexport schemas"))
+
+
 (define res-spec-verbs
   (hash
    "/resources/projects/resources/secrets/resources/versions"
@@ -29,13 +70,14 @@
 
 (define (gen-types disc api-id api-create api-read api-update api-delete)
   (define types (get-discovery-resources disc))
-  (displayln (format #<<EOF
+  (displayln
+   (format #<<EOF
 #lang marv
 ## AUTO-GENERATED FILE - DO NOT EDIT!
+import types/gcp/_auto/~a-schema
 API-ID="~a"
 EOF
-
-                     api-id))
+           api-id api-id))
   (for ([res-path (in-list types)])
     ; TODO41- filter out empty apis
 
@@ -46,11 +88,15 @@ EOF
 
     (define (api-spec verb)
       (define api (parse-verb->api verb))
+      (define (request-clause)
+        (let ((request-type (api-request-type api)))
+          (if (string? request-type) (format "request-body=~a(cfg)|" request-type) "" )))
+
       (define spec
         (cond
           [(disc-api? api)
-           (format "api-id=API-ID|request-type=\"~a\"|response-type=\"~a\"|method=\"~a\"|url=\"~a\"|required=[\"~a\"]"
-                   (api-request-type api) (api-response-type api) (api-http-method api)
+           (format "api-id=API-ID|~aresponse-type=\"~a.schemas.~a\"|method=\"~a\"|url=\"~a\"|required=[\"~a\"]"
+                   (request-clause) api-id (api-response-type api) (api-http-method api)
                    (api-resource-url-base api)
                    (map symbol->string (api-required-params api)))]
           [else ""]))
@@ -67,9 +113,6 @@ type ~a = {
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
-  api={
-   ~a
-  }
  }
  create(cfg)={
   config=cfg
@@ -99,7 +142,7 @@ type ~a = {
 export ~a
 
 EOF
-      res-path type (api-spec create) (api-spec create) (api-spec read) (api-spec update) (api-spec delete) type
+      res-path type  (api-spec create) (api-spec read) (api-spec update) (api-spec delete) type
       ))))
 
 (define (singularise str)
@@ -128,20 +171,3 @@ export ~a
 EOF
                        sgl type sgl))))
 
-
-(define (gen-all)
-
-  (define (gen-auto-file disc api-name create read update delete)
-    (define (gen) (gen-types disc api-name create read update delete))
-    (define (shim) (gen-shim disc api-name))
-    (with-output-to-file #:exists 'replace (format "types/gcp/_auto/~a.mrv" api-name) gen)
-    (with-output-to-file #:exists 'replace (format "types/gcp/~a-shim.mrv" api-name) shim))
-
-  (gen-auto-file storage "storage" "insert" "get" "patch" "delete")
-  (gen-auto-file compute "compute" "insert" "get" "patch" "delete")
-  (gen-auto-file iam "iam" "create" "get" "patch" "delete")
-  (gen-auto-file secretmanager "secretmanager" "create" "get" "patch" "delete")
-  (gen-auto-file sql "sql" "insert" "get" "patch" "delete")
-  )
-
-; (gen-types compute "compute" "insert" "get" "patch" "delete")

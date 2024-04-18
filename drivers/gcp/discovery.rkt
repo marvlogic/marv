@@ -28,6 +28,8 @@
          api-resource
          api-response-type
          api-request-type
+         disc-schemas
+         get-disc-schema
          api-schema
          disc-doc?
          api-display-docs
@@ -227,9 +229,18 @@
   (disc-api? . -> . (or/c #f string?))
   (hash-nref (disc-api-type-api api) '(response $ref) #f))
 
+; TODO41 - overloaded name
 (define/contract (api-request-type api)
   (disc-api? . -> . (or/c #f string?))
   (hash-nref (disc-api-type-api api) '(request $ref) #f))
+
+(define/contract (disc-schemas disc)
+  (disc-doc? . -> . (listof symbol?))
+  (hash-keys (hash-ref (disc-doc-root disc) 'schemas)))
+
+(define/contract (get-disc-schema disc type)
+  (disc-doc? symbol? . -> . hash?)
+  (hash-nref (disc-doc-root disc) (list 'schemas type)))
 
 (define/contract (api-schema api type)
   (disc-api? string? . -> . hash?)
