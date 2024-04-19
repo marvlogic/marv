@@ -20,7 +20,7 @@
     [else 'running]))
 
 (define (compute-api-operation-handler response-type resp)
-  (define is-operation? (equal? "Operation" response-type))
+  (define is-operation? (equal? "compute.schemas.Operation" response-type))
   (cond
     [is-operation?
      (define done? (equal? "DONE" (hash-ref resp 'status)))
@@ -30,7 +30,7 @@
        (and (not done?)
             (lambda(http)
               (compute-api-operation-handler
-               "Operation"
+               response-type
                (http 'GET (hash-ref resp 'selfLink) '())))))
      (define completed
        (and done?
@@ -42,7 +42,7 @@
 
 ; TODO41 - same code?
 (define (iam-api-operation-handler response-type resp)
-  (define is-operation? (equal? "Operation" response-type))
+  (define is-operation? (equal? "iam.schemas.Operation" response-type))
   (cond
     [is-operation?
      (define done? (equal? "DONE" (hash-ref resp 'status)))
@@ -52,7 +52,7 @@
        (and (not done?)
             (lambda(http)
               (iam-api-operation-handler
-               "Operation"
+               response-type
                (http 'GET (hash-ref resp 'selfLink) '())))))
      (define completed
        (and done?

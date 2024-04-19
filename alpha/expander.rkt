@@ -134,8 +134,7 @@
 
   (define (m-config-func-call stx)
     (syntax-parse stx
-      [(_ func:id param ...)
-       (syntax/loc stx (func param ...))]
+      [(_ func param ...) (syntax/loc stx (func param ...))]
       [else (raise "config-func-call")]))
 
   (define (m-type-decl stx)
@@ -150,8 +149,7 @@
       (pattern (~seq "|" type-id:id)))
 
     (syntax-parse stx
-      [(_ ((~literal type-id) type-id:expr)
-          body:type-body ...)
+      [(_ ((~literal type-id) type-id:expr) body:type-body ...)
        (with-syntax ([srcloc (src-location stx)])
          (syntax/loc stx
            (begin
@@ -256,7 +254,7 @@
        ;  #'(let* ([attr.tname attr.raw-expr] ... )
        ;      (make-immutable-hasheq (list (cons 'attr.name attr.expr) ...))) ]
        #'(make-immutable-hasheq (list (cons 'attr.name attr.expr) ...)) ]
-      [else (raise "m-config-object")]))
+      [else (displayln stx)(raise "m-config-object")]))
 
   (define (m-alist stx)
     (syntax-parse stx
@@ -264,10 +262,18 @@
        (syntax/loc stx (list EXPR ...))]
       [else (raise "m-alist")]))
 
+  (define (m-attribute-name stx)
+    (syntax-parse stx
+      [(_ sname:string)
+       (define id (format-id #f "~a" (syntax-e #'sname)))
+       (with-syntax ([name id]) (syntax/loc stx 'name))]
+      [(_ name:id) (syntax/loc stx 'name)]
+      [else (raise "m-attribute-name")]))
+
   (define (m-list-attr stx)
     (syntax-parse stx
       [(_ ATTR ...)
-       (syntax/loc stx (list 'ATTR ...))]
+       (syntax/loc stx (list ATTR ...))]
       [else (raise "m-list-attr")]))
 
   (define (m-config-expr stx)
@@ -354,6 +360,7 @@
 (define-syntax config-object m-config-object)
 (define-syntax alist m-alist)
 (define-syntax list-attr m-list-attr)
+(define-syntax attribute-name m-attribute-name)
 (define-syntax keyword m-keyword)
 (define-syntax built-in m-built-in)
 (define-syntax env-read m-env-read)
@@ -380,7 +387,7 @@
          api-id transformer-id driver-id type-id
          config-func-call config-func-decl
          type-decl type-api-spec
-         expression reference statement config-object alist list-attr
+         expression reference statement config-object alist list-attr attribute-name
          config-expr config-merge config-ident config-take
          keyword built-in env-read pprint strf base64encode base64decode
          boolean)

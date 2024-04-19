@@ -116,7 +116,6 @@
     (define reply-cfg (send-driver-cmd driver-id cmd))
     (log-marv-debug "  creation reply: ~a" reply-cfg)
 
-    ; (define origin (hash-ref cmd 'origin))
     ;TODO41 - or is it reply-cfg?
     (define origin (type-fn 'origin (resource-config res)))
 

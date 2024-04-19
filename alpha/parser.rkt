@@ -23,16 +23,9 @@ var-decl: IDENTIFIER /"=" expression
 config-func-decl: IDENTIFIER /"(" IDENTIFIER+ /")" /"=" config-expr
 config-func-param: IDENTIFIER
 
-; type-config-func-decl:
-
 type-decl: /"type" type-id
 ( /"=" /"{" [IDENTIFIER /"(" IDENTIFIER /")" /"=" config-expr]+ /"}" |
 /"=" IDENTIFIER [ "|" IDENTIFIER ]+)
-
-; type-body: verb /"=" config-expr
-
-; type-crud-decl: ( "create" | "read" | "update" | "delete" ) /"=" type-api-spec
-; type-api-spec: api-id /"{" transformer-id transformer-id /"}"
 
 verb: IDENTIFIER
 type-id: IDENTIFIER
@@ -43,10 +36,12 @@ expression: INTEGER | STRING | IDENTIFIER | reference | config-func-call | boole
 
 boolean: "true" | "false"
 
+attribute-name: ( STRING | IDENTIFIER | "type" )
+
 config-object: /"{" [( STRING | IDENTIFIER | "type" ) /"=" [ "imm:" ] expression]* /"}"
 alist: /"[" expression* /"]"
 
-list-attr: /"[" IDENTIFIER* /"]"
+list-attr: /"[" attribute-name* /"]"
 
 built-in: env-read | strf | base64encode | base64decode
 env-read: /"env" /"(" STRING /")"
@@ -58,7 +53,7 @@ base64decode: /"base64decode" /"(" expression /")"
 config-expr: config-object | reference | config-ident | config-merge | config-func-call | config-take
 config-merge: config-expr ("<-" | "->") config-expr
 config-ident: IDENTIFIER
-config-func-call: IDENTIFIER /"(" expression+ /")"
+config-func-call: (reference | IDENTIFIER) /"(" expression+ /")"
 config-take: config-expr /"<<" list-attr
 
 reference: DOTTY-IDENT

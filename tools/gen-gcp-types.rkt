@@ -36,23 +36,11 @@
   )
 
 (define (gen-schemas disc)
-  (displayln #<<EOF
-#lang marv
-## AUTO-GENERATED FILE - DO NOT EDIT!
-
-EOF
-             )
+  (displayln autogen-header)
   (for ([type (disc-schemas disc)])
     (define schema (get-disc-schema disc type))
     (define properties (hash-keys (hash-ref schema 'properties)))
-    (displayln
-     (format #<<EOF
-
-# Schema for ~a
-~a(c)=c << [~a]
-export ~a
-EOF
-             type type  (symbols->string properties) type )))
+    (displayln (format schema-template type type  (symbols->string properties) type )))
   (displayln "schemas={")
   (for ([type (disc-schemas disc)])
     (displayln (format "  ~a=~a" type type)))
@@ -70,14 +58,8 @@ EOF
 
 (define (gen-types disc api-id api-create api-read api-update api-delete)
   (define types (get-discovery-resources disc))
-  (displayln
-   (format #<<EOF
-#lang marv
-## AUTO-GENERATED FILE - DO NOT EDIT!
-import types/gcp/_auto/~a-schema
-API-ID="~a"
-EOF
-           api-id api-id))
+  (displayln autogen-header)
+  (displayln (format types-header api-id api-id))
   (for ([res-path (in-list types)])
     ; TODO41- filter out empty apis
 
@@ -90,7 +72,7 @@ EOF
       (define api (parse-verb->api verb))
       (define (request-clause)
         (let ((request-type (api-request-type api)))
-          (if (string? request-type) (format "request-body=~a(cfg)|" request-type) "" )))
+          (if (string? request-type) (format "request-body=schemas.~a(cfg)|" request-type) "" )))
 
       (define spec
         (cond
@@ -106,8 +88,52 @@ EOF
     (define-values (create read update delete)
       (apply values (hash-ref res-spec-verbs res-path (list api-create api-read api-update api-delete))))
     (displayln
-     (format
-      #<<EOF
+     (format type-template res-path type  (api-spec create) (api-spec read) (api-spec update) (api-spec delete) type
+             ))))
+
+(define (singularise str)
+  (cond [(string-suffix? str "ies") (string-append (string-trim str "ies") "y")]
+        [else (string-trim #:left? #f str "s")]))
+
+(define (gen-shim disc api-name)
+  (define types (get-discovery-resources disc))
+  (displayln (format shim-header api-name))
+  (for ([t (in-list types)])
+    (define type(last (string-split t "/")))
+    (define sgl (singularise type))
+    (displayln (format shim-template sgl type sgl))))
+
+(define shim-header #<<EOF
+#lang marv
+
+# WARNING: This shim file is incomplete. You need to define a '_base' type
+# relevant to the API being imported, and then remove this warning.
+
+import types/gcp/_auto/~a as _auto
+EOF
+  )
+
+(define shim-template #<<EOF
+type ~a =  _base | _auto:~a
+export ~a
+
+EOF
+  )
+
+(define autogen-header #<<EOF
+#lang marv
+## AUTO-GENERATED FILE - DO NOT EDIT!
+
+EOF
+  )
+
+(define types-header #<<EOF
+import types/gcp/_auto/~a-schema
+API-ID="~a"
+EOF
+  )
+
+(define type-template #<<EOF
 # ~a
 type ~a = {
  # TODO41 - destructors
@@ -142,32 +168,11 @@ type ~a = {
 export ~a
 
 EOF
-      res-path type  (api-spec create) (api-spec read) (api-spec update) (api-spec delete) type
-      ))))
+  )
 
-(define (singularise str)
-  (cond [(string-suffix? str "ies") (string-append (string-trim str "ies") "y")]
-        [else (string-trim #:left? #f str "s")]))
+(define schema-template #<<EOF
 
-(define (gen-shim disc api-name)
-  (define types (get-discovery-resources disc))
-  (displayln (format #<<EOF
-#lang marv
-
-# WARNING: This shim file is incomplete. You need to define a '_base' type
-# relevant to the API being imported, and then remove this warning.
-
-import types/gcp/_auto/~a as _auto
+# Schema for ~a
+~a(c)=c << [~a]
 EOF
-                     api-name))
-  (for ([t (in-list types)])
-    (define type(last (string-split t "/")))
-    (define sgl (singularise type))
-
-    (displayln (format #<<EOF
-type ~a =  _base | _auto:~a
-export ~a
-
-EOF
-                       sgl type sgl))))
-
+  )
