@@ -203,6 +203,11 @@
       [(_ str:string expr ... ) (syntax/loc stx (format str expr ...))]
       [else (raise "m-strf")]))
 
+  (define (m-urivars stx)
+    (syntax-parse stx
+      [(_ str:expr) (syntax/loc stx (uri-vars str))]
+      [else (raise "m-urivars")]))
+
   (define (m-base64encode stx)
     (syntax-parse stx
       [(_ ex:expr) (syntax/loc stx (b64enc ex))]
@@ -365,6 +370,7 @@
 (define-syntax built-in m-built-in)
 (define-syntax env-read m-env-read)
 (define-syntax strf m-strf)
+(define-syntax urivars m-urivars)
 (define-syntax base64encode m-base64encode)
 (define-syntax base64decode m-base64decode)
 (define-syntax pprint m-pprint)
@@ -389,5 +395,5 @@
          type-decl type-api-spec
          expression reference statement config-object alist list-attr attribute-name
          config-expr config-merge config-ident config-take
-         keyword built-in env-read pprint strf base64encode base64decode
+         keyword built-in env-read pprint strf urivars base64encode base64decode
          boolean)

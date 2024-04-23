@@ -118,11 +118,11 @@
 
     ;TODO41 - or is it reply-cfg?
     (define origin (type-fn 'origin (resource-config res)))
+    (log-marv-debug "  origin: ~a" origin)
 
     ;TODO41 - does the original config need to be in destructor?
-    (define destructor (type-fn 'delete reply-cfg))
-    (log-marv-debug "  origin: ~a" origin)
     (define state-cfg (type-fn 'state (hash 'response reply-cfg 'original res-cfg)))
+    (define destructor (type-fn 'delete state-cfg))
     (state-set-ref id (state-origin origin destructor) state-cfg))
 
   (define (delete id)

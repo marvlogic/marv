@@ -23,9 +23,6 @@ var-decl: IDENTIFIER /"=" expression
 config-func-decl: IDENTIFIER /"(" IDENTIFIER+ /")" /"=" config-expr
 config-func-param: IDENTIFIER
 
-type-decl: /"type" type-id
-( /"=" /"{" [IDENTIFIER /"(" IDENTIFIER /")" /"=" config-expr]+ /"}" |
-/"=" IDENTIFIER [ "|" IDENTIFIER ]+)
 
 verb: IDENTIFIER
 type-id: IDENTIFIER
@@ -43,10 +40,12 @@ alist: /"[" expression* /"]"
 
 list-attr: /"[" attribute-name* /"]"
 
-built-in: env-read | strf | base64encode | base64decode
+built-in: env-read | strf | base64encode | base64decode | urivars
 env-read: /"env" /"(" STRING /")"
 
 strf: /"strf" /"(" STRING expression+ /")"
+urivars: /"strvars" /"(" expression /")"
+
 base64encode: /"base64encode" /"(" expression /")"
 base64decode: /"base64decode" /"(" expression /")"
 
@@ -54,7 +53,7 @@ config-expr: config-object | reference | config-ident | config-merge | config-fu
 config-merge: config-expr ("<-" | "->") config-expr
 config-ident: IDENTIFIER
 config-func-call: (reference | IDENTIFIER) /"(" expression+ /")"
-config-take: config-expr /"<<" list-attr
+config-take: config-expr /"<<" ( urivars | list-attr )
 
 reference: DOTTY-IDENT
 
@@ -67,3 +66,7 @@ named-parameter: ( STRING | IDENTIFIER | "type" ) /"=" expression
 
 driver-id: IDENTIFIER
 driver-attr: DOTTY-IDENT
+
+type-decl: /"type" type-id
+( /"=" /"{" [IDENTIFIER /"(" IDENTIFIER /")" /"=" config-expr]+ /"}" |
+/"=" IDENTIFIER [ "|" IDENTIFIER ]+)

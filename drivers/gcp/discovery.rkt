@@ -135,6 +135,9 @@
                        (for/list ([q qps]) (format "~a={~a}" q q))
                        "&" #:before-first "?")]
       [else ""]))
+
+  ; TODO41 - should be doing this per-api as this is assuming the last thing in
+  ; the URL inside {} is actually supposed to be {name}
   (define base-path (regexp-replace #rx"{[a-zA-Z0-9]*}$" (hash-ref (disc-api-type-api api) 'path) "{name}"))
   (define path (format "~a~a" base-path query-params-str))
   (define api-root (disc-api-root api))

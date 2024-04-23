@@ -40,7 +40,7 @@
   (for ([type (disc-schemas disc)])
     (define schema (get-disc-schema disc type))
     (define properties (hash-keys (hash-ref schema 'properties)))
-    (displayln (format schema-template type type  (symbols->string properties) type )))
+    (displayln (format schema-template type type  (symbols->string properties))))
   (displayln "schemas={")
   (for ([type (disc-schemas disc)])
     (displayln (format "  ~a=~a" type type)))
@@ -114,7 +114,7 @@ EOF
   )
 
 (define shim-template #<<EOF
-type ~a =  _base | _auto:~a
+type ~a =  _auto:~a | _base
 export ~a
 
 EOF
