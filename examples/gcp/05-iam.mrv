@@ -9,15 +9,15 @@ module main {
         region = env("MARV_GCP_REGION")
     }
 
-    service-account = gcp:iam.serviceAccount defaults <- {
-        accountId = "service-account-id"
+    service-account = serviceAccount defaults <- {
+        name = "service-account1"
         serviceAccount = {
             displayName = "service-account1"
             description = "example service account"
         } 
     }
 
-    service-account-key = gcp:iam.serviceAccountKey defaults <- {
-        service-account = service-account.name
-    }
+#   service-account-key = serviceAccountKey defaults <- {
+#       serviceAccount = service-account.email
+#   }
 }

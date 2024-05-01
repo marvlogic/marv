@@ -1,92 +1,418 @@
 #lang marv
 ## AUTO-GENERATED FILE - DO NOT EDIT!
-type flags = {
-  origin(cfg)= cfg <- { driver="gcp" api="sql.flags.insert" }
-  create(cfg)={ api-id="sql.flags.insert" config=cfg }
-  read(cfg)={ api-id="sql.flags.get" config=cfg }
-  update(cfg)={ api-id="sql.flags.patch" config=cfg}
-  delete(cfg)={ api-id="sql.flags.delete" config={ name=cfg.name } }
-}
-export flags
 
-type users = {
-  origin(cfg)= cfg <- { driver="gcp" api="sql.users.insert" }
-  create(cfg)={ api-id="sql.users.insert" config=cfg }
-  read(cfg)={ api-id="sql.users.get" config=cfg }
-  update(cfg)={ api-id="sql.users.patch" config=cfg}
-  delete(cfg)={ api-id="sql.users.delete" config={ name=cfg.name } }
+import types/gcp/_auto/sql-schema
+API-ID="sql"
+# /resources/operations
+type operations = {
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="sql.schemas.Operation"
+   method="GET"
+   url="https://sqladmin.googleapis.com/v1/projects/{project}/operations/{name}"
+   required=["(project operation)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
 }
-export users
+export operations
 
-type sslCerts = {
-  origin(cfg)= cfg <- { driver="gcp" api="sql.sslCerts.insert" }
-  create(cfg)={ api-id="sql.sslCerts.insert" config=cfg }
-  read(cfg)={ api-id="sql.sslCerts.get" config=cfg }
-  update(cfg)={ api-id="sql.sslCerts.patch" config=cfg}
-  delete(cfg)={ api-id="sql.sslCerts.delete" config={ name=cfg.name } }
-}
-export sslCerts
-
-type connect = {
-  origin(cfg)= cfg <- { driver="gcp" api="sql.connect.insert" }
-  create(cfg)={ api-id="sql.connect.insert" config=cfg }
-  read(cfg)={ api-id="sql.connect.get" config=cfg }
-  update(cfg)={ api-id="sql.connect.patch" config=cfg}
-  delete(cfg)={ api-id="sql.connect.delete" config={ name=cfg.name } }
-}
-export connect
-
-type projects = {
-  origin(cfg)= cfg <- { driver="gcp" api="sql.projects.insert" }
-  create(cfg)={ api-id="sql.projects.insert" config=cfg }
-  read(cfg)={ api-id="sql.projects.get" config=cfg }
-  update(cfg)={ api-id="sql.projects.patch" config=cfg}
-  delete(cfg)={ api-id="sql.projects.delete" config={ name=cfg.name } }
-}
-export projects
-
-type backupRuns = {
-  origin(cfg)= cfg <- { driver="gcp" api="sql.backupRuns.insert" }
-  create(cfg)={ api-id="sql.backupRuns.insert" config=cfg }
-  read(cfg)={ api-id="sql.backupRuns.get" config=cfg }
-  update(cfg)={ api-id="sql.backupRuns.patch" config=cfg}
-  delete(cfg)={ api-id="sql.backupRuns.delete" config={ name=cfg.name } }
-}
-export backupRuns
-
-type instances = {
-  origin(cfg)= cfg <- { driver="gcp" api="sql.instances.insert" }
-  create(cfg)={ api-id="sql.instances.insert" config=cfg }
-  read(cfg)={ api-id="sql.instances.get" config=cfg }
-  update(cfg)={ api-id="sql.instances.patch" config=cfg}
-  delete(cfg)={ api-id="sql.instances.delete" config={ name=cfg.name } }
-}
-export instances
-
-type tiers = {
-  origin(cfg)= cfg <- { driver="gcp" api="sql.tiers.insert" }
-  create(cfg)={ api-id="sql.tiers.insert" config=cfg }
-  read(cfg)={ api-id="sql.tiers.get" config=cfg }
-  update(cfg)={ api-id="sql.tiers.patch" config=cfg}
-  delete(cfg)={ api-id="sql.tiers.delete" config={ name=cfg.name } }
-}
-export tiers
-
+# /resources/databases
 type databases = {
-  origin(cfg)= cfg <- { driver="gcp" api="sql.databases.insert" }
-  create(cfg)={ api-id="sql.databases.insert" config=cfg }
-  read(cfg)={ api-id="sql.databases.get" config=cfg }
-  update(cfg)={ api-id="sql.databases.patch" config=cfg}
-  delete(cfg)={ api-id="sql.databases.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   request-body=schemas.Database(cfg)
+   response-type="sql.schemas.Operation"
+   method="POST"
+   url="https://sqladmin.googleapis.com/v1/projects/{project}/instances/{instance}/databases"
+   required=["(project instance)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="sql.schemas.Database"
+   method="GET"
+   url="https://sqladmin.googleapis.com/v1/projects/{project}/instances/{instance}/databases/{name}"
+   required=["(project instance database)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   request-body=schemas.Database(cfg)
+   response-type="sql.schemas.Operation"
+   method="PATCH"
+   url="https://sqladmin.googleapis.com/v1/projects/{project}/instances/{instance}/databases/{name}"
+   required=["(project instance database)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="sql.schemas.Operation"
+   method="DELETE"
+   url="https://sqladmin.googleapis.com/v1/projects/{project}/instances/{instance}/databases/{name}"
+   required=["(project instance database)"]
+  }
+ }
 }
 export databases
 
-type operations = {
-  origin(cfg)= cfg <- { driver="gcp" api="sql.operations.insert" }
-  create(cfg)={ api-id="sql.operations.insert" config=cfg }
-  read(cfg)={ api-id="sql.operations.get" config=cfg }
-  update(cfg)={ api-id="sql.operations.patch" config=cfg}
-  delete(cfg)={ api-id="sql.operations.delete" config={ name=cfg.name } }
+# /resources/tiers
+type tiers = {
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
 }
-export operations
+export tiers
+
+# /resources/instances
+type instances = {
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   request-body=schemas.DatabaseInstance(cfg)
+   response-type="sql.schemas.Operation"
+   method="POST"
+   url="https://sqladmin.googleapis.com/v1/projects/{project}/instances"
+   required=["(project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="sql.schemas.DatabaseInstance"
+   method="GET"
+   url="https://sqladmin.googleapis.com/v1/projects/{project}/instances/{name}"
+   required=["(project instance)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   request-body=schemas.DatabaseInstance(cfg)
+   response-type="sql.schemas.Operation"
+   method="PATCH"
+   url="https://sqladmin.googleapis.com/v1/projects/{project}/instances/{name}"
+   required=["(project instance)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="sql.schemas.Operation"
+   method="DELETE"
+   url="https://sqladmin.googleapis.com/v1/projects/{project}/instances/{name}"
+   required=["(project instance)"]
+  }
+ }
+}
+export instances
+
+# /resources/backupRuns
+type backupRuns = {
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   request-body=schemas.BackupRun(cfg)
+   response-type="sql.schemas.Operation"
+   method="POST"
+   url="https://sqladmin.googleapis.com/v1/projects/{project}/instances/{instance}/backupRuns"
+   required=["(project instance)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="sql.schemas.BackupRun"
+   method="GET"
+   url="https://sqladmin.googleapis.com/v1/projects/{project}/instances/{instance}/backupRuns/{name}"
+   required=["(id project instance)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="sql.schemas.Operation"
+   method="DELETE"
+   url="https://sqladmin.googleapis.com/v1/projects/{project}/instances/{instance}/backupRuns/{name}"
+   required=["(id project instance)"]
+  }
+ }
+}
+export backupRuns
+
+# /resources/connect
+type connect = {
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="sql.schemas.ConnectSettings"
+   method="GET"
+   url="https://sqladmin.googleapis.com/v1/projects/{project}/instances/{instance}/connectSettings"
+   required=["(project instance)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+}
+export connect
+
+# /resources/sslCerts
+type sslCerts = {
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   request-body=schemas.SslCertsInsertRequest(cfg)
+   response-type="sql.schemas.SslCertsInsertResponse"
+   method="POST"
+   url="https://sqladmin.googleapis.com/v1/projects/{project}/instances/{instance}/sslCerts"
+   required=["(project instance)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="sql.schemas.SslCert"
+   method="GET"
+   url="https://sqladmin.googleapis.com/v1/projects/{project}/instances/{instance}/sslCerts/{name}"
+   required=["(project instance sha1Fingerprint)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="sql.schemas.Operation"
+   method="DELETE"
+   url="https://sqladmin.googleapis.com/v1/projects/{project}/instances/{instance}/sslCerts/{name}"
+   required=["(project instance sha1Fingerprint)"]
+  }
+ }
+}
+export sslCerts
+
+# /resources/users
+type users = {
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   request-body=schemas.User(cfg)
+   response-type="sql.schemas.Operation"
+   method="POST"
+   url="https://sqladmin.googleapis.com/v1/projects/{project}/instances/{instance}/users"
+   required=["(project instance)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="sql.schemas.User"
+   method="GET"
+   url="https://sqladmin.googleapis.com/v1/projects/{project}/instances/{instance}/users/{name}"
+   required=["(project instance name)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="sql.schemas.Operation"
+   method="DELETE"
+   url="https://sqladmin.googleapis.com/v1/projects/{project}/instances/{instance}/users"
+   required=["(project instance)"]
+  }
+ }
+}
+export users
+
+# /resources/flags
+type flags = {
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+}
+export flags
+
+# /resources/projects/resources/instances
+type instances = {
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+}
+export instances
 

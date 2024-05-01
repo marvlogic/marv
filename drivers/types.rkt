@@ -4,6 +4,7 @@
 (require marv/log)
 (require uri-template)
 (require marv/utils/hash)
+(require marv/utils/uri)
 (provide (all-defined-out))
 
 (define driver-id/c symbol?)
@@ -36,11 +37,4 @@
 
 (define/contract (api-url a res)
   (api/c hash? . -> . string?)
-  (define url (api-url-template a))
-  ;TODO41 - are we sure path parameters are always symbols?
-  (define config
-    (hash-map/copy
-     (hash-take res (map string->symbol (variables-of url)))
-     (lambda(k v) (values (symbol->string k) v))))
-  (displayln (format  " api-url config: ~a ~a" config (map (lambda(x)(equal? "x" x)) (hash-keys config))))
-  (expand-template url config))
+  (expand-uri (api-url-template a) res))

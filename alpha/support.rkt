@@ -7,6 +7,7 @@
 (require marv/log)
 (require marv/core/values)
 (require marv/utils/hash)
+(require marv/utils/uri)
 (require marv/core/globals)
 (require marv/core/drivers)
 (require marv/core/config)
@@ -17,8 +18,6 @@
 
 (require (prefix-in core: marv/core/resources))
 (require (prefix-in drv: marv/core/drivers))
-
-(require (prefix-in uri: uri-template))
 
 (provide gen-resources getenv-or-raise
          def-res
@@ -31,6 +30,7 @@
          config-overlay config-reduce handle-ref
          with-module-ctx
          uri-vars
+         uri-template
          get-param)
 
 (define (error:excn msg)
@@ -163,4 +163,5 @@
            ; Calling a module
            (hash-union rs (res (prefix-mod-id k)))])))
 
-(define (uri-vars str) (map string->symbol (uri:variables-of str)))
+(define (uri-vars str) (uri-vars str))
+(define (uri-template str cfg) (expand-uri str cfg))

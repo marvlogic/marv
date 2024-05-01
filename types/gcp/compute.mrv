@@ -3,7 +3,8 @@
 import types/gcp/_auto/compute as _auto
 
 type _base = {
-  origin(cfg)= { name=cfg.name }
+  origin(cfg)= cfg <- { name=cfg.name }
+  delete(cfg)=cfg <- { config={} api=cfg.api <- { url=expandvars(cfg.api.url cfg.config) } }
   state(cfg)=cfg.response <- { region=cfg.original.region project=cfg.original.project }
 }
 
@@ -11,302 +12,303 @@ type url-fixup = {
   read(cfg) = cfg <- { api=cfg.api <- { url="rewrite-me" }}
 }
 
-type regionDisk =  _base | _auto:regionDisks | url-fixup
-export regionDisk
+type regionTargetTcpProxy =  _auto:regionTargetTcpProxies | _base
+export regionTargetTcpProxy
 
-type interconnectLocation =  _base | _auto:interconnectLocations
-export interconnectLocation
-
-type instanceGroupManagerResizeRequest =  _base | _auto:instanceGroupManagerResizeRequests
-export instanceGroupManagerResizeRequest
-
-type regionNetworkFirewallPolicy =  _base | _auto:regionNetworkFirewallPolicies
-export regionNetworkFirewallPolicy
-
-type regionUrlMap =  _base | _auto:regionUrlMaps
-export regionUrlMap
-
-type machineType =  _base | _auto:machineTypes
-export machineType
-
-type serviceAttachment =  _base | _auto:serviceAttachments
-export serviceAttachment
-
-type regionInstanceTemplate =  _base | _auto:regionInstanceTemplates
-export regionInstanceTemplate
-
-type targetInstance =  _base | _auto:targetInstances
-export targetInstance
-
-type imageFamilyView =  _base | _auto:imageFamilyViews
-export imageFamilyView
-
-type targetSslProxy =  _base | _auto:targetSslProxies
-export targetSslProxy
-
-type licenseCode =  _base | _auto:licenseCodes
-export licenseCode
-
-type forwardingRule =  _base | _auto:forwardingRules
-export forwardingRule
-
-type regionDiskType =  _base | _auto:regionDiskTypes
-export regionDiskType
-
-type vpnGateway =  _base | _auto:vpnGateways
-export vpnGateway
-
-type networkFirewallPolicy =  _base | _auto:networkFirewallPolicies
-export networkFirewallPolicy
-
-type organizationSecurityPolicy =  _base | _auto:organizationSecurityPolicies
-export organizationSecurityPolicy
-
-type externalVpnGateway =  _base | _auto:externalVpnGateways
-export externalVpnGateway
-
-type targetTcpProxy =  _base | _auto:targetTcpProxies
-export targetTcpProxy
-
-type urlMap =  _base | _auto:urlMaps
-export urlMap
-
-type healthCheck =  _base | _auto:healthChecks
-export healthCheck
-
-type backendBucket =  _base | _auto:backendBuckets
-export backendBucket
-
-type networkEdgeSecurityService =  _base | _auto:networkEdgeSecurityServices
-export networkEdgeSecurityService
-
-type zone =  _base | _auto:zones
-export zone
-
-type regionHealthCheckService =  _base | _auto:regionHealthCheckServices
-export regionHealthCheckService
-
-type subnetwork =  _base | _auto:subnetworks
-export subnetwork
-
-type region =  _base | _auto:regions
-export region
-
-type interconnectAttachment =  _base | _auto:interconnectAttachments
-export interconnectAttachment
-
-type regionSecurityPolicy =  _base | _auto:regionSecurityPolicies
-export regionSecurityPolicy
-
-type globalNetworkEndpointGroup =  _base | _auto:globalNetworkEndpointGroups
-export globalNetworkEndpointGroup
-
-type firewall =  _base | _auto:firewalls
-export firewall
-
-type interconnectRemoteLocation =  _base | _auto:interconnectRemoteLocations
-export interconnectRemoteLocation
-
-type targetVpnGateway =  _base | _auto:targetVpnGateways
-export targetVpnGateway
-
-type backendService =  _base | _auto:backendServices
-export backendService
-
-type regionSslCertificate =  _base | _auto:regionSslCertificates
-export regionSslCertificate
-
-type httpsHealthCheck =  _base | _auto:httpsHealthChecks
-export httpsHealthCheck
-
-type regionInstanceGroupManager =  _base | _auto:regionInstanceGroupManagers
-export regionInstanceGroupManager
-
-type globalOrganizationOperation =  _base | _auto:globalOrganizationOperations
-export globalOrganizationOperation
-
-type snapshot =  _base | _auto:snapshots
-export snapshot
-
-type globalPublicDelegatedPrefixe =  _base | _auto:globalPublicDelegatedPrefixes
-export globalPublicDelegatedPrefixe
-
-type resourcePolicy =  _base | _auto:resourcePolicies
-export resourcePolicy
-
-type snapshotSetting =  _base | _auto:snapshotSettings
-export snapshotSetting
-
-type globalForwardingRule =  _base | _auto:globalForwardingRules
-export globalForwardingRule
-
-type acceleratorType =  _base | _auto:acceleratorTypes
-export acceleratorType
-
-type nodeGroup =  _base | _auto:nodeGroups
-export nodeGroup
-
-type regionCommitment =  _base | _auto:regionCommitments
-export regionCommitment
-
-type regionHealthCheck =  _base | _auto:regionHealthChecks
-export regionHealthCheck
-
-type packetMirroring =  _base | _auto:packetMirrorings
-export packetMirroring
-
-type regionNotificationEndpoint =  _base | _auto:regionNotificationEndpoints
-export regionNotificationEndpoint
-
-type regionTargetHttpProxy =  _base | _auto:regionTargetHttpProxies
-export regionTargetHttpProxy
-
-type zoneOperation =  _base | _auto:zoneOperations
-export zoneOperation
-
-type regionNetworkEndpointGroup =  _base | _auto:regionNetworkEndpointGroups
-export regionNetworkEndpointGroup
-
-type disk =  _base | _auto:disks
-export disk
-
-type router =  _base | _auto:routers
-export router
-
-type regionZone =  _base | _auto:regionZones
-export regionZone
-
-type globalAddresse =  _base | _auto:globalAddresses
-export globalAddresse
-
-type publicAdvertisedPrefixe =  _base | _auto:publicAdvertisedPrefixes
-export publicAdvertisedPrefixe
-
-type instantSnapshot =  _base | _auto:instantSnapshots
-export instantSnapshot
-
-type sslCertificate =  _base | _auto:sslCertificates
-export sslCertificate
-
-type futureReservation =  _base | _auto:futureReservations
-export futureReservation
-
-type autoscaler =  _base | _auto:autoscalers
-export autoscaler
-
-type instance =  _base | _auto:instances
-export instance
-
-type httpHealthCheck =  _base | _auto:httpHealthChecks
-export httpHealthCheck
-
-type regionTargetHttpsProxy =  _base | _auto:regionTargetHttpsProxies
-export regionTargetHttpsProxy
-
-type instanceGroup =  _base | _auto:instanceGroups
-export instanceGroup
-
-type image =  _base | _auto:images
-export image
-
-type targetGrpcProxy =  _base | _auto:targetGrpcProxies
-export targetGrpcProxy
-
-type sslPolicy =  _base | _auto:sslPolicies
-export sslPolicy
-
-type regionOperation =  _base | _auto:regionOperations
-export regionOperation
-
-type networkEndpointGroup =  _base | _auto:networkEndpointGroups
-export networkEndpointGroup
-
-type regionAutoscaler =  _base | _auto:regionAutoscalers
-export regionAutoscaler
-
-type regionInstanceGroup =  _base | _auto:regionInstanceGroups
-export regionInstanceGroup
-
-type regionSslPolicy =  _base | _auto:regionSslPolicies
-export regionSslPolicy
-
-type firewallPolicy =  _base | _auto:firewallPolicies
-export firewallPolicy
-
-type project =  _base | _auto:projects
-export project
-
-type targetHttpProxy =  _base | _auto:targetHttpProxies
-export targetHttpProxy
-
-type targetPool =  _base | _auto:targetPools
-export targetPool
-
-type targetHttpsProxy =  _base | _auto:targetHttpsProxies
-export targetHttpsProxy
-
-type regionBackendService =  _base | _auto:regionBackendServices
-export regionBackendService
-
-type route =  _base | _auto:routes
-export route
-
-type networkAttachment =  _base | _auto:networkAttachments
-export networkAttachment
-
-type license =  _base | _auto:licenses
-export license
-
-type publicDelegatedPrefixe =  _base | _auto:publicDelegatedPrefixes
-export publicDelegatedPrefixe
-
-type reservation =  _base | _auto:reservations
-export reservation
-
-type addresse =  _base | _auto:addresses
-export addresse
-
-type machineImage =  _base | _auto:machineImages
-export machineImage
-
-type interconnect =  _base | _auto:interconnects
-export interconnect
-
-type instanceSetting =  _base | _auto:instanceSettings
-export instanceSetting
-
-type instanceGroupManager =  _base | _auto:instanceGroupManagers
-export instanceGroupManager
-
-type diskType =  _base | _auto:diskTypes
-export diskType
-
-type regionInstance =  _base | _auto:regionInstances
-export regionInstance
-
-type securityPolicy =  _base | _auto:securityPolicies
-export securityPolicy
-
-type nodeTemplate =  _base | _auto:nodeTemplates
-export nodeTemplate
-
-type nodeType =  _base | _auto:nodeTypes
-export nodeType
-
-type regionInstantSnapshot =  _base | _auto:regionInstantSnapshots
-export regionInstantSnapshot
-
-type instanceTemplate =  _base | _auto:instanceTemplates
-export instanceTemplate
-
-type network =  _base | _auto:networks
-export network
-
-type vpnTunnel =  _base | _auto:vpnTunnels
-export vpnTunnel
-
-type globalOperation =  _base | _auto:globalOperations
+type globalOperation =  _auto:globalOperations | _base
 export globalOperation
 
-type regionTargetTcpProxy =  _base | _auto:regionTargetTcpProxies
-export regionTargetTcpProxy
+type vpnTunnel =  _auto:vpnTunnels | _base
+export vpnTunnel
+
+type network =  _auto:networks | _base
+export network
+
+type instanceTemplate =  _auto:instanceTemplates | _base
+export instanceTemplate
+
+type regionInstantSnapshot =  _auto:regionInstantSnapshots | _base
+export regionInstantSnapshot
+
+type nodeType =  _auto:nodeTypes | _base
+export nodeType
+
+type nodeTemplate =  _auto:nodeTemplates | _base
+export nodeTemplate
+
+type securityPolicy =  _auto:securityPolicies | _base
+export securityPolicy
+
+type regionInstance =  _auto:regionInstances | _base
+export regionInstance
+
+type diskType =  _auto:diskTypes | _base
+export diskType
+
+type instanceGroupManager =  _auto:instanceGroupManagers | _base
+export instanceGroupManager
+
+type instanceSetting =  _auto:instanceSettings | _base
+export instanceSetting
+
+type interconnect =  _auto:interconnects | _base
+export interconnect
+
+type machineImage =  _auto:machineImages | _base
+export machineImage
+
+type addresse =  _auto:addresses | _base
+export addresse
+
+type reservation =  _auto:reservations | _base
+export reservation
+
+type publicDelegatedPrefixe =  _auto:publicDelegatedPrefixes | _base
+export publicDelegatedPrefixe
+
+type license =  _auto:licenses | _base
+export license
+
+type networkAttachment =  _auto:networkAttachments | _base
+export networkAttachment
+
+type route =  _auto:routes | _base
+export route
+
+type regionBackendService =  _auto:regionBackendServices | _base
+export regionBackendService
+
+type targetHttpsProxy =  _auto:targetHttpsProxies | _base
+export targetHttpsProxy
+
+type targetPool =  _auto:targetPools | _base
+export targetPool
+
+type targetHttpProxy =  _auto:targetHttpProxies | _base
+export targetHttpProxy
+
+type project =  _auto:projects | _base
+export project
+
+type firewallPolicy =  _auto:firewallPolicies | _base
+export firewallPolicy
+
+type regionSslPolicy =  _auto:regionSslPolicies | _base
+export regionSslPolicy
+
+type regionInstanceGroup =  _auto:regionInstanceGroups | _base
+export regionInstanceGroup
+
+type regionAutoscaler =  _auto:regionAutoscalers | _base
+export regionAutoscaler
+
+type networkEndpointGroup =  _auto:networkEndpointGroups | _base
+export networkEndpointGroup
+
+type regionOperation =  _auto:regionOperations | _base
+export regionOperation
+
+type sslPolicy =  _auto:sslPolicies | _base
+export sslPolicy
+
+type targetGrpcProxy =  _auto:targetGrpcProxies | _base
+export targetGrpcProxy
+
+type image =  _auto:images | _base
+export image
+
+type instanceGroup =  _auto:instanceGroups | _base
+export instanceGroup
+
+type regionTargetHttpsProxy =  _auto:regionTargetHttpsProxies | _base
+export regionTargetHttpsProxy
+
+type httpHealthCheck =  _auto:httpHealthChecks | _base
+export httpHealthCheck
+
+type instance =  _auto:instances | _base
+export instance
+
+type autoscaler =  _auto:autoscalers | _base
+export autoscaler
+
+type futureReservation =  _auto:futureReservations | _base
+export futureReservation
+
+type sslCertificate =  _auto:sslCertificates | _base
+export sslCertificate
+
+type instantSnapshot =  _auto:instantSnapshots | _base
+export instantSnapshot
+
+type publicAdvertisedPrefixe =  _auto:publicAdvertisedPrefixes | _base
+export publicAdvertisedPrefixe
+
+type globalAddresse =  _auto:globalAddresses | _base
+export globalAddresse
+
+type regionZone =  _auto:regionZones | _base
+export regionZone
+
+type router =  _auto:routers | _base
+export router
+
+type disk =  _auto:disks | _base
+export disk
+
+type regionNetworkEndpointGroup =  _auto:regionNetworkEndpointGroups | _base
+export regionNetworkEndpointGroup
+
+type zoneOperation =  _auto:zoneOperations | _base
+export zoneOperation
+
+type regionTargetHttpProxy =  _auto:regionTargetHttpProxies | _base
+export regionTargetHttpProxy
+
+type regionNotificationEndpoint =  _auto:regionNotificationEndpoints | _base
+export regionNotificationEndpoint
+
+type packetMirroring =  _auto:packetMirrorings | _base
+export packetMirroring
+
+type regionHealthCheck =  _auto:regionHealthChecks | _base
+export regionHealthCheck
+
+type regionCommitment =  _auto:regionCommitments | _base
+export regionCommitment
+
+type nodeGroup =  _auto:nodeGroups | _base
+export nodeGroup
+
+type acceleratorType =  _auto:acceleratorTypes | _base
+export acceleratorType
+
+type globalForwardingRule =  _auto:globalForwardingRules | _base
+export globalForwardingRule
+
+type snapshotSetting =  _auto:snapshotSettings | _base
+export snapshotSetting
+
+type resourcePolicy =  _auto:resourcePolicies | _base
+export resourcePolicy
+
+type globalPublicDelegatedPrefixe =  _auto:globalPublicDelegatedPrefixes | _base
+export globalPublicDelegatedPrefixe
+
+type snapshot =  _auto:snapshots | _base
+export snapshot
+
+type globalOrganizationOperation =  _auto:globalOrganizationOperations | _base
+export globalOrganizationOperation
+
+type regionInstanceGroupManager =  _auto:regionInstanceGroupManagers | _base
+export regionInstanceGroupManager
+
+type httpsHealthCheck =  _auto:httpsHealthChecks | _base
+export httpsHealthCheck
+
+type regionSslCertificate =  _auto:regionSslCertificates | _base
+export regionSslCertificate
+
+type backendService =  _auto:backendServices | _base
+export backendService
+
+type targetVpnGateway =  _auto:targetVpnGateways | _base
+export targetVpnGateway
+
+type interconnectRemoteLocation =  _auto:interconnectRemoteLocations | _base
+export interconnectRemoteLocation
+
+type firewall =  _auto:firewalls | _base
+export firewall
+
+type globalNetworkEndpointGroup =  _auto:globalNetworkEndpointGroups | _base
+export globalNetworkEndpointGroup
+
+type regionSecurityPolicy =  _auto:regionSecurityPolicies | _base
+export regionSecurityPolicy
+
+type interconnectAttachment =  _auto:interconnectAttachments | _base
+export interconnectAttachment
+
+type region =  _auto:regions | _base
+export region
+
+type subnetwork =  _auto:subnetworks | _base
+export subnetwork
+
+type regionHealthCheckService =  _auto:regionHealthCheckServices | _base
+export regionHealthCheckService
+
+type zone =  _auto:zones | _base
+export zone
+
+type networkEdgeSecurityService =  _auto:networkEdgeSecurityServices | _base
+export networkEdgeSecurityService
+
+type backendBucket =  _auto:backendBuckets | _base
+export backendBucket
+
+type healthCheck =  _auto:healthChecks | _base
+export healthCheck
+
+type urlMap =  _auto:urlMaps | _base
+export urlMap
+
+type targetTcpProxy =  _auto:targetTcpProxies | _base
+export targetTcpProxy
+
+type externalVpnGateway =  _auto:externalVpnGateways | _base
+export externalVpnGateway
+
+type organizationSecurityPolicy =  _auto:organizationSecurityPolicies | _base
+export organizationSecurityPolicy
+
+type networkFirewallPolicy =  _auto:networkFirewallPolicies | _base
+export networkFirewallPolicy
+
+type vpnGateway =  _auto:vpnGateways | _base
+export vpnGateway
+
+type regionDiskType =  _auto:regionDiskTypes | _base
+export regionDiskType
+
+type forwardingRule =  _auto:forwardingRules | _base
+export forwardingRule
+
+type licenseCode =  _auto:licenseCodes | _base
+export licenseCode
+
+type targetSslProxy =  _auto:targetSslProxies | _base
+export targetSslProxy
+
+type imageFamilyView =  _auto:imageFamilyViews | _base
+export imageFamilyView
+
+type targetInstance =  _auto:targetInstances | _base
+export targetInstance
+
+type regionInstanceTemplate =  _auto:regionInstanceTemplates | _base
+export regionInstanceTemplate
+
+type serviceAttachment =  _auto:serviceAttachments | _base
+export serviceAttachment
+
+type machineType =  _auto:machineTypes | _base
+export machineType
+
+type regionUrlMap =  _auto:regionUrlMaps | _base
+export regionUrlMap
+
+type regionNetworkFirewallPolicy =  _auto:regionNetworkFirewallPolicies | _base
+export regionNetworkFirewallPolicy
+
+type instanceGroupManagerResizeRequest =  _auto:instanceGroupManagerResizeRequests | _base
+export instanceGroupManagerResizeRequest
+
+type interconnectLocation =  _auto:interconnectLocations | _base
+export interconnectLocation
+
+type regionDisk =  _auto:regionDisks | _base
+export regionDisk
+

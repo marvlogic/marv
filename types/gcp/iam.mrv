@@ -1,54 +1,33 @@
 #lang marv
 
-import "../common.mrv"
-
-create-sa-name(cfg) = cfg <- { 
-    name = strf("projects/~a" cfg.project)
-}
-
 import types/gcp/_auto/iam as _auto
 
-type permission =  _base | _auto:permissions
-export permission
-
-type location =  _base | _auto:locations
-export location
-
-type iamPolicy =  _base | _auto:iamPolicies
-export iamPolicy
-
-type project =  _base | _auto:projects
-export project
-
-type role =  _base | _auto:roles
-export role
-
-type organization =  _base | _auto:organizations
-export organization
-
-
-type gcp:iam.serviceAccount = {
-    create = iam.projects.serviceAccounts.create { create-sa-name identity }
-    read = iam.projects.serviceAccounts.get { identity identity }
-    update = iam.projects.serviceAccounts.patch { identity identity }
-    delete = iam.projects.serviceAccounts.delete { identity identity }
+type _state = {
+    state(cfg) = cfg.response <- { name=cfg.original.name }
 }
 
-create-sa-key-name(cfg) = cfg <- {
-    name = cfg.service-account
+sa_name(cfg)=cfg <- { name=expandvars("projects/{project}/serviceAccounts/{email}" cfg)}
+
+#name(cfg)=expandvars("projects/{project}/serviceAccounts/{email}" cfg)
+
+type _sa_base = {
+  create(cfg) = cfg <- { accountId=cfg.name name=expandvars("projects/{project}" cfg)}
+  read(cfg) = sa_name(cfg)
 }
 
-type gcp:iam.serviceAccountKey = {
-    create = iam.projects.serviceAccounts.keys.create { create-sa-key-name identity }
-    read = iam.projects.serviceAccounts.keys.read { identity identity }
-    update = iam.projects.serviceAccounts.keys.patch { identity identity }
-    delete = iam.projects.serviceAccounts.keys.delete { identity identity }
+type _sa_after = {
+  delete(cfg)=cfg <- { config=cfg.config <- { name=expandvars("projects/{project}/serviceAccounts/{email}" cfg.config)} api=cfg.api } 
 }
 
-# TODO25 - debug
-type gcp:iam.role = {
-    create = iam.role.create { identity identity }
-    read = iam.role.get { identity identity }
-    update = iam.role.patch { identity identity }
-    delete = iam.role.delete { identity identity }
+type serviceAccount =  _sa_base | _auto:serviceAccounts | _state | _sa_after
+export serviceAccount
+
+
+type _sa_key_base = {
+  # create(cfg) = sa_name(cfg)
+  create(cfg) = cfg <- { name=expandvars("projects/{project}/serviceAccounts/{serviceAccount}" cfg)}
+  state(cfg) = cfg.response
 }
+
+type serviceAccountKey =  _sa_key_base | _auto:keys
+export serviceAccountKey

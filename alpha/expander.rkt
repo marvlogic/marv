@@ -208,6 +208,11 @@
       [(_ str:expr) (syntax/loc stx (uri-vars str))]
       [else (raise "m-urivars")]))
 
+  (define (m-uritemplate stx)
+    (syntax-parse stx
+      [(_ str:expr CFG) (syntax/loc stx (uri-template str CFG))]
+      [else (raise "m-uritemplate")]))
+
   (define (m-base64encode stx)
     (syntax-parse stx
       [(_ ex:expr) (syntax/loc stx (b64enc ex))]
@@ -371,6 +376,7 @@
 (define-syntax env-read m-env-read)
 (define-syntax strf m-strf)
 (define-syntax urivars m-urivars)
+(define-syntax uritemplate m-uritemplate)
 (define-syntax base64encode m-base64encode)
 (define-syntax base64decode m-base64decode)
 (define-syntax pprint m-pprint)
@@ -395,5 +401,5 @@
          type-decl type-api-spec
          expression reference statement config-object alist list-attr attribute-name
          config-expr config-merge config-ident config-take
-         keyword built-in env-read pprint strf urivars base64encode base64decode
+         keyword built-in env-read pprint strf urivars uritemplate base64encode base64decode
          boolean)

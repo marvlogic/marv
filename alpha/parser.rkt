@@ -31,6 +31,8 @@ api-id: DOTTY-IDENT
 
 expression: INTEGER | STRING | IDENTIFIER | reference | config-func-call | boolean | config-expr | alist | built-in
 
+string-expression: STRING | expression
+
 boolean: "true" | "false"
 
 attribute-name: ( STRING | IDENTIFIER | "type" )
@@ -40,12 +42,13 @@ alist: /"[" expression* /"]"
 
 list-attr: /"[" attribute-name* /"]"
 
-built-in: env-read | strf | base64encode | base64decode | urivars
+built-in: env-read | strf | base64encode | base64decode | urivars | uritemplate
 env-read: /"env" /"(" STRING /")"
 
 strf: /"strf" /"(" STRING expression+ /")"
 urivars: /"strvars" /"(" expression /")"
 
+uritemplate: /"expandvars" /"(" expression config-expr /")"
 base64encode: /"base64encode" /"(" expression /")"
 base64decode: /"base64decode" /"(" expression /")"
 

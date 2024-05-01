@@ -1,74 +1,417 @@
 #lang marv
 ## AUTO-GENERATED FILE - DO NOT EDIT!
-type objects = {
-  origin(cfg)= cfg <- { driver="gcp" api="storage.objects.insert" }
-  create(cfg)={ api-id="storage.objects.insert" config=cfg }
-  read(cfg)={ api-id="storage.objects.get" config=cfg }
-  update(cfg)={ api-id="storage.objects.patch" config=cfg}
-  delete(cfg)={ api-id="storage.objects.delete" config={ name=cfg.name } }
-}
-export objects
 
-type defaultObjectAccessControls = {
-  origin(cfg)= cfg <- { driver="gcp" api="storage.defaultObjectAccessControls.insert" }
-  create(cfg)={ api-id="storage.defaultObjectAccessControls.insert" config=cfg }
-  read(cfg)={ api-id="storage.defaultObjectAccessControls.get" config=cfg }
-  update(cfg)={ api-id="storage.defaultObjectAccessControls.patch" config=cfg}
-  delete(cfg)={ api-id="storage.defaultObjectAccessControls.delete" config={ name=cfg.name } }
+import types/gcp/_auto/storage-schema
+API-ID="storage"
+# /resources/notifications
+type notifications = {
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   request-body=schemas.Notification(cfg)
+   response-type="storage.schemas.Notification"
+   method="POST"
+   url="https://storage.googleapis.com/storage/v1/b/{bucket}/notificationConfigs"
+   required=["(bucket)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="storage.schemas.Notification"
+   method="GET"
+   url="https://storage.googleapis.com/storage/v1/b/{bucket}/notificationConfigs/{name}"
+   required=["(notification bucket)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="storage.schemas.#f"
+   method="DELETE"
+   url="https://storage.googleapis.com/storage/v1/b/{bucket}/notificationConfigs/{name}"
+   required=["(notification bucket)"]
+  }
+ }
 }
-export defaultObjectAccessControls
+export notifications
 
-type channels = {
-  origin(cfg)= cfg <- { driver="gcp" api="storage.channels.insert" }
-  create(cfg)={ api-id="storage.channels.insert" config=cfg }
-  read(cfg)={ api-id="storage.channels.get" config=cfg }
-  update(cfg)={ api-id="storage.channels.patch" config=cfg}
-  delete(cfg)={ api-id="storage.channels.delete" config={ name=cfg.name } }
-}
-export channels
-
-type buckets = {
-  origin(cfg)= cfg <- { driver="gcp" api="storage.buckets.insert" }
-  create(cfg)={ api-id="storage.buckets.insert" config=cfg }
-  read(cfg)={ api-id="storage.buckets.get" config=cfg }
-  update(cfg)={ api-id="storage.buckets.patch" config=cfg}
-  delete(cfg)={ api-id="storage.buckets.delete" config={ name=cfg.name } }
-}
-export buckets
-
-type bucketAccessControls = {
-  origin(cfg)= cfg <- { driver="gcp" api="storage.bucketAccessControls.insert" }
-  create(cfg)={ api-id="storage.bucketAccessControls.insert" config=cfg }
-  read(cfg)={ api-id="storage.bucketAccessControls.get" config=cfg }
-  update(cfg)={ api-id="storage.bucketAccessControls.patch" config=cfg}
-  delete(cfg)={ api-id="storage.bucketAccessControls.delete" config={ name=cfg.name } }
-}
-export bucketAccessControls
-
+# /resources/objectAccessControls
 type objectAccessControls = {
-  origin(cfg)= cfg <- { driver="gcp" api="storage.objectAccessControls.insert" }
-  create(cfg)={ api-id="storage.objectAccessControls.insert" config=cfg }
-  read(cfg)={ api-id="storage.objectAccessControls.get" config=cfg }
-  update(cfg)={ api-id="storage.objectAccessControls.patch" config=cfg}
-  delete(cfg)={ api-id="storage.objectAccessControls.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   request-body=schemas.ObjectAccessControl(cfg)
+   response-type="storage.schemas.ObjectAccessControl"
+   method="POST"
+   url="https://storage.googleapis.com/storage/v1/b/{bucket}/o/{object}/acl"
+   required=["(object bucket)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="storage.schemas.ObjectAccessControl"
+   method="GET"
+   url="https://storage.googleapis.com/storage/v1/b/{bucket}/o/{object}/acl/{name}"
+   required=["(entity object bucket)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   request-body=schemas.ObjectAccessControl(cfg)
+   response-type="storage.schemas.ObjectAccessControl"
+   method="PATCH"
+   url="https://storage.googleapis.com/storage/v1/b/{bucket}/o/{object}/acl/{name}"
+   required=["(entity object bucket)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="storage.schemas.#f"
+   method="DELETE"
+   url="https://storage.googleapis.com/storage/v1/b/{bucket}/o/{object}/acl/{name}"
+   required=["(entity object bucket)"]
+  }
+ }
 }
 export objectAccessControls
 
-type projects = {
-  origin(cfg)= cfg <- { driver="gcp" api="storage.projects.insert" }
-  create(cfg)={ api-id="storage.projects.insert" config=cfg }
-  read(cfg)={ api-id="storage.projects.get" config=cfg }
-  update(cfg)={ api-id="storage.projects.patch" config=cfg}
-  delete(cfg)={ api-id="storage.projects.delete" config={ name=cfg.name } }
+# /resources/bucketAccessControls
+type bucketAccessControls = {
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   request-body=schemas.BucketAccessControl(cfg)
+   response-type="storage.schemas.BucketAccessControl"
+   method="POST"
+   url="https://storage.googleapis.com/storage/v1/b/{bucket}/acl"
+   required=["(bucket)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="storage.schemas.BucketAccessControl"
+   method="GET"
+   url="https://storage.googleapis.com/storage/v1/b/{bucket}/acl/{name}"
+   required=["(entity bucket)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   request-body=schemas.BucketAccessControl(cfg)
+   response-type="storage.schemas.BucketAccessControl"
+   method="PATCH"
+   url="https://storage.googleapis.com/storage/v1/b/{bucket}/acl/{name}"
+   required=["(entity bucket)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="storage.schemas.#f"
+   method="DELETE"
+   url="https://storage.googleapis.com/storage/v1/b/{bucket}/acl/{name}"
+   required=["(entity bucket)"]
+  }
+ }
 }
-export projects
+export bucketAccessControls
 
-type notifications = {
-  origin(cfg)= cfg <- { driver="gcp" api="storage.notifications.insert" }
-  create(cfg)={ api-id="storage.notifications.insert" config=cfg }
-  read(cfg)={ api-id="storage.notifications.get" config=cfg }
-  update(cfg)={ api-id="storage.notifications.patch" config=cfg}
-  delete(cfg)={ api-id="storage.notifications.delete" config={ name=cfg.name } }
+# /resources/buckets
+type buckets = {
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   request-body=schemas.Bucket(cfg)
+   response-type="storage.schemas.Bucket"
+   method="POST"
+   url="https://storage.googleapis.com/storage/v1/b?project={project}"
+   required=["(project)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="storage.schemas.Bucket"
+   method="GET"
+   url="https://storage.googleapis.com/storage/v1/b/{name}"
+   required=["(bucket)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   request-body=schemas.Bucket(cfg)
+   response-type="storage.schemas.Bucket"
+   method="PATCH"
+   url="https://storage.googleapis.com/storage/v1/b/{name}"
+   required=["(bucket)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="storage.schemas.#f"
+   method="DELETE"
+   url="https://storage.googleapis.com/storage/v1/b/{name}"
+   required=["(bucket)"]
+  }
+ }
 }
-export notifications
+export buckets
+
+# /resources/channels
+type channels = {
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+}
+export channels
+
+# /resources/defaultObjectAccessControls
+type defaultObjectAccessControls = {
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   request-body=schemas.ObjectAccessControl(cfg)
+   response-type="storage.schemas.ObjectAccessControl"
+   method="POST"
+   url="https://storage.googleapis.com/storage/v1/b/{bucket}/defaultObjectAcl"
+   required=["(bucket)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="storage.schemas.ObjectAccessControl"
+   method="GET"
+   url="https://storage.googleapis.com/storage/v1/b/{bucket}/defaultObjectAcl/{name}"
+   required=["(entity bucket)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   request-body=schemas.ObjectAccessControl(cfg)
+   response-type="storage.schemas.ObjectAccessControl"
+   method="PATCH"
+   url="https://storage.googleapis.com/storage/v1/b/{bucket}/defaultObjectAcl/{name}"
+   required=["(entity bucket)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="storage.schemas.#f"
+   method="DELETE"
+   url="https://storage.googleapis.com/storage/v1/b/{bucket}/defaultObjectAcl/{name}"
+   required=["(entity bucket)"]
+  }
+ }
+}
+export defaultObjectAccessControls
+
+# /resources/objects
+type objects = {
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   request-body=schemas.Object(cfg)
+   response-type="storage.schemas.Object"
+   method="POST"
+   url="https://storage.googleapis.com/storage/v1/b/{bucket}/o"
+   required=["(bucket)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="storage.schemas.Object"
+   method="GET"
+   url="https://storage.googleapis.com/storage/v1/b/{bucket}/o/{name}"
+   required=["(object bucket)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   request-body=schemas.Object(cfg)
+   response-type="storage.schemas.Object"
+   method="PATCH"
+   url="https://storage.googleapis.com/storage/v1/b/{bucket}/o/{name}"
+   required=["(object bucket)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="storage.schemas.#f"
+   method="DELETE"
+   url="https://storage.googleapis.com/storage/v1/b/{bucket}/o/{name}"
+   required=["(object bucket)"]
+  }
+ }
+}
+export objects
+
+# /resources/projects/resources/serviceAccount
+type serviceAccount = {
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="storage.schemas.ServiceAccount"
+   method="GET"
+   url="https://storage.googleapis.com/storage/v1/projects/{projectId}/serviceAccount"
+   required=["(projectId)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+}
+export serviceAccount
+
+# /resources/projects/resources/hmacKeys
+type hmacKeys = {
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="storage.schemas.HmacKeyMetadata"
+   method="GET"
+   url="https://storage.googleapis.com/storage/v1/projects/{projectId}/hmacKeys/{name}"
+   required=["(accessId projectId)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="storage.schemas.#f"
+   method="DELETE"
+   url="https://storage.googleapis.com/storage/v1/projects/{projectId}/hmacKeys/{name}"
+   required=["(accessId projectId)"]
+  }
+ }
+}
+export hmacKeys
 

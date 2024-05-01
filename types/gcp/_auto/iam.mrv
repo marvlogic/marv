@@ -1,56 +1,397 @@
 #lang marv
 ## AUTO-GENERATED FILE - DO NOT EDIT!
-type permissions = {
-  origin(cfg)= cfg <- { driver="gcp" api="iam.permissions.create" }
-  create(cfg)={ api-id="iam.permissions.create" config=cfg }
-  read(cfg)={ api-id="iam.permissions.get" config=cfg }
-  update(cfg)={ api-id="iam.permissions.patch" config=cfg}
-  delete(cfg)={ api-id="iam.permissions.delete" config={ name=cfg.name } }
-}
-export permissions
 
-type locations = {
-  origin(cfg)= cfg <- { driver="gcp" api="iam.locations.create" }
-  create(cfg)={ api-id="iam.locations.create" config=cfg }
-  read(cfg)={ api-id="iam.locations.get" config=cfg }
-  update(cfg)={ api-id="iam.locations.patch" config=cfg}
-  delete(cfg)={ api-id="iam.locations.delete" config={ name=cfg.name } }
-}
-export locations
-
-type iamPolicies = {
-  origin(cfg)= cfg <- { driver="gcp" api="iam.iamPolicies.create" }
-  create(cfg)={ api-id="iam.iamPolicies.create" config=cfg }
-  read(cfg)={ api-id="iam.iamPolicies.get" config=cfg }
-  update(cfg)={ api-id="iam.iamPolicies.patch" config=cfg}
-  delete(cfg)={ api-id="iam.iamPolicies.delete" config={ name=cfg.name } }
-}
-export iamPolicies
-
-type projects = {
-  origin(cfg)= cfg <- { driver="gcp" api="iam.projects.create" }
-  create(cfg)={ api-id="iam.projects.create" config=cfg }
-  read(cfg)={ api-id="iam.projects.get" config=cfg }
-  update(cfg)={ api-id="iam.projects.patch" config=cfg}
-  delete(cfg)={ api-id="iam.projects.delete" config={ name=cfg.name } }
-}
-export projects
-
+import types/gcp/_auto/iam-schema
+API-ID="iam"
+# /resources/roles
 type roles = {
-  origin(cfg)= cfg <- { driver="gcp" api="iam.roles.create" }
-  create(cfg)={ api-id="iam.roles.create" config=cfg }
-  read(cfg)={ api-id="iam.roles.get" config=cfg }
-  update(cfg)={ api-id="iam.roles.patch" config=cfg}
-  delete(cfg)={ api-id="iam.roles.delete" config={ name=cfg.name } }
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="iam.schemas.Role"
+   method="GET"
+   url="https://iam.googleapis.com/v1/{+name}"
+   required=["(name)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
 }
 export roles
 
-type organizations = {
-  origin(cfg)= cfg <- { driver="gcp" api="iam.organizations.create" }
-  create(cfg)={ api-id="iam.organizations.create" config=cfg }
-  read(cfg)={ api-id="iam.organizations.get" config=cfg }
-  update(cfg)={ api-id="iam.organizations.patch" config=cfg}
-  delete(cfg)={ api-id="iam.organizations.delete" config={ name=cfg.name } }
+# /resources/iamPolicies
+type iamPolicies = {
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
 }
-export organizations
+export iamPolicies
 
+# /resources/permissions
+type permissions = {
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+}
+export permissions
+
+# /resources/locations/resources/workforcePools
+type workforcePools = {
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   request-body=schemas.WorkforcePool(cfg)
+   response-type="iam.schemas.Operation"
+   method="POST"
+   url="https://iam.googleapis.com/v1/{+location}/workforcePools"
+   required=["(location)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="iam.schemas.WorkforcePool"
+   method="GET"
+   url="https://iam.googleapis.com/v1/{+name}"
+   required=["(name)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   request-body=schemas.WorkforcePool(cfg)
+   response-type="iam.schemas.Operation"
+   method="PATCH"
+   url="https://iam.googleapis.com/v1/{+name}"
+   required=["(name)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="iam.schemas.Operation"
+   method="DELETE"
+   url="https://iam.googleapis.com/v1/{+name}"
+   required=["(name)"]
+  }
+ }
+}
+export workforcePools
+
+# /resources/locations/resources/workforcePools/resources/subjects
+type subjects = {
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="iam.schemas.Operation"
+   method="DELETE"
+   url="https://iam.googleapis.com/v1/{+name}"
+   required=["(name)"]
+  }
+ }
+}
+export subjects
+
+# /resources/projects/resources/serviceAccounts
+type serviceAccounts = {
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   request-body=schemas.CreateServiceAccountRequest(cfg)
+   response-type="iam.schemas.ServiceAccount"
+   method="POST"
+   url="https://iam.googleapis.com/v1/{+name}/serviceAccounts"
+   required=["(name)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="iam.schemas.ServiceAccount"
+   method="GET"
+   url="https://iam.googleapis.com/v1/{+name}"
+   required=["(name)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   request-body=schemas.PatchServiceAccountRequest(cfg)
+   response-type="iam.schemas.ServiceAccount"
+   method="PATCH"
+   url="https://iam.googleapis.com/v1/{+name}"
+   required=["(name)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="iam.schemas.Empty"
+   method="DELETE"
+   url="https://iam.googleapis.com/v1/{+name}"
+   required=["(name)"]
+  }
+ }
+}
+export serviceAccounts
+
+# /resources/projects/resources/roles
+# /resources/projects/resources/locations/resources/workloadIdentityPools
+type workloadIdentityPools = {
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   request-body=schemas.WorkloadIdentityPool(cfg)
+   response-type="iam.schemas.Operation"
+   method="POST"
+   url="https://iam.googleapis.com/v1/{+parent}/workloadIdentityPools"
+   required=["(parent)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="iam.schemas.WorkloadIdentityPool"
+   method="GET"
+   url="https://iam.googleapis.com/v1/{+name}"
+   required=["(name)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   request-body=schemas.WorkloadIdentityPool(cfg)
+   response-type="iam.schemas.Operation"
+   method="PATCH"
+   url="https://iam.googleapis.com/v1/{+name}"
+   required=["(name)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="iam.schemas.Operation"
+   method="DELETE"
+   url="https://iam.googleapis.com/v1/{+name}"
+   required=["(name)"]
+  }
+ }
+}
+export workloadIdentityPools
+
+# /resources/projects/resources/locations/resources/workloadIdentityPools/resources/operations
+type providers = {
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   request-body=schemas.WorkloadIdentityPoolProvider(cfg)
+   response-type="iam.schemas.Operation"
+   method="POST"
+   url="https://iam.googleapis.com/v1/{+parent}/providers"
+   required=["(parent)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="iam.schemas.WorkloadIdentityPoolProvider"
+   method="GET"
+   url="https://iam.googleapis.com/v1/{+name}"
+   required=["(name)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   request-body=schemas.WorkloadIdentityPoolProvider(cfg)
+   response-type="iam.schemas.Operation"
+   method="PATCH"
+   url="https://iam.googleapis.com/v1/{+name}"
+   required=["(name)"]
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="iam.schemas.Operation"
+   method="DELETE"
+   url="https://iam.googleapis.com/v1/{+name}"
+   required=["(name)"]
+  }
+ }
+}
+export providers
+
+# /resources/projects/resources/serviceAccounts/resources/keys
+type keys = {
+ # TODO41 - destructors
+ origin(cfg)= cfg <- {
+  driver="gcp"
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   request-body=schemas.CreateServiceAccountKeyRequest(cfg)
+   response-type="iam.schemas.ServiceAccountKey"
+   method="POST"
+   url="https://iam.googleapis.com/v1/{+name}/keys"
+   required=["(name)"]
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="iam.schemas.ServiceAccountKey"
+   method="GET"
+   url="https://iam.googleapis.com/v1/{+name}"
+   required=["(name)"]
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   api-id=API-ID
+   response-type="iam.schemas.Empty"
+   method="DELETE"
+   url="https://iam.googleapis.com/v1/{+name}"
+   required=["(name)"]
+  }
+ }
+}
+export keys
+
+# /resources/organizations/resources/roles
