@@ -132,17 +132,36 @@
          (define (id param ...) CONF-OBJ))]
       [else (raise "config-func-decl")]))
 
-  (define (m-config-func-call stx)
+  (define (m-func-call stx)
     (syntax-parse stx
       [(_ func param ...) (syntax/loc stx (func param ...))]
-      [else (raise "config-func-call")]))
+      [else (raise "func-call")]))
+
+  (define (m-type-method-id stx)
+    (syntax-parse stx
+      [(_ ref:id)
+       (define splitref (split-symbol (syntax-e #'ref)))
+       (define type (format-id stx "~a" (car splitref)))
+       (define method (format-id stx "~a" (cadr splitref)))
+       (displayln (format "type-method: ~a ~a" type method))
+       (with-syntax
+           ([type type]
+            [method method])
+         (syntax/loc stx (type 'method) ))]))
+
+  (define (m-func-decl stx)
+    (syntax-parse stx
+      [(_ id:expr param ... BODY)
+       (syntax/loc stx
+         (define (id param ...) BODY))]
+      [else (raise "func-decl")]))
 
   (define (m-type-decl stx)
 
     (define-splicing-syntax-class type-body
       #:description "body declaration"
-      #:literals (config-expr)
-      (pattern (~seq func-id:id param-id:id confex)))
+      #:literals (func-decl expression)
+      (pattern (func-decl func-id:id param-id ... (expression confex))))
 
     (define-splicing-syntax-class composition
       #:description "type composition"
@@ -153,18 +172,13 @@
        (with-syntax ([srcloc (src-location stx)])
          (syntax/loc stx
            (begin
-             (define (type-id verb config)
-               (log-marv-debug "type-fn ~a.~a:~a~n  called with config ~a" 'type-id verb srcloc config)
-               (define (body.func-id body.param-id) body.confex) ...
+             (define (type-id verb)
+               (log-marv-debug "type-fn ~a.~a:~a called" 'type-id verb srcloc)
+               (define (body.func-id body.param-id ...) body.confex) ...
                (case verb
                  ['type 'type-id]
-                 ['body.func-id (body.func-id config)] ...
-                 ; TODO41 - mechanism; think this is redundant code
-                 ['destructor
-                  (define delcfg (type-id 'delete config))
-                  (define flt (hash-ref delcfg 'filter (lambda()(lambda(x)x))))
-                  (hash 'cmd (hash-remove delcfg 'filter) 'config (flt config))]
-                 [else config]
+                 ['body.func-id body.func-id] ...
+                 [else (raise "exception in type-decl")]
                  ))
              )))]
       [(_ ((~literal type-id) type-id:expr) base-id:id comp:composition ...)
@@ -357,14 +371,16 @@
 (define-syntax decl m-decl)
 (define-syntax var-decl m-var-decl)
 (define-syntax config-func-decl m-config-func-decl)
+(define-syntax func-decl m-func-decl)
 
 (define-syntax type-decl m-type-decl)
 (define-syntax type-api-spec m-type-api-spec)
+(define-syntax type-method-id m-type-method-id)
 
 (define-syntax res-decl m-res-decl)
 (define-syntax module-invoke m-module-invoke)
 (define-syntax named-parameter m-named-parameter)
-(define-syntax config-func-call m-config-func-call)
+(define-syntax func-call m-func-call)
 (define-syntax expression m-expression)
 (define-syntax reference m-reference)
 (define-syntax config-object m-config-object)
@@ -397,8 +413,8 @@
          module-import
          module-export
          api-id transformer-id driver-id type-id
-         config-func-call config-func-decl
-         type-decl type-api-spec
+         func-call config-func-decl func-decl
+         type-decl type-api-spec type-method-id
          expression reference statement config-object alist list-attr attribute-name
          config-expr config-merge config-ident config-take
          keyword built-in env-read pprint strf urivars uritemplate base64encode base64decode

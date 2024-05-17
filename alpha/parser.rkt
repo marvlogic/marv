@@ -20,16 +20,19 @@ pprint: /"pprint" expression
 comment: COMMENT
 var-decl: IDENTIFIER /"=" expression
 
-config-func-decl: IDENTIFIER /"(" IDENTIFIER+ /")" /"=" config-expr
-config-func-param: IDENTIFIER
+config-func-decl: IDENTIFIER /"(" ( IDENTIFIER [ /"," ] )+ /")" /"=" config-expr
 
+func-decl: IDENTIFIER /"(" (IDENTIFIER [ /"," ])+ /")" /"=" expression
+func-call: (type-method-id | IDENTIFIER ) /"(" (expression [ /"," ])+ /")"
+
+type-method-id: DOTTY-IDENT
 
 verb: IDENTIFIER
 type-id: IDENTIFIER
 transformer-id: IDENTIFIER
 api-id: DOTTY-IDENT
 
-expression: INTEGER | STRING | IDENTIFIER | reference | config-func-call | boolean | config-expr | alist | built-in
+expression: INTEGER | STRING | IDENTIFIER | reference | func-call | boolean | config-expr | alist | built-in
 
 string-expression: STRING | expression
 
@@ -70,6 +73,4 @@ named-parameter: ( STRING | IDENTIFIER | "type" ) /"=" expression
 driver-id: IDENTIFIER
 driver-attr: DOTTY-IDENT
 
-type-decl: /"type" type-id
-( /"=" /"{" [IDENTIFIER /"(" IDENTIFIER /")" /"=" config-expr]+ /"}" |
-/"=" IDENTIFIER [ "|" IDENTIFIER ]+)
+type-decl: /"type" type-id /"=" /"{" func-decl+ /"}"

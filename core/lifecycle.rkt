@@ -86,7 +86,8 @@
     (displayln (format "Refreshing ~a" k))
 
     (define res (resource-ref rsset k))
-    (define type-fn (resource-type-fn res))
+    ; (define type-fn (resource-type-fn res))
+    (define (type-fn verb args ...) ((resource-type-fn res) verb) args ...)
     ; TODO41 - similar code to driver-repr
     (define res-cfg (unwrap-values (deref-config (state-get-state-set) (resource-config res))))
     (define cmd (type-fn 'read res-cfg))
@@ -109,7 +110,7 @@
     (display (format "CREATING ~a" id))
     (flush-output)
     (define res (driver-repr id))
-    (define type-fn (resource-type-fn res))
+    (define (type-fn verb . rest) (apply ((resource-type-fn res) verb) rest))
     (define res-cfg (resource-config res))
     (define driver-id (get-driver-id type-fn res))
     (define cmd (type-fn 'create res-cfg))
@@ -117,13 +118,13 @@
     (log-marv-debug "  creation reply: ~a" reply-cfg)
 
     ;TODO41 - or is it reply-cfg?
-    (define origin (type-fn 'origin (resource-config res)))
-    (log-marv-debug "  origin: ~a" origin)
+    ; (define origin (type-fn 'origin (resource-config res)))
+    ; (log-marv-debug "  origin: ~a" origin)
 
     ;TODO41 - does the original config need to be in destructor?
-    (define state-cfg (type-fn 'state (hash 'response reply-cfg 'original res-cfg)))
-    (define destructor (type-fn 'delete state-cfg))
-    (state-set-ref id (state-origin origin destructor) state-cfg))
+    (define state-cfg (type-fn 'post-create res-cfg reply-cfg))
+    ; (define destructor (type-fn 'delete state-cfg))
+    (state-set-ref id (state-origin (hash) (hash)) state-cfg))
 
   (define (delete id)
     (display (format "DELETING ~a" id))

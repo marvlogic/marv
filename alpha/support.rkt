@@ -65,7 +65,7 @@
   (hash-ref (PARAMS) p def))
 
 (define (def-res type-fn id res)
-  (type-fn 'validate res)
+  ;(type-fn 'validate res)
   ; Temporarily storing ref to the type-fn in the configuration, it will
   ; be removed later when creating a resource
   (define rtyped (hash-set res '$type-fn type-fn))
