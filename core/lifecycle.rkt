@@ -117,22 +117,20 @@
     (define reply-cfg (send-driver-cmd driver-id cmd))
     (log-marv-debug "  creation reply: ~a" reply-cfg)
 
-    ;TODO41 - or is it reply-cfg?
-    ; (define origin (type-fn 'origin (resource-config res)))
-    ; (log-marv-debug "  origin: ~a" origin)
+    (define origin (type-fn 'origin (resource-config res)))
+    (log-marv-debug "  origin: ~a" origin)
 
-    ;TODO41 - does the original config need to be in destructor?
     (define state-cfg (type-fn 'post-create res-cfg reply-cfg))
-    ; (define destructor (type-fn 'delete state-cfg))
-    (state-set-ref id (state-origin (hash) (hash)) state-cfg))
+    (define delete-cmd (type-fn 'delete reply-cfg))
+    (state-set-ref id (state-origin origin delete-cmd) state-cfg))
 
   (define (delete id)
     (display (format "DELETING ~a" id))
     (flush-output)
-    (define destroy (state-ref-destructor-cmd id))
+    (define delete-cmd (state-ref-destructor-cmd id))
     (define origin (state-origin-fingerprint (state-ref-origin id)))
     (define driver-id (string->symbol (hash-ref origin 'driver)))
-    (send-to-driver driver-id destroy)
+    (send-to-driver driver-id delete-cmd)
     (state-delete id))
 
   (define (update id)

@@ -4,7 +4,7 @@ marv-spec: module-import* outer-decl* marv-module*
 
 module-import: /"import" [ STRING | MODULE-IDENTIFIER ] [ "as" IDENTIFIER ]
 
-outer-decl: config-func-decl | type-decl | var-decl | module-export
+outer-decl: func-decl | type-decl | var-decl | module-export
 
 module-export: /"export" [ IDENTIFIER+ [ "as" IDENTIFIER ] ]+
 
@@ -14,16 +14,17 @@ module-return: "return" /"{" return-parameter+ /"}"
 return-parameter: ( STRING | IDENTIFIER | "type" ) /"=" expression
 
 statement: decl | pprint
-decl: var-decl | res-decl | module-invoke | config-func-decl
+decl: var-decl | res-decl | module-invoke | func-decl
 
 pprint: /"pprint" expression
 comment: COMMENT
 var-decl: IDENTIFIER /"=" expression
 
-config-func-decl: IDENTIFIER /"(" ( IDENTIFIER [ /"," ] )+ /")" /"=" config-expr
+; config-func-decl: IDENTIFIER /"(" ( IDENTIFIER [ /"," ] )+ /")" /"=" config-expr
 
 func-decl: IDENTIFIER /"(" (IDENTIFIER [ /"," ])+ /")" /"=" expression
-func-call: (type-method-id | IDENTIFIER ) /"(" (expression [ /"," ])+ /")"
+func-call: func-ident /"(" (expression [ /"," ])+ /")"
+func-ident: (DOTTY-IDENT | IDENTIFIER)
 
 type-method-id: DOTTY-IDENT
 
@@ -55,10 +56,10 @@ uritemplate: /"expandvars" /"(" expression config-expr /")"
 base64encode: /"base64encode" /"(" expression /")"
 base64decode: /"base64decode" /"(" expression /")"
 
-config-expr: config-object | reference | config-ident | config-merge | config-func-call | config-take
+;config-func-call: (reference | IDENTIFIER) /"(" expression+ /")"
+config-expr: config-object | reference | config-ident | config-merge | config-take | func-call
 config-merge: config-expr ("<-" | "->") config-expr
 config-ident: IDENTIFIER
-config-func-call: (reference | IDENTIFIER) /"(" expression+ /")"
 config-take: config-expr /"<<" ( urivars | list-attr )
 
 reference: DOTTY-IDENT

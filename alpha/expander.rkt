@@ -137,6 +137,17 @@
       [(_ func param ...) (syntax/loc stx (func param ...))]
       [else (raise "func-call")]))
 
+  (define (m-func-ident stx)
+    (syntax-parse stx
+      [(_ ident)
+       (define id-parts (split-symbol (syntax-e #'ident)))
+       (define root (format-id stx "~a" (car id-parts)))
+       (define rst (datum->syntax stx (cdr id-parts)))
+       (with-syntax ([root root]
+                     [rst rst])
+         (syntax/loc stx (find-function root 'root 'rst)))]
+      [else (raise "func-ident")]))
+
   (define (m-type-method-id stx)
     (syntax-parse stx
       [(_ ref:id)
@@ -381,6 +392,7 @@
 (define-syntax module-invoke m-module-invoke)
 (define-syntax named-parameter m-named-parameter)
 (define-syntax func-call m-func-call)
+(define-syntax func-ident m-func-ident)
 (define-syntax expression m-expression)
 (define-syntax reference m-reference)
 (define-syntax config-object m-config-object)
@@ -413,7 +425,7 @@
          module-import
          module-export
          api-id transformer-id driver-id type-id
-         func-call config-func-decl func-decl
+         func-call func-ident config-func-decl func-decl
          type-decl type-api-spec type-method-id
          expression reference statement config-object alist list-attr attribute-name
          config-expr config-merge config-ident config-take
