@@ -1,0 +1,80 @@
+#lang marv
+
+import types/gcp/_auto/storage as _auto
+
+test(c) = c
+
+type buckets = {
+    origin(cfg) = { driver="gcp" }
+}
+
+
+type lifecyle-base = {
+    create(cfg) = cfg
+    post-create(cfg) = cfg
+
+    read(cfg) = cfg
+    post-read(cfg) = cfg
+
+    update(cfg) = cfg
+    post-update(cfg) = cfg
+    
+    delete(cfg) = cfg
+}
+
+type bucket = {
+    #origin(cfg) = buckets.origin(cfg)
+    #create(cfg) = pre-create(cfg)
+    #create(cfg) = cfg
+
+    origin(cfg) = _auto:buckets.origin(cfg)
+    create(cfg) = _auto:buckets.create(cfg)
+    post-create(original, state) = state <- { project=original.project }
+
+    read(cfg) = _auto:buckets.read(cfg)
+    post-read(cfg) = cfg
+
+    update(cfg) = _auto:buckets.update(cfg)
+    post-update(original, cfg)=post-create(original, cfg)
+
+    delete(state) = _auto:buckets.delete(state) <- { config={name=state.name} }
+}
+
+type C1<T,C1> = {
+    create(cfg) = T.create(C1.create(cfg))
+    post-create(cfg) = T.create(C1.post-create(cfg))
+
+    read(cfg) = T.read(C1.read(cfg))
+    post-read(cfg) = T.read(C1.post-read(cfg))
+
+    update(cfg) = T.update(C1.update(cfg))
+    post-update(cfg) = T.update(C1.post-update(cfg))
+
+    delete(cfg) = T.delete(C1.delete(cfg))
+    * = T.*
+}
+
+type label-project = {
+    labels(cfg) = cfg <- { labels = cfg.labels <- { project = "123" }}
+    create(cfg) = labels(cfg)
+    update(cfg) = labels(cfg)
+
+    * = lifecyle-base.*
+}
+
+type lbucket = C1<bucket, label-project>
+
+module main {
+
+    defaults = {
+        project = env("MARV_GCP_PROJECT")
+        region = env("MARV_GCP_REGION")
+    }
+
+    my-bucket = lbucket defaults <- {
+        name = strf("~a-mybucket" defaults.project)
+        labels = { "local"= "x" }
+        # storageClass = "NEARLINE"
+    }
+    
+}

@@ -170,10 +170,9 @@
     (pattern (func-decl func-id:id param-id ... (expression confex))))
 
   (define (m-type-decl stx)
-    (displayln stx)
     (syntax-parse stx
-      #:datum-literals (type-parameters type-id)
-      [(_ (type-id tid:expr) body:type-body ...)
+      #:datum-literals (type-parameters type-wild type-id)
+      [(_ (type-id tid:expr) body:type-body ... (type-wild wildcard) ...)
        (with-syntax ([srcloc (src-location stx)])
          (syntax/loc stx
            (begin
@@ -183,7 +182,11 @@
                (case func-id
                  ['type 'tid]
                  ['body.func-id body.func-id] ...
-                 [else (raise (format "type-function ~a.~a not found" 'tid func-id))]
+                 [else
+                  (log-marv-debug "looking in wildcards")
+                  ; TODO41 - not quite, need to handle exceptions from missing function handlers
+                  (or (wildcard func-id) ...
+                      (raise (format "exception in type ~a, method ~a not found" 'tid func-id)))]
                  ))
              )))]
       [(_ (type-id tid) (type-parameters (type-id base-tid) params ...))
@@ -322,7 +325,6 @@
       [else (raise "m-config-expr")]))
 
   (define (m-config-merge stx)
-    (displayln stx)
     (syntax-parse stx
       [(_ LEFT "->" RIGHT) (syntax/loc stx (config-overlay LEFT RIGHT))]
       [(_ LEFT "<-" RIGHT) (syntax/loc stx (config-overlay RIGHT LEFT))]

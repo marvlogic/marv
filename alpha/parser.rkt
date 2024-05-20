@@ -69,5 +69,5 @@ named-parameter: ( STRING | IDENTIFIER | "type" ) /"=" expression
 type-parameters: type-id /"<" ( IDENTIFIER [/","] )+ /">"
 type-template: /"type" type-parameters /"=" /"{" func-decl+ [ type-wild ]* /"}"
 
-type-decl: /"type" type-id /"=" ( /"{" func-decl+ /"}" | type-parameters )
+type-decl: /"type" type-id /"=" ( /"{" func-decl+ [ type-wild ]* /"}" | type-parameters )
 type-wild: /"*" /"=" IDENTIFIER /"." /"*"
