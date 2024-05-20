@@ -177,39 +177,40 @@
        (with-syntax ([srcloc (src-location stx)])
          (syntax/loc stx
            (begin
-             (define (tid verb)
-               (log-marv-debug "type-fn ~a.~a:~a called" 'tid verb srcloc)
+             (define (tid func-id)
+               (log-marv-debug "type-fn ~a.~a:~a called" 'tid func-id srcloc)
                (define (body.func-id body.param-id ...) body.confex) ...
-               (case verb
+               (case func-id
                  ['type 'tid]
                  ['body.func-id body.func-id] ...
-                 [else (raise (format "exception in type:~a, verb:~a not found" 'tid verb))]
+                 [else (raise (format "type-function ~a.~a not found" 'tid func-id))]
                  ))
              )))]
       [(_ (type-id tid) (type-parameters (type-id base-tid) params ...))
        (syntax/loc stx
          (begin
-           (define (tid verb) (base-tid verb params ...)
-             )))
-       ]
-
+           (define (tid func-id) (base-tid func-id params ...))
+           ))]
       ))
 
   (define (m-type-template stx)
-    (displayln stx)
+
     (syntax-parse stx
-      #:datum-literals (type-parameters type-id)
-      [(_ (type-parameters (type-id tid) params ...) body:type-body ...)
-       ; [(_ params:m-type-parameters body:type-body ...)
+      #:datum-literals (type-parameters type-id type-wild)
+      [(_ (type-parameters (type-id tid) params ...) body:type-body ... (type-wild wildcard) ...)
        (syntax/loc stx
          (begin
-           (define (tid verb params ...)
-             (log-marv-debug "type-template")
+           (define (tid func-id params ...)
+             (log-marv-debug "type-template ~a" 'tid)
              (define (body.func-id body.param-id ...) body.confex) ...
-             (case verb
+             (case func-id
                ['type 'tid]
                ['body.func-id body.func-id] ...
-               [else (raise (format "exception in type:~a, verb:~a not found" 'tid verb))]
+               [else
+                (log-marv-debug "looking in wildcards")
+                ; TODO41 - not quite, need to handle exceptions from missing function handlers
+                (or (wildcard func-id) ...
+                    (raise (format "exception in type ~a, method ~a not found" 'tid func-id)))]
                ))
            )
          )]
@@ -321,6 +322,7 @@
       [else (raise "m-config-expr")]))
 
   (define (m-config-merge stx)
+    (displayln stx)
     (syntax-parse stx
       [(_ LEFT "->" RIGHT) (syntax/loc stx (config-overlay LEFT RIGHT))]
       [(_ LEFT "<-" RIGHT) (syntax/loc stx (config-overlay RIGHT LEFT))]
@@ -418,8 +420,9 @@
 (define-syntax api-id m-generic-placeholder)
 (define-syntax transformer-id m-generic-placeholder)
 (define-syntax type-id m-generic-placeholder)
-(define-syntax verb m-generic-placeholder)
+(define-syntax func-id m-generic-placeholder)
 (define-syntax type-parameters m-generic-placeholder)
+(define-syntax type-wild m-generic-placeholder)
 
 (provide marv-spec outer-decl marv-module module-parameter decl var-decl res-decl
          module-invoke named-parameter module-return return-parameter

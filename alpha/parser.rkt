@@ -29,7 +29,7 @@ type-id: IDENTIFIER
 transformer-id: IDENTIFIER
 api-id: DOTTY-IDENT
 
-expression: INTEGER | STRING | IDENTIFIER | reference | func-call | boolean | config-expr | alist | built-in
+expression: INTEGER | STRING | IDENTIFIER | func-call | boolean | config-expr | reference | alist | built-in
 
 string-expression: STRING | expression
 
@@ -52,7 +52,7 @@ uritemplate: /"expandvars" /"(" expression config-expr /")"
 base64encode: /"base64encode" /"(" expression /")"
 base64decode: /"base64decode" /"(" expression /")"
 
-config-expr: config-object | config-ident | config-merge | config-take | func-call
+config-expr: reference | config-object | config-ident | config-merge | config-take | func-call
 config-merge: config-expr ("<-" | "->") config-expr
 config-ident: IDENTIFIER
 config-take: config-expr /"<<" ( urivars | list-attr )
@@ -67,6 +67,7 @@ module-invoke: IDENTIFIER /"=" ( MODULE-IDENTIFIER | IDENTIFIER ) /"(" (named-pa
 named-parameter: ( STRING | IDENTIFIER | "type" ) /"=" expression
 
 type-parameters: type-id /"<" ( IDENTIFIER [/","] )+ /">"
-type-template: /"type" type-parameters /"=" /"{" func-decl+ /"}"
+type-template: /"type" type-parameters /"=" /"{" func-decl+ [ type-wild ]* /"}"
 
 type-decl: /"type" type-id /"=" ( /"{" func-decl+ /"}" | type-parameters )
+type-wild: /"*" /"=" IDENTIFIER /"." /"*"
