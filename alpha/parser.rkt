@@ -4,7 +4,7 @@ marv-spec: module-import* outer-decl* marv-module*
 
 module-import: /"import" [ STRING | MODULE-IDENTIFIER ] [ "as" IDENTIFIER ]
 
-outer-decl: func-decl | type-decl | var-decl | module-export
+outer-decl: func-decl | type-decl | type-template | var-decl | module-export
 
 module-export: /"export" [ IDENTIFIER+ [ "as" IDENTIFIER ] ]+
 
@@ -20,13 +20,9 @@ pprint: /"pprint" expression
 comment: COMMENT
 var-decl: IDENTIFIER /"=" expression
 
-; config-func-decl: IDENTIFIER /"(" ( IDENTIFIER [ /"," ] )+ /")" /"=" config-expr
-
 func-decl: IDENTIFIER /"(" (IDENTIFIER [ /"," ])+ /")" /"=" expression
 func-call: func-ident /"(" (expression [ /"," ])+ /")"
 func-ident: (DOTTY-IDENT | IDENTIFIER)
-
-type-method-id: DOTTY-IDENT
 
 verb: IDENTIFIER
 type-id: IDENTIFIER
@@ -56,8 +52,7 @@ uritemplate: /"expandvars" /"(" expression config-expr /")"
 base64encode: /"base64encode" /"(" expression /")"
 base64decode: /"base64decode" /"(" expression /")"
 
-;config-func-call: (reference | IDENTIFIER) /"(" expression+ /")"
-config-expr: config-object | reference | config-ident | config-merge | config-take | func-call
+config-expr: config-object | config-ident | config-merge | config-take | func-call
 config-merge: config-expr ("<-" | "->") config-expr
 config-ident: IDENTIFIER
 config-take: config-expr /"<<" ( urivars | list-attr )
@@ -71,7 +66,7 @@ module-invoke: IDENTIFIER /"=" ( MODULE-IDENTIFIER | IDENTIFIER ) /"(" (named-pa
 ; also allow STRING to allow user to avoid marv keywords
 named-parameter: ( STRING | IDENTIFIER | "type" ) /"=" expression
 
-driver-id: IDENTIFIER
-driver-attr: DOTTY-IDENT
+type-parameters: type-id /"<" ( IDENTIFIER [/","] )+ /">"
+type-template: /"type" type-parameters /"=" /"{" func-decl+ /"}"
 
-type-decl: /"type" type-id /"=" /"{" func-decl+ /"}"
+type-decl: /"type" type-id /"=" ( /"{" func-decl+ /"}" | type-parameters )

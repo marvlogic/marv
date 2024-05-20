@@ -20,7 +20,7 @@
 (define basic-lexer
   (lexer-srcloc
    ;    ["\n" (token 'NEWLINE lexeme)]
-   [(:or "for/list" "->" "<-" "<<" ">>"
+   [(:or "for/list" "->" "<-" "<<" ">>" "<" ">"
          "module" "private" "import" "export" "as" "return" "strf"
          "strvars" "expandvars" "base64encode" "using" "overlays" "abstracts"
          "type" "in" "pprint" "env" "true" "false"

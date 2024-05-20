@@ -148,18 +148,6 @@
          (syntax/loc stx (find-function root 'root 'rst)))]
       [else (raise "func-ident")]))
 
-  (define (m-type-method-id stx)
-    (syntax-parse stx
-      [(_ ref:id)
-       (define splitref (split-symbol (syntax-e #'ref)))
-       (define type (format-id stx "~a" (car splitref)))
-       (define method (format-id stx "~a" (cadr splitref)))
-       (displayln (format "type-method: ~a ~a" type method))
-       (with-syntax
-           ([type type]
-            [method method])
-         (syntax/loc stx (type 'method) ))]))
-
   (define (m-func-decl stx)
     (syntax-parse stx
       [(_ id:expr param ... BODY)
@@ -167,49 +155,65 @@
          (define (id param ...) BODY))]
       [else (raise "func-decl")]))
 
+  (define-splicing-syntax-class m-type-id
+    #:description "type id"
+    (pattern (~seq (~literal type-id) tid:id)))
+
+  (define-splicing-syntax-class m-type-parameters
+    #:description "type parameters"
+    #:literals (type-parameters type-id)
+    (pattern (type-parameters tid:type-id ident:id ... )))
+
+  (define-splicing-syntax-class type-body
+    #:description "body declaration"
+    #:literals (func-decl expression)
+    (pattern (func-decl func-id:id param-id ... (expression confex))))
+
   (define (m-type-decl stx)
-
-    (define-splicing-syntax-class type-body
-      #:description "body declaration"
-      #:literals (func-decl expression)
-      (pattern (func-decl func-id:id param-id ... (expression confex))))
-
-    (define-splicing-syntax-class composition
-      #:description "type composition"
-      (pattern (~seq "|" type-id:id)))
-
+    (displayln stx)
     (syntax-parse stx
-      [(_ ((~literal type-id) type-id:expr) body:type-body ...)
+      #:datum-literals (type-parameters type-id)
+      [(_ (type-id tid:expr) body:type-body ...)
        (with-syntax ([srcloc (src-location stx)])
          (syntax/loc stx
            (begin
-             (define (type-id verb)
-               (log-marv-debug "type-fn ~a.~a:~a called" 'type-id verb srcloc)
+             (define (tid verb)
+               (log-marv-debug "type-fn ~a.~a:~a called" 'tid verb srcloc)
                (define (body.func-id body.param-id ...) body.confex) ...
                (case verb
-                 ['type 'type-id]
+                 ['type 'tid]
                  ['body.func-id body.func-id] ...
-                 [else (raise "exception in type-decl")]
+                 [else (raise (format "exception in type:~a, verb:~a not found" 'tid verb))]
                  ))
              )))]
-      [(_ ((~literal type-id) type-id:expr) base-id:id comp:composition ...)
-       (with-syntax ([srcloc (src-location stx)])
-         (syntax/loc stx
-           (begin
-             (define (type-id verb config)
-               (log-marv-debug "type-fn ~a.~a:~a ~n  composition called with config ~a" 'type-id verb srcloc config)
-               (define fns (list base-id comp.type-id ...))
-               (define fin (for/fold ([c config]) ([f fns]) (f verb c)))
-               (log-marv-debug "type-fn ~a.~a:~a~n  composition results in config ~a" 'type-id verb srcloc fin)
-               fin)
-             )))]
+      [(_ (type-id tid) (type-parameters (type-id base-tid) params ...))
+       (syntax/loc stx
+         (begin
+           (define (tid verb) (base-tid verb params ...)
+             )))
+       ]
+
       ))
 
-  (define (m-type-api-spec stx)
+  (define (m-type-template stx)
+    (displayln stx)
     (syntax-parse stx
-      #:literals (api-id transformer-id)
-      [(_ (api-id aid:expr) (transformer-id req-xform-id:identifier) (transformer-id resp-xform-id:identifier))
-       (syntax/loc stx `(aid ,req-xform-id ,resp-xform-id))]))
+      #:datum-literals (type-parameters type-id)
+      [(_ (type-parameters (type-id tid) params ...) body:type-body ...)
+       ; [(_ params:m-type-parameters body:type-body ...)
+       (syntax/loc stx
+         (begin
+           (define (tid verb params ...)
+             (log-marv-debug "type-template")
+             (define (body.func-id body.param-id ...) body.confex) ...
+             (case verb
+               ['type 'tid]
+               ['body.func-id body.func-id] ...
+               [else (raise (format "exception in type:~a, verb:~a not found" 'tid verb))]
+               ))
+           )
+         )]
+      ))
 
   (define (m-generic-placeholder stx)stx)
 
@@ -383,11 +387,8 @@
 (define-syntax var-decl m-var-decl)
 (define-syntax config-func-decl m-config-func-decl)
 (define-syntax func-decl m-func-decl)
-
 (define-syntax type-decl m-type-decl)
-(define-syntax type-api-spec m-type-api-spec)
-(define-syntax type-method-id m-type-method-id)
-
+(define-syntax type-template m-type-template)
 (define-syntax res-decl m-res-decl)
 (define-syntax module-invoke m-module-invoke)
 (define-syntax named-parameter m-named-parameter)
@@ -416,17 +417,16 @@
 
 (define-syntax api-id m-generic-placeholder)
 (define-syntax transformer-id m-generic-placeholder)
-(define-syntax driver-id m-generic-placeholder)
 (define-syntax type-id m-generic-placeholder)
 (define-syntax verb m-generic-placeholder)
+(define-syntax type-parameters m-generic-placeholder)
 
 (provide marv-spec outer-decl marv-module module-parameter decl var-decl res-decl
          module-invoke named-parameter module-return return-parameter
          module-import
          module-export
-         api-id transformer-id driver-id type-id
-         func-call func-ident config-func-decl func-decl
-         type-decl type-api-spec type-method-id
+         api-id transformer-id type-id
+         func-call func-ident config-func-decl func-decl type-decl type-template
          expression reference statement config-object alist list-attr attribute-name
          config-expr config-merge config-ident config-take
          keyword built-in env-read pprint strf urivars uritemplate base64encode base64decode
