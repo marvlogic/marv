@@ -17,6 +17,7 @@
          state-ref-destructor-cmd
          state-origin-destructor-cmd
          state-origin-fingerprint
+         state-origin-driver
          state-get
          state-set/c
          state-merge
@@ -41,6 +42,8 @@
 (struct state-origin (fingerprint destructor-cmd) #:prefab)
 (struct state-entry (serial origin config) #:prefab)
 (define state-empty (state-entry 0 (state-origin 0 null) (hash)))
+
+(define (state-origin-driver origin)(hash-ref (state-origin-fingerprint origin) 'driver))
 
 (define state-set/c (hash/c res-id/c state-entry? ))
 

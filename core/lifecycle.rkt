@@ -87,16 +87,15 @@
 
     (define res (resource-ref rsset k))
     ; (define type-fn (resource-type-fn res))
-    (define (type-fn verb args ...) ((resource-type-fn res) verb) args ...)
+    (define (type-fn verb . args) (apply ((resource-type-fn res) verb) args))
     ; TODO41 - similar code to driver-repr
     (define res-cfg (unwrap-values (deref-config (state-get-state-set) (resource-config res))))
+    (define driver-id (string->symbol(state-origin-driver (state-ref-origin k))))
+    ; (define driver-id (get-driver-id type-fn res))
     (define cmd (type-fn 'read res-cfg))
-    ;TODO41
-    (define driver-id (get-driver-id type-fn res))
-    (define resp-cfg (send-to-driver driver-id cmd))
-    (define state-cfg (type-fn 'state (hash 'response resp-cfg 'original res-cfg)))
+    (define reply-cfg (send-to-driver driver-id cmd))
+    (define state-cfg (type-fn 'post-read res-cfg reply-cfg))
     (state-set-ref k (state-ref-origin k) state-cfg))
-  ;TODO41 factor driver response through 'state verb with create code below
   (for ([i ids]) (refresh i)))
 
 (define/contract (send-driver-cmd driver-id cmd)
@@ -110,7 +109,7 @@
     (display (format "CREATING ~a" id))
     (flush-output)
     (define res (driver-repr id))
-    (define (type-fn verb . rest) (apply ((resource-type-fn res) verb) rest))
+    (define (type-fn verb . args) (apply ((resource-type-fn res) verb) args))
     (define res-cfg (resource-config res))
     (define driver-id (get-driver-id type-fn res))
     (define cmd (type-fn 'create res-cfg))
@@ -137,12 +136,14 @@
     (display (format "UPDATING ~a" id))
     (flush-output)
     (define res (driver-repr id))
-    (define type-fn (resource-type-fn res))
-    (define cmd (type-fn 'update (resource-config res)))
+    (define (type-fn verb . args) (apply ((resource-type-fn res) verb) args))
+    (define res-cfg (resource-config res))
     (define driver-id (get-driver-id type-fn res))
+    (define cmd (type-fn 'update res-cfg))
     (define reply-cfg (send-driver-cmd driver-id cmd))
     ;TODO41 - what if origin changes? Is origin in reply?
-    (state-set-ref id (state-ref-origin id) reply-cfg))
+    (define state-cfg (type-fn 'post-update res-cfg reply-cfg))
+    (state-set-ref id (state-ref-origin id) state-cfg))
 
   ; TODO - check if unpacking is done here or should use unwrap fn
   ; TODO41 - driver-repr name?

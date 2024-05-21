@@ -4,58 +4,45 @@ import types/gcp/_auto/storage as _auto
 
 test(c) = c
 
-type buckets = {
-    origin(cfg) = { driver="gcp" }
-}
-
 
 type lifecyle-base = {
     create(cfg) = cfg
-    post-create(cfg) = cfg
+    post-create(o, cfg) = cfg
 
     read(cfg) = cfg
-    post-read(cfg) = cfg
+    post-read(o, cfg) = cfg
 
     update(cfg) = cfg
-    post-update(cfg) = cfg
+    post-update(o, cfg) = cfg
     
     delete(cfg) = cfg
 }
 
 type bucket = {
-    #origin(cfg) = buckets.origin(cfg)
-    #create(cfg) = pre-create(cfg)
-    #create(cfg) = cfg
-
-    origin(cfg) = _auto:buckets.origin(cfg)
-    create(cfg) = _auto:buckets.create(cfg)
-    post-create(original, state) = state <- { project=original.project }
-
-    read(cfg) = _auto:buckets.read(cfg)
-    post-read(cfg) = cfg
-
-    update(cfg) = _auto:buckets.update(cfg)
+    post-create(original, state) = state <- { project=original.project  region=original.region }
+    post-read(o, cfg) = post-create(o, cfg)
     post-update(original, cfg)=post-create(original, cfg)
-
     delete(state) = _auto:buckets.delete(state) <- { config={name=state.name} }
+
+    * = _auto:buckets.*
 }
 
 type C1<T,C1> = {
     create(cfg) = T.create(C1.create(cfg))
-    post-create(cfg) = T.create(C1.post-create(cfg))
+    post-create(original, cfg) = C1.post-create(original, T.post-create(original, cfg))
 
     read(cfg) = T.read(C1.read(cfg))
-    post-read(cfg) = T.read(C1.post-read(cfg))
+    post-read(original, cfg) = C1.post-read(original, T.post-read(original, cfg))
 
     update(cfg) = T.update(C1.update(cfg))
-    post-update(cfg) = T.update(C1.post-update(cfg))
+    post-update(original, cfg) = C1.post-update(original, T.post-update(original, cfg))
 
     delete(cfg) = T.delete(C1.delete(cfg))
     * = T.*
 }
 
 type label-project = {
-    labels(cfg) = cfg <- { labels = cfg.labels <- { project = "123" }}
+    labels(cfg) = cfg <- { labels = cfg.labels <- { project = "23" }}
     create(cfg) = labels(cfg)
     update(cfg) = labels(cfg)
 
@@ -73,7 +60,7 @@ module main {
 
     my-bucket = lbucket defaults <- {
         name = strf("~a-mybucket" defaults.project)
-        labels = { "local"= "x" }
+        labels = { "local"= "y" }
         # storageClass = "NEARLINE"
     }
     
