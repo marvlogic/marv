@@ -4,7 +4,6 @@ import types/gcp/_auto/storage as _auto
 
 test(c) = c
 
-
 type lifecyle-base = {
     create(cfg) = cfg
     post-create(o, cfg) = cfg
@@ -16,6 +15,7 @@ type lifecyle-base = {
     post-update(o, cfg) = cfg
     
     delete(cfg) = cfg
+    identity(cfg) = cfg
 }
 
 type bucket = {
@@ -24,32 +24,60 @@ type bucket = {
     post-update(original, cfg)=post-create(original, cfg)
     delete(state) = _auto:buckets.delete(state) <- { config={name=state.name} }
 
+    # identity function needs to be in auto-generated, but for now...
+    # identity(cfg) = cfg
     * = _auto:buckets.*
 }
 
-type C1<T,C1> = {
-    create(cfg) = T.create(C1.create(cfg))
-    post-create(original, cfg) = C1.post-create(original, T.post-create(original, cfg))
+# E-types are type-enhancements which allow a base type T to be manipulated by
+# one or more enhancement types
 
-    read(cfg) = T.read(C1.read(cfg))
-    post-read(original, cfg) = C1.post-read(original, T.post-read(original, cfg))
+type E1<T,E1> = {
+    identity(cfg) = E1.identity(cfg)
 
-    update(cfg) = T.update(C1.update(cfg))
-    post-update(original, cfg) = C1.post-update(original, T.post-update(original, cfg))
+    create(ident) = T.create(ident)
+    post-create(ident, cfg) = E1.post-create(ident, T.post-create(ident, cfg))
 
-    delete(cfg) = T.delete(C1.delete(cfg))
+    read(ident) = T.read(ident)
+    post-read(ident, cfg) = E1.post-read(ident, T.post-read(ident, cfg))
+
+    update(ident) = T.update(ident)
+    post-update(ident, cfg) = E1.post-update(ident, T.post-update(ident, cfg))
+
+    delete(cfg) = T.delete(cfg)
+
+    * = T.*
+}
+
+type E2<T,E1,E2> = {
+    identity(cfg) = E2.identity(E1.identity(cfg))
+    # tbc...
+
+    create(ident) = T.create(ident)
+    post-create(ident, cfg) = E1.post-create(ident, E2.post-create(ident, T.post-create(ident, cfg)))
+
+    read(ident) = T.read(ident)
+    post-read(ident, cfg) = E1.post-read(ident, E2.post-read(ident, T.post-read(ident, cfg)))
+
+    update(ident) = T.update(ident)
+    post-update(ident, cfg) = E1.post-update(ident, E2.post-update(ident, T.post-update(ident, cfg)))
+
+    delete(cfg) = T.delete(E2.delete(E1.delete(cfg)))
+
     * = T.*
 }
 
 type label-project = {
-    labels(cfg) = cfg <- { labels = cfg.labels <- { project = "23" }}
-    create(cfg) = labels(cfg)
-    update(cfg) = labels(cfg)
-
+    identity(cfg) = cfg <- { labels = cfg.labels <- { project = "123" }}
     * = lifecyle-base.*
 }
 
-type lbucket = C1<bucket, label-project>
+type storage-policy = {
+    identity(cfg) = cfg <- { storageClass = "NEARLINE" }
+    * = lifecyle-base.*
+}
+
+type lbucket = E2<bucket, label-project, storage-policy>
 
 module main {
 
@@ -61,7 +89,7 @@ module main {
     my-bucket = lbucket defaults <- {
         name = strf("~a-mybucket" defaults.project)
         labels = { "local"= "y" }
-        # storageClass = "NEARLINE"
+        storageClass = "STANDARD"
     }
     
 }

@@ -153,7 +153,10 @@
 
   (define (make-resource v)
     (log-marv-debug "  generating ~a" v)
-    (resource (hash-ref v '$type-fn) (hash-apply (hash-remove v '$type-fn) handle-future-ref)))
+    (define type-fn (hash-ref v '$type-fn))
+    (define res-ident ((type-fn 'identity) (hash-remove v '$type-fn)))
+    (log-marv-debug "  identity ~a" res-ident)
+    (resource type-fn (hash-apply res-ident handle-future-ref)))
 
   (for/fold ([rs (hash)])
             ([k (in-list (ordered-resource-ids))])
