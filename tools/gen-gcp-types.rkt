@@ -106,17 +106,28 @@
 (define shim-header #<<EOF
 #lang marv
 
-# WARNING: This shim file is incomplete. You need to define a '_base' type
+# WARNING: This shim file is incomplete. You need to define an 'API' type
 # relevant to the API being imported, and then remove this warning.
 
 import types/gcp/_auto/~a as _auto
+
+# Modify this example per API
+
+type API<T> = {
+ post-create(original, state) = state <- { project=original.project  region=original.region }
+ post-read(o, cfg) = post-create(o, cfg)
+ post-update(original, cfg)=post-create(original, cfg)
+ delete(state) = T.delete(state) <- { config={name=state.name} }
+ identity(cfg) = cfg
+ * = T.*
+}
 EOF
   )
 
 (define shim-template #<<EOF
-type ~a =  _auto:~a | _base
-export ~a
 
+type ~a=API<_auto:~a>
+export ~a
 EOF
   )
 
@@ -136,6 +147,7 @@ EOF
 (define type-template #<<EOF
 # ~a
 type ~a = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"

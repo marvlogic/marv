@@ -18,16 +18,16 @@ type lifecyle-base = {
     identity(cfg) = cfg
 }
 
-type bucket = {
+type API<T> = {
     post-create(original, state) = state <- { project=original.project  region=original.region }
     post-read(o, cfg) = post-create(o, cfg)
     post-update(original, cfg)=post-create(original, cfg)
-    delete(state) = _auto:buckets.delete(state) <- { config={name=state.name} }
-
-    # identity function needs to be in auto-generated, but for now...
-    # identity(cfg) = cfg
-    * = _auto:buckets.*
+    delete(state) = T.delete(state) <- { config={name=state.name} }
+    identity(cfg) = cfg
+    * = T.*
 }
+
+type bucket = API<_auto:buckets> 
 
 # E-types are type-enhancements which allow a base type T to be manipulated by
 # one or more enhancement types

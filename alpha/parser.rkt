@@ -20,8 +20,8 @@ pprint: /"pprint" expression
 comment: COMMENT
 var-decl: IDENTIFIER /"=" expression
 
-func-decl: IDENTIFIER /"(" (IDENTIFIER [ /"," ])+ /")" /"=" expression
-func-call: func-ident /"(" (expression [ /"," ])+ /")"
+func-decl: IDENTIFIER /"(" (IDENTIFIER [ /"," ])* /")" /"=" expression
+func-call: func-ident /"(" (expression [ /"," ])* /")"
 func-ident: (DOTTY-IDENT | IDENTIFIER)
 
 verb: IDENTIFIER
@@ -37,7 +37,7 @@ boolean: "true" | "false"
 
 attribute-name: ( STRING | IDENTIFIER | "type" )
 
-config-object: /"{" [( STRING | IDENTIFIER | "type" ) /"=" [ "imm:" ] expression]* /"}"
+config-object: /"{" [( STRING | IDENTIFIER | "type" ) /"=" [ "imm:" ] expression [ /"," ]]* /"}"
 alist: /"[" expression* /"]"
 
 list-attr: /"[" attribute-name* /"]"

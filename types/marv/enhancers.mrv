@@ -1,0 +1,41 @@
+#lang marv
+
+# E-types are type-enhancements which allow a base type T to be manipulated by
+# one or more enhancement types
+
+type E1<T,E1> = {
+    identity(cfg) = E1.identity(cfg)
+
+    create(ident) = T.create(ident)
+    post-create(ident, cfg) = E1.post-create(ident, T.post-create(ident, cfg))
+
+    read(ident) = T.read(ident)
+    post-read(ident, cfg) = E1.post-read(ident, T.post-read(ident, cfg))
+
+    update(ident) = T.update(ident)
+    post-update(ident, cfg) = E1.post-update(ident, T.post-update(ident, cfg))
+
+    delete(cfg) = T.delete(cfg)
+
+    * = T.*
+}
+export E1
+
+type E2<T,E1,E2> = {
+    identity(cfg) = E2.identity(E1.identity(cfg))
+    # tbc...
+
+    create(ident) = T.create(ident)
+    post-create(ident, cfg) = E1.post-create(ident, E2.post-create(ident, T.post-create(ident, cfg)))
+
+    read(ident) = T.read(ident)
+    post-read(ident, cfg) = E1.post-read(ident, E2.post-read(ident, T.post-read(ident, cfg)))
+
+    update(ident) = T.update(ident)
+    post-update(ident, cfg) = E1.post-update(ident, E2.post-update(ident, T.post-update(ident, cfg)))
+
+    delete(cfg) = T.delete(E2.delete(E1.delete(cfg)))
+
+    * = T.*
+}
+export E2

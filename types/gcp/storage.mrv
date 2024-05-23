@@ -1,32 +1,43 @@
 #lang marv
 
+# WARNING: This shim file is incomplete. You need to define an 'API' type
+# relevant to the API being imported, and then remove this warning.
+
 import types/gcp/_auto/storage as _auto
 
-# TODO41 - how does validate work?
-# validate = api("storage.buckets.insert")
+# Modify this example per API
 
-type _base = {
-  origin(cfg)= { name=cfg.name }
-  state(cfg)=cfg.response <- { region=cfg.original.region project=cfg.original.project }
+type API<T> = {
+ post-create(original, state) = state <- { project=original.project  region=original.region }
+ post-read(o, cfg) = post-create(o, cfg)
+ post-update(original, cfg)=post-create(original, cfg)
+ delete(state) = T.delete(state) <- { config={name=state.name} }
+ identity(cfg) = cfg
+ * = T.*
 }
+type notification=API<_auto:notifications>
+export notification
 
-type object =  _base | _auto:objects
-export object
-
-type defaultObjectAccessControl =  _base | _auto:defaultObjectAccessControls
-export defaultObjectAccessControl
-
-type channel =  _base | _auto:channels
-export channel
-
-type bucket =  _base | _auto:buckets
-export bucket
-
-type bucketAccessControl =  _base | _auto:bucketAccessControls
-export bucketAccessControl
-
-type objectAccessControl =  _base | _auto:objectAccessControls
+type objectAccessControl=API<_auto:objectAccessControls>
 export objectAccessControl
 
-type notification =  _base | _auto:notifications
-export notification
+type bucketAccessControl=API<_auto:bucketAccessControls>
+export bucketAccessControl
+
+type bucket=API<_auto:buckets>
+export bucket
+
+type channel=API<_auto:channels>
+export channel
+
+type defaultObjectAccessControl=API<_auto:defaultObjectAccessControls>
+export defaultObjectAccessControl
+
+type object=API<_auto:objects>
+export object
+
+type serviceAccount=API<_auto:serviceAccount>
+export serviceAccount
+
+type hmacKey=API<_auto:hmacKeys>
+export hmacKey
