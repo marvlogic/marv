@@ -5,6 +5,7 @@ import types/gcp/_auto/storage-schema
 API-ID="storage"
 # /resources/notifications
 type notifications = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -51,6 +52,7 @@ export notifications
 
 # /resources/objectAccessControls
 type objectAccessControls = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -102,6 +104,7 @@ export objectAccessControls
 
 # /resources/bucketAccessControls
 type bucketAccessControls = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -153,6 +156,7 @@ export bucketAccessControls
 
 # /resources/buckets
 type buckets = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -204,6 +208,7 @@ export buckets
 
 # /resources/channels
 type channels = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -237,6 +242,7 @@ export channels
 
 # /resources/defaultObjectAccessControls
 type defaultObjectAccessControls = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -288,6 +294,7 @@ export defaultObjectAccessControls
 
 # /resources/objects
 type objects = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -339,6 +346,7 @@ export objects
 
 # /resources/projects/resources/serviceAccount
 type serviceAccount = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -376,6 +384,7 @@ export serviceAccount
 
 # /resources/projects/resources/hmacKeys
 type hmacKeys = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"

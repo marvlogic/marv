@@ -1,314 +1,322 @@
 #lang marv
 
+# WARNING: This shim file is incomplete. You need to define an 'API' type
+# relevant to the API being imported, and then remove this warning.
+
 import types/gcp/_auto/compute as _auto
 
-type _base = {
-  origin(cfg)= cfg <- { name=cfg.name }
-  delete(cfg)=cfg <- { config={} api=cfg.api <- { url=expandvars(cfg.api.url cfg.config) } }
-  state(cfg)=cfg.response <- { region=cfg.original.region project=cfg.original.project }
+# Modify this example per API
+
+delete-self(state, oapi) = {
+  api= oapi.api <- { url=state.selfLink }
+  config = {}
 }
 
-type url-fixup = {
-  read(cfg) = cfg <- { api=cfg.api <- { url="rewrite-me" }}
+type API<T> = {
+ post-create(original, state) = state <- { project=original.project, region=original.region }
+ post-read(o, cfg) = post-create(o, cfg)
+ post-update(original, cfg)=post-create(original, cfg)
+ delete(state) = delete-self(state, T.delete(state))
+ * = T.*
 }
 
-type regionTargetTcpProxy =  _auto:regionTargetTcpProxies | _base
+type regionTargetTcpProxy=API<_auto:regionTargetTcpProxies>
 export regionTargetTcpProxy
 
-type globalOperation =  _auto:globalOperations | _base
+type globalOperation=API<_auto:globalOperations>
 export globalOperation
 
-type vpnTunnel =  _auto:vpnTunnels | _base
+type vpnTunnel=API<_auto:vpnTunnels>
 export vpnTunnel
 
-type network =  _auto:networks | _base
+type network=API<_auto:networks>
 export network
 
-type instanceTemplate =  _auto:instanceTemplates | _base
+type instanceTemplate=API<_auto:instanceTemplates>
 export instanceTemplate
 
-type regionInstantSnapshot =  _auto:regionInstantSnapshots | _base
+type regionInstantSnapshot=API<_auto:regionInstantSnapshots>
 export regionInstantSnapshot
 
-type nodeType =  _auto:nodeTypes | _base
+type nodeType=API<_auto:nodeTypes>
 export nodeType
 
-type nodeTemplate =  _auto:nodeTemplates | _base
+type nodeTemplate=API<_auto:nodeTemplates>
 export nodeTemplate
 
-type securityPolicy =  _auto:securityPolicies | _base
+type securityPolicy=API<_auto:securityPolicies>
 export securityPolicy
 
-type regionInstance =  _auto:regionInstances | _base
+type regionInstance=API<_auto:regionInstances>
 export regionInstance
 
-type diskType =  _auto:diskTypes | _base
+type diskType=API<_auto:diskTypes>
 export diskType
 
-type instanceGroupManager =  _auto:instanceGroupManagers | _base
+type instanceGroupManager=API<_auto:instanceGroupManagers>
 export instanceGroupManager
 
-type instanceSetting =  _auto:instanceSettings | _base
+type instanceSetting=API<_auto:instanceSettings>
 export instanceSetting
 
-type interconnect =  _auto:interconnects | _base
+type interconnect=API<_auto:interconnects>
 export interconnect
 
-type machineImage =  _auto:machineImages | _base
+type machineImage=API<_auto:machineImages>
 export machineImage
 
-type addresse =  _auto:addresses | _base
+type addresse=API<_auto:addresses>
 export addresse
 
-type reservation =  _auto:reservations | _base
+type reservation=API<_auto:reservations>
 export reservation
 
-type publicDelegatedPrefixe =  _auto:publicDelegatedPrefixes | _base
+type publicDelegatedPrefixe=API<_auto:publicDelegatedPrefixes>
 export publicDelegatedPrefixe
 
-type license =  _auto:licenses | _base
+type license=API<_auto:licenses>
 export license
 
-type networkAttachment =  _auto:networkAttachments | _base
+type networkAttachment=API<_auto:networkAttachments>
 export networkAttachment
 
-type route =  _auto:routes | _base
+type route=API<_auto:routes>
 export route
 
-type regionBackendService =  _auto:regionBackendServices | _base
+type regionBackendService=API<_auto:regionBackendServices>
 export regionBackendService
 
-type targetHttpsProxy =  _auto:targetHttpsProxies | _base
+type targetHttpsProxy=API<_auto:targetHttpsProxies>
 export targetHttpsProxy
 
-type targetPool =  _auto:targetPools | _base
+type targetPool=API<_auto:targetPools>
 export targetPool
 
-type targetHttpProxy =  _auto:targetHttpProxies | _base
+type targetHttpProxy=API<_auto:targetHttpProxies>
 export targetHttpProxy
 
-type project =  _auto:projects | _base
+type project=API<_auto:projects>
 export project
 
-type firewallPolicy =  _auto:firewallPolicies | _base
+type firewallPolicy=API<_auto:firewallPolicies>
 export firewallPolicy
 
-type regionSslPolicy =  _auto:regionSslPolicies | _base
+type regionSslPolicy=API<_auto:regionSslPolicies>
 export regionSslPolicy
 
-type regionInstanceGroup =  _auto:regionInstanceGroups | _base
+type regionInstanceGroup=API<_auto:regionInstanceGroups>
 export regionInstanceGroup
 
-type regionAutoscaler =  _auto:regionAutoscalers | _base
+type regionAutoscaler=API<_auto:regionAutoscalers>
 export regionAutoscaler
 
-type networkEndpointGroup =  _auto:networkEndpointGroups | _base
+type networkEndpointGroup=API<_auto:networkEndpointGroups>
 export networkEndpointGroup
 
-type regionOperation =  _auto:regionOperations | _base
+type regionOperation=API<_auto:regionOperations>
 export regionOperation
 
-type sslPolicy =  _auto:sslPolicies | _base
+type sslPolicy=API<_auto:sslPolicies>
 export sslPolicy
 
-type targetGrpcProxy =  _auto:targetGrpcProxies | _base
+type targetGrpcProxy=API<_auto:targetGrpcProxies>
 export targetGrpcProxy
 
-type image =  _auto:images | _base
+type image=API<_auto:images>
 export image
 
-type instanceGroup =  _auto:instanceGroups | _base
+type instanceGroup=API<_auto:instanceGroups>
 export instanceGroup
 
-type regionTargetHttpsProxy =  _auto:regionTargetHttpsProxies | _base
+type regionTargetHttpsProxy=API<_auto:regionTargetHttpsProxies>
 export regionTargetHttpsProxy
 
-type httpHealthCheck =  _auto:httpHealthChecks | _base
+type httpHealthCheck=API<_auto:httpHealthChecks>
 export httpHealthCheck
 
-type instance =  _auto:instances | _base
+type instance=API<_auto:instances>
 export instance
 
-type autoscaler =  _auto:autoscalers | _base
+type autoscaler=API<_auto:autoscalers>
 export autoscaler
 
-type futureReservation =  _auto:futureReservations | _base
+type futureReservation=API<_auto:futureReservations>
 export futureReservation
 
-type sslCertificate =  _auto:sslCertificates | _base
+type sslCertificate=API<_auto:sslCertificates>
 export sslCertificate
 
-type instantSnapshot =  _auto:instantSnapshots | _base
+type instantSnapshot=API<_auto:instantSnapshots>
 export instantSnapshot
 
-type publicAdvertisedPrefixe =  _auto:publicAdvertisedPrefixes | _base
+type publicAdvertisedPrefixe=API<_auto:publicAdvertisedPrefixes>
 export publicAdvertisedPrefixe
 
-type globalAddresse =  _auto:globalAddresses | _base
+type globalAddresse=API<_auto:globalAddresses>
 export globalAddresse
 
-type regionZone =  _auto:regionZones | _base
+type regionZone=API<_auto:regionZones>
 export regionZone
 
-type router =  _auto:routers | _base
+type router=API<_auto:routers>
 export router
 
-type disk =  _auto:disks | _base
+type disk=API<_auto:disks>
 export disk
 
-type regionNetworkEndpointGroup =  _auto:regionNetworkEndpointGroups | _base
+type regionNetworkEndpointGroup=API<_auto:regionNetworkEndpointGroups>
 export regionNetworkEndpointGroup
 
-type zoneOperation =  _auto:zoneOperations | _base
+type zoneOperation=API<_auto:zoneOperations>
 export zoneOperation
 
-type regionTargetHttpProxy =  _auto:regionTargetHttpProxies | _base
+type regionTargetHttpProxy=API<_auto:regionTargetHttpProxies>
 export regionTargetHttpProxy
 
-type regionNotificationEndpoint =  _auto:regionNotificationEndpoints | _base
+type regionNotificationEndpoint=API<_auto:regionNotificationEndpoints>
 export regionNotificationEndpoint
 
-type packetMirroring =  _auto:packetMirrorings | _base
+type packetMirroring=API<_auto:packetMirrorings>
 export packetMirroring
 
-type regionHealthCheck =  _auto:regionHealthChecks | _base
+type regionHealthCheck=API<_auto:regionHealthChecks>
 export regionHealthCheck
 
-type regionCommitment =  _auto:regionCommitments | _base
+type regionCommitment=API<_auto:regionCommitments>
 export regionCommitment
 
-type nodeGroup =  _auto:nodeGroups | _base
+type nodeGroup=API<_auto:nodeGroups>
 export nodeGroup
 
-type acceleratorType =  _auto:acceleratorTypes | _base
+type acceleratorType=API<_auto:acceleratorTypes>
 export acceleratorType
 
-type globalForwardingRule =  _auto:globalForwardingRules | _base
+type globalForwardingRule=API<_auto:globalForwardingRules>
 export globalForwardingRule
 
-type snapshotSetting =  _auto:snapshotSettings | _base
+type snapshotSetting=API<_auto:snapshotSettings>
 export snapshotSetting
 
-type resourcePolicy =  _auto:resourcePolicies | _base
+type resourcePolicy=API<_auto:resourcePolicies>
 export resourcePolicy
 
-type globalPublicDelegatedPrefixe =  _auto:globalPublicDelegatedPrefixes | _base
+type globalPublicDelegatedPrefixe=API<_auto:globalPublicDelegatedPrefixes>
 export globalPublicDelegatedPrefixe
 
-type snapshot =  _auto:snapshots | _base
+type snapshot=API<_auto:snapshots>
 export snapshot
 
-type globalOrganizationOperation =  _auto:globalOrganizationOperations | _base
+type globalOrganizationOperation=API<_auto:globalOrganizationOperations>
 export globalOrganizationOperation
 
-type regionInstanceGroupManager =  _auto:regionInstanceGroupManagers | _base
+type regionInstanceGroupManager=API<_auto:regionInstanceGroupManagers>
 export regionInstanceGroupManager
 
-type httpsHealthCheck =  _auto:httpsHealthChecks | _base
+type httpsHealthCheck=API<_auto:httpsHealthChecks>
 export httpsHealthCheck
 
-type regionSslCertificate =  _auto:regionSslCertificates | _base
+type regionSslCertificate=API<_auto:regionSslCertificates>
 export regionSslCertificate
 
-type backendService =  _auto:backendServices | _base
+type backendService=API<_auto:backendServices>
 export backendService
 
-type targetVpnGateway =  _auto:targetVpnGateways | _base
+type targetVpnGateway=API<_auto:targetVpnGateways>
 export targetVpnGateway
 
-type interconnectRemoteLocation =  _auto:interconnectRemoteLocations | _base
+type interconnectRemoteLocation=API<_auto:interconnectRemoteLocations>
 export interconnectRemoteLocation
 
-type firewall =  _auto:firewalls | _base
+type firewall=API<_auto:firewalls>
 export firewall
 
-type globalNetworkEndpointGroup =  _auto:globalNetworkEndpointGroups | _base
+type globalNetworkEndpointGroup=API<_auto:globalNetworkEndpointGroups>
 export globalNetworkEndpointGroup
 
-type regionSecurityPolicy =  _auto:regionSecurityPolicies | _base
+type regionSecurityPolicy=API<_auto:regionSecurityPolicies>
 export regionSecurityPolicy
 
-type interconnectAttachment =  _auto:interconnectAttachments | _base
+type interconnectAttachment=API<_auto:interconnectAttachments>
 export interconnectAttachment
 
-type region =  _auto:regions | _base
+type region=API<_auto:regions>
 export region
 
-type subnetwork =  _auto:subnetworks | _base
+type subnetwork=API<_auto:subnetworks>
 export subnetwork
 
-type regionHealthCheckService =  _auto:regionHealthCheckServices | _base
+type regionHealthCheckService=API<_auto:regionHealthCheckServices>
 export regionHealthCheckService
 
-type zone =  _auto:zones | _base
+type zone=API<_auto:zones>
 export zone
 
-type networkEdgeSecurityService =  _auto:networkEdgeSecurityServices | _base
+type networkEdgeSecurityService=API<_auto:networkEdgeSecurityServices>
 export networkEdgeSecurityService
 
-type backendBucket =  _auto:backendBuckets | _base
+type backendBucket=API<_auto:backendBuckets>
 export backendBucket
 
-type healthCheck =  _auto:healthChecks | _base
+type healthCheck=API<_auto:healthChecks>
 export healthCheck
 
-type urlMap =  _auto:urlMaps | _base
+type urlMap=API<_auto:urlMaps>
 export urlMap
 
-type targetTcpProxy =  _auto:targetTcpProxies | _base
+type targetTcpProxy=API<_auto:targetTcpProxies>
 export targetTcpProxy
 
-type externalVpnGateway =  _auto:externalVpnGateways | _base
+type externalVpnGateway=API<_auto:externalVpnGateways>
 export externalVpnGateway
 
-type organizationSecurityPolicy =  _auto:organizationSecurityPolicies | _base
+type organizationSecurityPolicy=API<_auto:organizationSecurityPolicies>
 export organizationSecurityPolicy
 
-type networkFirewallPolicy =  _auto:networkFirewallPolicies | _base
+type networkFirewallPolicy=API<_auto:networkFirewallPolicies>
 export networkFirewallPolicy
 
-type vpnGateway =  _auto:vpnGateways | _base
+type vpnGateway=API<_auto:vpnGateways>
 export vpnGateway
 
-type regionDiskType =  _auto:regionDiskTypes | _base
+type regionDiskType=API<_auto:regionDiskTypes>
 export regionDiskType
 
-type forwardingRule =  _auto:forwardingRules | _base
+type forwardingRule=API<_auto:forwardingRules>
 export forwardingRule
 
-type licenseCode =  _auto:licenseCodes | _base
+type licenseCode=API<_auto:licenseCodes>
 export licenseCode
 
-type targetSslProxy =  _auto:targetSslProxies | _base
+type targetSslProxy=API<_auto:targetSslProxies>
 export targetSslProxy
 
-type imageFamilyView =  _auto:imageFamilyViews | _base
+type imageFamilyView=API<_auto:imageFamilyViews>
 export imageFamilyView
 
-type targetInstance =  _auto:targetInstances | _base
+type targetInstance=API<_auto:targetInstances>
 export targetInstance
 
-type regionInstanceTemplate =  _auto:regionInstanceTemplates | _base
+type regionInstanceTemplate=API<_auto:regionInstanceTemplates>
 export regionInstanceTemplate
 
-type serviceAttachment =  _auto:serviceAttachments | _base
+type serviceAttachment=API<_auto:serviceAttachments>
 export serviceAttachment
 
-type machineType =  _auto:machineTypes | _base
+type machineType=API<_auto:machineTypes>
 export machineType
 
-type regionUrlMap =  _auto:regionUrlMaps | _base
+type regionUrlMap=API<_auto:regionUrlMaps>
 export regionUrlMap
 
-type regionNetworkFirewallPolicy =  _auto:regionNetworkFirewallPolicies | _base
+type regionNetworkFirewallPolicy=API<_auto:regionNetworkFirewallPolicies>
 export regionNetworkFirewallPolicy
 
-type instanceGroupManagerResizeRequest =  _auto:instanceGroupManagerResizeRequests | _base
+type instanceGroupManagerResizeRequest=API<_auto:instanceGroupManagerResizeRequests>
 export instanceGroupManagerResizeRequest
 
-type interconnectLocation =  _auto:interconnectLocations | _base
+type interconnectLocation=API<_auto:interconnectLocations>
 export interconnectLocation
 
-type regionDisk =  _auto:regionDisks | _base
+type regionDisk=API<_auto:regionDisks>
 export regionDisk
 

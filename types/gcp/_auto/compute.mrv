@@ -5,6 +5,7 @@ import types/gcp/_auto/compute-schema
 API-ID="compute"
 # /resources/regionTargetTcpProxies
 type regionTargetTcpProxies = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -51,6 +52,7 @@ export regionTargetTcpProxies
 
 # /resources/globalOperations
 type globalOperations = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -92,6 +94,7 @@ export globalOperations
 
 # /resources/vpnTunnels
 type vpnTunnels = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -138,6 +141,7 @@ export vpnTunnels
 
 # /resources/networks
 type networks = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -189,6 +193,7 @@ export networks
 
 # /resources/instanceTemplates
 type instanceTemplates = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -235,6 +240,7 @@ export instanceTemplates
 
 # /resources/regionInstantSnapshots
 type regionInstantSnapshots = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -281,6 +287,7 @@ export regionInstantSnapshots
 
 # /resources/nodeTypes
 type nodeTypes = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -318,6 +325,7 @@ export nodeTypes
 
 # /resources/nodeTemplates
 type nodeTemplates = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -364,6 +372,7 @@ export nodeTemplates
 
 # /resources/securityPolicies
 type securityPolicies = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -415,6 +424,7 @@ export securityPolicies
 
 # /resources/regionInstances
 type regionInstances = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -448,6 +458,7 @@ export regionInstances
 
 # /resources/diskTypes
 type diskTypes = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -485,6 +496,7 @@ export diskTypes
 
 # /resources/instanceGroupManagers
 type instanceGroupManagers = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -536,6 +548,7 @@ export instanceGroupManagers
 
 # /resources/instanceSettings
 type instanceSettings = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -578,6 +591,7 @@ export instanceSettings
 
 # /resources/interconnects
 type interconnects = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -629,6 +643,7 @@ export interconnects
 
 # /resources/machineImages
 type machineImages = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -675,6 +690,7 @@ export machineImages
 
 # /resources/addresses
 type addresses = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -721,6 +737,7 @@ export addresses
 
 # /resources/reservations
 type reservations = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -767,6 +784,7 @@ export reservations
 
 # /resources/publicDelegatedPrefixes
 type publicDelegatedPrefixes = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -818,6 +836,7 @@ export publicDelegatedPrefixes
 
 # /resources/licenses
 type licenses = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -864,6 +883,7 @@ export licenses
 
 # /resources/networkAttachments
 type networkAttachments = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -915,6 +935,7 @@ export networkAttachments
 
 # /resources/routes
 type routes = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -961,6 +982,7 @@ export routes
 
 # /resources/regionBackendServices
 type regionBackendServices = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -1012,6 +1034,7 @@ export regionBackendServices
 
 # /resources/targetHttpsProxies
 type targetHttpsProxies = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -1063,6 +1086,7 @@ export targetHttpsProxies
 
 # /resources/targetPools
 type targetPools = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -1109,6 +1133,7 @@ export targetPools
 
 # /resources/targetHttpProxies
 type targetHttpProxies = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -1160,6 +1185,7 @@ export targetHttpProxies
 
 # /resources/projects
 type projects = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -1197,6 +1223,7 @@ export projects
 
 # /resources/firewallPolicies
 type firewallPolicies = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -1248,6 +1275,7 @@ export firewallPolicies
 
 # /resources/regionSslPolicies
 type regionSslPolicies = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -1299,6 +1327,7 @@ export regionSslPolicies
 
 # /resources/regionInstanceGroups
 type regionInstanceGroups = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -1336,6 +1365,7 @@ export regionInstanceGroups
 
 # /resources/regionAutoscalers
 type regionAutoscalers = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -1387,6 +1417,7 @@ export regionAutoscalers
 
 # /resources/networkEndpointGroups
 type networkEndpointGroups = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -1433,6 +1464,7 @@ export networkEndpointGroups
 
 # /resources/regionOperations
 type regionOperations = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -1474,6 +1506,7 @@ export regionOperations
 
 # /resources/sslPolicies
 type sslPolicies = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -1525,6 +1558,7 @@ export sslPolicies
 
 # /resources/targetGrpcProxies
 type targetGrpcProxies = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -1576,6 +1610,7 @@ export targetGrpcProxies
 
 # /resources/images
 type images = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -1627,6 +1662,7 @@ export images
 
 # /resources/instanceGroups
 type instanceGroups = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -1673,6 +1709,7 @@ export instanceGroups
 
 # /resources/regionTargetHttpsProxies
 type regionTargetHttpsProxies = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -1724,6 +1761,7 @@ export regionTargetHttpsProxies
 
 # /resources/httpHealthChecks
 type httpHealthChecks = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -1775,6 +1813,7 @@ export httpHealthChecks
 
 # /resources/instances
 type instances = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -1821,6 +1860,7 @@ export instances
 
 # /resources/autoscalers
 type autoscalers = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -1872,6 +1912,7 @@ export autoscalers
 
 # /resources/futureReservations
 type futureReservations = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -1918,6 +1959,7 @@ export futureReservations
 
 # /resources/sslCertificates
 type sslCertificates = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -1964,6 +2006,7 @@ export sslCertificates
 
 # /resources/instantSnapshots
 type instantSnapshots = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -2010,6 +2053,7 @@ export instantSnapshots
 
 # /resources/publicAdvertisedPrefixes
 type publicAdvertisedPrefixes = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -2061,6 +2105,7 @@ export publicAdvertisedPrefixes
 
 # /resources/globalAddresses
 type globalAddresses = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -2107,6 +2152,7 @@ export globalAddresses
 
 # /resources/regionZones
 type regionZones = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -2140,6 +2186,7 @@ export regionZones
 
 # /resources/routers
 type routers = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -2191,6 +2238,7 @@ export routers
 
 # /resources/disks
 type disks = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -2237,6 +2285,7 @@ export disks
 
 # /resources/regionNetworkEndpointGroups
 type regionNetworkEndpointGroups = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -2283,6 +2332,7 @@ export regionNetworkEndpointGroups
 
 # /resources/zoneOperations
 type zoneOperations = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -2324,6 +2374,7 @@ export zoneOperations
 
 # /resources/regionTargetHttpProxies
 type regionTargetHttpProxies = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -2370,6 +2421,7 @@ export regionTargetHttpProxies
 
 # /resources/regionNotificationEndpoints
 type regionNotificationEndpoints = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -2416,6 +2468,7 @@ export regionNotificationEndpoints
 
 # /resources/packetMirrorings
 type packetMirrorings = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -2467,6 +2520,7 @@ export packetMirrorings
 
 # /resources/regionHealthChecks
 type regionHealthChecks = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -2518,6 +2572,7 @@ export regionHealthChecks
 
 # /resources/regionCommitments
 type regionCommitments = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -2560,6 +2615,7 @@ export regionCommitments
 
 # /resources/nodeGroups
 type nodeGroups = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -2611,6 +2667,7 @@ export nodeGroups
 
 # /resources/acceleratorTypes
 type acceleratorTypes = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -2648,6 +2705,7 @@ export acceleratorTypes
 
 # /resources/globalForwardingRules
 type globalForwardingRules = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -2699,6 +2757,7 @@ export globalForwardingRules
 
 # /resources/snapshotSettings
 type snapshotSettings = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -2741,6 +2800,7 @@ export snapshotSettings
 
 # /resources/resourcePolicies
 type resourcePolicies = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -2792,6 +2852,7 @@ export resourcePolicies
 
 # /resources/globalPublicDelegatedPrefixes
 type globalPublicDelegatedPrefixes = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -2843,6 +2904,7 @@ export globalPublicDelegatedPrefixes
 
 # /resources/snapshots
 type snapshots = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -2889,6 +2951,7 @@ export snapshots
 
 # /resources/globalOrganizationOperations
 type globalOrganizationOperations = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -2930,6 +2993,7 @@ export globalOrganizationOperations
 
 # /resources/regionInstanceGroupManagers
 type regionInstanceGroupManagers = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -2981,6 +3045,7 @@ export regionInstanceGroupManagers
 
 # /resources/httpsHealthChecks
 type httpsHealthChecks = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -3032,6 +3097,7 @@ export httpsHealthChecks
 
 # /resources/regionSslCertificates
 type regionSslCertificates = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -3078,6 +3144,7 @@ export regionSslCertificates
 
 # /resources/backendServices
 type backendServices = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -3129,6 +3196,7 @@ export backendServices
 
 # /resources/targetVpnGateways
 type targetVpnGateways = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -3175,6 +3243,7 @@ export targetVpnGateways
 
 # /resources/interconnectRemoteLocations
 type interconnectRemoteLocations = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -3212,6 +3281,7 @@ export interconnectRemoteLocations
 
 # /resources/firewalls
 type firewalls = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -3263,6 +3333,7 @@ export firewalls
 
 # /resources/globalNetworkEndpointGroups
 type globalNetworkEndpointGroups = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -3309,6 +3380,7 @@ export globalNetworkEndpointGroups
 
 # /resources/regionSecurityPolicies
 type regionSecurityPolicies = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -3360,6 +3432,7 @@ export regionSecurityPolicies
 
 # /resources/interconnectAttachments
 type interconnectAttachments = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -3411,6 +3484,7 @@ export interconnectAttachments
 
 # /resources/regions
 type regions = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -3448,6 +3522,7 @@ export regions
 
 # /resources/subnetworks
 type subnetworks = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -3499,6 +3574,7 @@ export subnetworks
 
 # /resources/regionHealthCheckServices
 type regionHealthCheckServices = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -3550,6 +3626,7 @@ export regionHealthCheckServices
 
 # /resources/zones
 type zones = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -3587,6 +3664,7 @@ export zones
 
 # /resources/networkEdgeSecurityServices
 type networkEdgeSecurityServices = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -3638,6 +3716,7 @@ export networkEdgeSecurityServices
 
 # /resources/backendBuckets
 type backendBuckets = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -3689,6 +3768,7 @@ export backendBuckets
 
 # /resources/healthChecks
 type healthChecks = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -3740,6 +3820,7 @@ export healthChecks
 
 # /resources/urlMaps
 type urlMaps = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -3791,6 +3872,7 @@ export urlMaps
 
 # /resources/targetTcpProxies
 type targetTcpProxies = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -3837,6 +3919,7 @@ export targetTcpProxies
 
 # /resources/externalVpnGateways
 type externalVpnGateways = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -3883,6 +3966,7 @@ export externalVpnGateways
 
 # /resources/organizationSecurityPolicies
 type organizationSecurityPolicies = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -3934,6 +4018,7 @@ export organizationSecurityPolicies
 
 # /resources/networkFirewallPolicies
 type networkFirewallPolicies = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -3985,6 +4070,7 @@ export networkFirewallPolicies
 
 # /resources/vpnGateways
 type vpnGateways = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -4031,6 +4117,7 @@ export vpnGateways
 
 # /resources/regionDiskTypes
 type regionDiskTypes = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -4068,6 +4155,7 @@ export regionDiskTypes
 
 # /resources/forwardingRules
 type forwardingRules = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -4119,6 +4207,7 @@ export forwardingRules
 
 # /resources/licenseCodes
 type licenseCodes = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -4156,6 +4245,7 @@ export licenseCodes
 
 # /resources/targetSslProxies
 type targetSslProxies = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -4202,6 +4292,7 @@ export targetSslProxies
 
 # /resources/imageFamilyViews
 type imageFamilyViews = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -4239,6 +4330,7 @@ export imageFamilyViews
 
 # /resources/targetInstances
 type targetInstances = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -4285,6 +4377,7 @@ export targetInstances
 
 # /resources/regionInstanceTemplates
 type regionInstanceTemplates = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -4331,6 +4424,7 @@ export regionInstanceTemplates
 
 # /resources/serviceAttachments
 type serviceAttachments = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -4382,6 +4476,7 @@ export serviceAttachments
 
 # /resources/machineTypes
 type machineTypes = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -4419,6 +4514,7 @@ export machineTypes
 
 # /resources/regionUrlMaps
 type regionUrlMaps = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -4470,6 +4566,7 @@ export regionUrlMaps
 
 # /resources/regionNetworkFirewallPolicies
 type regionNetworkFirewallPolicies = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -4521,6 +4618,7 @@ export regionNetworkFirewallPolicies
 
 # /resources/instanceGroupManagerResizeRequests
 type instanceGroupManagerResizeRequests = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -4567,6 +4665,7 @@ export instanceGroupManagerResizeRequests
 
 # /resources/interconnectLocations
 type interconnectLocations = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
@@ -4604,6 +4703,7 @@ export interconnectLocations
 
 # /resources/regionDisks
 type regionDisks = {
+ identity(cfg) = cfg
  # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
