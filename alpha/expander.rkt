@@ -176,47 +176,49 @@
        (with-syntax ([srcloc (src-location stx)])
          (syntax/loc stx
            (begin
-             (define (tid func-id)
+             (define (tid func-id [allow-missing? #f])
                (log-marv-debug "type-fn ~a.~a:~a called" 'tid func-id srcloc)
-               (define (body.func-id body.param-id ...) body.confex) ...
+               (define (body.func-id body.param-id ... ) body.confex) ...
                (case func-id
                  ['type 'tid]
                  ['body.func-id body.func-id] ...
                  [else
-                  (log-marv-debug "looking in wildcards")
+                  (define (fin)
+                    (if allow-missing? #f
+                        (raise (format "exception in type ~a, method ~a not found" 'tid func-id))))
+                  (log-marv-debug "looking in wildcards:")
+                  (log-marv-debug "  ~a" wildcard) ...
                   ; TODO41 - not quite, need to handle exceptions from missing function handlers
-                  (or (wildcard func-id) ...
-                      (raise (format "exception in type ~a, method ~a not found" 'tid func-id)))]
-                 ))
-             )))]
+                  (or (wildcard func-id #t) ... (fin))])
+               ))))]
       [(_ (type-id tid) (type-parameters (type-id base-tid) params ...))
        (syntax/loc stx
          (begin
-           (define (tid func-id) (base-tid func-id params ...))
+           (define (tid func-id [allow-missing? #f]) (base-tid func-id params ... allow-missing?))
            ))]
       ))
 
   (define (m-type-template stx)
-
     (syntax-parse stx
       #:datum-literals (type-parameters type-id type-wild)
       [(_ (type-parameters (type-id tid) params ...) body:type-body ... (type-wild wildcard) ...)
        (syntax/loc stx
          (begin
-           (define (tid func-id params ...)
+           (define (tid func-id params ... [allow-missing? #f])
              (log-marv-debug "type-template ~a" 'tid)
              (define (body.func-id body.param-id ...) body.confex) ...
              (case func-id
                ['type 'tid]
                ['body.func-id body.func-id] ...
                [else
-                (log-marv-debug "looking in wildcards")
+                (define (fin)
+                  (if allow-missing? #f
+                      (raise (format "exception in type ~a, method ~a not found" 'tid func-id))))
+                (log-marv-debug "looking in wildcards:")
+                (log-marv-debug "  ~a" wildcard) ...
                 ; TODO41 - not quite, need to handle exceptions from missing function handlers
-                (or (wildcard func-id) ...
-                    (raise (format "exception in type ~a, method ~a not found" 'tid func-id)))]
-               ))
-           )
-         )]
+                (or (wildcard func-id #t) ... (fin))])
+             )))]
       ))
 
   (define (m-generic-placeholder stx)stx)

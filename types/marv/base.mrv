@@ -1,6 +1,7 @@
 #lang marv
 
 type lifecycle = {
+    origin(cfg) = cfg
     identity(cfg) = cfg
     create(cfg) = cfg
     post-create(o, cfg) = cfg

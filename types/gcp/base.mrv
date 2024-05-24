@@ -2,12 +2,11 @@
 import types/marv/base
 
 type default-resource = {
-    project() = env("MARV_GCP_PROJECT")
     identity(cfg) = cfg <- { 
         labels = {} 
         project = env("MARV_GCP_PROJECT") 
         region = env("MARV_GCP_REGION") 
     }
-    * = lifecycle.*
+    project() = env("MARV_GCP_PROJECT")
 }
 export default-resource

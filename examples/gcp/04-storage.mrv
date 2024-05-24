@@ -1,28 +1,21 @@
 #lang marv
 
 import types/gcp/storage as gcp
-import types/gcp/base
 
 import types/marv/base
 import types/marv/enhancers
 
-type label-project = {
-    identity(cfg) = cfg <- { labels = cfg.labels <- { project = cfg.project, cost-ctr = "abc"  }}
-
-#   identity(cfg) = cfg <- { labels = cfg.labels | {}  <- { project = cfg.project }}
-#   identity(cfg) = cfg <- { labels = get(cfg,labels,{}) <- { project = cfg.project }}
-#   identity(cfg) = set(cfg, labels, get(cfg,labels,{}) <- { project = cfg.project })
-#   identity(cfg) = merge(cfg, labels, { project=cfg.project })
-
+type label-resource = {
+    identity(cfg) = cfg <- { labels = cfg.labels <- { project = cfg.project, cost-ctr = "aabc"  }}
     * = lifecycle.*
 }
 
-type bucket = E2<gcp:bucket, default-resource, label-project>
+type bucket = E1<gcp:bucket, label-resource>
 
 module main {
 
     my-bucket = bucket {
-        name = strf("~a-mybucket" default-resource.project())
+        name = strf("~a-mybucket" bucket.project())
         # storageClass = "NEARLINE"
     }
     

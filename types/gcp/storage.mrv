@@ -4,17 +4,21 @@
 # relevant to the API being imported, and then remove this warning.
 
 import types/gcp/_auto/storage as _auto
+import types/gcp/base
 
 # Modify this example per API
 
 type API<T> = {
- post-create(original, state) = state <- { project=original.project  region=original.region }
- post-read(o, cfg) = post-create(o, cfg)
- post-update(original, cfg)=post-create(original, cfg)
- delete(state) = T.delete(state) <- { config={name=state.name} }
- identity(cfg) = cfg
- * = T.*
+  origin(c) = T.origin(c)
+  identity(c) = default-resource.identity(c)
+  post-create(original, state) = state <- { project=original.project,  region=original.region }
+  post-read(original, state) = post-create(original, state)
+  post-update(original, state)=post-create(original, state)
+  delete(state) = T.delete(state << [name])
+  * = default-resource.*
+  * = T.*
 }
+
 type notification=API<_auto:notifications>
 export notification
 
