@@ -1,5 +1,6 @@
 #lang marv
 
+import types/gcp/base
 import types/gcp/storage as gcp
 
 import types/marv/base
@@ -10,7 +11,13 @@ type label-resource = {
     * = lifecycle.*
 }
 
-type bucket = E1<gcp:bucket, label-resource>
+type bucket = E2<gcp:bucket, default-resource, label-resource>
+
+defaults = {
+    project = env("MARV_GCP_PROJECT") 
+    region = env("MARV_GCP_REGION") 
+    labels = {}
+}
 
 module main {
 

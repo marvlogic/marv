@@ -4,6 +4,10 @@
 # one or more enhancement types. The base-type T is assumed to be the
 # lowest-level type, and will be used by a driver to manipulate the actual cloud
 # resources.
+# 
+# These enhancements are based around the lifecycle model, as such the type
+# parameters must be types that implement the necessary functions from the
+# lifecycle.
 
 type E1<T,E1> = {
     identity(cfg) = E1.identity(T.identity(cfg))
@@ -20,6 +24,7 @@ type E1<T,E1> = {
     delete(cfg) = T.delete(E1.delete(cfg))
 
     * = T.*
+    * = E1.*
 }
 export E1
 
@@ -39,5 +44,7 @@ type E2<T,E1,E2> = {
     delete(cfg) = T.delete(E2.delete(E1.delete(cfg)))
 
     * = T.*
+    * = E1.*
+    * = E2.*
 }
 export E2

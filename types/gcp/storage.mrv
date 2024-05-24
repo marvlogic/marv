@@ -10,12 +10,10 @@ import types/gcp/base
 
 type API<T> = {
   origin(c) = T.origin(c)
-  identity(c) = default-resource.identity(c)
   post-create(original, state) = state <- { project=original.project,  region=original.region }
   post-read(original, state) = post-create(original, state)
   post-update(original, state)=post-create(original, state)
   delete(state) = T.delete(state << [name])
-  * = default-resource.*
   * = T.*
 }
 
