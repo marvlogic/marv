@@ -1,33 +1,57 @@
 #lang marv
 
+# WARNING: This shim file is incomplete. You need to define an 'API' type
+# relevant to the API being imported, and then remove this warning.
+
 import types/gcp/_auto/iam as _auto
 
-type _state = {
-    state(cfg) = cfg.response <- { name=cfg.original.name }
+delete-self(state, oapi) = {
+  api= oapi.api
+  config = {name=state.name}
 }
 
-sa_name(cfg)=cfg <- { name=expandvars("projects/{project}/serviceAccounts/{email}" cfg)}
+type M1<M1, T> = {
+  create(cfg) = T.create(M1.create(cfg))
 
-#name(cfg)=expandvars("projects/{project}/serviceAccounts/{email}" cfg)
+  # TODO41 - state vs cfg?
+  # TODO41 - not calling T.post-create, assumed an API base type not lifecyle?
+  post-create(original, state) = M1.post-create(original, state)
 
-type _sa_base = {
-  create(cfg) = cfg <- { accountId=cfg.name name=expandvars("projects/{project}" cfg)}
-  read(cfg) = sa_name(cfg)
+  read(cfg) = T.read(M1.read(cfg))
+  post-read(o, cfg) = M1.post-read(o,  cfg)
+
+  update(cfg) = T.update(M1.update(cfg))
+  post-update(o, cfg) = M1.post-update(o, cfg)
+
+  delete(state) = delete-self(state, T.delete(state))
+  * = M1.*
+  * = T.*
 }
 
-type _sa_after = {
-  delete(cfg)=cfg <- { config=cfg.config <- { name=expandvars("projects/{project}/serviceAccounts/{email}" cfg.config)} api=cfg.api } 
+type MserviceAccount = {
+  identity(cfg) = cfg << [ name, project, description, displayName ]
+  create(cfg) = cfg <- { 
+    name=strf("projects/~a" cfg.project), 
+    accountId=cfg.name, 
+    serviceAccount={ displayName=cfg.displayName, description=cfg.description }
+  }
+  post-create(o, state) = state <- { name=o.name, project=o.project }
+
+  read(state) = { name=strf("projects/~a/serviceAccounts/~a" state.project state.email)}
+  post-read(o, state)  = post-create(o, state)
 }
 
-type serviceAccount =  _sa_base | _auto:serviceAccounts | _state | _sa_after
+type serviceAccount=M1<MserviceAccount, _auto:serviceAccounts>
 export serviceAccount
 
+type MserviceAccountKey = {
+  identity(cfg) = cfg << [ project, serviceAccountEmail ]
+  create(cfg) = { name=strf("projects/~a/serviceAccounts/~a" cfg.project, cfg.serviceAccountEmail) }
+  post-create(o, state) = state <- { project=o.project }
 
-type _sa_key_base = {
-  # create(cfg) = sa_name(cfg)
-  create(cfg) = cfg <- { name=expandvars("projects/{project}/serviceAccounts/{serviceAccount}" cfg)}
-  state(cfg) = cfg.response
+  read(state) = { name=strf("projects/~a/serviceAccounts/~a" state.project state.email)}
+  post-read(o, state)  = post-create(o, state)
 }
 
-type serviceAccountKey =  _sa_key_base | _auto:keys
+type serviceAccountKey=M1<MserviceAccountKey, _auto:keys>
 export serviceAccountKey

@@ -1,6 +1,13 @@
 #lang marv
 
-import types/gcp/iam
+import types/gcp/base 
+import types/gcp/iam as iam
+
+import types/marv/base
+import types/marv/enhancers
+
+type serviceAccount = E1<iam:serviceAccount, default-resource>
+type serviceAccountKey = E1<iam:serviceAccountKey, default-resource>
 
 module main {
 
@@ -9,15 +16,13 @@ module main {
         region = env("MARV_GCP_REGION")
     }
 
-    service-account = serviceAccount defaults <- {
+    service-account = serviceAccount {
         name = "service-account1"
-        serviceAccount = {
-            displayName = "service-account1"
-            description = "example service account"
-        } 
+        displayName = "service-account1"
+        description = "example service account"
     }
 
-#   service-account-key = serviceAccountKey defaults <- {
-#       serviceAccount = service-account.email
-#   }
+   service-account-key = serviceAccountKey {
+       serviceAccountEmail = service-account.email
+   }
 }

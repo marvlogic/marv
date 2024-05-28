@@ -91,8 +91,7 @@
     ; TODO41 - similar code to driver-repr
     (define res-cfg (unwrap-values (deref-config (state-get-state-set) (resource-config res))))
     (define driver-id (string->symbol(state-origin-driver (state-ref-origin k))))
-    ; (define driver-id (get-driver-id type-fn res))
-    (define cmd (type-fn 'read res-cfg))
+    (define cmd (type-fn 'read (state-ref-config k)))
     (define reply-cfg (send-to-driver driver-id cmd))
     (define state-cfg (type-fn 'post-read res-cfg reply-cfg))
     (state-set-ref k (state-ref-origin k) state-cfg))

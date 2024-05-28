@@ -9,8 +9,14 @@
 # parameters must be types that implement the necessary functions from the
 # lifecycle.
 
+# TODO41 - rename to LC* for lifecycle
+
 type E1<T,E1> = {
-    identity(cfg) = E1.identity(T.identity(cfg))
+
+    # T's identity function is assumed to filter out invalid fields or to
+    # perform validation; therefore it is called last.
+    
+    identity(cfg) = T.identity(E1.identity(cfg))
 
     create(ident) = T.create(ident)
     post-create(ident, cfg) = E1.post-create(ident, T.post-create(ident, cfg))
@@ -29,7 +35,7 @@ type E1<T,E1> = {
 export E1
 
 type E2<T,E1,E2> = {
-    identity(cfg) = E2.identity(E1.identity(T.identity(cfg)))
+    identity(cfg) = T.identity(E2.identity(E1.identity(cfg)))
     # tbc...
 
     create(ident) = T.create(ident)
