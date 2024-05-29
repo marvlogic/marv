@@ -1,9 +1,10 @@
 #lang marv
 
 # M-types are marshalling structures, which allow abstractions to be built on
-# top of the base type T. Each M* in the marshalling chain is responsible for
-# translation of it's inputs into output necessary for the following part of the
-# marshalling chain.
+# top of the base type T. Think of it as a transformation pipeline; each M* in
+# the marshalling chain is responsible for translation of it's inputs into
+# output necessary for consumption by the following part of the marshalling
+# chain.
 
 type M1<M1, T> = {
   create(cfg) = T.create(M1.create(cfg))

@@ -45,7 +45,7 @@ list-attr: /"[" ( attribute-name [ /"," ] )* /"]"
 built-in: env-read | strf | base64encode | base64decode | urivars | uritemplate
 env-read: /"env" /"(" STRING /")"
 
-strf: /"strf" /"(" STRING ( expression [ /"," ] ) + /")"
+strf: /"strf" /"(" STRING [ /"," ]( expression [ /"," ] ) + /")"
 urivars: /"strvars" /"(" expression /")"
 
 uritemplate: /"expandvars" /"(" expression config-expr /")"
