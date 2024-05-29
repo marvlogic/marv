@@ -4,29 +4,7 @@
 # relevant to the API being imported, and then remove this warning.
 
 import types/gcp/_auto/iam as _auto
-
-delete-self(state, oapi) = {
-  api= oapi.api
-  config = {name=state.name}
-}
-
-type M1<M1, T> = {
-  create(cfg) = T.create(M1.create(cfg))
-
-  # TODO41 - state vs cfg?
-  # TODO41 - not calling T.post-create, assumed an API base type not lifecyle?
-  post-create(original, state) = M1.post-create(original, state)
-
-  read(cfg) = T.read(M1.read(cfg))
-  post-read(o, cfg) = M1.post-read(o,  cfg)
-
-  update(cfg) = T.update(M1.update(cfg))
-  post-update(o, cfg) = M1.post-update(o, cfg)
-
-  delete(state) = delete-self(state, T.delete(state))
-  * = M1.*
-  * = T.*
-}
+import types/marv/marshalls
 
 type MserviceAccount = {
   identity(cfg) = cfg << [ name, project, description, displayName ]
@@ -39,6 +17,7 @@ type MserviceAccount = {
 
   read(state) = { name=strf("projects/~a/serviceAccounts/~a" state.project state.email)}
   post-read(o, state)  = post-create(o, state)
+  delete(state) = state << [ name ]
 }
 
 type serviceAccount=M1<MserviceAccount, _auto:serviceAccounts>
@@ -51,6 +30,7 @@ type MserviceAccountKey = {
 
   read(state) = { name=strf("projects/~a/serviceAccounts/~a" state.project state.email)}
   post-read(o, state)  = post-create(o, state)
+  delete(state) = state << [ name ]
 }
 
 type serviceAccountKey=M1<MserviceAccountKey, _auto:keys>

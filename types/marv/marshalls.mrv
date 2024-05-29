@@ -1,0 +1,25 @@
+#lang marv
+
+# M-types are marshalling structures, which allow abstractions to be built on
+# top of the base type T. Each M* in the marshalling chain is responsible for
+# translation of it's inputs into output necessary for the following part of the
+# marshalling chain.
+
+type M1<M1, T> = {
+  create(cfg) = T.create(M1.create(cfg))
+
+  # TODO41 - state vs cfg?
+  # TODO41 - not calling T.post-create, assumed an API base type not lifecyle?
+  post-create(original, state) = M1.post-create(original, state)
+
+  read(cfg) = T.read(M1.read(cfg))
+  post-read(o, cfg) = M1.post-read(o,  cfg)
+
+  update(cfg) = T.update(M1.update(cfg))
+  post-update(o, cfg) = M1.post-update(o, cfg)
+
+  delete(state) = T.delete(M1.delete(state))
+  * = M1.*
+  * = T.*
+}
+export M1
