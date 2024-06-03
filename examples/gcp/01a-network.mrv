@@ -1,7 +1,7 @@
 #lang marv
 
 import types/gcp/base
-import types/gcp/compute as net
+import types/gcp/compute as compute
 
 import types/marv/base
 import types/marv/enhancers
@@ -17,13 +17,15 @@ defaults = {
     labels = {}
 }
 
-type network = E2<net:network, default-resource, label-resource>
-type subnet = E2<net:subnetwork, default-resource, label-resource>
+type network = E2<compute:network, default-resource, label-resource>
+type subnet = E2<compute:subnetwork, default-resource, label-resource>
+type firewall = E2<compute:firewall, default-resource, label-resource>
 
 module main {
 
     name = "my-network"
     primary-cidr = "10.0.4.0/24"
+    proxy-cidr="10.0.2.0/24"
     vpc = network {
         name = imm: name
         description = strf("VPC for ~a" name)
@@ -31,14 +33,41 @@ module main {
         routingConfig = { routingMode = "REGIONAL" }
     } 
 
-    vpc-defaults = defaults <- {
-        network = imm: vpc.selfLink
-    }
-
-    primary-sn = subnet vpc-defaults <- {
+    primary-sn = subnet {
         name = strf("~a-primary" name)
         description = strf("Primary subnet for ~a" name)
+        network = imm: vpc.selfLink
         ipCidrRange =  imm: primary-cidr
     }
+
+    proxy-sn = subnet {
+        name = strf("~a-proxy" name)
+        description = strf("Proxy subnet for ~a" name)
+        ipCidrRange = imm: proxy-cidr
+        network = imm: vpc.selfLink
+        purpose = "REGIONAL_MANAGED_PROXY"
+        role = "ACTIVE"
+    }
+
+    google-source-range = [ "130.211.0.0/22" "35.191.0.0/16" ]
+    
+    fw-health-check = firewall {
+        name = strf("~a-fw-allow-health-check" name)
+        sourceRanges = google-source-range
+        targetTags =  [ "load-balanced-backend" ]
+        allowed = [ { IPProtocol = "tcp" } ]
+        direction = "INGRESS"
+    }
+
+    fw-proxies = firewall {
+        name = strf("~a-fw-allow-proxies" name)
+        sourceRanges = [ proxy-sn.ipCidrRange ]
+        targetTags =  [ "load-balanced-backend" ]
+        allowed = [ { IPProtocol = "tcp" ports = [ "80" ] }
+                    { IPProtocol = "tcp" ports = [ "443" ] }
+                    { IPProtocol = "tcp" ports = [ "8080" ] } ]
+        direction = "INGRESS"
+    }
+
 
 }

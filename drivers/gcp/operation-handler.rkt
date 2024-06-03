@@ -5,6 +5,7 @@
 
 (provide compute-api-operation-handler
          iam-api-operation-handler
+         sql-api-operation-handler
          (struct-out op-status)
          op-status-flag)
 
@@ -61,4 +62,25 @@
                 (lambda(http) (http 'GET (hash-ref resp 'targetLink) '())))))
 
      (op-status done?  errors poll-next completed)]
+    [else (op-success resp)]))
+
+(define (sql-api-operation-handler response-type resp)
+  (define is-operation? (equal? "sql.schemas.Operation" response-type))
+  (cond
+    [is-operation?
+     (define done? (equal? "DONE" (hash-ref resp 'status)))
+     (define delete? (equal? "delete" (hash-ref resp 'operationType #f)))
+     (define errors (hash-nref resp '(error items) #f))
+     (define poll-next
+       (and (not done?)
+            (lambda(http)
+              (sql-api-operation-handler
+               response-type
+               (http 'GET (hash-ref resp 'selfLink) '())))))
+     (define completed
+       (and done?
+            (not errors)
+            (if delete? (lambda(_)(hash))
+                (lambda(http) (http 'GET (hash-ref resp 'targetLink) '())))))
+     (op-status done? errors poll-next completed)]
     [else (op-success resp)]))

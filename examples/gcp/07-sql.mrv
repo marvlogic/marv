@@ -1,6 +1,6 @@
 #lang marv
 
-import types/gcp/sql
+import types/gcp/sql as sql
 
 module main(name = "example-07-sql") {
 
@@ -9,8 +9,8 @@ module main(name = "example-07-sql") {
         region = env("MARV_GCP_REGION")
     }
 
-    db-host = gcp:sql.instance defaults <- {
-        name = "example-instance"
+    db-host = sql:instance defaults <- {
+        name = "example-instance1"
         instanceType = "CLOUD_SQL_INSTANCE"
         databaseVersion = "POSTGRES_15"
         settings = {
@@ -19,12 +19,12 @@ module main(name = "example-07-sql") {
         }
     }
 
-    database =  gcp:sql.database defaults <- {
+    database =  sql:database defaults <- {
         instance = db-host.name
         name = "my-database"
     }
 
-    user = gcp:sql.user defaults <- {
+    user = sql:user defaults <- {
         instance = db-host.name
         name = "marv-user"
         password = "super-secret"

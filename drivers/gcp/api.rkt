@@ -21,7 +21,7 @@
      "iam" (generic:init-api  http-transport iam-api-operation-handler)
      "storage" (generic:init-api  http-transport compute-api-operation-handler)
      "secretmanager" (generic:init-api  http-transport iam-api-operation-handler)
-     "sql" (generic:init-api http-transport compute-api-operation-handler)
+     "sql" (generic:init-api http-transport sql-api-operation-handler)
      ))
 
   (define/contract (routing driver-cmd)

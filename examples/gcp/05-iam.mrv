@@ -11,11 +11,6 @@ type serviceAccountKey = E1<iam:serviceAccountKey, default-resource>
 
 module main {
 
-    defaults = {
-        project = env("MARV_GCP_PROJECT")
-        region = env("MARV_GCP_REGION")
-    }
-
     service-account = serviceAccount {
         name = "service-account1"
         displayName = "service-account1"
