@@ -23,7 +23,7 @@ module main {
 
     my-bucket = bucket {
         name = strf("~a-mybucket" bucket.project())
-        # storageClass = "NEARLINE"
+        storageClass = "NEARLINE"
     }
     
 }

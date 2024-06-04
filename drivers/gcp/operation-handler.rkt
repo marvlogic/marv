@@ -1,6 +1,7 @@
 #lang racket/base
 
 (require racket/contract)
+(require racket/string)
 (require marv/utils/hash)
 
 (provide compute-api-operation-handler
@@ -25,7 +26,7 @@
   (cond
     [is-operation?
      (define done? (equal? "DONE" (hash-ref resp 'status)))
-     (define delete? (equal? "delete" (hash-ref resp 'operationType #f)))
+     (define delete? (string-suffix? (hash-ref resp 'operationType #f) "delete"))
      (define errors (hash-nref resp '(error items) #f))
      (define poll-next
        (and (not done?)
@@ -47,7 +48,7 @@
   (cond
     [is-operation?
      (define done? (equal? "DONE" (hash-ref resp 'status)))
-     (define delete? (equal? "delete" (hash-ref resp 'operationType #f)))
+     (define delete? (string-suffix? (hash-ref resp 'operationType #f) "delete"))
      (define errors (hash-nref resp '(error items) #f))
      (define poll-next
        (and (not done?)
@@ -69,7 +70,7 @@
   (cond
     [is-operation?
      (define done? (equal? "DONE" (hash-ref resp 'status)))
-     (define delete? (equal? "delete" (hash-ref resp 'operationType #f)))
+     (define delete? (string-suffix? (hash-ref resp 'operationType #f) "delete"))
      (define errors (hash-nref resp '(error items) #f))
      (define poll-next
        (and (not done?)
