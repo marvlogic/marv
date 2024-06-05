@@ -188,7 +188,6 @@
                         (raise (format "exception in type ~a, method ~a not found" 'tid func-id))))
                   (log-marv-debug "looking in wildcards:")
                   (log-marv-debug "  ~a" wildcard) ...
-                  ; TODO41 - not quite, need to handle exceptions from missing function handlers
                   (or (wildcard func-id #t) ... (fin))])
                ))))]
       [(_ (type-id tid) (type-parameters (type-id base-tid) params ...))
@@ -211,13 +210,12 @@
                ['type 'tid]
                ['body.func-id body.func-id] ...
                [else
-                (define (fin)
+                (define (final)
                   (if allow-missing? #f
                       (raise (format "exception in type ~a, method ~a not found" 'tid func-id))))
                 (log-marv-debug "looking in wildcards:")
                 (log-marv-debug "  ~a" wildcard) ...
-                ; TODO41 - not quite, need to handle exceptions from missing function handlers
-                (or (wildcard func-id #t) ... (fin))])
+                (or (wildcard func-id #t) ... (final))])
              )))]
       ))
 

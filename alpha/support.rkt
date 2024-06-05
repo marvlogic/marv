@@ -131,7 +131,6 @@
   (log-marv-debug "handle-ref ~a.~a -> ~a" id path tgt)
   (define (full-ref) (make-full-ref (prefix-mod-id id) (core:list->id path)))
 
-  ;TODO41- sort out dep on $type-fn
   (define (resource? res) (and (hash? res) (hash-has-key? res '$type-fn)))
 
   (cond [(resource? tgt) (ref (full-ref))]
@@ -175,7 +174,7 @@
   (define func
     (cond
       [(and (procedure? root) (null? rst)) (log-marv-debug "  ->func")root]
-      ; TODO41 - check rst is singleton. Also, safe to assume it's a type?
+      ; TODO41 - (use match?) check rst is singleton. Also, safe to assume it's a type?
       [(and (procedure? root)) (log-marv-debug "  ->func in type")(root (car rst))]
       [(hash? root) (log-marv-debug "  ->func in hash")(hash-nref root rst)]
       [else (raise "unsupported function reference")]))

@@ -110,7 +110,7 @@
   (define (combine-hash s r)
     (hash-union s r #:combine merge-em))
 
-  ; TODO41 - not sure if this is desired, e.g. can't empty a set of labels
+  ; TODO - not sure if this is desired, e.g. can't empty a set of labels
   (define (merge-em s r)
     (cond [(and (hash? r) (hash? s)) (combine-hash s r)]
           [else r]))
@@ -133,5 +133,5 @@
   (define (deref-attr _ a)
     (update-val a (lambda (v) (if (ref? v) (get-ref v) v))))
 
-  ; TODO41 - refactor to resource-update-config-fn
+  ; TODO - refactor to resource-update-config-fn
   (hash-apply cfg deref-attr))

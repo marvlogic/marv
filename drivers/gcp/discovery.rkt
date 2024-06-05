@@ -21,7 +21,6 @@
          api-by-resource-path
          api-for-type-op
          api-http-method
-         api-resource-url
          api-resource-url-base
          api-parameters
          api-required-params
@@ -87,7 +86,6 @@
 
 ; TODO - better name for type-op stuff?
 (define/contract (api-for-type-op discovery type-op)
-  ; TODO41 - contract here is wrong
   (disc-doc? symbol? . -> . (or/c boolean? disc-api?))
 
   (define (consult-discovery-doc)
@@ -97,7 +95,7 @@
         [(list t op) (hash-nref hs (list t 'methods op) #f)]
         [(list t ts ...) (find-api (hash-ref hs t) ts)]))
 
-    ; TODO14 - exception handling
+    ; TODO41 - exception handling
     (define res-tree (disc-doc-root discovery))
     (define path (cdr (split-symbol type-op)))
     (define api (find-api res-tree path))
@@ -136,7 +134,7 @@
                        "&" #:before-first "?")]
       [else ""]))
 
-  ; TODO41 - should be doing this per-api as this is assuming the last thing in
+  ; TODO - should be doing this per-api as this is assuming the last thing in
   ; the URL inside {} is actually supposed to be {name}
   (define base-path (regexp-replace #rx"{[a-zA-Z0-9]*}$" (hash-ref (disc-api-type-api api) 'path) "{name}"))
   (define path (format "~a~a" base-path query-params-str))
@@ -146,58 +144,6 @@
             (hash-ref api-root 'rootUrl)
             (hash-ref api-root 'servicePath)
             path))
-  (log-marv-debug "url: ~v" url)
-  url)
-
-(define/contract (api-resource-url api config)
-  (disc-api? config/c . -> . string?)
-
-  ; NB this area is bound to give problems in the future, because assumptions
-  ; are made for all APIs that we can provide a missing required-parameter by
-  ; using the 'name' attribute from a resource config
-  ;
-  ; TODO41 - hence thinking that generating code for a complete API (not using
-  ; lookup) would be better in the long run?
-
-  (define reqd-params (api-required-params api))
-  (define config-params (hash-take config reqd-params))
-  (define missing-params (set-subtract reqd-params (hash-keys config-params) ))
-
-  (define alias-cfg
-    (case (set-count missing-params)
-      [(0) config-params]
-      [(1)
-       (define missing (set-first missing-params))
-       (define name (hash-ref config 'name))
-       (log-marv-warn "missing parameter: ~v, assuming ~v is ok" missing name)
-       (hash-set config-params missing name)]
-      [else (raise-exn "missing too many path parameters: ~v, need: ~v" missing-params reqd-params)]))
-
-  ; uri-template library needs an 'equal?' hash, using strings as keys
-  (define path-parameters
-    (hash-map/copy
-     (make-immutable-hash (hash->list alias-cfg))
-     (lambda(k v) (values (symbol->string k) v))))
-
-  ; for apis (secret-manager, storage) that have required query parameters, but
-  ; don't have the template variables for them in the 'path' setting:
-
-  (define query-params-str
-    (match (set-intersect reqd-params (api-query-parameters api))
-      [(list qps ..1) (string-join
-                       (for/list ([q qps]) (format "~a={~a}" q q))
-                       "&" #:before-first "?")]
-      [else ""]))
-
-  (define path (format "~a~a" (hash-ref (disc-api-type-api api) 'path) query-params-str))
-  (log-marv-debug "path: ~v, imm: ~v" path path-parameters)
-  (log-marv-debug "exp: ~v" (expand-template path path-parameters))
-  (define api-root (disc-api-root api))
-  (define url
-    (format "~a~a~a"
-            (hash-ref api-root 'rootUrl)
-            (hash-ref api-root 'servicePath)
-            (expand-template path path-parameters)))
   (log-marv-debug "url: ~v" url)
   url)
 

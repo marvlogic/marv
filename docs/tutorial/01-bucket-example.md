@@ -89,7 +89,8 @@ resource (from the `storage` module, imported earlier):
 > 
 >     name = type { config... }
 >   
-> `type` is the kind of resource supported by the cloud provider, such as `instance` or `secret` (NB this isn't *strictly* true, but it suffices for now!)
+> `type` is the kind of resource supported by the cloud provider, such as
+`instance` or `secret` (NB this isn't *strictly* true, but it suffices for now!)
 
 Finally, we have the body of our resource declaration:
 
@@ -117,7 +118,9 @@ release.
 
 # Next steps
 
-That completes our first steps with `marv` - in the next section we'll cover more of the language features. However, if you want to stop and delete all the resources for now you can run the purge command:
+That completes our first steps with `marv` - in the next section we'll cover
+more of the language features. However, if you want to stop and delete all the
+resources for now you can run the purge command:
 
     marv --purge --apply hello-world.mrv
 

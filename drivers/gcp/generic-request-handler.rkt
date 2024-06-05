@@ -26,23 +26,19 @@
     (define api (driver-spec-api cmd))
     (define config (hash-ref cmd 'config))
     (log-marv-debug "generic-request-handler: type-op=~a ~a" api config)
-    ;TODO41 - this cond is not right
     (cond
       ; TODO - hacked, if null operation then we don't do anything
       [(null? api) config]
       [(hash? api)
-       ;  (define is-delete? (eq? crud-delete crud-fn))
        (define response (do-api-request api config http op-handler-fn))
        (log-marv-debug "response: ~a" response)
-       ;  (define xresp (post response))
-       ;  (log-marv-debug "transformed: ~a" xresp)
        response]
       [else raise (format "type has no usable CRUD for ~a : ~a" 'bah api )]
       ))
   request-handler)
 
 (define/contract (do-api-request api resource http operation-handler)
-  ; TODO41-define API type/contracts
+  ; TODO-define API type/contracts
   (hash? hash? any/c procedure? . -> . hash?)
 
   (define (work-it op-resp [poll-delay 3])

@@ -32,6 +32,6 @@
 
 (define DRIVERS (make-parameter (std-drivers)))
 
-; TODO41 -docs
+; TODO -docs
 (define (display-docs type)
   (raise "todo"))

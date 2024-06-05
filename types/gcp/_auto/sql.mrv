@@ -6,7 +6,6 @@ API-ID="sql"
 # /resources/operations
 type operations = {
  identity(cfg) = cfg
- # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
  }
@@ -44,7 +43,6 @@ export operations
 # /resources/databases
 type databases = {
  identity(cfg) = cfg
- # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
  }
@@ -96,7 +94,6 @@ export databases
 # /resources/tiers
 type tiers = {
  identity(cfg) = cfg
- # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
  }
@@ -130,7 +127,6 @@ export tiers
 # /resources/instances
 type instances = {
  identity(cfg) = cfg
- # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
  }
@@ -182,7 +178,6 @@ export instances
 # /resources/backupRuns
 type backupRuns = {
  identity(cfg) = cfg
- # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
  }
@@ -229,7 +224,6 @@ export backupRuns
 # /resources/connect
 type connect = {
  identity(cfg) = cfg
- # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
  }
@@ -267,7 +261,6 @@ export connect
 # /resources/sslCerts
 type sslCerts = {
  identity(cfg) = cfg
- # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
  }
@@ -314,7 +307,6 @@ export sslCerts
 # /resources/users
 type users = {
  identity(cfg) = cfg
- # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
  }
@@ -361,7 +353,6 @@ export users
 # /resources/flags
 type flags = {
  identity(cfg) = cfg
- # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
  }
@@ -391,3 +382,37 @@ type flags = {
  }
 }
 export flags
+
+# /resources/projects/resources/instances
+type instances = {
+ identity(cfg) = cfg
+ origin(cfg)= cfg <- {
+  driver="gcp"
+ }
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+}
+export instances
+

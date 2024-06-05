@@ -86,7 +86,6 @@
     (displayln (format "Refreshing ~a" k))
 
     (define res (resource-ref rsset k))
-    ; (define type-fn (resource-type-fn res))
     (define (type-fn verb . args) (apply ((resource-type-fn res) verb) args))
     ; TODO41 - similar code to driver-repr
     (define res-cfg (unwrap-values (deref-config (state-get-state-set) (resource-config res))))

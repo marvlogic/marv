@@ -10,4 +10,5 @@ type default-resource = {
     project() = env("MARV_GCP_PROJECT")
     * = lifecycle.*
 }
+
 export default-resource

@@ -20,15 +20,6 @@
 (define api/c hash? )
 
 (define (driver-spec-api ds) (hash-ref ds 'api))
-(define (driver-spec-pre-fn ds) (hash-ref ds 'pre (lambda()(lambda(x)x))))
-(define (driver-spec-post-fn ds) (hash-ref ds 'post (lambda()(lambda(x y)y))))
-
-; TODO41 - deprecated
-; (define (api-request-type api r)
-;   (define rt (hash-ref api 'request-type))
-;   (cond
-;     [(procedure? rt) (rt r)]
-;     [else r]))
 
 (define (api-request-body api) (hash-ref api 'request-body (hash)))
 (define (api-http-method api) (string->symbol(hash-ref api 'method)))

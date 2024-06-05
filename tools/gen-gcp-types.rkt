@@ -148,7 +148,6 @@ EOF
 # ~a
 type ~a = {
  identity(cfg) = cfg
- # TODO41 - destructors
  origin(cfg)= cfg <- {
   driver="gcp"
  }
