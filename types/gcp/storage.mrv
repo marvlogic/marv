@@ -14,8 +14,9 @@ delete-self(state, oapi) = {
 }
 
 type API<T> = {
+  identity(cfg) = cfg <- { name=imm: cfg.name }
   post-create(original, state) = state <- { project=original.project,  region=original.region }
-  post-read(original, state) = post-create(original, state)
+  post-read(local, remote) = post-create(local, remote)
   post-update(original, state)=post-create(original, state)
   delete(state) = delete-self(state, T.delete(state))
   * = T.*
