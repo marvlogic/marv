@@ -6,26 +6,16 @@ import types/gcp/compute as compute
 import types/marv/base
 import types/marv/enhancers
 
-type label-resource = {
-    identity(cfg) = cfg <- { labels = cfg.labels <- { project = cfg.project, cost-ctr = "aabc"  }}
-    * = lifecycle.*
-}
-
-defaults = {
-    project = env("MARV_GCP_PROJECT") 
-    region = env("MARV_GCP_REGION") 
-    labels = {}
-}
-
-type network = E2<compute:network, default-resource, label-resource>
-type subnet = E2<compute:subnetwork, default-resource, label-resource>
-type firewall = E2<compute:firewall, default-resource, label-resource>
+type network = E1<compute:network, default-resource>
+type subnet = E1<compute:subnetwork, default-resource>
+type firewall = E1<compute:firewall, default-resource>
 
 module main {
 
     name = "my-network"
-    primary-cidr = "10.0.4.0/24"
+    primary-cidr = "10.0.1.0/24"
     proxy-cidr="10.0.2.0/24"
+
     vpc = network {
         name = imm: name
         description = strf("VPC for ~a" name)

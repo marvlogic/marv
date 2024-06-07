@@ -382,37 +382,3 @@ type flags = {
  }
 }
 export flags
-
-# /resources/projects/resources/instances
-type instances = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
-  driver="gcp"
- }
- create(cfg)={
-  config=cfg
-  api={
-   
-  }
- }
- read(cfg)={
-  config=cfg
-  api={
-   
-  }
- }
- update(cfg)={
-  config=cfg
-  api={
-   
-  }
- }
- delete(cfg)={
-  config=cfg
-  api={
-   
-  }
- }
-}
-export instances
-
