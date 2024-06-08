@@ -13,7 +13,6 @@
 
 (define driver-cmd/c hash?)
 
-; TODO41 - vs config/c ?
 (define driver-resp/c hash?)
 
 ; TODO41 - right place?

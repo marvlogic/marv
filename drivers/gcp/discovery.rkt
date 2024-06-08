@@ -19,7 +19,6 @@
 (provide load-discovery
          get-discovery-resources
          api-by-resource-path
-         api-for-type-op
          api-http-method
          api-resource-url-base
          api-parameters
@@ -83,37 +82,6 @@
   (define foundit (descend (disc-doc-root disc)
                            (map string->symbol (append (string-split res-path "/") (list "methods" method)))))
   (if foundit (disc-api (disc-doc-root disc) foundit) #f))
-
-; TODO - better name for type-op stuff?
-(define/contract (api-for-type-op discovery type-op)
-  (disc-doc? symbol? . -> . (or/c boolean? disc-api?))
-
-  (define (consult-discovery-doc)
-    (define (find-api res-tree type-path)
-      (define hs (hash-ref res-tree 'resources))
-      (match type-path
-        [(list t op) (hash-nref hs (list t 'methods op) #f)]
-        [(list t ts ...) (find-api (hash-ref hs t) ts)]))
-
-    ; TODO41 - exception handling
-    (define res-tree (disc-doc-root discovery))
-    (define path (cdr (split-symbol type-op)))
-    (define api (find-api res-tree path))
-
-    ; This check covers the assumption that the path through the discovery
-    ; document should match up with the id of the API. e.g the IAM discovery
-    ; document path "resources.projects.resources.serviceAccounts.methods.get"
-    ; should have an API with id = "iam.projects.serviceAccount.get"
-
-    ; (define api-id (string->symbol (hash-ref api 'id)))
-    ; (when (not (eq? api-id type-op))
-    ;   (raise-exn "API for ~v did not match in API's id field (~v)" type-op api-id))
-    api)
-
-  (define patches (disc-doc-type-op-patches discovery))
-  (define api (hash-ref patches type-op consult-discovery-doc))
-  (cond [api (disc-api (disc-doc-root discovery) api)]
-        [else #f]))
 
 (define/contract (api-http-method api)
   (disc-api? . -> . symbol?)
