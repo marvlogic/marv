@@ -4,11 +4,12 @@
 import types/gcp/_auto/compute-schema
 API-ID="compute"
 # /resources/regionTargetTcpProxies
-type regionTargetTcpProxies = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_regionTargetTcpProxies = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/regionTargetTcpProxies"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -47,14 +48,15 @@ type regionTargetTcpProxies = {
   }
  }
 }
-export regionTargetTcpProxies
+export resources_regionTargetTcpProxies
 
 # /resources/globalOperations
-type globalOperations = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_globalOperations = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/globalOperations"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -88,14 +90,15 @@ type globalOperations = {
   }
  }
 }
-export globalOperations
+export resources_globalOperations
 
 # /resources/vpnTunnels
-type vpnTunnels = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_vpnTunnels = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/vpnTunnels"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -134,14 +137,15 @@ type vpnTunnels = {
   }
  }
 }
-export vpnTunnels
+export resources_vpnTunnels
 
 # /resources/networks
-type networks = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_networks = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/networks"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -185,14 +189,15 @@ type networks = {
   }
  }
 }
-export networks
+export resources_networks
 
 # /resources/instanceTemplates
-type instanceTemplates = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_instanceTemplates = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/instanceTemplates"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -231,14 +236,15 @@ type instanceTemplates = {
   }
  }
 }
-export instanceTemplates
+export resources_instanceTemplates
 
 # /resources/regionInstantSnapshots
-type regionInstantSnapshots = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_regionInstantSnapshots = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/regionInstantSnapshots"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -277,14 +283,15 @@ type regionInstantSnapshots = {
   }
  }
 }
-export regionInstantSnapshots
+export resources_regionInstantSnapshots
 
 # /resources/nodeTypes
-type nodeTypes = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_nodeTypes = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/nodeTypes"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -314,14 +321,15 @@ type nodeTypes = {
   }
  }
 }
-export nodeTypes
+export resources_nodeTypes
 
 # /resources/nodeTemplates
-type nodeTemplates = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_nodeTemplates = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/nodeTemplates"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -360,14 +368,15 @@ type nodeTemplates = {
   }
  }
 }
-export nodeTemplates
+export resources_nodeTemplates
 
 # /resources/securityPolicies
-type securityPolicies = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_securityPolicies = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/securityPolicies"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -411,14 +420,15 @@ type securityPolicies = {
   }
  }
 }
-export securityPolicies
+export resources_securityPolicies
 
 # /resources/regionInstances
-type regionInstances = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_regionInstances = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/regionInstances"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -444,14 +454,15 @@ type regionInstances = {
   }
  }
 }
-export regionInstances
+export resources_regionInstances
 
 # /resources/diskTypes
-type diskTypes = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_diskTypes = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/diskTypes"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -481,14 +492,15 @@ type diskTypes = {
   }
  }
 }
-export diskTypes
+export resources_diskTypes
 
 # /resources/instanceGroupManagers
-type instanceGroupManagers = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_instanceGroupManagers = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/instanceGroupManagers"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -532,14 +544,15 @@ type instanceGroupManagers = {
   }
  }
 }
-export instanceGroupManagers
+export resources_instanceGroupManagers
 
 # /resources/instanceSettings
-type instanceSettings = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_instanceSettings = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/instanceSettings"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -574,14 +587,15 @@ type instanceSettings = {
   }
  }
 }
-export instanceSettings
+export resources_instanceSettings
 
 # /resources/interconnects
-type interconnects = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_interconnects = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/interconnects"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -625,14 +639,15 @@ type interconnects = {
   }
  }
 }
-export interconnects
+export resources_interconnects
 
 # /resources/machineImages
-type machineImages = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_machineImages = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/machineImages"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -671,14 +686,15 @@ type machineImages = {
   }
  }
 }
-export machineImages
+export resources_machineImages
 
 # /resources/addresses
-type addresses = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_addresses = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/addresses"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -717,14 +733,15 @@ type addresses = {
   }
  }
 }
-export addresses
+export resources_addresses
 
 # /resources/reservations
-type reservations = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_reservations = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/reservations"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -763,14 +780,15 @@ type reservations = {
   }
  }
 }
-export reservations
+export resources_reservations
 
 # /resources/publicDelegatedPrefixes
-type publicDelegatedPrefixes = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_publicDelegatedPrefixes = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/publicDelegatedPrefixes"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -814,14 +832,15 @@ type publicDelegatedPrefixes = {
   }
  }
 }
-export publicDelegatedPrefixes
+export resources_publicDelegatedPrefixes
 
 # /resources/licenses
-type licenses = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_licenses = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/licenses"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -860,14 +879,15 @@ type licenses = {
   }
  }
 }
-export licenses
+export resources_licenses
 
 # /resources/networkAttachments
-type networkAttachments = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_networkAttachments = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/networkAttachments"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -911,14 +931,15 @@ type networkAttachments = {
   }
  }
 }
-export networkAttachments
+export resources_networkAttachments
 
 # /resources/routes
-type routes = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_routes = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/routes"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -957,14 +978,15 @@ type routes = {
   }
  }
 }
-export routes
+export resources_routes
 
 # /resources/regionBackendServices
-type regionBackendServices = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_regionBackendServices = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/regionBackendServices"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -1008,14 +1030,15 @@ type regionBackendServices = {
   }
  }
 }
-export regionBackendServices
+export resources_regionBackendServices
 
 # /resources/targetHttpsProxies
-type targetHttpsProxies = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_targetHttpsProxies = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/targetHttpsProxies"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -1059,14 +1082,15 @@ type targetHttpsProxies = {
   }
  }
 }
-export targetHttpsProxies
+export resources_targetHttpsProxies
 
 # /resources/targetPools
-type targetPools = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_targetPools = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/targetPools"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -1105,14 +1129,15 @@ type targetPools = {
   }
  }
 }
-export targetPools
+export resources_targetPools
 
 # /resources/targetHttpProxies
-type targetHttpProxies = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_targetHttpProxies = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/targetHttpProxies"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -1156,14 +1181,15 @@ type targetHttpProxies = {
   }
  }
 }
-export targetHttpProxies
+export resources_targetHttpProxies
 
 # /resources/projects
-type projects = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_projects = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/projects"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -1193,14 +1219,15 @@ type projects = {
   }
  }
 }
-export projects
+export resources_projects
 
 # /resources/firewallPolicies
-type firewallPolicies = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_firewallPolicies = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/firewallPolicies"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -1244,14 +1271,15 @@ type firewallPolicies = {
   }
  }
 }
-export firewallPolicies
+export resources_firewallPolicies
 
 # /resources/regionSslPolicies
-type regionSslPolicies = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_regionSslPolicies = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/regionSslPolicies"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -1295,14 +1323,15 @@ type regionSslPolicies = {
   }
  }
 }
-export regionSslPolicies
+export resources_regionSslPolicies
 
 # /resources/regionInstanceGroups
-type regionInstanceGroups = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_regionInstanceGroups = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/regionInstanceGroups"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -1332,14 +1361,15 @@ type regionInstanceGroups = {
   }
  }
 }
-export regionInstanceGroups
+export resources_regionInstanceGroups
 
 # /resources/regionAutoscalers
-type regionAutoscalers = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_regionAutoscalers = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/regionAutoscalers"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -1383,14 +1413,15 @@ type regionAutoscalers = {
   }
  }
 }
-export regionAutoscalers
+export resources_regionAutoscalers
 
 # /resources/networkEndpointGroups
-type networkEndpointGroups = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_networkEndpointGroups = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/networkEndpointGroups"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -1429,14 +1460,15 @@ type networkEndpointGroups = {
   }
  }
 }
-export networkEndpointGroups
+export resources_networkEndpointGroups
 
 # /resources/regionOperations
-type regionOperations = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_regionOperations = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/regionOperations"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -1470,14 +1502,15 @@ type regionOperations = {
   }
  }
 }
-export regionOperations
+export resources_regionOperations
 
 # /resources/sslPolicies
-type sslPolicies = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_sslPolicies = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/sslPolicies"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -1521,14 +1554,15 @@ type sslPolicies = {
   }
  }
 }
-export sslPolicies
+export resources_sslPolicies
 
 # /resources/targetGrpcProxies
-type targetGrpcProxies = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_targetGrpcProxies = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/targetGrpcProxies"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -1572,14 +1606,15 @@ type targetGrpcProxies = {
   }
  }
 }
-export targetGrpcProxies
+export resources_targetGrpcProxies
 
 # /resources/images
-type images = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_images = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/images"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -1623,14 +1658,15 @@ type images = {
   }
  }
 }
-export images
+export resources_images
 
 # /resources/instanceGroups
-type instanceGroups = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_instanceGroups = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/instanceGroups"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -1669,14 +1705,15 @@ type instanceGroups = {
   }
  }
 }
-export instanceGroups
+export resources_instanceGroups
 
 # /resources/regionTargetHttpsProxies
-type regionTargetHttpsProxies = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_regionTargetHttpsProxies = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/regionTargetHttpsProxies"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -1720,14 +1757,15 @@ type regionTargetHttpsProxies = {
   }
  }
 }
-export regionTargetHttpsProxies
+export resources_regionTargetHttpsProxies
 
 # /resources/httpHealthChecks
-type httpHealthChecks = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_httpHealthChecks = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/httpHealthChecks"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -1771,14 +1809,15 @@ type httpHealthChecks = {
   }
  }
 }
-export httpHealthChecks
+export resources_httpHealthChecks
 
 # /resources/instances
-type instances = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_instances = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/instances"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -1817,14 +1856,15 @@ type instances = {
   }
  }
 }
-export instances
+export resources_instances
 
 # /resources/autoscalers
-type autoscalers = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_autoscalers = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/autoscalers"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -1868,14 +1908,15 @@ type autoscalers = {
   }
  }
 }
-export autoscalers
+export resources_autoscalers
 
 # /resources/futureReservations
-type futureReservations = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_futureReservations = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/futureReservations"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -1914,14 +1955,15 @@ type futureReservations = {
   }
  }
 }
-export futureReservations
+export resources_futureReservations
 
 # /resources/sslCertificates
-type sslCertificates = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_sslCertificates = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/sslCertificates"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -1960,14 +2002,15 @@ type sslCertificates = {
   }
  }
 }
-export sslCertificates
+export resources_sslCertificates
 
 # /resources/instantSnapshots
-type instantSnapshots = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_instantSnapshots = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/instantSnapshots"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -2006,14 +2049,15 @@ type instantSnapshots = {
   }
  }
 }
-export instantSnapshots
+export resources_instantSnapshots
 
 # /resources/publicAdvertisedPrefixes
-type publicAdvertisedPrefixes = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_publicAdvertisedPrefixes = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/publicAdvertisedPrefixes"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -2057,14 +2101,15 @@ type publicAdvertisedPrefixes = {
   }
  }
 }
-export publicAdvertisedPrefixes
+export resources_publicAdvertisedPrefixes
 
 # /resources/globalAddresses
-type globalAddresses = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_globalAddresses = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/globalAddresses"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -2103,14 +2148,15 @@ type globalAddresses = {
   }
  }
 }
-export globalAddresses
+export resources_globalAddresses
 
 # /resources/regionZones
-type regionZones = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_regionZones = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/regionZones"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -2136,14 +2182,15 @@ type regionZones = {
   }
  }
 }
-export regionZones
+export resources_regionZones
 
 # /resources/routers
-type routers = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_routers = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/routers"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -2187,14 +2234,15 @@ type routers = {
   }
  }
 }
-export routers
+export resources_routers
 
 # /resources/disks
-type disks = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_disks = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/disks"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -2233,14 +2281,15 @@ type disks = {
   }
  }
 }
-export disks
+export resources_disks
 
 # /resources/regionNetworkEndpointGroups
-type regionNetworkEndpointGroups = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_regionNetworkEndpointGroups = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/regionNetworkEndpointGroups"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -2279,14 +2328,15 @@ type regionNetworkEndpointGroups = {
   }
  }
 }
-export regionNetworkEndpointGroups
+export resources_regionNetworkEndpointGroups
 
 # /resources/zoneOperations
-type zoneOperations = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_zoneOperations = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/zoneOperations"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -2320,14 +2370,15 @@ type zoneOperations = {
   }
  }
 }
-export zoneOperations
+export resources_zoneOperations
 
 # /resources/regionTargetHttpProxies
-type regionTargetHttpProxies = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_regionTargetHttpProxies = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/regionTargetHttpProxies"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -2366,14 +2417,15 @@ type regionTargetHttpProxies = {
   }
  }
 }
-export regionTargetHttpProxies
+export resources_regionTargetHttpProxies
 
 # /resources/regionNotificationEndpoints
-type regionNotificationEndpoints = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_regionNotificationEndpoints = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/regionNotificationEndpoints"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -2412,14 +2464,15 @@ type regionNotificationEndpoints = {
   }
  }
 }
-export regionNotificationEndpoints
+export resources_regionNotificationEndpoints
 
 # /resources/packetMirrorings
-type packetMirrorings = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_packetMirrorings = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/packetMirrorings"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -2463,14 +2516,15 @@ type packetMirrorings = {
   }
  }
 }
-export packetMirrorings
+export resources_packetMirrorings
 
 # /resources/regionHealthChecks
-type regionHealthChecks = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_regionHealthChecks = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/regionHealthChecks"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -2514,14 +2568,15 @@ type regionHealthChecks = {
   }
  }
 }
-export regionHealthChecks
+export resources_regionHealthChecks
 
 # /resources/regionCommitments
-type regionCommitments = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_regionCommitments = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/regionCommitments"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -2556,14 +2611,15 @@ type regionCommitments = {
   }
  }
 }
-export regionCommitments
+export resources_regionCommitments
 
 # /resources/nodeGroups
-type nodeGroups = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_nodeGroups = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/nodeGroups"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -2607,14 +2663,15 @@ type nodeGroups = {
   }
  }
 }
-export nodeGroups
+export resources_nodeGroups
 
 # /resources/acceleratorTypes
-type acceleratorTypes = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_acceleratorTypes = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/acceleratorTypes"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -2644,14 +2701,15 @@ type acceleratorTypes = {
   }
  }
 }
-export acceleratorTypes
+export resources_acceleratorTypes
 
 # /resources/globalForwardingRules
-type globalForwardingRules = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_globalForwardingRules = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/globalForwardingRules"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -2695,14 +2753,15 @@ type globalForwardingRules = {
   }
  }
 }
-export globalForwardingRules
+export resources_globalForwardingRules
 
 # /resources/snapshotSettings
-type snapshotSettings = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_snapshotSettings = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/snapshotSettings"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -2737,14 +2796,15 @@ type snapshotSettings = {
   }
  }
 }
-export snapshotSettings
+export resources_snapshotSettings
 
 # /resources/resourcePolicies
-type resourcePolicies = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_resourcePolicies = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/resourcePolicies"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -2788,14 +2848,15 @@ type resourcePolicies = {
   }
  }
 }
-export resourcePolicies
+export resources_resourcePolicies
 
 # /resources/globalPublicDelegatedPrefixes
-type globalPublicDelegatedPrefixes = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_globalPublicDelegatedPrefixes = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/globalPublicDelegatedPrefixes"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -2839,14 +2900,15 @@ type globalPublicDelegatedPrefixes = {
   }
  }
 }
-export globalPublicDelegatedPrefixes
+export resources_globalPublicDelegatedPrefixes
 
 # /resources/snapshots
-type snapshots = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_snapshots = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/snapshots"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -2885,14 +2947,15 @@ type snapshots = {
   }
  }
 }
-export snapshots
+export resources_snapshots
 
 # /resources/globalOrganizationOperations
-type globalOrganizationOperations = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_globalOrganizationOperations = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/globalOrganizationOperations"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -2926,14 +2989,15 @@ type globalOrganizationOperations = {
   }
  }
 }
-export globalOrganizationOperations
+export resources_globalOrganizationOperations
 
 # /resources/regionInstanceGroupManagers
-type regionInstanceGroupManagers = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_regionInstanceGroupManagers = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/regionInstanceGroupManagers"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -2977,14 +3041,15 @@ type regionInstanceGroupManagers = {
   }
  }
 }
-export regionInstanceGroupManagers
+export resources_regionInstanceGroupManagers
 
 # /resources/httpsHealthChecks
-type httpsHealthChecks = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_httpsHealthChecks = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/httpsHealthChecks"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -3028,14 +3093,15 @@ type httpsHealthChecks = {
   }
  }
 }
-export httpsHealthChecks
+export resources_httpsHealthChecks
 
 # /resources/regionSslCertificates
-type regionSslCertificates = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_regionSslCertificates = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/regionSslCertificates"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -3074,14 +3140,15 @@ type regionSslCertificates = {
   }
  }
 }
-export regionSslCertificates
+export resources_regionSslCertificates
 
 # /resources/backendServices
-type backendServices = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_backendServices = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/backendServices"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -3125,14 +3192,15 @@ type backendServices = {
   }
  }
 }
-export backendServices
+export resources_backendServices
 
 # /resources/targetVpnGateways
-type targetVpnGateways = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_targetVpnGateways = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/targetVpnGateways"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -3171,14 +3239,15 @@ type targetVpnGateways = {
   }
  }
 }
-export targetVpnGateways
+export resources_targetVpnGateways
 
 # /resources/interconnectRemoteLocations
-type interconnectRemoteLocations = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_interconnectRemoteLocations = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/interconnectRemoteLocations"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -3208,14 +3277,15 @@ type interconnectRemoteLocations = {
   }
  }
 }
-export interconnectRemoteLocations
+export resources_interconnectRemoteLocations
 
 # /resources/firewalls
-type firewalls = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_firewalls = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/firewalls"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -3259,14 +3329,15 @@ type firewalls = {
   }
  }
 }
-export firewalls
+export resources_firewalls
 
 # /resources/globalNetworkEndpointGroups
-type globalNetworkEndpointGroups = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_globalNetworkEndpointGroups = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/globalNetworkEndpointGroups"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -3305,14 +3376,15 @@ type globalNetworkEndpointGroups = {
   }
  }
 }
-export globalNetworkEndpointGroups
+export resources_globalNetworkEndpointGroups
 
 # /resources/regionSecurityPolicies
-type regionSecurityPolicies = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_regionSecurityPolicies = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/regionSecurityPolicies"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -3356,14 +3428,15 @@ type regionSecurityPolicies = {
   }
  }
 }
-export regionSecurityPolicies
+export resources_regionSecurityPolicies
 
 # /resources/interconnectAttachments
-type interconnectAttachments = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_interconnectAttachments = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/interconnectAttachments"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -3407,14 +3480,15 @@ type interconnectAttachments = {
   }
  }
 }
-export interconnectAttachments
+export resources_interconnectAttachments
 
 # /resources/regions
-type regions = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_regions = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/regions"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -3444,14 +3518,15 @@ type regions = {
   }
  }
 }
-export regions
+export resources_regions
 
 # /resources/subnetworks
-type subnetworks = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_subnetworks = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/subnetworks"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -3495,14 +3570,15 @@ type subnetworks = {
   }
  }
 }
-export subnetworks
+export resources_subnetworks
 
 # /resources/regionHealthCheckServices
-type regionHealthCheckServices = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_regionHealthCheckServices = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/regionHealthCheckServices"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -3546,14 +3622,15 @@ type regionHealthCheckServices = {
   }
  }
 }
-export regionHealthCheckServices
+export resources_regionHealthCheckServices
 
 # /resources/zones
-type zones = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_zones = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/zones"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -3583,14 +3660,15 @@ type zones = {
   }
  }
 }
-export zones
+export resources_zones
 
 # /resources/networkEdgeSecurityServices
-type networkEdgeSecurityServices = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_networkEdgeSecurityServices = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/networkEdgeSecurityServices"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -3634,14 +3712,15 @@ type networkEdgeSecurityServices = {
   }
  }
 }
-export networkEdgeSecurityServices
+export resources_networkEdgeSecurityServices
 
 # /resources/backendBuckets
-type backendBuckets = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_backendBuckets = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/backendBuckets"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -3685,14 +3764,15 @@ type backendBuckets = {
   }
  }
 }
-export backendBuckets
+export resources_backendBuckets
 
 # /resources/healthChecks
-type healthChecks = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_healthChecks = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/healthChecks"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -3736,14 +3816,15 @@ type healthChecks = {
   }
  }
 }
-export healthChecks
+export resources_healthChecks
 
 # /resources/urlMaps
-type urlMaps = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_urlMaps = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/urlMaps"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -3787,14 +3868,15 @@ type urlMaps = {
   }
  }
 }
-export urlMaps
+export resources_urlMaps
 
 # /resources/targetTcpProxies
-type targetTcpProxies = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_targetTcpProxies = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/targetTcpProxies"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -3833,14 +3915,15 @@ type targetTcpProxies = {
   }
  }
 }
-export targetTcpProxies
+export resources_targetTcpProxies
 
 # /resources/externalVpnGateways
-type externalVpnGateways = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_externalVpnGateways = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/externalVpnGateways"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -3879,14 +3962,15 @@ type externalVpnGateways = {
   }
  }
 }
-export externalVpnGateways
+export resources_externalVpnGateways
 
 # /resources/organizationSecurityPolicies
-type organizationSecurityPolicies = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_organizationSecurityPolicies = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/organizationSecurityPolicies"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -3930,14 +4014,15 @@ type organizationSecurityPolicies = {
   }
  }
 }
-export organizationSecurityPolicies
+export resources_organizationSecurityPolicies
 
 # /resources/networkFirewallPolicies
-type networkFirewallPolicies = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_networkFirewallPolicies = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/networkFirewallPolicies"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -3981,14 +4066,15 @@ type networkFirewallPolicies = {
   }
  }
 }
-export networkFirewallPolicies
+export resources_networkFirewallPolicies
 
 # /resources/vpnGateways
-type vpnGateways = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_vpnGateways = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/vpnGateways"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -4027,14 +4113,15 @@ type vpnGateways = {
   }
  }
 }
-export vpnGateways
+export resources_vpnGateways
 
 # /resources/regionDiskTypes
-type regionDiskTypes = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_regionDiskTypes = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/regionDiskTypes"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -4064,14 +4151,15 @@ type regionDiskTypes = {
   }
  }
 }
-export regionDiskTypes
+export resources_regionDiskTypes
 
 # /resources/forwardingRules
-type forwardingRules = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_forwardingRules = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/forwardingRules"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -4115,14 +4203,15 @@ type forwardingRules = {
   }
  }
 }
-export forwardingRules
+export resources_forwardingRules
 
 # /resources/licenseCodes
-type licenseCodes = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_licenseCodes = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/licenseCodes"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -4152,14 +4241,15 @@ type licenseCodes = {
   }
  }
 }
-export licenseCodes
+export resources_licenseCodes
 
 # /resources/targetSslProxies
-type targetSslProxies = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_targetSslProxies = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/targetSslProxies"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -4198,14 +4288,15 @@ type targetSslProxies = {
   }
  }
 }
-export targetSslProxies
+export resources_targetSslProxies
 
 # /resources/imageFamilyViews
-type imageFamilyViews = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_imageFamilyViews = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/imageFamilyViews"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -4235,14 +4326,15 @@ type imageFamilyViews = {
   }
  }
 }
-export imageFamilyViews
+export resources_imageFamilyViews
 
 # /resources/targetInstances
-type targetInstances = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_targetInstances = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/targetInstances"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -4281,14 +4373,15 @@ type targetInstances = {
   }
  }
 }
-export targetInstances
+export resources_targetInstances
 
 # /resources/regionInstanceTemplates
-type regionInstanceTemplates = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_regionInstanceTemplates = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/regionInstanceTemplates"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -4327,14 +4420,15 @@ type regionInstanceTemplates = {
   }
  }
 }
-export regionInstanceTemplates
+export resources_regionInstanceTemplates
 
 # /resources/serviceAttachments
-type serviceAttachments = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_serviceAttachments = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/serviceAttachments"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -4378,14 +4472,15 @@ type serviceAttachments = {
   }
  }
 }
-export serviceAttachments
+export resources_serviceAttachments
 
 # /resources/machineTypes
-type machineTypes = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_machineTypes = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/machineTypes"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -4415,14 +4510,15 @@ type machineTypes = {
   }
  }
 }
-export machineTypes
+export resources_machineTypes
 
 # /resources/regionUrlMaps
-type regionUrlMaps = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_regionUrlMaps = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/regionUrlMaps"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -4466,14 +4562,15 @@ type regionUrlMaps = {
   }
  }
 }
-export regionUrlMaps
+export resources_regionUrlMaps
 
 # /resources/regionNetworkFirewallPolicies
-type regionNetworkFirewallPolicies = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_regionNetworkFirewallPolicies = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/regionNetworkFirewallPolicies"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -4517,14 +4614,15 @@ type regionNetworkFirewallPolicies = {
   }
  }
 }
-export regionNetworkFirewallPolicies
+export resources_regionNetworkFirewallPolicies
 
 # /resources/instanceGroupManagerResizeRequests
-type instanceGroupManagerResizeRequests = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_instanceGroupManagerResizeRequests = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/instanceGroupManagerResizeRequests"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -4563,14 +4661,15 @@ type instanceGroupManagerResizeRequests = {
   }
  }
 }
-export instanceGroupManagerResizeRequests
+export resources_instanceGroupManagerResizeRequests
 
 # /resources/interconnectLocations
-type interconnectLocations = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_interconnectLocations = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/interconnectLocations"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -4600,14 +4699,15 @@ type interconnectLocations = {
   }
  }
 }
-export interconnectLocations
+export resources_interconnectLocations
 
 # /resources/regionDisks
-type regionDisks = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_regionDisks = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:compute:/resources/regionDisks"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -4646,5 +4746,5 @@ type regionDisks = {
   }
  }
 }
-export regionDisks
+export resources_regionDisks
 

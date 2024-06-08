@@ -6,7 +6,6 @@
 (require racket/list)
 (require marv/drivers/gcp/discovery)
 (require racket/match)
-(require marv/utils/hash)
 (require marv/core/globals)
 
 (define compute  (load-discovery "gcp" "compute:beta"))
@@ -84,12 +83,22 @@
           [else ""]))
       (string-replace spec "|" "\n   "))
 
-    (define type (last (string-split res-path "/")))
+    ; (define type (last (string-split res-path "/")))
+    (define type (string-replace (substring res-path 1) "/" "_"))
     (define-values (create read update delete)
       (apply values (hash-ref res-spec-verbs res-path (list api-create api-read api-update api-delete))))
-    (displayln
-     (format type-template res-path type  (api-spec create) (api-spec read) (api-spec update) (api-spec delete) type
-             ))))
+    (define t (hash 'type type 'res-path res-path 'api api-id
+                    'create (api-spec create)
+                    'read (api-spec read)
+                    'update (api-spec update)
+                    'delete (api-spec delete)))
+    (displayln (hash-format-string t type-template))))
+
+(define (hash-format-string hs str)
+  (define var-regex #rx"\\{\\{[^\\}]+\\}\\}")
+  (define (replace-for str)
+    (format "~a" (hash-ref hs (string->symbol (substring str 2 (- (string-length str) 2))))))
+  (regexp-replace* var-regex str replace-for))
 
 (define (singularise str)
   (cond [(string-suffix? str "ies") (string-append (string-trim str "ies") "y")]
@@ -99,9 +108,11 @@
   (define types (get-discovery-resources disc))
   (displayln (format shim-header api-name))
   (for ([t (in-list types)])
-    (define type(last (string-split t "/")))
-    (define sgl (singularise type))
-    (displayln (format shim-template sgl type sgl))))
+    ; (define auto-type (last (string-split t "/")))
+    (define auto-type (string-replace (substring t 1) "/" "_"))
+    (define sgl (singularise (last (string-split auto-type "_"))))
+    (define tpl (hash 'type sgl 'auto-type auto-type ))
+    (displayln (hash-format-string tpl shim-template))))
 
 (define shim-header #<<EOF
 #lang marv
@@ -126,8 +137,8 @@ EOF
 
 (define shim-template #<<EOF
 
-type ~a=API<_auto:~a>
-export ~a
+type {{type}}=API<_auto:{{auto-type}}>
+export {{type}}
 EOF
   )
 
@@ -145,38 +156,39 @@ EOF
   )
 
 (define type-template #<<EOF
-# ~a
-type ~a = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+# {{res-path}}
+type {{type}} = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:{{api}}:{{res-path}}"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
-   ~a
+   {{create}}
   }
  }
  read(cfg)={
   config=cfg
   api={
-   ~a
+   {{read}}
   }
  }
  update(cfg)={
   config=cfg
   api={
-   ~a
+   {{update}}
   }
  }
  delete(cfg)={
   config=cfg
   api={
-   ~a
+   {{delete}}
   }
  }
 }
-export ~a
+export {{type}}
 
 EOF
   )

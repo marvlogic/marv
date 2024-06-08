@@ -4,11 +4,12 @@
 import types/gcp/_auto/sql-schema
 API-ID="sql"
 # /resources/operations
-type operations = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_operations = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:sql:/resources/operations"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -38,14 +39,15 @@ type operations = {
   }
  }
 }
-export operations
+export resources_operations
 
 # /resources/databases
-type databases = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_databases = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:sql:/resources/databases"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -89,14 +91,15 @@ type databases = {
   }
  }
 }
-export databases
+export resources_databases
 
 # /resources/tiers
-type tiers = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_tiers = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:sql:/resources/tiers"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -122,14 +125,15 @@ type tiers = {
   }
  }
 }
-export tiers
+export resources_tiers
 
 # /resources/instances
-type instances = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_instances = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:sql:/resources/instances"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -173,14 +177,15 @@ type instances = {
   }
  }
 }
-export instances
+export resources_instances
 
 # /resources/backupRuns
-type backupRuns = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_backupRuns = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:sql:/resources/backupRuns"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -219,14 +224,15 @@ type backupRuns = {
   }
  }
 }
-export backupRuns
+export resources_backupRuns
 
 # /resources/connect
-type connect = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_connect = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:sql:/resources/connect"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -256,14 +262,15 @@ type connect = {
   }
  }
 }
-export connect
+export resources_connect
 
 # /resources/sslCerts
-type sslCerts = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_sslCerts = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:sql:/resources/sslCerts"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -302,14 +309,15 @@ type sslCerts = {
   }
  }
 }
-export sslCerts
+export resources_sslCerts
 
 # /resources/users
-type users = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_users = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:sql:/resources/users"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -348,14 +356,15 @@ type users = {
   }
  }
 }
-export users
+export resources_users
 
 # /resources/flags
-type flags = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_flags = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:sql:/resources/flags"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -381,4 +390,39 @@ type flags = {
   }
  }
 }
-export flags
+export resources_flags
+
+# /resources/projects/resources/instances
+type resources_projects_resources_instances = {
+ origin(cfg)= {
+  driver="gcp"
+  type="gcp:sql:/resources/projects/resources/instances"
+ }
+ identity(cfg) = cfg
+ create(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ read(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ update(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+ delete(cfg)={
+  config=cfg
+  api={
+   
+  }
+ }
+}
+export resources_projects_resources_instances
+

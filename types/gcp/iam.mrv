@@ -20,7 +20,7 @@ type MserviceAccount = {
   delete(state) = state << [ name ]
 }
 
-type serviceAccount=M1<MserviceAccount, _auto:serviceAccounts>
+type serviceAccount=M1<MserviceAccount, _auto:resources_projects_resources_serviceAccounts>
 export serviceAccount
 
 type MserviceAccountKey = {
@@ -33,5 +33,5 @@ type MserviceAccountKey = {
   delete(state) = state << [ name ]
 }
 
-type serviceAccountKey=M1<MserviceAccountKey, _auto:keys>
+type serviceAccountKey=M1<MserviceAccountKey, _auto:resources_projects_resources_serviceAccounts_resources_keys>
 export serviceAccountKey

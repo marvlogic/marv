@@ -21,30 +21,29 @@ type API<T> = {
   delete(state) = delete-self(state, T.delete(state))
   * = T.*
 }
-
-type notification=API<_auto:notifications>
+type notification=API<_auto:resources_notifications>
 export notification
 
-type objectAccessControl=API<_auto:objectAccessControls>
+type objectAccessControl=API<_auto:resources_objectAccessControls>
 export objectAccessControl
 
-type bucketAccessControl=API<_auto:bucketAccessControls>
+type bucketAccessControl=API<_auto:resources_bucketAccessControls>
 export bucketAccessControl
 
-type bucket=API<_auto:buckets>
+type bucket=API<_auto:resources_buckets>
 export bucket
 
-type channel=API<_auto:channels>
+type channel=API<_auto:resources_channels>
 export channel
 
-type defaultObjectAccessControl=API<_auto:defaultObjectAccessControls>
+type defaultObjectAccessControl=API<_auto:resources_defaultObjectAccessControls>
 export defaultObjectAccessControl
 
-type object=API<_auto:objects>
+type object=API<_auto:resources_objects>
 export object
 
-type serviceAccount=API<_auto:serviceAccount>
+type serviceAccount=API<_auto:resources_projects_resources_serviceAccount>
 export serviceAccount
 
-type hmacKey=API<_auto:hmacKeys>
+type hmacKey=API<_auto:resources_projects_resources_hmacKeys>
 export hmacKey

@@ -4,11 +4,12 @@
 import types/gcp/_auto/storage-schema
 API-ID="storage"
 # /resources/notifications
-type notifications = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_notifications = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:storage:/resources/notifications"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -47,14 +48,15 @@ type notifications = {
   }
  }
 }
-export notifications
+export resources_notifications
 
 # /resources/objectAccessControls
-type objectAccessControls = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_objectAccessControls = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:storage:/resources/objectAccessControls"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -98,14 +100,15 @@ type objectAccessControls = {
   }
  }
 }
-export objectAccessControls
+export resources_objectAccessControls
 
 # /resources/bucketAccessControls
-type bucketAccessControls = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_bucketAccessControls = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:storage:/resources/bucketAccessControls"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -149,14 +152,15 @@ type bucketAccessControls = {
   }
  }
 }
-export bucketAccessControls
+export resources_bucketAccessControls
 
 # /resources/buckets
-type buckets = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_buckets = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:storage:/resources/buckets"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -200,14 +204,15 @@ type buckets = {
   }
  }
 }
-export buckets
+export resources_buckets
 
 # /resources/channels
-type channels = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_channels = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:storage:/resources/channels"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -233,14 +238,15 @@ type channels = {
   }
  }
 }
-export channels
+export resources_channels
 
 # /resources/defaultObjectAccessControls
-type defaultObjectAccessControls = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_defaultObjectAccessControls = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:storage:/resources/defaultObjectAccessControls"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -284,14 +290,15 @@ type defaultObjectAccessControls = {
   }
  }
 }
-export defaultObjectAccessControls
+export resources_defaultObjectAccessControls
 
 # /resources/objects
-type objects = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_objects = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:storage:/resources/objects"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -335,14 +342,15 @@ type objects = {
   }
  }
 }
-export objects
+export resources_objects
 
 # /resources/projects/resources/serviceAccount
-type serviceAccount = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_projects_resources_serviceAccount = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:storage:/resources/projects/resources/serviceAccount"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -372,14 +380,15 @@ type serviceAccount = {
   }
  }
 }
-export serviceAccount
+export resources_projects_resources_serviceAccount
 
 # /resources/projects/resources/hmacKeys
-type hmacKeys = {
- identity(cfg) = cfg
- origin(cfg)= cfg <- {
+type resources_projects_resources_hmacKeys = {
+ origin(cfg)= {
   driver="gcp"
+  type="gcp:storage:/resources/projects/resources/hmacKeys"
  }
+ identity(cfg) = cfg
  create(cfg)={
   config=cfg
   api={
@@ -413,5 +422,5 @@ type hmacKeys = {
   }
  }
 }
-export hmacKeys
+export resources_projects_resources_hmacKeys
 

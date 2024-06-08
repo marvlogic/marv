@@ -20,27 +20,27 @@ type API<T> = {
  * = T.*
 }
 
-type database=API<_auto:databases>
+type database=API<_auto:resources_databases>
 export database
 
-type tier=API<_auto:tiers>
+type tier=API<_auto:resources_tiers>
 export tier
 
-type instance=API<_auto:instances>
+type instance=API<_auto:resources_instances>
 export instance
 
-type backupRun=API<_auto:backupRuns>
+type backupRun=API<_auto:resources_backupRuns>
 export backupRun
 
-type connect=API<_auto:connect>
+type connect=API<_auto:resources_connect>
 export connect
 
-type sslCert=API<_auto:sslCerts>
+type sslCert=API<_auto:resources_sslCerts>
 export sslCert
 
 # TODO41 - GCP replies with wrong targetLink following user-create
-type user=API<_auto:users>
+type user=API<_auto:resources_users>
 export user
 
-type flag=API<_auto:flags>
+type flag=API<_auto:resources_flags>
 export flag
