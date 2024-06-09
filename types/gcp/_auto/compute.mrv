@@ -4,7 +4,7 @@
 import types/gcp/_auto/compute-schema
 API-ID="compute"
 # /resources/regionTargetTcpProxies
-type resources_regionTargetTcpProxies = {
+type regionTargetTcpProxies = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/regionTargetTcpProxies"
@@ -48,10 +48,10 @@ type resources_regionTargetTcpProxies = {
   }
  }
 }
-export resources_regionTargetTcpProxies
+export regionTargetTcpProxies
 
 # /resources/globalOperations
-type resources_globalOperations = {
+type globalOperations = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/globalOperations"
@@ -90,10 +90,10 @@ type resources_globalOperations = {
   }
  }
 }
-export resources_globalOperations
+export globalOperations
 
 # /resources/vpnTunnels
-type resources_vpnTunnels = {
+type vpnTunnels = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/vpnTunnels"
@@ -137,10 +137,10 @@ type resources_vpnTunnels = {
   }
  }
 }
-export resources_vpnTunnels
+export vpnTunnels
 
 # /resources/networks
-type resources_networks = {
+type networks = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/networks"
@@ -189,10 +189,10 @@ type resources_networks = {
   }
  }
 }
-export resources_networks
+export networks
 
 # /resources/instanceTemplates
-type resources_instanceTemplates = {
+type instanceTemplates = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/instanceTemplates"
@@ -236,10 +236,10 @@ type resources_instanceTemplates = {
   }
  }
 }
-export resources_instanceTemplates
+export instanceTemplates
 
 # /resources/regionInstantSnapshots
-type resources_regionInstantSnapshots = {
+type regionInstantSnapshots = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/regionInstantSnapshots"
@@ -283,10 +283,10 @@ type resources_regionInstantSnapshots = {
   }
  }
 }
-export resources_regionInstantSnapshots
+export regionInstantSnapshots
 
 # /resources/nodeTypes
-type resources_nodeTypes = {
+type nodeTypes = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/nodeTypes"
@@ -321,10 +321,10 @@ type resources_nodeTypes = {
   }
  }
 }
-export resources_nodeTypes
+export nodeTypes
 
 # /resources/nodeTemplates
-type resources_nodeTemplates = {
+type nodeTemplates = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/nodeTemplates"
@@ -368,10 +368,10 @@ type resources_nodeTemplates = {
   }
  }
 }
-export resources_nodeTemplates
+export nodeTemplates
 
 # /resources/securityPolicies
-type resources_securityPolicies = {
+type securityPolicies = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/securityPolicies"
@@ -420,10 +420,10 @@ type resources_securityPolicies = {
   }
  }
 }
-export resources_securityPolicies
+export securityPolicies
 
 # /resources/regionInstances
-type resources_regionInstances = {
+type regionInstances = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/regionInstances"
@@ -454,10 +454,10 @@ type resources_regionInstances = {
   }
  }
 }
-export resources_regionInstances
+export regionInstances
 
 # /resources/diskTypes
-type resources_diskTypes = {
+type diskTypes = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/diskTypes"
@@ -492,10 +492,10 @@ type resources_diskTypes = {
   }
  }
 }
-export resources_diskTypes
+export diskTypes
 
 # /resources/instanceGroupManagers
-type resources_instanceGroupManagers = {
+type instanceGroupManagers = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/instanceGroupManagers"
@@ -544,10 +544,10 @@ type resources_instanceGroupManagers = {
   }
  }
 }
-export resources_instanceGroupManagers
+export instanceGroupManagers
 
 # /resources/instanceSettings
-type resources_instanceSettings = {
+type instanceSettings = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/instanceSettings"
@@ -587,10 +587,10 @@ type resources_instanceSettings = {
   }
  }
 }
-export resources_instanceSettings
+export instanceSettings
 
 # /resources/interconnects
-type resources_interconnects = {
+type interconnects = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/interconnects"
@@ -639,10 +639,10 @@ type resources_interconnects = {
   }
  }
 }
-export resources_interconnects
+export interconnects
 
 # /resources/machineImages
-type resources_machineImages = {
+type machineImages = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/machineImages"
@@ -686,10 +686,10 @@ type resources_machineImages = {
   }
  }
 }
-export resources_machineImages
+export machineImages
 
 # /resources/addresses
-type resources_addresses = {
+type addresses = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/addresses"
@@ -733,10 +733,10 @@ type resources_addresses = {
   }
  }
 }
-export resources_addresses
+export addresses
 
 # /resources/reservations
-type resources_reservations = {
+type reservations = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/reservations"
@@ -780,10 +780,10 @@ type resources_reservations = {
   }
  }
 }
-export resources_reservations
+export reservations
 
 # /resources/publicDelegatedPrefixes
-type resources_publicDelegatedPrefixes = {
+type publicDelegatedPrefixes = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/publicDelegatedPrefixes"
@@ -832,10 +832,10 @@ type resources_publicDelegatedPrefixes = {
   }
  }
 }
-export resources_publicDelegatedPrefixes
+export publicDelegatedPrefixes
 
 # /resources/licenses
-type resources_licenses = {
+type licenses = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/licenses"
@@ -879,10 +879,10 @@ type resources_licenses = {
   }
  }
 }
-export resources_licenses
+export licenses
 
 # /resources/networkAttachments
-type resources_networkAttachments = {
+type networkAttachments = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/networkAttachments"
@@ -931,10 +931,10 @@ type resources_networkAttachments = {
   }
  }
 }
-export resources_networkAttachments
+export networkAttachments
 
 # /resources/routes
-type resources_routes = {
+type routes = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/routes"
@@ -978,10 +978,10 @@ type resources_routes = {
   }
  }
 }
-export resources_routes
+export routes
 
 # /resources/regionBackendServices
-type resources_regionBackendServices = {
+type regionBackendServices = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/regionBackendServices"
@@ -1030,10 +1030,10 @@ type resources_regionBackendServices = {
   }
  }
 }
-export resources_regionBackendServices
+export regionBackendServices
 
 # /resources/targetHttpsProxies
-type resources_targetHttpsProxies = {
+type targetHttpsProxies = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/targetHttpsProxies"
@@ -1082,10 +1082,10 @@ type resources_targetHttpsProxies = {
   }
  }
 }
-export resources_targetHttpsProxies
+export targetHttpsProxies
 
 # /resources/targetPools
-type resources_targetPools = {
+type targetPools = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/targetPools"
@@ -1129,10 +1129,10 @@ type resources_targetPools = {
   }
  }
 }
-export resources_targetPools
+export targetPools
 
 # /resources/targetHttpProxies
-type resources_targetHttpProxies = {
+type targetHttpProxies = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/targetHttpProxies"
@@ -1181,10 +1181,10 @@ type resources_targetHttpProxies = {
   }
  }
 }
-export resources_targetHttpProxies
+export targetHttpProxies
 
 # /resources/projects
-type resources_projects = {
+type projects = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/projects"
@@ -1219,10 +1219,10 @@ type resources_projects = {
   }
  }
 }
-export resources_projects
+export projects
 
 # /resources/firewallPolicies
-type resources_firewallPolicies = {
+type firewallPolicies = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/firewallPolicies"
@@ -1271,10 +1271,10 @@ type resources_firewallPolicies = {
   }
  }
 }
-export resources_firewallPolicies
+export firewallPolicies
 
 # /resources/regionSslPolicies
-type resources_regionSslPolicies = {
+type regionSslPolicies = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/regionSslPolicies"
@@ -1323,10 +1323,10 @@ type resources_regionSslPolicies = {
   }
  }
 }
-export resources_regionSslPolicies
+export regionSslPolicies
 
 # /resources/regionInstanceGroups
-type resources_regionInstanceGroups = {
+type regionInstanceGroups = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/regionInstanceGroups"
@@ -1361,10 +1361,10 @@ type resources_regionInstanceGroups = {
   }
  }
 }
-export resources_regionInstanceGroups
+export regionInstanceGroups
 
 # /resources/regionAutoscalers
-type resources_regionAutoscalers = {
+type regionAutoscalers = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/regionAutoscalers"
@@ -1413,10 +1413,10 @@ type resources_regionAutoscalers = {
   }
  }
 }
-export resources_regionAutoscalers
+export regionAutoscalers
 
 # /resources/networkEndpointGroups
-type resources_networkEndpointGroups = {
+type networkEndpointGroups = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/networkEndpointGroups"
@@ -1460,10 +1460,10 @@ type resources_networkEndpointGroups = {
   }
  }
 }
-export resources_networkEndpointGroups
+export networkEndpointGroups
 
 # /resources/regionOperations
-type resources_regionOperations = {
+type regionOperations = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/regionOperations"
@@ -1502,10 +1502,10 @@ type resources_regionOperations = {
   }
  }
 }
-export resources_regionOperations
+export regionOperations
 
 # /resources/sslPolicies
-type resources_sslPolicies = {
+type sslPolicies = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/sslPolicies"
@@ -1554,10 +1554,10 @@ type resources_sslPolicies = {
   }
  }
 }
-export resources_sslPolicies
+export sslPolicies
 
 # /resources/targetGrpcProxies
-type resources_targetGrpcProxies = {
+type targetGrpcProxies = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/targetGrpcProxies"
@@ -1606,10 +1606,10 @@ type resources_targetGrpcProxies = {
   }
  }
 }
-export resources_targetGrpcProxies
+export targetGrpcProxies
 
 # /resources/images
-type resources_images = {
+type images = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/images"
@@ -1658,10 +1658,10 @@ type resources_images = {
   }
  }
 }
-export resources_images
+export images
 
 # /resources/instanceGroups
-type resources_instanceGroups = {
+type instanceGroups = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/instanceGroups"
@@ -1705,10 +1705,10 @@ type resources_instanceGroups = {
   }
  }
 }
-export resources_instanceGroups
+export instanceGroups
 
 # /resources/regionTargetHttpsProxies
-type resources_regionTargetHttpsProxies = {
+type regionTargetHttpsProxies = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/regionTargetHttpsProxies"
@@ -1757,10 +1757,10 @@ type resources_regionTargetHttpsProxies = {
   }
  }
 }
-export resources_regionTargetHttpsProxies
+export regionTargetHttpsProxies
 
 # /resources/httpHealthChecks
-type resources_httpHealthChecks = {
+type httpHealthChecks = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/httpHealthChecks"
@@ -1809,10 +1809,10 @@ type resources_httpHealthChecks = {
   }
  }
 }
-export resources_httpHealthChecks
+export httpHealthChecks
 
 # /resources/instances
-type resources_instances = {
+type instances = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/instances"
@@ -1856,10 +1856,10 @@ type resources_instances = {
   }
  }
 }
-export resources_instances
+export instances
 
 # /resources/autoscalers
-type resources_autoscalers = {
+type autoscalers = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/autoscalers"
@@ -1908,10 +1908,10 @@ type resources_autoscalers = {
   }
  }
 }
-export resources_autoscalers
+export autoscalers
 
 # /resources/futureReservations
-type resources_futureReservations = {
+type futureReservations = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/futureReservations"
@@ -1955,10 +1955,10 @@ type resources_futureReservations = {
   }
  }
 }
-export resources_futureReservations
+export futureReservations
 
 # /resources/sslCertificates
-type resources_sslCertificates = {
+type sslCertificates = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/sslCertificates"
@@ -2002,10 +2002,10 @@ type resources_sslCertificates = {
   }
  }
 }
-export resources_sslCertificates
+export sslCertificates
 
 # /resources/instantSnapshots
-type resources_instantSnapshots = {
+type instantSnapshots = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/instantSnapshots"
@@ -2049,10 +2049,10 @@ type resources_instantSnapshots = {
   }
  }
 }
-export resources_instantSnapshots
+export instantSnapshots
 
 # /resources/publicAdvertisedPrefixes
-type resources_publicAdvertisedPrefixes = {
+type publicAdvertisedPrefixes = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/publicAdvertisedPrefixes"
@@ -2101,10 +2101,10 @@ type resources_publicAdvertisedPrefixes = {
   }
  }
 }
-export resources_publicAdvertisedPrefixes
+export publicAdvertisedPrefixes
 
 # /resources/globalAddresses
-type resources_globalAddresses = {
+type globalAddresses = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/globalAddresses"
@@ -2148,10 +2148,10 @@ type resources_globalAddresses = {
   }
  }
 }
-export resources_globalAddresses
+export globalAddresses
 
 # /resources/regionZones
-type resources_regionZones = {
+type regionZones = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/regionZones"
@@ -2182,10 +2182,10 @@ type resources_regionZones = {
   }
  }
 }
-export resources_regionZones
+export regionZones
 
 # /resources/routers
-type resources_routers = {
+type routers = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/routers"
@@ -2234,10 +2234,10 @@ type resources_routers = {
   }
  }
 }
-export resources_routers
+export routers
 
 # /resources/disks
-type resources_disks = {
+type disks = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/disks"
@@ -2281,10 +2281,10 @@ type resources_disks = {
   }
  }
 }
-export resources_disks
+export disks
 
 # /resources/regionNetworkEndpointGroups
-type resources_regionNetworkEndpointGroups = {
+type regionNetworkEndpointGroups = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/regionNetworkEndpointGroups"
@@ -2328,10 +2328,10 @@ type resources_regionNetworkEndpointGroups = {
   }
  }
 }
-export resources_regionNetworkEndpointGroups
+export regionNetworkEndpointGroups
 
 # /resources/zoneOperations
-type resources_zoneOperations = {
+type zoneOperations = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/zoneOperations"
@@ -2370,10 +2370,10 @@ type resources_zoneOperations = {
   }
  }
 }
-export resources_zoneOperations
+export zoneOperations
 
 # /resources/regionTargetHttpProxies
-type resources_regionTargetHttpProxies = {
+type regionTargetHttpProxies = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/regionTargetHttpProxies"
@@ -2417,10 +2417,10 @@ type resources_regionTargetHttpProxies = {
   }
  }
 }
-export resources_regionTargetHttpProxies
+export regionTargetHttpProxies
 
 # /resources/regionNotificationEndpoints
-type resources_regionNotificationEndpoints = {
+type regionNotificationEndpoints = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/regionNotificationEndpoints"
@@ -2464,10 +2464,10 @@ type resources_regionNotificationEndpoints = {
   }
  }
 }
-export resources_regionNotificationEndpoints
+export regionNotificationEndpoints
 
 # /resources/packetMirrorings
-type resources_packetMirrorings = {
+type packetMirrorings = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/packetMirrorings"
@@ -2516,10 +2516,10 @@ type resources_packetMirrorings = {
   }
  }
 }
-export resources_packetMirrorings
+export packetMirrorings
 
 # /resources/regionHealthChecks
-type resources_regionHealthChecks = {
+type regionHealthChecks = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/regionHealthChecks"
@@ -2568,10 +2568,10 @@ type resources_regionHealthChecks = {
   }
  }
 }
-export resources_regionHealthChecks
+export regionHealthChecks
 
 # /resources/regionCommitments
-type resources_regionCommitments = {
+type regionCommitments = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/regionCommitments"
@@ -2611,10 +2611,10 @@ type resources_regionCommitments = {
   }
  }
 }
-export resources_regionCommitments
+export regionCommitments
 
 # /resources/nodeGroups
-type resources_nodeGroups = {
+type nodeGroups = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/nodeGroups"
@@ -2663,10 +2663,10 @@ type resources_nodeGroups = {
   }
  }
 }
-export resources_nodeGroups
+export nodeGroups
 
 # /resources/acceleratorTypes
-type resources_acceleratorTypes = {
+type acceleratorTypes = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/acceleratorTypes"
@@ -2701,10 +2701,10 @@ type resources_acceleratorTypes = {
   }
  }
 }
-export resources_acceleratorTypes
+export acceleratorTypes
 
 # /resources/globalForwardingRules
-type resources_globalForwardingRules = {
+type globalForwardingRules = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/globalForwardingRules"
@@ -2753,10 +2753,10 @@ type resources_globalForwardingRules = {
   }
  }
 }
-export resources_globalForwardingRules
+export globalForwardingRules
 
 # /resources/snapshotSettings
-type resources_snapshotSettings = {
+type snapshotSettings = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/snapshotSettings"
@@ -2796,10 +2796,10 @@ type resources_snapshotSettings = {
   }
  }
 }
-export resources_snapshotSettings
+export snapshotSettings
 
 # /resources/resourcePolicies
-type resources_resourcePolicies = {
+type resourcePolicies = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/resourcePolicies"
@@ -2848,10 +2848,10 @@ type resources_resourcePolicies = {
   }
  }
 }
-export resources_resourcePolicies
+export resourcePolicies
 
 # /resources/globalPublicDelegatedPrefixes
-type resources_globalPublicDelegatedPrefixes = {
+type globalPublicDelegatedPrefixes = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/globalPublicDelegatedPrefixes"
@@ -2900,10 +2900,10 @@ type resources_globalPublicDelegatedPrefixes = {
   }
  }
 }
-export resources_globalPublicDelegatedPrefixes
+export globalPublicDelegatedPrefixes
 
 # /resources/snapshots
-type resources_snapshots = {
+type snapshots = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/snapshots"
@@ -2947,10 +2947,10 @@ type resources_snapshots = {
   }
  }
 }
-export resources_snapshots
+export snapshots
 
 # /resources/globalOrganizationOperations
-type resources_globalOrganizationOperations = {
+type globalOrganizationOperations = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/globalOrganizationOperations"
@@ -2989,10 +2989,10 @@ type resources_globalOrganizationOperations = {
   }
  }
 }
-export resources_globalOrganizationOperations
+export globalOrganizationOperations
 
 # /resources/regionInstanceGroupManagers
-type resources_regionInstanceGroupManagers = {
+type regionInstanceGroupManagers = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/regionInstanceGroupManagers"
@@ -3041,10 +3041,10 @@ type resources_regionInstanceGroupManagers = {
   }
  }
 }
-export resources_regionInstanceGroupManagers
+export regionInstanceGroupManagers
 
 # /resources/httpsHealthChecks
-type resources_httpsHealthChecks = {
+type httpsHealthChecks = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/httpsHealthChecks"
@@ -3093,10 +3093,10 @@ type resources_httpsHealthChecks = {
   }
  }
 }
-export resources_httpsHealthChecks
+export httpsHealthChecks
 
 # /resources/regionSslCertificates
-type resources_regionSslCertificates = {
+type regionSslCertificates = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/regionSslCertificates"
@@ -3140,10 +3140,10 @@ type resources_regionSslCertificates = {
   }
  }
 }
-export resources_regionSslCertificates
+export regionSslCertificates
 
 # /resources/backendServices
-type resources_backendServices = {
+type backendServices = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/backendServices"
@@ -3192,10 +3192,10 @@ type resources_backendServices = {
   }
  }
 }
-export resources_backendServices
+export backendServices
 
 # /resources/targetVpnGateways
-type resources_targetVpnGateways = {
+type targetVpnGateways = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/targetVpnGateways"
@@ -3239,10 +3239,10 @@ type resources_targetVpnGateways = {
   }
  }
 }
-export resources_targetVpnGateways
+export targetVpnGateways
 
 # /resources/interconnectRemoteLocations
-type resources_interconnectRemoteLocations = {
+type interconnectRemoteLocations = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/interconnectRemoteLocations"
@@ -3277,10 +3277,10 @@ type resources_interconnectRemoteLocations = {
   }
  }
 }
-export resources_interconnectRemoteLocations
+export interconnectRemoteLocations
 
 # /resources/firewalls
-type resources_firewalls = {
+type firewalls = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/firewalls"
@@ -3329,10 +3329,10 @@ type resources_firewalls = {
   }
  }
 }
-export resources_firewalls
+export firewalls
 
 # /resources/globalNetworkEndpointGroups
-type resources_globalNetworkEndpointGroups = {
+type globalNetworkEndpointGroups = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/globalNetworkEndpointGroups"
@@ -3376,10 +3376,10 @@ type resources_globalNetworkEndpointGroups = {
   }
  }
 }
-export resources_globalNetworkEndpointGroups
+export globalNetworkEndpointGroups
 
 # /resources/regionSecurityPolicies
-type resources_regionSecurityPolicies = {
+type regionSecurityPolicies = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/regionSecurityPolicies"
@@ -3428,10 +3428,10 @@ type resources_regionSecurityPolicies = {
   }
  }
 }
-export resources_regionSecurityPolicies
+export regionSecurityPolicies
 
 # /resources/interconnectAttachments
-type resources_interconnectAttachments = {
+type interconnectAttachments = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/interconnectAttachments"
@@ -3480,10 +3480,10 @@ type resources_interconnectAttachments = {
   }
  }
 }
-export resources_interconnectAttachments
+export interconnectAttachments
 
 # /resources/regions
-type resources_regions = {
+type regions = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/regions"
@@ -3518,10 +3518,10 @@ type resources_regions = {
   }
  }
 }
-export resources_regions
+export regions
 
 # /resources/subnetworks
-type resources_subnetworks = {
+type subnetworks = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/subnetworks"
@@ -3570,10 +3570,10 @@ type resources_subnetworks = {
   }
  }
 }
-export resources_subnetworks
+export subnetworks
 
 # /resources/regionHealthCheckServices
-type resources_regionHealthCheckServices = {
+type regionHealthCheckServices = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/regionHealthCheckServices"
@@ -3622,10 +3622,10 @@ type resources_regionHealthCheckServices = {
   }
  }
 }
-export resources_regionHealthCheckServices
+export regionHealthCheckServices
 
 # /resources/zones
-type resources_zones = {
+type zones = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/zones"
@@ -3660,10 +3660,10 @@ type resources_zones = {
   }
  }
 }
-export resources_zones
+export zones
 
 # /resources/networkEdgeSecurityServices
-type resources_networkEdgeSecurityServices = {
+type networkEdgeSecurityServices = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/networkEdgeSecurityServices"
@@ -3712,10 +3712,10 @@ type resources_networkEdgeSecurityServices = {
   }
  }
 }
-export resources_networkEdgeSecurityServices
+export networkEdgeSecurityServices
 
 # /resources/backendBuckets
-type resources_backendBuckets = {
+type backendBuckets = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/backendBuckets"
@@ -3764,10 +3764,10 @@ type resources_backendBuckets = {
   }
  }
 }
-export resources_backendBuckets
+export backendBuckets
 
 # /resources/healthChecks
-type resources_healthChecks = {
+type healthChecks = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/healthChecks"
@@ -3816,10 +3816,10 @@ type resources_healthChecks = {
   }
  }
 }
-export resources_healthChecks
+export healthChecks
 
 # /resources/urlMaps
-type resources_urlMaps = {
+type urlMaps = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/urlMaps"
@@ -3868,10 +3868,10 @@ type resources_urlMaps = {
   }
  }
 }
-export resources_urlMaps
+export urlMaps
 
 # /resources/targetTcpProxies
-type resources_targetTcpProxies = {
+type targetTcpProxies = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/targetTcpProxies"
@@ -3915,10 +3915,10 @@ type resources_targetTcpProxies = {
   }
  }
 }
-export resources_targetTcpProxies
+export targetTcpProxies
 
 # /resources/externalVpnGateways
-type resources_externalVpnGateways = {
+type externalVpnGateways = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/externalVpnGateways"
@@ -3962,10 +3962,10 @@ type resources_externalVpnGateways = {
   }
  }
 }
-export resources_externalVpnGateways
+export externalVpnGateways
 
 # /resources/organizationSecurityPolicies
-type resources_organizationSecurityPolicies = {
+type organizationSecurityPolicies = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/organizationSecurityPolicies"
@@ -4014,10 +4014,10 @@ type resources_organizationSecurityPolicies = {
   }
  }
 }
-export resources_organizationSecurityPolicies
+export organizationSecurityPolicies
 
 # /resources/networkFirewallPolicies
-type resources_networkFirewallPolicies = {
+type networkFirewallPolicies = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/networkFirewallPolicies"
@@ -4066,10 +4066,10 @@ type resources_networkFirewallPolicies = {
   }
  }
 }
-export resources_networkFirewallPolicies
+export networkFirewallPolicies
 
 # /resources/vpnGateways
-type resources_vpnGateways = {
+type vpnGateways = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/vpnGateways"
@@ -4113,10 +4113,10 @@ type resources_vpnGateways = {
   }
  }
 }
-export resources_vpnGateways
+export vpnGateways
 
 # /resources/regionDiskTypes
-type resources_regionDiskTypes = {
+type regionDiskTypes = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/regionDiskTypes"
@@ -4151,10 +4151,10 @@ type resources_regionDiskTypes = {
   }
  }
 }
-export resources_regionDiskTypes
+export regionDiskTypes
 
 # /resources/forwardingRules
-type resources_forwardingRules = {
+type forwardingRules = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/forwardingRules"
@@ -4203,10 +4203,10 @@ type resources_forwardingRules = {
   }
  }
 }
-export resources_forwardingRules
+export forwardingRules
 
 # /resources/licenseCodes
-type resources_licenseCodes = {
+type licenseCodes = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/licenseCodes"
@@ -4241,10 +4241,10 @@ type resources_licenseCodes = {
   }
  }
 }
-export resources_licenseCodes
+export licenseCodes
 
 # /resources/targetSslProxies
-type resources_targetSslProxies = {
+type targetSslProxies = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/targetSslProxies"
@@ -4288,10 +4288,10 @@ type resources_targetSslProxies = {
   }
  }
 }
-export resources_targetSslProxies
+export targetSslProxies
 
 # /resources/imageFamilyViews
-type resources_imageFamilyViews = {
+type imageFamilyViews = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/imageFamilyViews"
@@ -4326,10 +4326,10 @@ type resources_imageFamilyViews = {
   }
  }
 }
-export resources_imageFamilyViews
+export imageFamilyViews
 
 # /resources/targetInstances
-type resources_targetInstances = {
+type targetInstances = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/targetInstances"
@@ -4373,10 +4373,10 @@ type resources_targetInstances = {
   }
  }
 }
-export resources_targetInstances
+export targetInstances
 
 # /resources/regionInstanceTemplates
-type resources_regionInstanceTemplates = {
+type regionInstanceTemplates = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/regionInstanceTemplates"
@@ -4420,10 +4420,10 @@ type resources_regionInstanceTemplates = {
   }
  }
 }
-export resources_regionInstanceTemplates
+export regionInstanceTemplates
 
 # /resources/serviceAttachments
-type resources_serviceAttachments = {
+type serviceAttachments = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/serviceAttachments"
@@ -4472,10 +4472,10 @@ type resources_serviceAttachments = {
   }
  }
 }
-export resources_serviceAttachments
+export serviceAttachments
 
 # /resources/machineTypes
-type resources_machineTypes = {
+type machineTypes = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/machineTypes"
@@ -4510,10 +4510,10 @@ type resources_machineTypes = {
   }
  }
 }
-export resources_machineTypes
+export machineTypes
 
 # /resources/regionUrlMaps
-type resources_regionUrlMaps = {
+type regionUrlMaps = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/regionUrlMaps"
@@ -4562,10 +4562,10 @@ type resources_regionUrlMaps = {
   }
  }
 }
-export resources_regionUrlMaps
+export regionUrlMaps
 
 # /resources/regionNetworkFirewallPolicies
-type resources_regionNetworkFirewallPolicies = {
+type regionNetworkFirewallPolicies = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/regionNetworkFirewallPolicies"
@@ -4614,10 +4614,10 @@ type resources_regionNetworkFirewallPolicies = {
   }
  }
 }
-export resources_regionNetworkFirewallPolicies
+export regionNetworkFirewallPolicies
 
 # /resources/instanceGroupManagerResizeRequests
-type resources_instanceGroupManagerResizeRequests = {
+type instanceGroupManagerResizeRequests = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/instanceGroupManagerResizeRequests"
@@ -4661,10 +4661,10 @@ type resources_instanceGroupManagerResizeRequests = {
   }
  }
 }
-export resources_instanceGroupManagerResizeRequests
+export instanceGroupManagerResizeRequests
 
 # /resources/interconnectLocations
-type resources_interconnectLocations = {
+type interconnectLocations = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/interconnectLocations"
@@ -4699,10 +4699,10 @@ type resources_interconnectLocations = {
   }
  }
 }
-export resources_interconnectLocations
+export interconnectLocations
 
 # /resources/regionDisks
-type resources_regionDisks = {
+type regionDisks = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:compute:/resources/regionDisks"
@@ -4746,5 +4746,5 @@ type resources_regionDisks = {
   }
  }
 }
-export resources_regionDisks
+export regionDisks
 

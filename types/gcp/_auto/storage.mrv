@@ -4,7 +4,7 @@
 import types/gcp/_auto/storage-schema
 API-ID="storage"
 # /resources/notifications
-type resources_notifications = {
+type notifications = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:storage:/resources/notifications"
@@ -48,10 +48,10 @@ type resources_notifications = {
   }
  }
 }
-export resources_notifications
+export notifications
 
 # /resources/objectAccessControls
-type resources_objectAccessControls = {
+type objectAccessControls = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:storage:/resources/objectAccessControls"
@@ -100,10 +100,10 @@ type resources_objectAccessControls = {
   }
  }
 }
-export resources_objectAccessControls
+export objectAccessControls
 
 # /resources/bucketAccessControls
-type resources_bucketAccessControls = {
+type bucketAccessControls = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:storage:/resources/bucketAccessControls"
@@ -152,10 +152,10 @@ type resources_bucketAccessControls = {
   }
  }
 }
-export resources_bucketAccessControls
+export bucketAccessControls
 
 # /resources/buckets
-type resources_buckets = {
+type buckets = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:storage:/resources/buckets"
@@ -204,10 +204,10 @@ type resources_buckets = {
   }
  }
 }
-export resources_buckets
+export buckets
 
 # /resources/channels
-type resources_channels = {
+type channels = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:storage:/resources/channels"
@@ -238,10 +238,10 @@ type resources_channels = {
   }
  }
 }
-export resources_channels
+export channels
 
 # /resources/defaultObjectAccessControls
-type resources_defaultObjectAccessControls = {
+type defaultObjectAccessControls = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:storage:/resources/defaultObjectAccessControls"
@@ -290,10 +290,10 @@ type resources_defaultObjectAccessControls = {
   }
  }
 }
-export resources_defaultObjectAccessControls
+export defaultObjectAccessControls
 
 # /resources/objects
-type resources_objects = {
+type objects = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:storage:/resources/objects"
@@ -342,10 +342,10 @@ type resources_objects = {
   }
  }
 }
-export resources_objects
+export objects
 
 # /resources/projects/resources/serviceAccount
-type resources_projects_resources_serviceAccount = {
+type projects_serviceAccount = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:storage:/resources/projects/resources/serviceAccount"
@@ -380,10 +380,10 @@ type resources_projects_resources_serviceAccount = {
   }
  }
 }
-export resources_projects_resources_serviceAccount
+export projects_serviceAccount
 
 # /resources/projects/resources/hmacKeys
-type resources_projects_resources_hmacKeys = {
+type projects_hmacKeys = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:storage:/resources/projects/resources/hmacKeys"
@@ -422,5 +422,5 @@ type resources_projects_resources_hmacKeys = {
   }
  }
 }
-export resources_projects_resources_hmacKeys
+export projects_hmacKeys
 

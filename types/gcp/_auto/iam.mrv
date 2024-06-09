@@ -4,7 +4,7 @@
 import types/gcp/_auto/iam-schema
 API-ID="iam"
 # /resources/roles
-type resources_roles = {
+type roles = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:iam:/resources/roles"
@@ -39,10 +39,10 @@ type resources_roles = {
   }
  }
 }
-export resources_roles
+export roles
 
 # /resources/iamPolicies
-type resources_iamPolicies = {
+type iamPolicies = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:iam:/resources/iamPolicies"
@@ -73,10 +73,10 @@ type resources_iamPolicies = {
   }
  }
 }
-export resources_iamPolicies
+export iamPolicies
 
 # /resources/permissions
-type resources_permissions = {
+type permissions = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:iam:/resources/permissions"
@@ -107,10 +107,10 @@ type resources_permissions = {
   }
  }
 }
-export resources_permissions
+export permissions
 
 # /resources/locations/resources/workforcePools
-type resources_locations_resources_workforcePools = {
+type locations_workforcePools = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:iam:/resources/locations/resources/workforcePools"
@@ -159,10 +159,10 @@ type resources_locations_resources_workforcePools = {
   }
  }
 }
-export resources_locations_resources_workforcePools
+export locations_workforcePools
 
 # /resources/locations/resources/workforcePools/resources/operations
-type resources_locations_resources_workforcePools_resources_operations = {
+type locations_workforcePools_operations = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:iam:/resources/locations/resources/workforcePools/resources/operations"
@@ -197,10 +197,10 @@ type resources_locations_resources_workforcePools_resources_operations = {
   }
  }
 }
-export resources_locations_resources_workforcePools_resources_operations
+export locations_workforcePools_operations
 
 # /resources/locations/resources/workforcePools/resources/subjects
-type resources_locations_resources_workforcePools_resources_subjects = {
+type locations_workforcePools_subjects = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:iam:/resources/locations/resources/workforcePools/resources/subjects"
@@ -235,10 +235,10 @@ type resources_locations_resources_workforcePools_resources_subjects = {
   }
  }
 }
-export resources_locations_resources_workforcePools_resources_subjects
+export locations_workforcePools_subjects
 
 # /resources/locations/resources/workforcePools/resources/providers
-type resources_locations_resources_workforcePools_resources_providers = {
+type locations_workforcePools_providers = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:iam:/resources/locations/resources/workforcePools/resources/providers"
@@ -287,10 +287,10 @@ type resources_locations_resources_workforcePools_resources_providers = {
   }
  }
 }
-export resources_locations_resources_workforcePools_resources_providers
+export locations_workforcePools_providers
 
 # /resources/locations/resources/workforcePools/resources/providers/resources/operations
-type resources_locations_resources_workforcePools_resources_providers_resources_operations = {
+type locations_workforcePools_providers_operations = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:iam:/resources/locations/resources/workforcePools/resources/providers/resources/operations"
@@ -325,10 +325,10 @@ type resources_locations_resources_workforcePools_resources_providers_resources_
   }
  }
 }
-export resources_locations_resources_workforcePools_resources_providers_resources_operations
+export locations_workforcePools_providers_operations
 
 # /resources/locations/resources/workforcePools/resources/providers/resources/keys
-type resources_locations_resources_workforcePools_resources_providers_resources_keys = {
+type locations_workforcePools_providers_keys = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:iam:/resources/locations/resources/workforcePools/resources/providers/resources/keys"
@@ -372,10 +372,10 @@ type resources_locations_resources_workforcePools_resources_providers_resources_
   }
  }
 }
-export resources_locations_resources_workforcePools_resources_providers_resources_keys
+export locations_workforcePools_providers_keys
 
 # /resources/locations/resources/workforcePools/resources/providers/resources/keys/resources/operations
-type resources_locations_resources_workforcePools_resources_providers_resources_keys_resources_operations = {
+type locations_workforcePools_providers_keys_operations = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:iam:/resources/locations/resources/workforcePools/resources/providers/resources/keys/resources/operations"
@@ -410,10 +410,10 @@ type resources_locations_resources_workforcePools_resources_providers_resources_
   }
  }
 }
-export resources_locations_resources_workforcePools_resources_providers_resources_keys_resources_operations
+export locations_workforcePools_providers_keys_operations
 
 # /resources/locations/resources/workforcePools/resources/subjects/resources/operations
-type resources_locations_resources_workforcePools_resources_subjects_resources_operations = {
+type locations_workforcePools_subjects_operations = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:iam:/resources/locations/resources/workforcePools/resources/subjects/resources/operations"
@@ -448,10 +448,10 @@ type resources_locations_resources_workforcePools_resources_subjects_resources_o
   }
  }
 }
-export resources_locations_resources_workforcePools_resources_subjects_resources_operations
+export locations_workforcePools_subjects_operations
 
 # /resources/projects/resources/serviceAccounts
-type resources_projects_resources_serviceAccounts = {
+type projects_serviceAccounts = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:iam:/resources/projects/resources/serviceAccounts"
@@ -500,10 +500,10 @@ type resources_projects_resources_serviceAccounts = {
   }
  }
 }
-export resources_projects_resources_serviceAccounts
+export projects_serviceAccounts
 
 # /resources/projects/resources/roles
-type resources_projects_resources_roles = {
+type projects_roles = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:iam:/resources/projects/resources/roles"
@@ -552,10 +552,10 @@ type resources_projects_resources_roles = {
   }
  }
 }
-export resources_projects_resources_roles
+export projects_roles
 
 # /resources/projects/resources/locations/resources/workloadIdentityPools
-type resources_projects_resources_locations_resources_workloadIdentityPools = {
+type projects_locations_workloadIdentityPools = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:iam:/resources/projects/resources/locations/resources/workloadIdentityPools"
@@ -604,10 +604,10 @@ type resources_projects_resources_locations_resources_workloadIdentityPools = {
   }
  }
 }
-export resources_projects_resources_locations_resources_workloadIdentityPools
+export projects_locations_workloadIdentityPools
 
 # /resources/projects/resources/locations/resources/workloadIdentityPools/resources/operations
-type resources_projects_resources_locations_resources_workloadIdentityPools_resources_operations = {
+type projects_locations_workloadIdentityPools_operations = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:iam:/resources/projects/resources/locations/resources/workloadIdentityPools/resources/operations"
@@ -642,10 +642,10 @@ type resources_projects_resources_locations_resources_workloadIdentityPools_reso
   }
  }
 }
-export resources_projects_resources_locations_resources_workloadIdentityPools_resources_operations
+export projects_locations_workloadIdentityPools_operations
 
 # /resources/projects/resources/locations/resources/workloadIdentityPools/resources/providers
-type resources_projects_resources_locations_resources_workloadIdentityPools_resources_providers = {
+type projects_locations_workloadIdentityPools_providers = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:iam:/resources/projects/resources/locations/resources/workloadIdentityPools/resources/providers"
@@ -694,10 +694,10 @@ type resources_projects_resources_locations_resources_workloadIdentityPools_reso
   }
  }
 }
-export resources_projects_resources_locations_resources_workloadIdentityPools_resources_providers
+export projects_locations_workloadIdentityPools_providers
 
 # /resources/projects/resources/locations/resources/workloadIdentityPools/resources/providers/resources/operations
-type resources_projects_resources_locations_resources_workloadIdentityPools_resources_providers_resources_operations = {
+type projects_locations_workloadIdentityPools_providers_operations = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:iam:/resources/projects/resources/locations/resources/workloadIdentityPools/resources/providers/resources/operations"
@@ -732,10 +732,10 @@ type resources_projects_resources_locations_resources_workloadIdentityPools_reso
   }
  }
 }
-export resources_projects_resources_locations_resources_workloadIdentityPools_resources_providers_resources_operations
+export projects_locations_workloadIdentityPools_providers_operations
 
 # /resources/projects/resources/locations/resources/workloadIdentityPools/resources/providers/resources/keys
-type resources_projects_resources_locations_resources_workloadIdentityPools_resources_providers_resources_keys = {
+type projects_locations_workloadIdentityPools_providers_keys = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:iam:/resources/projects/resources/locations/resources/workloadIdentityPools/resources/providers/resources/keys"
@@ -779,10 +779,10 @@ type resources_projects_resources_locations_resources_workloadIdentityPools_reso
   }
  }
 }
-export resources_projects_resources_locations_resources_workloadIdentityPools_resources_providers_resources_keys
+export projects_locations_workloadIdentityPools_providers_keys
 
 # /resources/projects/resources/locations/resources/workloadIdentityPools/resources/providers/resources/keys/resources/operations
-type resources_projects_resources_locations_resources_workloadIdentityPools_resources_providers_resources_keys_resources_operations = {
+type projects_locations_workloadIdentityPools_providers_keys_operations = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:iam:/resources/projects/resources/locations/resources/workloadIdentityPools/resources/providers/resources/keys/resources/operations"
@@ -817,10 +817,10 @@ type resources_projects_resources_locations_resources_workloadIdentityPools_reso
   }
  }
 }
-export resources_projects_resources_locations_resources_workloadIdentityPools_resources_providers_resources_keys_resources_operations
+export projects_locations_workloadIdentityPools_providers_keys_operations
 
 # /resources/projects/resources/locations/resources/workloadIdentityPools/resources/namespaces/resources/operations
-type resources_projects_resources_locations_resources_workloadIdentityPools_resources_namespaces_resources_operations = {
+type projects_locations_workloadIdentityPools_namespaces_operations = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:iam:/resources/projects/resources/locations/resources/workloadIdentityPools/resources/namespaces/resources/operations"
@@ -855,10 +855,10 @@ type resources_projects_resources_locations_resources_workloadIdentityPools_reso
   }
  }
 }
-export resources_projects_resources_locations_resources_workloadIdentityPools_resources_namespaces_resources_operations
+export projects_locations_workloadIdentityPools_namespaces_operations
 
 # /resources/projects/resources/locations/resources/workloadIdentityPools/resources/namespaces/resources/managedIdentities/resources/operations
-type resources_projects_resources_locations_resources_workloadIdentityPools_resources_namespaces_resources_managedIdentities_resources_operations = {
+type projects_locations_workloadIdentityPools_namespaces_managedIdentities_operations = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:iam:/resources/projects/resources/locations/resources/workloadIdentityPools/resources/namespaces/resources/managedIdentities/resources/operations"
@@ -893,10 +893,10 @@ type resources_projects_resources_locations_resources_workloadIdentityPools_reso
   }
  }
 }
-export resources_projects_resources_locations_resources_workloadIdentityPools_resources_namespaces_resources_managedIdentities_resources_operations
+export projects_locations_workloadIdentityPools_namespaces_managedIdentities_operations
 
 # /resources/projects/resources/locations/resources/workloadIdentityPools/resources/namespaces/resources/managedIdentities/resources/workloadSources/resources/operations
-type resources_projects_resources_locations_resources_workloadIdentityPools_resources_namespaces_resources_managedIdentities_resources_workloadSources_resources_operations = {
+type projects_locations_workloadIdentityPools_namespaces_managedIdentities_workloadSources_operations = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:iam:/resources/projects/resources/locations/resources/workloadIdentityPools/resources/namespaces/resources/managedIdentities/resources/workloadSources/resources/operations"
@@ -931,10 +931,10 @@ type resources_projects_resources_locations_resources_workloadIdentityPools_reso
   }
  }
 }
-export resources_projects_resources_locations_resources_workloadIdentityPools_resources_namespaces_resources_managedIdentities_resources_workloadSources_resources_operations
+export projects_locations_workloadIdentityPools_namespaces_managedIdentities_workloadSources_operations
 
 # /resources/projects/resources/serviceAccounts/resources/keys
-type resources_projects_resources_serviceAccounts_resources_keys = {
+type projects_serviceAccounts_keys = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:iam:/resources/projects/resources/serviceAccounts/resources/keys"
@@ -978,10 +978,10 @@ type resources_projects_resources_serviceAccounts_resources_keys = {
   }
  }
 }
-export resources_projects_resources_serviceAccounts_resources_keys
+export projects_serviceAccounts_keys
 
 # /resources/organizations/resources/roles
-type resources_organizations_resources_roles = {
+type organizations_roles = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:iam:/resources/organizations/resources/roles"
@@ -1030,5 +1030,5 @@ type resources_organizations_resources_roles = {
   }
  }
 }
-export resources_organizations_resources_roles
+export organizations_roles
 

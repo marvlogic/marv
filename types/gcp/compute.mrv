@@ -20,302 +20,302 @@ type API<T> = {
  * = T.*
 }
 
-type regionTargetTcpProxy=API<_auto:resources_regionTargetTcpProxies>
+type regionTargetTcpProxy=API<_auto:regionTargetTcpProxies>
 export regionTargetTcpProxy
 
-type globalOperation=API<_auto:resources_globalOperations>
+type globalOperation=API<_auto:globalOperations>
 export globalOperation
 
-type vpnTunnel=API<_auto:resources_vpnTunnels>
+type vpnTunnel=API<_auto:vpnTunnels>
 export vpnTunnel
 
-type network=API<_auto:resources_networks>
+type network=API<_auto:networks>
 export network
 
-type instanceTemplate=API<_auto:resources_instanceTemplates>
+type instanceTemplate=API<_auto:instanceTemplates>
 export instanceTemplate
 
-type regionInstantSnapshot=API<_auto:resources_regionInstantSnapshots>
+type regionInstantSnapshot=API<_auto:regionInstantSnapshots>
 export regionInstantSnapshot
 
-type nodeType=API<_auto:resources_nodeTypes>
+type nodeType=API<_auto:nodeTypes>
 export nodeType
 
-type nodeTemplate=API<_auto:resources_nodeTemplates>
+type nodeTemplate=API<_auto:nodeTemplates>
 export nodeTemplate
 
-type securityPolicy=API<_auto:resources_securityPolicies>
+type securityPolicy=API<_auto:securityPolicies>
 export securityPolicy
 
-type regionInstance=API<_auto:resources_regionInstances>
+type regionInstance=API<_auto:regionInstances>
 export regionInstance
 
-type diskType=API<_auto:resources_diskTypes>
+type diskType=API<_auto:diskTypes>
 export diskType
 
-type instanceGroupManager=API<_auto:resources_instanceGroupManagers>
+type instanceGroupManager=API<_auto:instanceGroupManagers>
 export instanceGroupManager
 
-type instanceSetting=API<_auto:resources_instanceSettings>
+type instanceSetting=API<_auto:instanceSettings>
 export instanceSetting
 
-type interconnect=API<_auto:resources_interconnects>
+type interconnect=API<_auto:interconnects>
 export interconnect
 
-type machineImage=API<_auto:resources_machineImages>
+type machineImage=API<_auto:machineImages>
 export machineImage
 
-type addresse=API<_auto:resources_addresses>
+type addresse=API<_auto:addresses>
 export addresse
 
-type reservation=API<_auto:resources_reservations>
+type reservation=API<_auto:reservations>
 export reservation
 
-type publicDelegatedPrefixe=API<_auto:resources_publicDelegatedPrefixes>
+type publicDelegatedPrefixe=API<_auto:publicDelegatedPrefixes>
 export publicDelegatedPrefixe
 
-type license=API<_auto:resources_licenses>
+type license=API<_auto:licenses>
 export license
 
-type networkAttachment=API<_auto:resources_networkAttachments>
+type networkAttachment=API<_auto:networkAttachments>
 export networkAttachment
 
-type route=API<_auto:resources_routes>
+type route=API<_auto:routes>
 export route
 
-type regionBackendService=API<_auto:resources_regionBackendServices>
+type regionBackendService=API<_auto:regionBackendServices>
 export regionBackendService
 
-type targetHttpsProxy=API<_auto:resources_targetHttpsProxies>
+type targetHttpsProxy=API<_auto:targetHttpsProxies>
 export targetHttpsProxy
 
-type targetPool=API<_auto:resources_targetPools>
+type targetPool=API<_auto:targetPools>
 export targetPool
 
-type targetHttpProxy=API<_auto:resources_targetHttpProxies>
+type targetHttpProxy=API<_auto:targetHttpProxies>
 export targetHttpProxy
 
-type project=API<_auto:resources_projects>
+type project=API<_auto:projects>
 export project
 
-type firewallPolicy=API<_auto:resources_firewallPolicies>
+type firewallPolicy=API<_auto:firewallPolicies>
 export firewallPolicy
 
-type regionSslPolicy=API<_auto:resources_regionSslPolicies>
+type regionSslPolicy=API<_auto:regionSslPolicies>
 export regionSslPolicy
 
-type regionInstanceGroup=API<_auto:resources_regionInstanceGroups>
+type regionInstanceGroup=API<_auto:regionInstanceGroups>
 export regionInstanceGroup
 
-type regionAutoscaler=API<_auto:resources_regionAutoscalers>
+type regionAutoscaler=API<_auto:regionAutoscalers>
 export regionAutoscaler
 
-type networkEndpointGroup=API<_auto:resources_networkEndpointGroups>
+type networkEndpointGroup=API<_auto:networkEndpointGroups>
 export networkEndpointGroup
 
-type regionOperation=API<_auto:resources_regionOperations>
+type regionOperation=API<_auto:regionOperations>
 export regionOperation
 
-type sslPolicy=API<_auto:resources_sslPolicies>
+type sslPolicy=API<_auto:sslPolicies>
 export sslPolicy
 
-type targetGrpcProxy=API<_auto:resources_targetGrpcProxies>
+type targetGrpcProxy=API<_auto:targetGrpcProxies>
 export targetGrpcProxy
 
-type image=API<_auto:resources_images>
+type image=API<_auto:images>
 export image
 
-type instanceGroup=API<_auto:resources_instanceGroups>
+type instanceGroup=API<_auto:instanceGroups>
 export instanceGroup
 
-type regionTargetHttpsProxy=API<_auto:resources_regionTargetHttpsProxies>
+type regionTargetHttpsProxy=API<_auto:regionTargetHttpsProxies>
 export regionTargetHttpsProxy
 
-type httpHealthCheck=API<_auto:resources_httpHealthChecks>
+type httpHealthCheck=API<_auto:httpHealthChecks>
 export httpHealthCheck
 
-type instance=API<_auto:resources_instances>
+type instance=API<_auto:instances>
 export instance
 
-type autoscaler=API<_auto:resources_autoscalers>
+type autoscaler=API<_auto:autoscalers>
 export autoscaler
 
-type futureReservation=API<_auto:resources_futureReservations>
+type futureReservation=API<_auto:futureReservations>
 export futureReservation
 
-type sslCertificate=API<_auto:resources_sslCertificates>
+type sslCertificate=API<_auto:sslCertificates>
 export sslCertificate
 
-type instantSnapshot=API<_auto:resources_instantSnapshots>
+type instantSnapshot=API<_auto:instantSnapshots>
 export instantSnapshot
 
-type publicAdvertisedPrefixe=API<_auto:resources_publicAdvertisedPrefixes>
+type publicAdvertisedPrefixe=API<_auto:publicAdvertisedPrefixes>
 export publicAdvertisedPrefixe
 
-type globalAddresse=API<_auto:resources_globalAddresses>
+type globalAddresse=API<_auto:globalAddresses>
 export globalAddresse
 
-type regionZone=API<_auto:resources_regionZones>
+type regionZone=API<_auto:regionZones>
 export regionZone
 
-type router=API<_auto:resources_routers>
+type router=API<_auto:routers>
 export router
 
-type disk=API<_auto:resources_disks>
+type disk=API<_auto:disks>
 export disk
 
-type regionNetworkEndpointGroup=API<_auto:resources_regionNetworkEndpointGroups>
+type regionNetworkEndpointGroup=API<_auto:regionNetworkEndpointGroups>
 export regionNetworkEndpointGroup
 
-type zoneOperation=API<_auto:resources_zoneOperations>
+type zoneOperation=API<_auto:zoneOperations>
 export zoneOperation
 
-type regionTargetHttpProxy=API<_auto:resources_regionTargetHttpProxies>
+type regionTargetHttpProxy=API<_auto:regionTargetHttpProxies>
 export regionTargetHttpProxy
 
-type regionNotificationEndpoint=API<_auto:resources_regionNotificationEndpoints>
+type regionNotificationEndpoint=API<_auto:regionNotificationEndpoints>
 export regionNotificationEndpoint
 
-type packetMirroring=API<_auto:resources_packetMirrorings>
+type packetMirroring=API<_auto:packetMirrorings>
 export packetMirroring
 
-type regionHealthCheck=API<_auto:resources_regionHealthChecks>
+type regionHealthCheck=API<_auto:regionHealthChecks>
 export regionHealthCheck
 
-type regionCommitment=API<_auto:resources_regionCommitments>
+type regionCommitment=API<_auto:regionCommitments>
 export regionCommitment
 
-type nodeGroup=API<_auto:resources_nodeGroups>
+type nodeGroup=API<_auto:nodeGroups>
 export nodeGroup
 
-type acceleratorType=API<_auto:resources_acceleratorTypes>
+type acceleratorType=API<_auto:acceleratorTypes>
 export acceleratorType
 
-type globalForwardingRule=API<_auto:resources_globalForwardingRules>
+type globalForwardingRule=API<_auto:globalForwardingRules>
 export globalForwardingRule
 
-type snapshotSetting=API<_auto:resources_snapshotSettings>
+type snapshotSetting=API<_auto:snapshotSettings>
 export snapshotSetting
 
-type resourcePolicy=API<_auto:resources_resourcePolicies>
+type resourcePolicy=API<_auto:resourcePolicies>
 export resourcePolicy
 
-type globalPublicDelegatedPrefixe=API<_auto:resources_globalPublicDelegatedPrefixes>
+type globalPublicDelegatedPrefixe=API<_auto:globalPublicDelegatedPrefixes>
 export globalPublicDelegatedPrefixe
 
-type snapshot=API<_auto:resources_snapshots>
+type snapshot=API<_auto:snapshots>
 export snapshot
 
-type globalOrganizationOperation=API<_auto:resources_globalOrganizationOperations>
+type globalOrganizationOperation=API<_auto:globalOrganizationOperations>
 export globalOrganizationOperation
 
-type regionInstanceGroupManager=API<_auto:resources_regionInstanceGroupManagers>
+type regionInstanceGroupManager=API<_auto:regionInstanceGroupManagers>
 export regionInstanceGroupManager
 
-type httpsHealthCheck=API<_auto:resources_httpsHealthChecks>
+type httpsHealthCheck=API<_auto:httpsHealthChecks>
 export httpsHealthCheck
 
-type regionSslCertificate=API<_auto:resources_regionSslCertificates>
+type regionSslCertificate=API<_auto:regionSslCertificates>
 export regionSslCertificate
 
-type backendService=API<_auto:resources_backendServices>
+type backendService=API<_auto:backendServices>
 export backendService
 
-type targetVpnGateway=API<_auto:resources_targetVpnGateways>
+type targetVpnGateway=API<_auto:targetVpnGateways>
 export targetVpnGateway
 
-type interconnectRemoteLocation=API<_auto:resources_interconnectRemoteLocations>
+type interconnectRemoteLocation=API<_auto:interconnectRemoteLocations>
 export interconnectRemoteLocation
 
-type firewall=API<_auto:resources_firewalls>
+type firewall=API<_auto:firewalls>
 export firewall
 
-type globalNetworkEndpointGroup=API<_auto:resources_globalNetworkEndpointGroups>
+type globalNetworkEndpointGroup=API<_auto:globalNetworkEndpointGroups>
 export globalNetworkEndpointGroup
 
-type regionSecurityPolicy=API<_auto:resources_regionSecurityPolicies>
+type regionSecurityPolicy=API<_auto:regionSecurityPolicies>
 export regionSecurityPolicy
 
-type interconnectAttachment=API<_auto:resources_interconnectAttachments>
+type interconnectAttachment=API<_auto:interconnectAttachments>
 export interconnectAttachment
 
-type region=API<_auto:resources_regions>
+type region=API<_auto:regions>
 export region
 
-type subnetwork=API<_auto:resources_subnetworks>
+type subnetwork=API<_auto:subnetworks>
 export subnetwork
 
-type regionHealthCheckService=API<_auto:resources_regionHealthCheckServices>
+type regionHealthCheckService=API<_auto:regionHealthCheckServices>
 export regionHealthCheckService
 
-type zone=API<_auto:resources_zones>
+type zone=API<_auto:zones>
 export zone
 
-type networkEdgeSecurityService=API<_auto:resources_networkEdgeSecurityServices>
+type networkEdgeSecurityService=API<_auto:networkEdgeSecurityServices>
 export networkEdgeSecurityService
 
-type backendBucket=API<_auto:resources_backendBuckets>
+type backendBucket=API<_auto:backendBuckets>
 export backendBucket
 
-type healthCheck=API<_auto:resources_healthChecks>
+type healthCheck=API<_auto:healthChecks>
 export healthCheck
 
-type urlMap=API<_auto:resources_urlMaps>
+type urlMap=API<_auto:urlMaps>
 export urlMap
 
-type targetTcpProxy=API<_auto:resources_targetTcpProxies>
+type targetTcpProxy=API<_auto:targetTcpProxies>
 export targetTcpProxy
 
-type externalVpnGateway=API<_auto:resources_externalVpnGateways>
+type externalVpnGateway=API<_auto:externalVpnGateways>
 export externalVpnGateway
 
-type organizationSecurityPolicy=API<_auto:resources_organizationSecurityPolicies>
+type organizationSecurityPolicy=API<_auto:organizationSecurityPolicies>
 export organizationSecurityPolicy
 
-type networkFirewallPolicy=API<_auto:resources_networkFirewallPolicies>
+type networkFirewallPolicy=API<_auto:networkFirewallPolicies>
 export networkFirewallPolicy
 
-type vpnGateway=API<_auto:resources_vpnGateways>
+type vpnGateway=API<_auto:vpnGateways>
 export vpnGateway
 
-type regionDiskType=API<_auto:resources_regionDiskTypes>
+type regionDiskType=API<_auto:regionDiskTypes>
 export regionDiskType
 
-type forwardingRule=API<_auto:resources_forwardingRules>
+type forwardingRule=API<_auto:forwardingRules>
 export forwardingRule
 
-type licenseCode=API<_auto:resources_licenseCodes>
+type licenseCode=API<_auto:licenseCodes>
 export licenseCode
 
-type targetSslProxy=API<_auto:resources_targetSslProxies>
+type targetSslProxy=API<_auto:targetSslProxies>
 export targetSslProxy
 
-type imageFamilyView=API<_auto:resources_imageFamilyViews>
+type imageFamilyView=API<_auto:imageFamilyViews>
 export imageFamilyView
 
-type targetInstance=API<_auto:resources_targetInstances>
+type targetInstance=API<_auto:targetInstances>
 export targetInstance
 
-type regionInstanceTemplate=API<_auto:resources_regionInstanceTemplates>
+type regionInstanceTemplate=API<_auto:regionInstanceTemplates>
 export regionInstanceTemplate
 
-type serviceAttachment=API<_auto:resources_serviceAttachments>
+type serviceAttachment=API<_auto:serviceAttachments>
 export serviceAttachment
 
-type machineType=API<_auto:resources_machineTypes>
+type machineType=API<_auto:machineTypes>
 export machineType
 
-type regionUrlMap=API<_auto:resources_regionUrlMaps>
+type regionUrlMap=API<_auto:regionUrlMaps>
 export regionUrlMap
 
-type regionNetworkFirewallPolicy=API<_auto:resources_regionNetworkFirewallPolicies>
+type regionNetworkFirewallPolicy=API<_auto:regionNetworkFirewallPolicies>
 export regionNetworkFirewallPolicy
 
-type instanceGroupManagerResizeRequest=API<_auto:resources_instanceGroupManagerResizeRequests>
+type instanceGroupManagerResizeRequest=API<_auto:instanceGroupManagerResizeRequests>
 export instanceGroupManagerResizeRequest
 
-type interconnectLocation=API<_auto:resources_interconnectLocations>
+type interconnectLocation=API<_auto:interconnectLocations>
 export interconnectLocation
 
-type regionDisk=API<_auto:resources_regionDisks>
+type regionDisk=API<_auto:regionDisks>
 export regionDisk

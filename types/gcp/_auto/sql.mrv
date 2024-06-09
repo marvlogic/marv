@@ -4,7 +4,7 @@
 import types/gcp/_auto/sql-schema
 API-ID="sql"
 # /resources/operations
-type resources_operations = {
+type operations = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:sql:/resources/operations"
@@ -39,10 +39,10 @@ type resources_operations = {
   }
  }
 }
-export resources_operations
+export operations
 
 # /resources/databases
-type resources_databases = {
+type databases = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:sql:/resources/databases"
@@ -91,10 +91,10 @@ type resources_databases = {
   }
  }
 }
-export resources_databases
+export databases
 
 # /resources/tiers
-type resources_tiers = {
+type tiers = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:sql:/resources/tiers"
@@ -125,10 +125,10 @@ type resources_tiers = {
   }
  }
 }
-export resources_tiers
+export tiers
 
 # /resources/instances
-type resources_instances = {
+type instances = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:sql:/resources/instances"
@@ -177,10 +177,10 @@ type resources_instances = {
   }
  }
 }
-export resources_instances
+export instances
 
 # /resources/backupRuns
-type resources_backupRuns = {
+type backupRuns = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:sql:/resources/backupRuns"
@@ -224,10 +224,10 @@ type resources_backupRuns = {
   }
  }
 }
-export resources_backupRuns
+export backupRuns
 
 # /resources/connect
-type resources_connect = {
+type connect = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:sql:/resources/connect"
@@ -262,10 +262,10 @@ type resources_connect = {
   }
  }
 }
-export resources_connect
+export connect
 
 # /resources/sslCerts
-type resources_sslCerts = {
+type sslCerts = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:sql:/resources/sslCerts"
@@ -309,10 +309,10 @@ type resources_sslCerts = {
   }
  }
 }
-export resources_sslCerts
+export sslCerts
 
 # /resources/users
-type resources_users = {
+type users = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:sql:/resources/users"
@@ -356,10 +356,10 @@ type resources_users = {
   }
  }
 }
-export resources_users
+export users
 
 # /resources/flags
-type resources_flags = {
+type flags = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:sql:/resources/flags"
@@ -390,10 +390,10 @@ type resources_flags = {
   }
  }
 }
-export resources_flags
+export flags
 
 # /resources/projects/resources/instances
-type resources_projects_resources_instances = {
+type projects_instances = {
  origin(cfg)= {
   driver="gcp"
   type="gcp:sql:/resources/projects/resources/instances"
@@ -424,5 +424,5 @@ type resources_projects_resources_instances = {
   }
  }
 }
-export resources_projects_resources_instances
+export projects_instances
 

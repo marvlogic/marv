@@ -83,8 +83,8 @@
           [else ""]))
       (string-replace spec "|" "\n   "))
 
-    ; (define type (last (string-split res-path "/")))
-    (define type (string-replace (substring res-path 1) "/" "_"))
+    ; (define type (string-replace (substring res-path 1) "/" "_"))
+    (define type (substring (string-replace res-path "/resources/" "_") 1))
     (define-values (create read update delete)
       (apply values (hash-ref res-spec-verbs res-path (list api-create api-read api-update api-delete))))
     (define t (hash 'type type 'res-path res-path 'api api-id
@@ -108,8 +108,8 @@
   (define types (get-discovery-resources disc))
   (displayln (format shim-header api-name))
   (for ([t (in-list types)])
-    ; (define auto-type (last (string-split t "/")))
-    (define auto-type (string-replace (substring t 1) "/" "_"))
+    ; (define auto-type (string-replace (substring t 1) "/" "_"))
+    (define auto-type (substring (string-replace t "/resources/" "_") 1))
     (define sgl (singularise (last (string-split auto-type "_"))))
     (define tpl (hash 'type sgl 'auto-type auto-type ))
     (displayln (hash-format-string tpl shim-template))))
