@@ -20,7 +20,6 @@
          resource-keys
          resource-ref
          module-ref
-         mod-ref-driver?
          get-resource-params
          validate-params
          resource-refs
@@ -29,7 +28,6 @@
          unwrap-values
          (struct-out ref)
          (struct-out value)
-         mod-id->id
          ival ival?
          iref iref?
          match-resource-attr?
@@ -88,10 +86,6 @@
   (define ref-spec (map string->symbol (string-split (symbol->string k) ".")))
   (hash-nref mod ref-spec))
 
-(define (mod-ref-driver? ref)
-  (define ref-spec (map string->symbol (string-split (symbol->string ref) ".")))
-  (eq? '$drivers (car ref-spec)))
-
 (define/contract (resource-refs res)
   (resource/c . -> . (listof (cons/c any/c ref?)))
   (filter (compose1 ref? cdr)
@@ -102,19 +96,5 @@
 
 (define/contract (unwrap-values res)
   (config/c . -> . config/c)
-  (define (unwrap k v)  (unpack-value v))
-  ; TODO41 - refactor to resource-update-config-fn
+  (define (unwrap _ v)  (unpack-value v))
   (hash-apply res unwrap))
-
-; TODO - NB, the $resources/$drivers definition stuff has been left in for now,
-; not sure if it will be needed in future.
-
-(define (mod-id->id mid)
-  (string->symbol
-   (match (string-split (symbol->string mid) ".")
-     [(list "$resources" id _ ...) id]
-     [(list "$drivers" id _ ...) id]
-     [(list id _ ...) (format "~a" mid)]
-     [else (raise (format "~a: Bad reference format" (ref-path ref)))])))
-
-(define config-set/c (hash/c res-id/c config/c))

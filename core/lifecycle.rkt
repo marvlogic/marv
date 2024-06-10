@@ -9,6 +9,7 @@
 (require marv/core/values)
 (require marv/core/state)
 (require marv/core/diff)
+(require marv/core/config)
 (require marv/core/resource-def)
 (require marv/core/resources)
 (require marv/core/graph)
@@ -75,7 +76,7 @@
 
   (plan rsset new-dfs ordered-ops))
 
-; TODO41 - import
+; TODO - fix import
 (define (import-resources mod ids)
   (raise "unimplemented"))
 ; (define (import-one id)
@@ -111,12 +112,25 @@
   (define resp-cfg (send-to-driver driver-id cmd))
   resp-cfg)
 
+(define/contract (deref-config cfg)
+  (config/c . -> . config/c)
+
+  (define (get-ref ref)
+    (define-values (res-id attr) (ref-split ref))
+    (unpack-value (hash-nref (state-ref-config res-id) (id->list attr))))
+
+  (define (deref-attr _ a)
+    (update-val a (lambda (v) (if (ref? v) (get-ref v) v))))
+
+  ; TODO - refactor to resource-update-config-fn
+  (hash-apply cfg deref-attr))
+
 (define (apply-changes mod (refresh? #t))
 
   (define (create id)
     (display (format "CREATING ~a" id))
     (flush-output)
-    (define res (driver-repr id))
+    (define res (deref-resource id))
     (define (type-fn verb . args) (apply ((resource-type-fn res) verb) args))
     (define res-cfg (resource-config res))
     (define driver-id (get-driver-id type-fn res))
@@ -142,7 +156,7 @@
   (define (update id)
     (display (format "UPDATING ~a" id))
     (flush-output)
-    (define res (driver-repr id))
+    (define res (deref-resource id))
     (define (type-fn verb . args) (apply ((resource-type-fn res) verb) args))
     (define res-cfg (resource-config res))
     (define driver-id (get-driver-id type-fn res))
@@ -151,13 +165,10 @@
     (define state-cfg (type-fn 'post-update res-cfg reply-cfg))
     (state-set-ref id (state-ref-origin id) (state-ref-destructor id) state-cfg))
 
-  ; TODO - check if unpacking is done here or should use unwrap fn
-  ; TODO41 - driver-repr name?
-  (define (driver-repr id)
+  (define (deref-resource id)
     (define res (hash-ref mod id))
     (resource (resource-type-fn res)
               (unwrap-values (deref-config (resource-config res)))))
-
   (define plan (get-plan-for mod refresh?))
 
   (define (delete-replacements res-op)
@@ -200,7 +211,6 @@
     [(op-replace _ diff) (hash-ref diff attr #f)]
     [_ #f]))
 
-
 (define (diff-resources new-state acc-ops old-cfg new-cfg)
   (define munged (deref-config new-cfg))
   (log-marv-debug "deref'd resource: ~a" munged)
@@ -216,8 +226,6 @@
     [(has-ref-to-updated-attr? new-cfg acc-ops) (op-update "ref to updated attribute" diff)]
     [(has-diff? diff) (op-update "updated attribute" diff)]
     [else #f]))
-
-(define (log-equal? a b) (log-marv-debug "equal?: ~a ~a" a b) (equal? a b))
 
 (define (operation id current-dfs new-dfs acc-ops)
   (log-marv-debug "Checking diffs for ~a" id)
@@ -238,11 +246,11 @@
          diff]
         [else (op-create "New resource!")]))
 
-; Functions for helping with the diff'ing process. df=diff, dfh=diff set (hash).
+; Functions for helping with the diff'ing process. df=diff, dfh=diff hash.
 ; For diff purposes, we need origin and configuration, the 'df' construct is a
 ; pair where df = (cons origin config)
 
-(define dfs/c (hash/c res-id/c pair?))
+(define dfh/c (hash/c res-id/c pair?))
 (define empty-df (cons (hash) (hash)))
 (define df cons)
 (define (state-entry->df s) (df (state-entry-origin s) (state-entry-config s)))
@@ -253,7 +261,7 @@
 (define (mk-resource-dfh rs) (hash-map/copy rs (lambda(k v) (values k (resource->df v)))))
 
 (define/contract (merge-dfs current-state new-resources)
-  (dfs/c dfs/c . -> . dfs/c)
+  (dfh/c dfh/c . -> . dfh/c)
 
   (define/contract (merge old new)
     (pair? pair? . -> . pair?)

@@ -60,7 +60,7 @@
   (displayln autogen-header)
   (displayln (format types-header api-id api-id))
   (for ([res-path (in-list types)])
-    ; TODO41- filter out empty apis
+    ; TODO- filter out empty apis
 
     (define (parse-verb->api v)
       (match (string-split v ":")

@@ -71,7 +71,6 @@
   (extract (disc-doc-root doc) ""))
 
 (define/contract (api-by-resource-path disc res-path method)
-  ; TODO41- or/c return type, here and above
   (disc-doc? string? string? . -> . (or/c boolean? disc-api?))
 
   (define (descend hs ks)
@@ -146,7 +145,6 @@
   (disc-api? . -> . (or/c #f string?))
   (hash-nref (disc-api-type-api api) '(response $ref) #f))
 
-; TODO41 - overloaded name
 (define/contract (api-request-type api)
   (disc-api? . -> . (or/c #f string?))
   (hash-nref (disc-api-type-api api) '(request $ref) #f))
@@ -164,7 +162,6 @@
   (hash-nref (disc-api-root api) (list 'schemas (string->symbol type) 'properties)))
 
 ; Utility for getting resource IDs from a discovery-document
-;TODO41 - might not get everything esp in secrets; requires depth
 (define (api-resource-keys doc [prefix ""])
   (map (lambda(k) (string->symbol(format "~a~a" prefix k))) (hash-keys (hash-ref (disc-doc-root doc) 'resources))))
 

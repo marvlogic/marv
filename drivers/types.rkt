@@ -16,7 +16,7 @@
 (define driver-resp/c hash?)
 
 ; TODO41 - right place?
-(define api/c hash? )
+(define api/c hash?)
 
 (define (driver-spec-api ds) (hash-ref ds 'api))
 

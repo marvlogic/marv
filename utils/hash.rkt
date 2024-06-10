@@ -30,7 +30,7 @@
       (hash-ref h k))))
 
 (define (hash-take hs ks)
-  ; TODO41 it would be safer to hash-remove, that way the type of the hash is maintained
+  ; TODO it would be safer to hash-remove, that way the type of the hash is maintained
   (for/hash ([i (in-list ks)]
              #:when (hash-has-key? hs i))
     (values i (hash-ref hs i))))

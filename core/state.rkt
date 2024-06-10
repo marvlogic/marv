@@ -1,15 +1,11 @@
 #lang racket/base
-(require racket/hash)
 (require racket/contract)
 (require marv/core/resources)
 (require marv/core/config)
-(require marv/core/values)
-(require marv/utils/hash)
 
 (provide load-state
          save-state
          state-keys
-         state-set-ref
          state-ref
          state-ref-config
          state-ref-origin
@@ -20,10 +16,9 @@
          state-entry-config
          state-get
          state-set/c
-         state-empty
          state-get-state-set
+         state-set-ref
          state-delete
-         deref-config
          state-for-each)
 
 (define STATE (make-parameter (hash 'serial 0 'resources (hash))))
@@ -37,14 +32,10 @@
   next)
 
 (struct state-entry (serial origin destructor config) #:prefab)
-(define state-empty (state-entry 0 (hash) (hash) (hash)))
-
-; TODO41 - refactor for the horrific amount of duplication/unecessary work in
-; the state module
 
 (define state-set/c (hash/c res-id/c state-entry? ))
 
-; TODO41 - set required fields in contract
+; TODO - set required fields in contract
 (define state-destructor/c hash?)
 
 (define (load-state f)
@@ -109,16 +100,3 @@
   (STATE (hash-set (STATE) 'resources (hash-remove (RESOURCES) m))))
 
 ; (Deep) Merge a resource's config (rs) into an existing state, where rs overwrites st
-; TODO41 - this is used only by lifecycle, move it
-(define/contract (deref-config cfg)
-  (config/c . -> . config/c)
-
-  (define (get-ref ref)
-    (define-values (res-id attr) (ref-split ref))
-    (unpack-value (hash-nref (state-ref-config res-id) (id->list attr))))
-
-  (define (deref-attr _ a)
-    (update-val a (lambda (v) (if (ref? v) (get-ref v) v))))
-
-  ; TODO - refactor to resource-update-config-fn
-  (hash-apply cfg deref-attr))

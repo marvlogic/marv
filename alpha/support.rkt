@@ -173,10 +173,15 @@
   (log-marv-debug "find-function: ~a.~a" fst rst)
   (define func
     (cond
-      [(and (procedure? root) (null? rst)) (log-marv-debug "  ->func")root]
-      ; TODO41 - (use match?) check rst is singleton. Also, safe to assume it's a type?
-      [(and (procedure? root)) (log-marv-debug "  ->func in type")(root (car rst))]
-      [(hash? root) (log-marv-debug "  ->func in hash")(hash-nref root rst)]
+      [(and (procedure? root) (null? rst))
+       (log-marv-debug "  ->func")root]
+      ; TODO - (use match?) check rst is singleton. Also, safe to assume it's a type?
+      [(and (procedure? root))
+       (log-marv-debug "  ->func in type ~a" root)
+       (root (car rst))]
+      [(hash? root)
+       (log-marv-debug "  ->func in hash")
+       (hash-nref root rst)]
       [else (raise "unsupported function reference")]))
   ;TODO41 - check func is a procedure?
   func
