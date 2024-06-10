@@ -2,8 +2,10 @@
 
 (require racket/hash)
 (require racket/string)
+(require racket/format)
 (require racket/pretty)
 (require racket/contract)
+(require racket/match)
 (require marv/log)
 (require marv/core/values)
 (require marv/utils/hash)
@@ -172,17 +174,15 @@
 (define (find-function root fst rst)
   (log-marv-debug "find-function: ~a.~a" fst rst)
   (define func
-    (cond
-      [(and (procedure? root) (null? rst))
-       (log-marv-debug "  ->func")root]
-      ; TODO - (use match?) check rst is singleton. Also, safe to assume it's a type?
-      [(and (procedure? root))
-       (log-marv-debug "  ->func in type ~a" root)
-       (root (car rst))]
-      [(hash? root)
-       (log-marv-debug "  ->func in hash")
-       (hash-nref root rst)]
-      [else (raise "unsupported function reference")]))
-  ;TODO41 - check func is a procedure?
-  func
-  )
+    (match/values
+     (values root rst)
+     [((? procedure? proc) (? null? _) )
+      (log-marv-debug "  ->func: ~a" proc)proc]
+     [((? procedure? proc) (list r))
+      (log-marv-debug "  ->func ~a in type ~a" r proc)
+      (proc r)]
+     [((? hash? hsh) lst)
+      (log-marv-debug "  ->func in hash")
+      (hash-nref hsh lst)]
+     [(_ _) (raise "unsupported function reference")]))
+  (if (procedure? func) func (raise (~a "expected a function, got: " func))))

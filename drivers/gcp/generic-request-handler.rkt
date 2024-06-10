@@ -52,7 +52,6 @@
       ['errored (raise (format "Operation failed with errors: ~v" (op-status-errors op-resp)))]
       [else (raise (format "indeterminate op state: ~v" op-resp))]
       ))
-  ; TODO41
   (define api-shaped-resource (api-request-body api))
   (log-marv-debug "api-shaped: ~v" api-shaped-resource)
   (define initial-response
