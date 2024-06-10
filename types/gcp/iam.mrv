@@ -5,6 +5,9 @@
 
 import types/gcp/_auto/iam as _auto
 import types/marv/marshalls
+import types/marv/base
+
+# TODO41 lifecycle/origin?
 
 type MserviceAccount = {
   identity(cfg) = cfg << [ name, project, description, displayName ]
@@ -26,9 +29,10 @@ export serviceAccount
 type MserviceAccountKey = {
   identity(cfg) = cfg << [ project, serviceAccountEmail ]
   create(cfg) = { name=strf("projects/~a/serviceAccounts/~a" cfg.project, cfg.serviceAccountEmail) }
-  post-create(o, state) = state <- { project=o.project }
+  post-create(o, state) = state <- { project=o.project, serviceAccountEmail=o.serviceAccountEmail }
 
-  read(state) = { name=strf("projects/~a/serviceAccounts/~a" state.project state.email)}
+  # read(state) = { name=strf("projects/~a/serviceAccounts/~a" state.project state.email)}
+  read(state) = state
   post-read(o, state)  = post-create(o, state)
   delete(state) = state << [ name ]
 }

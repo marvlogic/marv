@@ -9,7 +9,10 @@
          flat-attributes
          res-id/c prefix-id list->id id->list
          resource
+         resource-call
+         resource-origin
          resource/c
+         origin/c
          resource-set/c
          (struct-out resource)
          (struct-out attribute))
@@ -18,6 +21,16 @@
 (struct resource (type-fn config) #:prefab)
 
 (define res-id/c symbol?)
+
+(define origin/c hash?)
+
+(define/contract (resource-call verb res)
+  (symbol? resource? . -> . any/c)
+  (((resource-type-fn res) verb) (resource-config res)))
+
+(define/contract (resource-origin res)
+  (resource? . -> . origin/c)
+  (resource-call 'origin res))
 
 (define/contract (prefix-id prf id)
   (res-id/c res-id/c . -> . res-id/c )

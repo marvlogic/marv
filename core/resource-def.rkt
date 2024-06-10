@@ -17,10 +17,12 @@
 (require marv/log)
 
 (provide init-module get-module
-         resource-keys resource-ref
+         resource-keys
+         resource-ref
          module-ref
          mod-ref-driver?
-         get-resource-params validate-params
+         get-resource-params
+         validate-params
          resource-refs
          unpack-value
          update-val

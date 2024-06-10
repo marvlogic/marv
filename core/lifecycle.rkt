@@ -33,19 +33,35 @@
 (define (plan-changes mod (refresh? #t))
   (get-plan-for mod refresh?))
 
+(define (resource-origin res)
+  (define (type-fn verb . args) (apply ((resource-type-fn res) verb) args))
+  (type-fn 'origin (resource-config res)))
+
 (define/contract (get-plan-for rsset refresh?)
   (resource-set/c boolean? . -> . plan?)
   (define resource-keyset (list->set (resource-keys rsset)))
   ; TODO - pass in state, also define hash(id->state) contract types
   (define state-keyset (list->set (state-keys)))
+
+  (define (filter-unstable-origins set-ids)
+    (define (stable? id)
+      (log-marv-debug "  unstable check: ~a <-> ~a" (resource-origin (resource-ref rsset id)) (state-ref-origin id))
+      (equal? (resource-origin (resource-ref rsset id)) (state-ref-origin id)))
+    (filter stable? (set->list set-ids)))
+
   (define to-create (set-subtract resource-keyset state-keyset))
   (define to-delete (set-subtract state-keyset resource-keyset))
   (define to-refresh (set-subtract resource-keyset to-delete to-create))
 
-  (when refresh? (refresh-resources rsset (set->list to-refresh)))
+  (log-marv-debug "stable-origins: ~a -> ~a" to-refresh (filter-unstable-origins to-refresh))
+  (when refresh? (refresh-resources rsset (filter-unstable-origins to-refresh)))
 
   ; TODO - pass in state, also define hash(id->state) contract types
   (define current-state (state-get-state-set))
+
+  ; TODO - need to call origin on rsset resources; maybe a specific hash
+  ; construct for diff/lifecycle work rather than using 'state-*' functions?
+
   (define new-state (state<-resource current-state rsset))
   (define ordered-rks (resources-dag-topo rsset))
   (define operations
@@ -87,11 +103,11 @@
 
     (define res (resource-ref rsset k))
     (define (type-fn verb . args) (apply ((resource-type-fn res) verb) args))
-    (define driver-id (string->symbol(state-origin-driver (state-ref-origin k))))
+    (define driver-id (string->symbol(state-entry-driver (state-ref k))))
     (define cmd (type-fn 'read (state-ref-config k)))
     (define reply-cfg (send-to-driver driver-id cmd))
     (define state-cfg (type-fn 'post-read (state-ref-config k) reply-cfg))
-    (state-set-ref k (state-ref-origin k) state-cfg))
+    (state-set-ref k (state-ref-origin k) (state-ref-destructor k) state-cfg))
   (for ([i ids]) (refresh i)))
 
 (define/contract (send-driver-cmd driver-id cmd)
@@ -117,14 +133,13 @@
 
     (define state-cfg (type-fn 'post-create res-cfg reply-cfg))
     (define delete-cmd (type-fn 'delete reply-cfg))
-    (state-set-ref id (state-origin origin delete-cmd) state-cfg))
+    (state-set-ref id origin delete-cmd state-cfg))
 
   (define (delete id)
     (display (format "DELETING ~a" id))
     (flush-output)
-    (define delete-cmd (state-ref-destructor-cmd id))
-    (define origin (state-origin-fingerprint (state-ref-origin id)))
-    (define driver-id (string->symbol (hash-ref origin 'driver)))
+    (define delete-cmd (state-ref-destructor id))
+    (define driver-id (string->symbol (state-entry-driver (state-ref id))))
     (send-to-driver driver-id delete-cmd)
     (state-delete id))
 
@@ -139,7 +154,7 @@
     (define reply-cfg (send-driver-cmd driver-id cmd))
     ;TODO41 - what if origin changes? Is origin in reply?
     (define state-cfg (type-fn 'post-update res-cfg reply-cfg))
-    (state-set-ref id (state-ref-origin id) state-cfg))
+    (state-set-ref id (state-ref-origin id) (state-ref-destructor id) state-cfg))
 
   ; TODO - check if unpacking is done here or should use unwrap fn
   ; TODO41 - driver-repr name?
@@ -203,17 +218,28 @@
                                       (flathash old-cfg)) (flathash old-cfg)))
   (cond
     [(has-immutable-diff? diff) (op-replace "immutable diff" diff)]
-    [(has-immutable-ref-to-replaced-resource? new-cfg acc-ops) (op-replace "immutable ref to replaced resource" diff)]
+    [(has-immutable-ref-to-replaced-resource? new-cfg acc-ops)
+     (op-replace "immutable ref to replaced resource" diff)]
     [(has-immutable-ref-to-updated-attr? new-cfg acc-ops)
      (op-replace "immutable ref to updated attribute" diff)]
     [(has-ref-to-updated-attr? new-cfg acc-ops) (op-update "ref to updated attribute" diff)]
     [(has-diff? diff) (op-update "updated attribute" diff)]
     [else #f]))
 
+(define (log-equal? a b) (log-marv-debug "equal?: ~a ~a" a b) (equal? a b))
+
 (define (operation id current-state new-state acc-ops)
   (log-marv-debug "Checking diffs for ~a" id)
   ;TODO41 - origin changes
-  (cond [(hash-has-key? current-state id)
+  (define in-current-state? (hash-has-key? current-state id))
+  (define stable-origin?
+    (and in-current-state?
+         ; TODO41 -don't use state functions
+         (log-equal? (state-entry-origin (hash-ref current-state id))
+                     (state-entry-origin (hash-ref new-state id)))))
+  (cond [(and in-current-state? (not stable-origin?))
+         (op-replace "unstable origin" (hash))]
+        [in-current-state?
          (define current-cfg (state-entry-config (hash-ref current-state id)))
          (define new-cfg (state-entry-config (hash-ref new-state id)))
          (log-marv-debug " current-state: ~a" current-cfg)

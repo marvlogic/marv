@@ -13,16 +13,14 @@
          state-ref
          state-ref-config
          state-ref-origin
+         state-entry-origin ; TODO41 - used in lifecycle
          state-ref-serial
-         state-ref-destructor-cmd
-         state-origin-destructor-cmd
-         state-origin-fingerprint
-         state-origin-driver
+         state-ref-destructor
+         state-entry-driver
          state-get
          state-set/c
          state-merge
          state-empty
-         state-origin
          state-get-state-set
          state-delete
          deref-config
@@ -39,13 +37,16 @@
   (STATE (hash-set (STATE) 'serial next))
   next)
 
-(struct state-origin (fingerprint destructor-cmd) #:prefab)
-(struct state-entry (serial origin config) #:prefab)
-(define state-empty (state-entry 0 (state-origin 0 null) (hash)))
+(struct state-entry (serial origin destructor config) #:prefab)
+(define state-empty (state-entry 0 (hash) (hash) (hash)))
 
-(define (state-origin-driver origin)(hash-ref (state-origin-fingerprint origin) 'driver))
+; TODO41 - refactor for the horrific amount of duplication/unecessary work in
+; the state module
 
 (define state-set/c (hash/c res-id/c state-entry? ))
+
+; TODO41 - set required fields in contract
+(define state-destructor/c hash?)
 
 (define (load-state f)
   (cond
@@ -57,31 +58,36 @@
   (with-output-to-file f #:mode 'text #:exists 'replace
     (lambda () (write (STATE)))))
 
-(define/contract (state-set-ref key origin config)
-  (res-id/c state-origin? config/c . -> . void)
+(define/contract (state-set-ref key origin destructor config)
+  (res-id/c origin/c state-destructor/c config/c . -> . void)
   (define resources (RESOURCES))
   (define serial
     (cond [(hash-has-key? resources key) (state-entry-serial(hash-ref resources key))]
           [else (next-serial) ]))
   (STATE (hash-set (STATE)
-                   'resources (hash-set resources key (state-entry serial origin config))))
+                   'resources (hash-set resources key (state-entry serial origin destructor config))))
   void)
 
 (define/contract (state-ref k)
   (res-id/c . -> . state-entry?)
   (hash-ref (RESOURCES) k))
 
+(define (state-ref-serial k) (state-entry-serial (hash-ref (RESOURCES) k)))
+
+(define/contract (state-ref-origin k)
+  (res-id/c . -> . origin/c)
+  (state-entry-origin (hash-ref (RESOURCES) k)))
+
+(define/contract (state-ref-destructor k)
+  (res-id/c . -> . state-destructor/c)
+  (state-entry-destructor (hash-ref (RESOURCES) k)))
+
 (define/contract (state-ref-config k)
   (res-id/c . -> . config/c)
   (state-entry-config (hash-ref (RESOURCES) k)))
 
-(define/contract (state-ref-origin k)
-  (res-id/c . -> . state-origin?)
-  (state-entry-origin (hash-ref (RESOURCES) k)))
-
-(define (state-ref-serial k) (state-entry-serial (hash-ref (RESOURCES) k)))
-
-(define state-ref-destructor-cmd (compose1 state-origin-destructor-cmd state-ref-origin))
+(define (state-entry-driver st)
+  (hash-ref (state-entry-origin st) 'driver))
 
 (define (state-get) (STATE))
 (define (state-keys) (hash-keys (RESOURCES)))
@@ -104,6 +110,7 @@
   (STATE (hash-set (STATE) 'resources (hash-remove (RESOURCES) m))))
 
 ; (Deep) Merge a resource's config (rs) into an existing state, where rs overwrites st
+; TODO41 - this is used only by lifecycle, move it
 (define/contract (state-merge st rs)
   (state-entry? resource/c . -> . state-entry?)
 
@@ -121,7 +128,7 @@
   (define new-conf
     (if (eq? state-empty stc) rsc
         (combine-hash stc rsc)))
-  (state-entry (state-entry-serial st) (state-entry-origin st) new-conf))
+  (state-entry (state-entry-serial st) (resource-origin rs) (state-entry-destructor st) new-conf))
 
 (define/contract (deref-config state cfg)
   (state-set/c config/c . -> . config/c)
