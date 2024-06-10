@@ -13,18 +13,17 @@
          state-ref
          state-ref-config
          state-ref-origin
-         state-entry-origin ; TODO41 - used in lifecycle
          state-ref-serial
          state-ref-destructor
+         state-entry-origin
          state-entry-driver
+         state-entry-config
          state-get
          state-set/c
-         state-merge
          state-empty
          state-get-state-set
          state-delete
          deref-config
-         state-entry-config
          state-for-each)
 
 (define STATE (make-parameter (hash 'serial 0 'resources (hash))))
@@ -111,27 +110,8 @@
 
 ; (Deep) Merge a resource's config (rs) into an existing state, where rs overwrites st
 ; TODO41 - this is used only by lifecycle, move it
-(define/contract (state-merge st rs)
-  (state-entry? resource/c . -> . state-entry?)
-
-  (define (combine-hash s r)
-    (hash-union s r #:combine merge-em))
-
-  ; TODO - not sure if this is desired, e.g. can't empty a set of labels
-  (define (merge-em s r)
-    (cond [(and (hash? r) (hash? s)) (combine-hash s r)]
-          [else r]))
-
-  (define stc (state-entry-config st))
-  (define rsc (resource-config rs))
-
-  (define new-conf
-    (if (eq? state-empty stc) rsc
-        (combine-hash stc rsc)))
-  (state-entry (state-entry-serial st) (resource-origin rs) (state-entry-destructor st) new-conf))
-
-(define/contract (deref-config state cfg)
-  (state-set/c config/c . -> . config/c)
+(define/contract (deref-config cfg)
+  (config/c . -> . config/c)
 
   (define (get-ref ref)
     (define-values (res-id attr) (ref-split ref))

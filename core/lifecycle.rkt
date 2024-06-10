@@ -2,6 +2,7 @@
 
 (require racket/set)
 (require racket/dict)
+(require racket/hash)
 (require racket/match)
 (require racket/contract)
 
@@ -56,19 +57,14 @@
   (log-marv-debug "stable-origins: ~a -> ~a" to-refresh (filter-unstable-origins to-refresh))
   (when refresh? (refresh-resources rsset (filter-unstable-origins to-refresh)))
 
-  ; TODO - pass in state, also define hash(id->state) contract types
-  (define current-state (state-get-state-set))
-
-  ; TODO - need to call origin on rsset resources; maybe a specific hash
-  ; construct for diff/lifecycle work rather than using 'state-*' functions?
-
-  (define new-state (state<-resource current-state rsset))
+  (define current-dfs (mk-state-dfh (state-get-state-set)))
+  (define new-dfs (merge-dfs current-dfs (mk-resource-dfh rsset)))
   (define ordered-rks (resources-dag-topo rsset))
   (define operations
     (foldl
      (lambda (id acc-ops)
        ; TODO - pass in state, also define hash(id->state) contract types
-       (hash-set acc-ops id (operation id current-state new-state acc-ops))) (hash) ordered-rks))
+       (hash-set acc-ops id (operation id current-dfs new-dfs acc-ops))) (hash) ordered-rks))
 
   (define ordered-ops
     (append
@@ -77,7 +73,7 @@
      (map (lambda (rk) (cons rk (hash-ref operations rk)))
           ordered-rks)))
 
-  (plan rsset new-state ordered-ops))
+  (plan rsset new-dfs ordered-ops))
 
 ; TODO41 - import
 (define (import-resources mod ids)
@@ -152,7 +148,6 @@
     (define driver-id (get-driver-id type-fn res))
     (define cmd (type-fn 'update res-cfg))
     (define reply-cfg (send-driver-cmd driver-id cmd))
-    ;TODO41 - what if origin changes? Is origin in reply?
     (define state-cfg (type-fn 'post-update res-cfg reply-cfg))
     (state-set-ref id (state-ref-origin id) (state-ref-destructor id) state-cfg))
 
@@ -161,7 +156,7 @@
   (define (driver-repr id)
     (define res (hash-ref mod id))
     (resource (resource-type-fn res)
-              (unwrap-values (deref-config (state-get-state-set) (resource-config res)))))
+              (unwrap-values (deref-config (resource-config res)))))
 
   (define plan (get-plan-for mod refresh?))
 
@@ -207,11 +202,7 @@
 
 
 (define (diff-resources new-state acc-ops old-cfg new-cfg)
-  ; (define old-cfg (resource-config old-res))
-  ; (define new-cfg (resource-config new-res))
-  ; TODO - memoize diffs (store in operation?), also
-  ; TODO - make-diff pattern here (see command.rkt) and parameter order
-  (define munged (deref-config new-state new-cfg))
+  (define munged (deref-config new-cfg))
   (log-marv-debug "deref'd resource: ~a" munged)
   (define (flathash h) (make-immutable-hasheq (hash->flatlist h)))
   (define diff (make-diff (hash-merge (flathash munged)
@@ -228,37 +219,66 @@
 
 (define (log-equal? a b) (log-marv-debug "equal?: ~a ~a" a b) (equal? a b))
 
-(define (operation id current-state new-state acc-ops)
+(define (operation id current-dfs new-dfs acc-ops)
   (log-marv-debug "Checking diffs for ~a" id)
-  ;TODO41 - origin changes
-  (define in-current-state? (hash-has-key? current-state id))
+  (define in-current-state? (hash-has-key? current-dfs id))
   (define stable-origin?
     (and in-current-state?
-         ; TODO41 -don't use state functions
-         (log-equal? (state-entry-origin (hash-ref current-state id))
-                     (state-entry-origin (hash-ref new-state id)))))
+         (equal? (df-origin (hash-ref current-dfs id))
+                 (df-origin (hash-ref new-dfs id)))))
   (cond [(and in-current-state? (not stable-origin?))
-         (op-replace "unstable origin" (hash))]
+         (op-replace "origin changed" (hash))]
         [in-current-state?
-         (define current-cfg (state-entry-config (hash-ref current-state id)))
-         (define new-cfg (state-entry-config (hash-ref new-state id)))
+         (define current-cfg (df-config (hash-ref current-dfs id)))
+         (define new-cfg (df-config (hash-ref new-dfs id)))
          (log-marv-debug " current-state: ~a" current-cfg)
          (log-marv-debug " new-state: ~a" new-cfg)
-         (define diff (diff-resources new-state acc-ops current-cfg new-cfg))
+         (define diff (diff-resources new-dfs acc-ops current-cfg new-cfg))
          (log-marv-debug " diff: ~a" diff)
          diff]
         [else (op-create "New resource!")]))
 
-; TODO - factor merge into the state module
-(define/contract (state<-resource current-state new-resources)
-  (state-set/c resource-set/c . -> . state-set/c)
+; Functions for helping with the diff'ing process. df=diff, dfh=diff set (hash).
+; For diff purposes, we need origin and configuration, the 'df' construct is a
+; pair where df = (cons origin config)
+
+(define dfs/c (hash/c res-id/c pair?))
+(define empty-df (cons (hash) (hash)))
+(define df cons)
+(define (state-entry->df s) (df (state-entry-origin s) (state-entry-config s)))
+(define (resource->df r) (df (resource-origin r) (resource-config r)))
+(define (df-origin r) (car r))
+(define (df-config r) (cdr r))
+(define (mk-state-dfh state) (hash-map/copy state (lambda(k v) (values k (state-entry->df v)))))
+(define (mk-resource-dfh rs) (hash-map/copy rs (lambda(k v) (values k (resource->df v)))))
+
+(define/contract (merge-dfs current-state new-resources)
+  (dfs/c dfs/c . -> . dfs/c)
+
+  (define/contract (merge old new)
+    (pair? pair? . -> . pair?)
+
+    (define (combine-hash s r) (hash-union s r #:combine merge-em))
+
+    ; TODO - not sure if this is desired, e.g. can't empty a set of labels
+    (define (merge-em s r)
+      (cond [(and (hash? r) (hash? s)) (combine-hash s r)]
+            [else r]))
+
+    (define oldcfg (df-config old))
+    (define newcfg (df-config new))
+
+    (define new-conf (if (equal? empty-df oldcfg) newcfg (combine-hash oldcfg newcfg)))
+    (df (df-origin new) new-conf))
+
   (make-immutable-hash
    (map
     (lambda(rk)
-      (cons rk (state-merge
-                (hash-ref current-state rk state-empty)
+      (cons rk (merge
+                (hash-ref current-state rk empty-df)
                 (hash-ref new-resources rk))))
     (hash-keys new-resources))))
+
 
 
 (define (output-plan plan)

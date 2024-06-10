@@ -14,7 +14,7 @@ module main {
 
     name = "my-network"
     primary-cidr = "10.0.1.0/24"
-    proxy-cidr="10.0.3.0/24"
+    proxy-cidr="10.0.2.0/24"
 
     vpc = network {
         name = imm: name
