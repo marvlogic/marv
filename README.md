@@ -31,6 +31,13 @@ around issues in APIs.
 It's now far easier to create custom resource types in Marv, though it is still
 limited to Google Cloud Platform.
 
+**I'm planning to reach out to the DevOps community in order to gather feedback on
+Marv. This will be via Meetups (or similar) locally (in the south-west of the
+UK) or via video conferences.  If you are interested in helping out with this,
+please feel free to contact me:**
+
+- email: kevin@marvlogic.com
+
 ## Features so far...
 
 - GCP API support for:
