@@ -211,7 +211,7 @@
     [(op-replace _ diff) (hash-ref diff attr #f)]
     [_ #f]))
 
-(define (diff-resources new-state acc-ops old-cfg new-cfg)
+(define (diff-resources acc-ops old-cfg new-cfg)
   (define munged (deref-config new-cfg))
   (log-marv-debug "deref'd resource: ~a" munged)
   (define (flathash h) (make-immutable-hasheq (hash->flatlist h)))
@@ -241,7 +241,7 @@
          (define new-cfg (df-config (hash-ref new-dfs id)))
          (log-marv-debug " current-state: ~a" current-cfg)
          (log-marv-debug " new-state: ~a" new-cfg)
-         (define diff (diff-resources new-dfs acc-ops current-cfg new-cfg))
+         (define diff (diff-resources acc-ops current-cfg new-cfg))
          (log-marv-debug " diff: ~a" diff)
          diff]
         [else (op-create "New resource!")]))

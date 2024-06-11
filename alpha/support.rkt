@@ -1,10 +1,7 @@
 #lang racket/base
 
 (require racket/hash)
-(require racket/string)
 (require racket/format)
-(require racket/pretty)
-(require racket/contract)
 (require racket/match)
 (require marv/log)
 (require marv/core/values)
@@ -12,10 +9,8 @@
 (require marv/utils/uri)
 (require marv/core/globals)
 (require marv/core/drivers)
-(require marv/core/config)
 (require marv/utils/base64)
 (require marv/core/resources)
-(require marv/drivers/types)
 
 
 (require (prefix-in core: marv/core/resources))
@@ -112,7 +107,7 @@
 
 (define (module-call var-id mod-proc params)
   (log-marv-debug "Registering future invocation of ~a=~a(~a)" (prefix-mod-id var-id) mod-proc params)
-  (add-resource var-id (lambda(id-prefix)
+  (add-resource var-id (lambda(_)
                          (log-marv-debug "calling ~a (~a)" var-id mod-proc)
                          (mod-proc (prefix-mod-id var-id) params)))
   (future-ref #f))
@@ -146,7 +141,7 @@
 (define (gen-resources)
   (log-marv-debug "gen-resources called for these visible resources: ~a" (RESOURCES))
 
-  (define (handle-future-ref k v)
+  (define (handle-future-ref _ v)
     (update-val v (lambda(uv)
                     (if (future-ref? uv)
                         (try-resolve-future-ref (future-ref-ref uv) #:fail-on-missing #t)

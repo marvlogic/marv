@@ -1,14 +1,11 @@
 #lang marv
 
-import types/gcp/base
 import types/gcp/compute as compute
 
-import types/marv/base
-import types/marv/enhancers
-
-type network = E1<compute:network, default-resource>
-type subnet = E1<compute:subnetwork, default-resource>
-type firewall = E1<compute:firewall, default-resource>
+defaults = {
+    project = env("MARV_GCP_PROJECT") 
+    region = env("MARV_GCP_REGION") 
+}
 
 module main {
 
@@ -16,21 +13,21 @@ module main {
     primary-cidr = "10.0.1.0/24"
     proxy-cidr="10.0.2.0/24"
 
-    vpc = network {
+    vpc = compute:network defaults <- {
         name = imm: name
         description = strf("VPC for ~a" name)
         autoCreateSubnetworks = false
         routingConfig = { routingMode = "REGIONAL" }
     } 
 
-    primary-sn = subnet {
+    primary-sn = compute:subnetwork defaults <- {
         name = strf("~a-primary" name)
         description = strf("Primary subnet for ~a" name)
         network = imm: vpc.selfLink
         ipCidrRange =  imm: primary-cidr
     }
 
-    proxy-sn = subnet {
+    proxy-sn = compute:subnetwork defaults <- {
         name = strf("~a-proxy" name)
         description = strf("Proxy subnet for ~a" name)
         ipCidrRange = imm: proxy-cidr
@@ -41,7 +38,7 @@ module main {
 
     google-source-range = [ "130.211.0.0/22" "35.191.0.0/16" ]
     
-    fw-health-check = firewall {
+    fw-health-check = compute:firewall defaults <- {
         name = strf("~a-fw-allow-health-check" name)
         sourceRanges = google-source-range
         targetTags =  [ "load-balanced-backend" ]
@@ -49,7 +46,7 @@ module main {
         direction = "INGRESS"
     }
 
-    fw-proxies = firewall {
+    fw-proxies = compute:firewall defaults <- {
         name = strf("~a-fw-allow-proxies" name)
         sourceRanges = [ proxy-sn.ipCidrRange ]
         targetTags =  [ "load-balanced-backend" ]

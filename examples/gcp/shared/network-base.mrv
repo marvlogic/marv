@@ -10,15 +10,6 @@ module network-base(defaults name
         primary-cidr="10.0.1.0/24" 
         proxy-cidr="10.0.2.0/24") {
 
-    # resources are declared using the syntax:
-    #    <res-id> = <driver-id>:<type> CONFIG-EXPRESSION
-
-    # <res-id> is immutable - you can't change a resource's ident without destroying
-    # and recreating it.
-
-    # <driver-id> - two drivers are supported for now: gcp and dev, and they are
-    # currently hard-coded into marv. 
-
     # <type> - driver-specific resource type 
 
     # A CONFIG-EXPRESSION can be a CONFIG-OBJECT or it can be a
