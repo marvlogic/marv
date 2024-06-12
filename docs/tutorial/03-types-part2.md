@@ -164,7 +164,9 @@ type LabelResource<R> = {
 }
 ```
 
-A better approach is to separate everything into basic components, then combine them using a `Compose` type-template:
+NB there are various combinations of that idea.
+
+A better approach is to separate everything into basic types, then combine them using a `Compose` type-template:
 
 ```
 type Label = {
@@ -183,4 +185,18 @@ type Compose<C1, C2, R> = {
     identity(cfg) = R.identity(C2.identity(C1.identity(cfg)))
     * = R.*
 }
+
+type bucket = Combine<Label, Defaults, storage:bucket>
+type secret = Combine<Label, Defaults, secret:secret>
+
+```
+
+This is a better approach because the `Compose` type template is generic and re-usable. In fact, Marv's type library already has these defined for up to 5 combinations:
+
+
+```
+import types/marv/compositions
+...
+type bucket = C2<Label, Defaults, storage:bucket>
+type secret = C2<Label, Defaults, secret:secret>
 ```
