@@ -265,6 +265,17 @@
       [(_ passthru) (syntax/loc stx passthru)]
       ))
 
+  (define (m-parens-expr stx)
+    (syntax-parse stx
+      [(_ passthru) (syntax/loc stx passthru)]
+      ))
+
+  (define (m-try-alternate stx)
+    (syntax-parse stx
+      [(_ expr1 expr2)
+       (syntax/loc stx
+         (with-handlers ([exn:fail? (lambda(_) expr2)]) expr1))]))
+
   (define (m-boolean stx)
     (syntax-parse stx
       [(_ "true") (syntax/loc stx val) #'#t]
@@ -349,11 +360,11 @@
       [(_ ref:id)
        (define splitref (split-symbol (syntax-e #'ref)))
        (define root (format-id stx "~a" (car splitref)))
-       (define rst (datum->syntax stx (cdr splitref)))
+       (define tail (datum->syntax stx (cdr splitref)))
        ; RAW version:  #`(handle-ref #,r0 'r '#,rs)
        (with-syntax
            ([root root]
-            [tail rst])
+            [tail tail])
          (syntax/loc stx (handle-ref root 'root 'tail)))]))
 
   (define (m-res-decl stx)
@@ -399,6 +410,8 @@
 (define-syntax func-call m-func-call)
 (define-syntax func-ident m-func-ident)
 (define-syntax expression m-expression)
+(define-syntax parens-expr m-parens-expr)
+(define-syntax try-alternate m-try-alternate)
 (define-syntax reference m-reference)
 (define-syntax config-object m-config-object)
 (define-syntax alist m-alist)
@@ -432,7 +445,7 @@
          module-export
          api-id transformer-id type-id
          func-call func-ident config-func-decl func-decl type-decl type-template
-         expression reference statement config-object alist list-attr attribute-name
+         expression parens-expr try-alternate reference statement config-object alist list-attr attribute-name
          config-expr config-merge config-ident config-take
          keyword built-in env-read pprint strf urivars uritemplate base64encode base64decode
          boolean)

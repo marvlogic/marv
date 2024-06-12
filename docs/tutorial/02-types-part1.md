@@ -84,7 +84,7 @@ So how might we do this using the `type` system in Marv?  Well, we can build a c
 ```
 type labelledBucket = {
     identity(cfg) = cfg <- { 
-        labels = { costcentre = "abc123", environment="dev" } 
+        labels = (cfg.labels | {} ) <- { costcentre = "abc123", environment="dev" } 
     }
 }
 ```
@@ -107,7 +107,7 @@ given. But we still need to do more for this to work - as mentioned, marv is exp
 ```
 type labelledBucket = {
     identity(cfg) = cfg <- { 
-        labels = { costcentre = "abc123", environment="dev" } 
+        labels = (cfg.labels | {} ) <- { costcentre = "abc123", environment="dev" } 
     }
     origin(cfg)         = storage:bucket.origin(cfg)
     create(cfg)         = storage:bucket.create(cfg)
@@ -120,21 +120,24 @@ type labelledBucket = {
 }
 ```
 
-(NB we're not going to cover all those functions in this tutorial, only `identity` is important for now)
+(NB we're not going to cover all those functions in this tutorial; only `identity` is important for now)
 
-Now, that's a lot of boilerplate - which we don't like. So `marv` has a shortcut that accomplishes the same thing:
+Now, that's a lot of boilerplate and we don't like boilerplate. So `marv` has a shortcut that accomplishes the same thing:
 
 ```
 type labelledBucket = {
     identity(cfg) = cfg <- { 
-        labels = { costcentre = "abc123", environment="dev" } 
+        labels = (cfg.labels | {} ) <- { costcentre = "abc123", environment="dev" } 
     }
     * = storage:bucket.*
 }
 ```
-`identity` is defined in `labelledBucket` and anything else is found by looking at the functions in `storage:bucket`.
 
-So at this point our complete module looks like this:
+So now, `identity` is defined in `labelledBucket` and all other functions are found by looking at the functions defined by `storage:bucket`.
+
+At this point our complete module looks like this:
+
+TODO41 - cfg.labels - needs to default to empty?
 
 ```
 #lang marv
@@ -143,7 +146,7 @@ import types/gcp/storage as storage
 
 type labelledBucket = {
     identity(cfg) = cfg <- { 
-        labels = { costcentre = "abc123", environment="dev" } 
+        labels = (cfg.labels | {} ) <- { costcentre = "abc123", environment="dev" } 
     }
     * = storage:bucket.*
 }

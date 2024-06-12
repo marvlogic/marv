@@ -24,13 +24,15 @@ func-decl: IDENTIFIER /"(" (IDENTIFIER [ /"," ])* /")" /"=" expression
 func-call: func-ident /"(" (expression [ /"," ])* /")"
 func-ident: (DOTTY-IDENT | IDENTIFIER)
 
+
 verb: IDENTIFIER
 type-id: IDENTIFIER
 transformer-id: IDENTIFIER
 api-id: DOTTY-IDENT
 
-expression: INTEGER | STRING | IDENTIFIER | func-call | boolean | config-expr | reference | alist | built-in
-
+expression: INTEGER | STRING | IDENTIFIER | func-call | try-alternate | boolean | config-expr | reference | alist | built-in | parens-expr
+try-alternate: expression /"|" expression
+parens-expr: /"(" expression /")"
 string-expression: STRING | expression
 
 boolean: "true" | "false"
@@ -53,9 +55,9 @@ base64encode: /"base64encode" /"(" expression /")"
 base64decode: /"base64decode" /"(" expression /")"
 
 config-expr: reference | config-object | config-ident | config-merge | config-take | func-call
-config-merge: config-expr ("<-" | "->") config-expr
+config-merge: expression ("<-" | "->") expression
 config-ident: IDENTIFIER
-config-take: config-expr /"<<" ( urivars | list-attr )
+config-take: expression /"<<" ( urivars | list-attr )
 
 reference: DOTTY-IDENT
 
