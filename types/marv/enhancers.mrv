@@ -9,7 +9,7 @@
 # parameters must be types that implement the necessary functions from the
 # lifecycle.
 
-# TODO41 - rename to LC* for lifecycle
+# TODO41 - rename as compositions, change parameter order
 
 type E1<T,E1> = {
 

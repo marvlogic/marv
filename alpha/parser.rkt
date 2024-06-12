@@ -20,10 +20,11 @@ pprint: /"pprint" expression
 comment: COMMENT
 var-decl: IDENTIFIER /"=" expression
 
-func-decl: IDENTIFIER /"(" (IDENTIFIER [ /"," ])* /")" /"=" expression
-func-call: func-ident /"(" (expression [ /"," ])* /")"
+# TODO - mandatory at least one parameter, or func calls of e.g. C2.xxx(C1.yyy(B.zzz))
+# may fail to parse correctly.
+func-decl: IDENTIFIER /"(" (IDENTIFIER [ /"," ])+ /")" /"=" expression
+func-call: func-ident /"(" (expression [ /"," ])+ /")"
 func-ident: (DOTTY-IDENT | IDENTIFIER)
-
 
 verb: IDENTIFIER
 type-id: IDENTIFIER

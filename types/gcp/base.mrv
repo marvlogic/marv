@@ -7,7 +7,6 @@ type default-resource = {
         project = env("MARV_GCP_PROJECT") 
         region = env("MARV_GCP_REGION") 
     }
-    project() = env("MARV_GCP_PROJECT")
     * = lifecycle.*
 }
 
