@@ -12,8 +12,7 @@ import types/gcp/secretmanager as secret
 
 type labelledBucket = {
     identity(cfg) = cfg <- { 
-        labels = (cfg.labels | {} ) <- 
-            { costcentre = "abc123", environment="uat" } 
+        labels = (cfg.labels | {} ) <- { costcentre = "abc123", environment="uat" } 
     }
     * = storage:bucket.*
 }
@@ -52,8 +51,7 @@ Let's now assume that we want to add the same labels to our new secrets. We can 
 ...
 type labelledSecret = {
     identity(cfg) = cfg <- { 
-        labels = (cfg.labels | {} ) <- 
-            { costcentre = "abc123", environment="uat" } 
+        labels = (cfg.labels | {} ) <- { costcentre = "abc123", environment="uat" } 
         } 
     * = secret:secret.*
 }
@@ -113,8 +111,7 @@ import types/gcp/secretmanager as secret
 
 type LabelResource<R> = {
     identity(cfg) = R.identity(cfg) <- { 
-        labels = (cfg.labels | {} ) <- 
-            { costcentre = "abc123", environment="uat" } 
+        labels = (cfg.labels | {} ) <- { costcentre = "abc123", environment="uat" } 
     }
     * = R.*
 }
@@ -182,13 +179,14 @@ type Compose<C1, C2, R> = {
     * = R.*
 }
 
-type bucket = Combine<Label, Defaults, storage:bucket>
-type secret = Combine<Label, Defaults, secret:secret>
+type bucket = Compose<Label, Defaults, storage:bucket>
+type secret = Compose<Label, Defaults, secret:secret>
 
 ```
 
-This is a better approach because the `Compose` type template is generic and re-usable. But you don't need to define this for yourself:  Marv's type library already has these defined for 2 to 6 combinations (named C2 to C6, according to the number of type parameters):
+This is a better approach because the `Compose` type template is generic and re-usable. 
 
+We've ended up here, but you don't need to define `Compose` for yourself:  Marv's type library already has these defined for 2 to 6 combinations (named C2 to C6, according to the number of type parameters):
 
 ```
 import types/marv/compose

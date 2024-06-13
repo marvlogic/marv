@@ -16,13 +16,13 @@ module main {
     bucket1 = storage:bucket {
         project = my-project
         region = env("MARV_GCP_REGION")
-        name = imm: strf("~a-hello-world1" my-project)
+        name = strf("~a-hello-world1" my-project)
     }
 
     bucket2 = storage:bucket {
         project = my-project
         region = env("MARV_GCP_REGION")
-        name = imm: strf("~a-hello-world2" my-project)
+        name = strf("~a-hello-world2" my-project)
     }
 }
 ```
@@ -37,11 +37,11 @@ defaults = {
 }
 
 bucket1 = storage:bucket defaults <- {
-    name = imm: strf("~a-hello-world1" defaults.project)
+    name = strf("~a-hello-world1" defaults.project)
 }
 
 bucket2 = storage:bucket defaults <- {
-    name = imm: strf("~a-hello-world2" defaults.project)
+    name = strf("~a-hello-world2" defaults.project)
 }
 ...
 ```
@@ -60,7 +60,7 @@ However, this wouldn't work if we wanted our buckets to have other labels as wel
 
 ```
 bucket1 = storage:bucket defaults <- {
-    name = imm: strf("~a-hello-world1" defaults.project)
+    name = strf("~a-hello-world1" defaults.project)
     labels = { purpose = "xyz" }
 }
 ```
@@ -71,7 +71,7 @@ We could work around this by changing our bucket specification so that labels ar
 
 ```
 bucket1 = storage:bucket defaults <- {
-    name = imm: strf("~a-hello-world1" defaults.project)
+    name = strf("~a-hello-world1" defaults.project)
     labels = defaults.labels <- { purpose = "xyz" }
 }
 ```
@@ -135,7 +135,7 @@ type labelledBucket = {
 }
 ```
 
-So `identity` is defined in `labelledBucket` and all other functions are found by looking at the functions defined by `storage:bucket`.
+`identity` is defined in `labelledBucket` and all other functions are found by looking at the functions defined by `storage:bucket`.
 
 At this point our complete module looks like this:
 
@@ -159,11 +159,11 @@ defaults = {
 module main {
 
     bucket1 = labelledBucket defaults <- {
-        name = imm: strf("~a-hello-world1" defaults.project)
+        name = strf("~a-hello-world1" defaults.project)
     }
 
     bucket2 = labelledBucket defaults <- {
-        name = imm: strf("~a-hello-world2" defaults.project)
+        name = strf("~a-hello-world2" defaults.project)
     }
     
 }
