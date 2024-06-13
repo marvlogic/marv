@@ -17,17 +17,21 @@
 (require marv/core/config)
 
 (provide load-discovery
-         api-for-type-op
+         get-discovery-resources
+         api-by-resource-path
          api-http-method
-         api-resource-url
+         api-resource-url-base
          api-parameters
          api-required-params
          api-resource
          api-response-type
          api-request-type
+         disc-schemas
+         get-disc-schema
          api-schema
          disc-doc?
          api-display-docs
+         api-resource-keys
          disc-api?)
 
 (define (raise-exn fstr . vs) (apply error 'discovery fstr vs))
@@ -52,65 +56,40 @@
                (dict-ref (read-json) 'items)))
     #:url ROOT-DISCOVERY))
 
-; TODO - better name for type-op stuff?
-(define/contract (api-for-type-op discovery type-op)
-  (disc-doc? symbol? . -> . disc-api?)
+(define/contract (get-discovery-resources doc)
+  (disc-doc?  . -> . (listof string?))
 
-  (define (consult-discovery-doc)
-    (define (find-api res-tree type-path)
-      (define hs (hash-ref res-tree 'resources))
-      (match type-path
-        [(list t op) (hash-nref hs (list t 'methods op))]
-        [(list t ts ...) (find-api (hash-ref hs t) ts)]))
+  (define (extract hs path)
+    (for/fold ([found-names '()])
+              ([(key value) (in-hash hs)])
+      (cond
+        [(hash? value)
+         (define keypath (format "~a/~a" path key))
+         (define next-found-names (if (hash-has-key? value 'methods) (cons keypath found-names) found-names))
+         (append next-found-names (extract value keypath))]
+        [else found-names])))
+  (extract (disc-doc-root doc) ""))
 
-    ; TODO14 - exception handling
-    (define res-tree (disc-doc-root discovery))
-    (define path (cdr (split-symbol type-op)))
-    (define api (find-api res-tree path))
+(define/contract (api-by-resource-path disc res-path method)
+  (disc-doc? string? string? . -> . (or/c boolean? disc-api?))
 
-    ; This check covers the assumption that the path through the discovery
-    ; document should match up with the id of the API. e.g the IAM discovery
-    ; document path "resources.projects.resources.serviceAccounts.methods.get"
-    ; should have an API with id = "iam.projects.serviceAccount.get"
+  (define (descend hs ks)
+    (match ks
+      [(list k) (hash-ref hs k #f)]
+      [(list k kss ...)(descend (hash-ref hs k) kss)]))
 
-    (define api-id (string->symbol (hash-ref api 'id)))
-    (when (not (eq? api-id type-op))
-      (raise-exn "API for ~v did not match in API's id field (~v)" type-op api-id))
-    api)
-
-  (define patches (disc-doc-type-op-patches discovery))
-  (disc-api (disc-doc-root discovery) (hash-ref patches type-op consult-discovery-doc)))
+  (define foundit (descend (disc-doc-root disc)
+                           (map string->symbol (append (string-split res-path "/") (list "methods" method)))))
+  (if foundit (disc-api (disc-doc-root disc) foundit) #f))
 
 (define/contract (api-http-method api)
   (disc-api? . -> . symbol?)
   (string->symbol(hash-ref (disc-api-type-api api) 'httpMethod)))
 
-(define/contract (api-resource-url api config)
-  (disc-api? config/c . -> . string?)
-
-  ; NB this area is bound to give problems in the future, because assumptions are
-  ; made for all APIs that we can provide a missing required-parameter by using
-  ; the 'name' attribute from a resource config
+(define/contract (api-resource-url-base api)
+  (disc-api? . -> . string?)
 
   (define reqd-params (api-required-params api))
-  (define config-params (hash-take config reqd-params))
-  (define missing-params (set-subtract reqd-params (hash-keys config-params) ))
-
-  (define alias-cfg
-    (case (set-count missing-params)
-      [(0) config-params]
-      [(1)
-       (define missing (set-first missing-params))
-       (define name (hash-ref config 'name))
-       (log-marv-warn "missing parameter: ~v, assuming ~v is ok" missing name)
-       (hash-set config-params missing name)]
-      [else (raise-exn "missing too many path parameters: ~v, need: ~v" missing-params reqd-params)]))
-
-  ; uri-template library needs an 'equal?' hash, using strings as keys
-  (define path-parameters
-    (hash-map/copy
-     (make-immutable-hash (hash->list alias-cfg))
-     (lambda(k v) (values (symbol->string k) v))))
 
   ; for apis (secret-manager, storage) that have required query parameters, but
   ; don't have the template variables for them in the 'path' setting:
@@ -122,15 +101,16 @@
                        "&" #:before-first "?")]
       [else ""]))
 
-  (define path (format "~a~a" (hash-ref (disc-api-type-api api) 'path) query-params-str))
-  (log-marv-debug "path: ~v, imm: ~v" path path-parameters)
-  (log-marv-debug "exp: ~v" (expand-template path path-parameters))
+  ; TODO - should be doing this per-api as this is assuming the last thing in
+  ; the URL inside {} is actually supposed to be {name}
+  (define base-path (regexp-replace #rx"{[a-zA-Z0-9]*}$" (hash-ref (disc-api-type-api api) 'path) "{name}"))
+  (define path (format "~a~a" base-path query-params-str))
   (define api-root (disc-api-root api))
   (define url
     (format "~a~a~a"
             (hash-ref api-root 'rootUrl)
             (hash-ref api-root 'servicePath)
-            (expand-template path path-parameters)))
+            path))
   (log-marv-debug "url: ~v" url)
   url)
 
@@ -169,15 +149,21 @@
   (disc-api? . -> . (or/c #f string?))
   (hash-nref (disc-api-type-api api) '(request $ref) #f))
 
+(define/contract (disc-schemas disc)
+  (disc-doc? . -> . (listof symbol?))
+  (hash-keys (hash-ref (disc-doc-root disc) 'schemas)))
+
+(define/contract (get-disc-schema disc type)
+  (disc-doc? symbol? . -> . hash?)
+  (hash-nref (disc-doc-root disc) (list 'schemas type)))
+
 (define/contract (api-schema api type)
   (disc-api? string? . -> . hash?)
   (hash-nref (disc-api-root api) (list 'schemas (string->symbol type) 'properties)))
 
-; Utility for printing out resource IDs from a discovery-document
-(define (api-resource-keys doc)
-  (pretty-print
-   (make-immutable-hash (map (lambda(k) (cons k k))
-                             (hash-keys (hash-ref (disc-doc-root doc) 'resources))))))
+; Utility for getting resource IDs from a discovery-document
+(define (api-resource-keys doc [prefix ""])
+  (map (lambda(k) (string->symbol(format "~a~a" prefix k))) (hash-keys (hash-ref (disc-doc-root doc) 'resources))))
 
 (define (api-display-docs api type [subtype #f])
 

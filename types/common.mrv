@@ -1,5 +1,7 @@
 #lang marv
 
-export identity
+export gcp-base
 
-identity(config) = config
+type gcp-base = {
+    origin(cfg) = cfg <- { driver = "gcp" }
+}

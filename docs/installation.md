@@ -15,9 +15,8 @@ Install `marv` using `raco`:
 ```
 cd marv
 raco pkg install
+alias marv="racket command.rkt"
 ```
-
-NB [ ] ...setup aliases
 
 ## Installation using the Docker Image
 
@@ -37,7 +36,7 @@ docker run -it marvlogic/marv:latest /bin/bash
 marv --plan /usr/lib/marv/examples/gcp/01-networking.mrv
 ```
 
-Alternatively, you can mount your local directory inside the container (at `/home/marv`), pass the necessary environment variables into it, and work that way:
+Alternatively, you can mount your local directory inside the container (at `/home/marv`), and pass the necessary environment variables into it:
 
 ```
 docker run -v `pwd`:/home/marv \

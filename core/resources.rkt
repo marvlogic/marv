@@ -4,24 +4,33 @@
 (require racket/contract)
 (require racket/string)
 (require marv/core/config)
-(require marv/drivers/types)
 
 (provide hash->attribute
          flat-attributes
-         mk-rmodule
          res-id/c prefix-id list->id id->list
          resource
+         resource-call
+         resource-origin
          resource/c
+         origin/c
          resource-set/c
-         rmodule/c
          (struct-out resource)
-         (struct-out rmodule)
          (struct-out attribute))
 
 (struct attribute (name value) #:prefab)
-(struct resource (driver-id config) #:prefab)
+(struct resource (type-fn config) #:prefab)
 
 (define res-id/c symbol?)
+
+(define origin/c hash?)
+
+(define/contract (resource-call verb res)
+  (symbol? resource? . -> . any/c)
+  (((resource-type-fn res) verb) (resource-config res)))
+
+(define/contract (resource-origin res)
+  (resource? . -> . origin/c)
+  (resource-call 'origin res))
 
 (define/contract (prefix-id prf id)
   (res-id/c res-id/c . -> . res-id/c )
@@ -35,17 +44,9 @@
   ((listof symbol?) . -> . res-id/c)
   (string->symbol (string-join (map symbol->string lst) ".")))
 
-(define resource/c (struct/c resource driver-id/c config/c))
-
-(struct rmodule (drivers resources))
-
-(define rmodule/c rmodule?)
+(define resource/c (struct/c resource procedure? config/c))
 
 (define resource-set/c (hash/c res-id/c resource/c))
-
-(define/contract (mk-rmodule drivers resources)
-  (driver-set/c resource-set/c . -> . rmodule/c)
-  (rmodule drivers resources))
 
 (define/contract (hash->attribute h)
   (hash? . -> . (listof attribute?))

@@ -7,8 +7,6 @@ You define your infrastructure in files using Marv's DSL, and then apply the
 definition which creates/updates/deletes the actual resources. `marv` manages
 the lifecycle of the resources to keep the infrastructure in sync with code.
 
-![Demo of Marv CLI](screencap.gif)
-
 # Status
 
 __Under active development: Not suitable for production usage__
@@ -17,6 +15,29 @@ __Under active development: Not suitable for production usage__
 is much more stable and usable, there remains a lot of refactoring and
 improvements to make.
 
+## Developer's Update - June 2024
+
+Issue #41 (type system development) has been in progress since December, though
+there was a 3 month break while I was working for a client on another project. 
+
+The type system took a *lot* of work, and several dead-ends, before I settled on
+something that will be a solid foundation to build on. 
+
+I'm also happy that the new type system and language features are flexible
+enough to cope with the quirks of the various GCP APIs; there should be little
+or no need to resort to changing the Racket-based core of Marv itself to work
+around issues in APIs.
+
+It's now far easier to create custom resource types in Marv, though it is still
+limited to Google Cloud Platform.
+
+**I'm planning to reach out to the DevOps community in order to gather feedback on
+Marv. This will be via Meetups (or similar) locally (in the south-west of the
+UK) or via video conferences.  If you are interested in helping out with this,
+please feel free to contact me:**
+
+- email: kevin@marvlogic.com
+
 ## Features so far...
 
 - GCP API support for:
@@ -24,7 +45,7 @@ improvements to make.
   - Storage
   - IAM (partial)
   - Secret Manager
-- New DSL for describing resources ([tutorial](docs/tutorial/01-bucket-example.md))
+- DSL for describing resources ([tutorial](docs/tutorial/01-bucket-example.md))
 - Modules, including parameters and returns (outputs)
 - Custom types (for accessing parts of the API not covered in the standard model)
 - Local state file

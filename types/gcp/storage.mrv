@@ -1,58 +1,49 @@
 #lang marv
-import "../common.mrv"
-type gcp:storage.project = {
-  create = storage.projects.insert { identity identity }
-  read = storage.projects.get { identity identity }
-  update = storage.projects.patch { identity identity }
-  delete = storage.projects.delete { identity identity }
+
+# WARNING: This shim file is incomplete. You need to define an 'API' type
+# relevant to the API being imported, and then remove this warning.
+
+import types/gcp/_auto/storage as _auto
+import types/gcp/base
+
+# Modify this example per API
+
+delete-self(state, oapi) = {
+  api= oapi.api <- { url=state.selfLink }
+  config = {}
 }
 
-type gcp:storage.bucket = {
-  create = storage.buckets.insert { identity identity }
-  read = storage.buckets.get { identity identity }
-  update = storage.buckets.patch { identity identity }
-  delete = storage.buckets.delete { identity identity }
+type API<T> = {
+  identity(cfg) = cfg <- { name=imm: cfg.name }
+  post-create(original, state) = state <- { project=original.project,  region=original.region }
+  post-read(local, remote) = post-create(local, remote)
+  post-update(original, state)=post-create(original, state)
+  delete(state) = delete-self(state, T.delete(state))
+  * = T.*
 }
+type notification=API<_auto:notifications>
+export notification
 
-type gcp:storage.bucketAccessControls = {
-  create = storage.bucketAccessControls.insert { identity identity }
-  read = storage.bucketAccessControls.get { identity identity }
-  update = storage.bucketAccessControls.patch { identity identity }
-  delete = storage.bucketAccessControls.delete { identity identity }
-}
+type objectAccessControl=API<_auto:objectAccessControls>
+export objectAccessControl
 
-type gcp:storage.objectAccessControls = {
-  create = storage.objectAccessControls.insert { identity identity }
-  read = storage.objectAccessControls.get { identity identity }
-  update = storage.objectAccessControls.patch { identity identity }
-  delete = storage.objectAccessControls.delete { identity identity }
-}
+type bucketAccessControl=API<_auto:bucketAccessControls>
+export bucketAccessControl
 
-type gcp:storage.object = {
-  create = storage.objects.insert { identity identity }
-  read = storage.objects.get { identity identity }
-  update = storage.objects.patch { identity identity }
-  delete = storage.objects.delete { identity identity }
-}
+type bucket=API<_auto:buckets>
+export bucket
 
-type gcp:storage.notification = {
-  create = storage.notifications.insert { identity identity }
-  read = storage.notifications.get { identity identity }
-  update = storage.notifications.patch { identity identity }
-  delete = storage.notifications.delete { identity identity }
-}
+type channel=API<_auto:channels>
+export channel
 
-type gcp:storage.channel = {
-  create = storage.channels.insert { identity identity }
-  read = storage.channels.get { identity identity }
-  update = storage.channels.patch { identity identity }
-  delete = storage.channels.delete { identity identity }
-}
+type defaultObjectAccessControl=API<_auto:defaultObjectAccessControls>
+export defaultObjectAccessControl
 
-type gcp:storage.defaultObjectAccessControls = {
-  create = storage.defaultObjectAccessControls.insert { identity identity }
-  read = storage.defaultObjectAccessControls.get { identity identity }
-  update = storage.defaultObjectAccessControls.patch { identity identity }
-  delete = storage.defaultObjectAccessControls.delete { identity identity }
-}
+type object=API<_auto:objects>
+export object
 
+type serviceAccount=API<_auto:projects_serviceAccount>
+export serviceAccount
+
+type hmacKey=API<_auto:projects_hmacKeys>
+export hmacKey

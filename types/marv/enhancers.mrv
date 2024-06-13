@@ -1,0 +1,56 @@
+#lang marv
+
+# E-types are type-enhancements which allow a base type T to be 'enhanced' by
+# one or more enhancement types. The base-type T is assumed to be the
+# lowest-level type, and will be used by a driver to manipulate the actual cloud
+# resources.
+# 
+# These enhancements are based around the lifecycle model, as such the type
+# parameters must be types that implement the necessary functions from the
+# lifecycle.
+
+# TODO41 - rename as compositions, change parameter order
+
+type E1<T,E1> = {
+
+    # T's identity function is assumed to filter out invalid fields or to
+    # perform validation; therefore it is called last.
+    
+    identity(cfg) = T.identity(E1.identity(cfg))
+
+    create(ident) = T.create(ident)
+    post-create(ident, cfg) = E1.post-create(ident, T.post-create(ident, cfg))
+
+    read(ident) = T.read(ident)
+    post-read(ident, cfg) = E1.post-read(ident, T.post-read(ident, cfg))
+
+    update(ident) = T.update(ident)
+    post-update(ident, cfg) = E1.post-update(ident, T.post-update(ident, cfg))
+
+    delete(cfg) = T.delete(E1.delete(cfg))
+
+    * = T.*
+    * = E1.*
+}
+export E1
+
+type E2<T,E1,E2> = {
+    identity(cfg) = T.identity(E2.identity(E1.identity(cfg)))
+    # tbc...
+
+    create(ident) = T.create(ident)
+    post-create(ident, cfg) = E1.post-create(ident, E2.post-create(ident, T.post-create(ident, cfg)))
+
+    read(ident) = T.read(ident)
+    post-read(ident, cfg) = E1.post-read(ident, E2.post-read(ident, T.post-read(ident, cfg)))
+
+    update(ident) = T.update(ident)
+    post-update(ident, cfg) = E1.post-update(ident, E2.post-update(ident, T.post-update(ident, cfg)))
+
+    delete(cfg) = T.delete(E2.delete(E1.delete(cfg)))
+
+    * = T.*
+    * = E1.*
+    * = E2.*
+}
+export E2

@@ -1,0 +1,330 @@
+#lang marv
+## AUTO-GENERATED FILE - DO NOT EDIT!
+
+
+# Schema for WorkloadIdentityPool
+WorkloadIdentityPool(c)=c << [state displayName expireTime description name disabled]
+
+# Schema for UndeleteServiceAccountResponse
+UndeleteServiceAccountResponse(c)=c << [restoredAccount]
+
+# Schema for WorkforcePoolProvider
+WorkforcePoolProvider(c)=c << [displayName expireTime attributeMapping description oidc state saml attributeCondition name disabled]
+
+# Schema for ServiceAccount
+ServiceAccount(c)=c << [oauth2ClientId uniqueId displayName email name projectId disabled etag description]
+
+# Schema for SignBlobRequest
+SignBlobRequest(c)=c << [bytesToSign]
+
+# Schema for WorkloadIdentityPoolOperationMetadata
+WorkloadIdentityPoolOperationMetadata(c)=c << []
+
+# Schema for DisableServiceAccountKeyRequest
+DisableServiceAccountKeyRequest(c)=c << []
+
+# Schema for AuditableService
+AuditableService(c)=c << [name]
+
+# Schema for UndeleteWorkforcePoolSubjectRequest
+UndeleteWorkforcePoolSubjectRequest(c)=c << []
+
+# Schema for PolicyDelta
+PolicyDelta(c)=c << [bindingDeltas]
+
+# Schema for GoogleIamAdminV1WorkforcePoolProviderSaml
+GoogleIamAdminV1WorkforcePoolProviderSaml(c)=c << [idpMetadataXml]
+
+# Schema for WorkloadIdentityPoolProviderKey
+WorkloadIdentityPoolProviderKey(c)=c << [state expireTime name keyData use]
+
+# Schema for GoogleIamAdminV1WorkforcePoolProviderOidcClientSecretValue
+GoogleIamAdminV1WorkforcePoolProviderOidcClientSecretValue(c)=c << [plainText thumbprint]
+
+# Schema for QueryGrantableRolesRequest
+QueryGrantableRolesRequest(c)=c << [fullResourceName pageToken view pageSize]
+
+# Schema for KeyData
+KeyData(c)=c << [format notBeforeTime key notAfterTime keySpec]
+
+# Schema for UndeleteWorkforcePoolProviderRequest
+UndeleteWorkforcePoolProviderRequest(c)=c << []
+
+# Schema for UndeleteWorkloadIdentityPoolRequest
+UndeleteWorkloadIdentityPoolRequest(c)=c << []
+
+# Schema for CreateRoleRequest
+CreateRoleRequest(c)=c << [roleId role]
+
+# Schema for LintPolicyRequest
+LintPolicyRequest(c)=c << [fullResourceName condition]
+
+# Schema for WorkforcePool
+WorkforcePool(c)=c << [state displayName expireTime sessionDuration description parent name disabled]
+
+# Schema for ListWorkloadIdentityPoolsResponse
+ListWorkloadIdentityPoolsResponse(c)=c << [nextPageToken workloadIdentityPools]
+
+# Schema for UndeleteWorkforcePoolProviderKeyRequest
+UndeleteWorkforcePoolProviderKeyRequest(c)=c << []
+
+# Schema for UndeleteWorkloadIdentityPoolProviderRequest
+UndeleteWorkloadIdentityPoolProviderRequest(c)=c << []
+
+# Schema for AuditLogConfig
+AuditLogConfig(c)=c << [exemptedMembers logType]
+
+# Schema for GoogleIamAdminV1WorkforcePoolProviderOidcWebSsoConfig
+GoogleIamAdminV1WorkforcePoolProviderOidcWebSsoConfig(c)=c << [responseType assertionClaimsBehavior additionalScopes]
+
+# Schema for CreateServiceAccountRequest
+CreateServiceAccountRequest(c)=c << [serviceAccount accountId]
+
+# Schema for SignJwtRequest
+SignJwtRequest(c)=c << [payload]
+
+# Schema for Permission
+Permission(c)=c << [stage customRolesSupportLevel apiDisabled name description onlyInPredefinedRoles primaryPermission title]
+
+# Schema for GoogleIamAdminV1WorkforcePoolProviderOidc
+GoogleIamAdminV1WorkforcePoolProviderOidc(c)=c << [clientSecret clientId webSsoConfig issuerUri jwksJson]
+
+# Schema for GetIamPolicyRequest
+GetIamPolicyRequest(c)=c << [options]
+
+# Schema for GetPolicyOptions
+GetPolicyOptions(c)=c << [requestedPolicyVersion]
+
+# Schema for TestIamPermissionsResponse
+TestIamPermissionsResponse(c)=c << [permissions]
+
+# Schema for CreateServiceAccountKeyRequest
+CreateServiceAccountKeyRequest(c)=c << [privateKeyType keyAlgorithm]
+
+# Schema for WorkforcePoolProviderKey
+WorkforcePoolProviderKey(c)=c << [state expireTime name keyData use]
+
+# Schema for QueryAuditableServicesResponse
+QueryAuditableServicesResponse(c)=c << [services]
+
+# Schema for EnableServiceAccountKeyRequest
+EnableServiceAccountKeyRequest(c)=c << []
+
+# Schema for UndeleteWorkloadIdentityPoolProviderKeyRequest
+UndeleteWorkloadIdentityPoolProviderKeyRequest(c)=c << []
+
+# Schema for TestIamPermissionsRequest
+TestIamPermissionsRequest(c)=c << [permissions]
+
+# Schema for BindingDelta
+BindingDelta(c)=c << [member condition action role]
+
+# Schema for DisableServiceAccountRequest
+DisableServiceAccountRequest(c)=c << []
+
+# Schema for OperationMetadata
+OperationMetadata(c)=c << [endTime createTime target apiVersion verb statusDetail cancelRequested]
+
+# Schema for ListWorkforcePoolProvidersResponse
+ListWorkforcePoolProvidersResponse(c)=c << [workforcePoolProviders nextPageToken]
+
+# Schema for Empty
+Empty(c)=c << []
+
+# Schema for Oidc
+Oidc(c)=c << [allowedAudiences issuerUri jwksJson]
+
+# Schema for Binding
+Binding(c)=c << [members condition role]
+
+# Schema for Saml
+Saml(c)=c << [idpMetadataXml]
+
+# Schema for SetIamPolicyRequest
+SetIamPolicyRequest(c)=c << [updateMask policy]
+
+# Schema for Aws
+Aws(c)=c << [accountId]
+
+# Schema for ListRolesResponse
+ListRolesResponse(c)=c << [nextPageToken roles]
+
+# Schema for WorkloadIdentityPoolProvider
+WorkloadIdentityPoolProvider(c)=c << [displayName expireTime aws attributeMapping description oidc state saml attributeCondition name disabled]
+
+# Schema for SignBlobResponse
+SignBlobResponse(c)=c << [signature keyId]
+
+# Schema for ListWorkloadIdentityPoolProviderKeysResponse
+ListWorkloadIdentityPoolProviderKeysResponse(c)=c << [workloadIdentityPoolProviderKeys nextPageToken]
+
+# Schema for LintResult
+LintResult(c)=c << [level validationUnitName severity fieldName locationOffset debugMessage]
+
+# Schema for AdminAuditData
+AdminAuditData(c)=c << [permissionDelta]
+
+# Schema for UndeleteWorkforcePoolRequest
+UndeleteWorkforcePoolRequest(c)=c << []
+
+# Schema for ServiceAccountKey
+ServiceAccountKey(c)=c << [keyAlgorithm keyType privateKeyData validBeforeTime keyOrigin privateKeyType validAfterTime publicKeyData name disabled]
+
+# Schema for Policy
+Policy(c)=c << [auditConfigs version bindings etag]
+
+# Schema for ListWorkforcePoolsResponse
+ListWorkforcePoolsResponse(c)=c << [workforcePools nextPageToken]
+
+# Schema for ListServiceAccountKeysResponse
+ListServiceAccountKeysResponse(c)=c << [keys]
+
+# Schema for PatchServiceAccountRequest
+PatchServiceAccountRequest(c)=c << [updateMask serviceAccount]
+
+# Schema for QueryTestablePermissionsResponse
+QueryTestablePermissionsResponse(c)=c << [permissions nextPageToken]
+
+# Schema for QueryTestablePermissionsRequest
+QueryTestablePermissionsRequest(c)=c << [fullResourceName pageToken pageSize]
+
+# Schema for Operation
+Operation(c)=c << [done name error response metadata]
+
+# Schema for UndeleteServiceAccountRequest
+UndeleteServiceAccountRequest(c)=c << []
+
+# Schema for GoogleIamAdminV1WorkforcePoolProviderOidcClientSecret
+GoogleIamAdminV1WorkforcePoolProviderOidcClientSecret(c)=c << [value]
+
+# Schema for PermissionDelta
+PermissionDelta(c)=c << [removedPermissions addedPermissions]
+
+# Schema for QueryAuditableServicesRequest
+QueryAuditableServicesRequest(c)=c << [fullResourceName]
+
+# Schema for ListServiceAccountsResponse
+ListServiceAccountsResponse(c)=c << [accounts nextPageToken]
+
+# Schema for AuditData
+AuditData(c)=c << [policyDelta]
+
+# Schema for UndeleteRoleRequest
+UndeleteRoleRequest(c)=c << [etag]
+
+# Schema for QueryGrantableRolesResponse
+QueryGrantableRolesResponse(c)=c << [nextPageToken roles]
+
+# Schema for EnableServiceAccountRequest
+EnableServiceAccountRequest(c)=c << []
+
+# Schema for Expr
+Expr(c)=c << [title location description expression]
+
+# Schema for Role
+Role(c)=c << [stage title name includedPermissions deleted etag description]
+
+# Schema for UploadServiceAccountKeyRequest
+UploadServiceAccountKeyRequest(c)=c << [publicKeyData]
+
+# Schema for LintPolicyResponse
+LintPolicyResponse(c)=c << [lintResults]
+
+# Schema for ListWorkloadIdentityPoolProvidersResponse
+ListWorkloadIdentityPoolProvidersResponse(c)=c << [workloadIdentityPoolProviders nextPageToken]
+
+# Schema for ListWorkforcePoolProviderKeysResponse
+ListWorkforcePoolProviderKeysResponse(c)=c << [workforcePoolProviderKeys nextPageToken]
+
+# Schema for Status
+Status(c)=c << [code message details]
+
+# Schema for SignJwtResponse
+SignJwtResponse(c)=c << [signedJwt keyId]
+
+# Schema for AuditConfig
+AuditConfig(c)=c << [service auditLogConfigs]
+schemas={
+  WorkloadIdentityPool=WorkloadIdentityPool
+  UndeleteServiceAccountResponse=UndeleteServiceAccountResponse
+  WorkforcePoolProvider=WorkforcePoolProvider
+  ServiceAccount=ServiceAccount
+  SignBlobRequest=SignBlobRequest
+  WorkloadIdentityPoolOperationMetadata=WorkloadIdentityPoolOperationMetadata
+  DisableServiceAccountKeyRequest=DisableServiceAccountKeyRequest
+  AuditableService=AuditableService
+  UndeleteWorkforcePoolSubjectRequest=UndeleteWorkforcePoolSubjectRequest
+  PolicyDelta=PolicyDelta
+  GoogleIamAdminV1WorkforcePoolProviderSaml=GoogleIamAdminV1WorkforcePoolProviderSaml
+  WorkloadIdentityPoolProviderKey=WorkloadIdentityPoolProviderKey
+  GoogleIamAdminV1WorkforcePoolProviderOidcClientSecretValue=GoogleIamAdminV1WorkforcePoolProviderOidcClientSecretValue
+  QueryGrantableRolesRequest=QueryGrantableRolesRequest
+  KeyData=KeyData
+  UndeleteWorkforcePoolProviderRequest=UndeleteWorkforcePoolProviderRequest
+  UndeleteWorkloadIdentityPoolRequest=UndeleteWorkloadIdentityPoolRequest
+  CreateRoleRequest=CreateRoleRequest
+  LintPolicyRequest=LintPolicyRequest
+  WorkforcePool=WorkforcePool
+  ListWorkloadIdentityPoolsResponse=ListWorkloadIdentityPoolsResponse
+  UndeleteWorkforcePoolProviderKeyRequest=UndeleteWorkforcePoolProviderKeyRequest
+  UndeleteWorkloadIdentityPoolProviderRequest=UndeleteWorkloadIdentityPoolProviderRequest
+  AuditLogConfig=AuditLogConfig
+  GoogleIamAdminV1WorkforcePoolProviderOidcWebSsoConfig=GoogleIamAdminV1WorkforcePoolProviderOidcWebSsoConfig
+  CreateServiceAccountRequest=CreateServiceAccountRequest
+  SignJwtRequest=SignJwtRequest
+  Permission=Permission
+  GoogleIamAdminV1WorkforcePoolProviderOidc=GoogleIamAdminV1WorkforcePoolProviderOidc
+  GetIamPolicyRequest=GetIamPolicyRequest
+  GetPolicyOptions=GetPolicyOptions
+  TestIamPermissionsResponse=TestIamPermissionsResponse
+  CreateServiceAccountKeyRequest=CreateServiceAccountKeyRequest
+  WorkforcePoolProviderKey=WorkforcePoolProviderKey
+  QueryAuditableServicesResponse=QueryAuditableServicesResponse
+  EnableServiceAccountKeyRequest=EnableServiceAccountKeyRequest
+  UndeleteWorkloadIdentityPoolProviderKeyRequest=UndeleteWorkloadIdentityPoolProviderKeyRequest
+  TestIamPermissionsRequest=TestIamPermissionsRequest
+  BindingDelta=BindingDelta
+  DisableServiceAccountRequest=DisableServiceAccountRequest
+  OperationMetadata=OperationMetadata
+  ListWorkforcePoolProvidersResponse=ListWorkforcePoolProvidersResponse
+  Empty=Empty
+  Oidc=Oidc
+  Binding=Binding
+  Saml=Saml
+  SetIamPolicyRequest=SetIamPolicyRequest
+  Aws=Aws
+  ListRolesResponse=ListRolesResponse
+  WorkloadIdentityPoolProvider=WorkloadIdentityPoolProvider
+  SignBlobResponse=SignBlobResponse
+  ListWorkloadIdentityPoolProviderKeysResponse=ListWorkloadIdentityPoolProviderKeysResponse
+  LintResult=LintResult
+  AdminAuditData=AdminAuditData
+  UndeleteWorkforcePoolRequest=UndeleteWorkforcePoolRequest
+  ServiceAccountKey=ServiceAccountKey
+  Policy=Policy
+  ListWorkforcePoolsResponse=ListWorkforcePoolsResponse
+  ListServiceAccountKeysResponse=ListServiceAccountKeysResponse
+  PatchServiceAccountRequest=PatchServiceAccountRequest
+  QueryTestablePermissionsResponse=QueryTestablePermissionsResponse
+  QueryTestablePermissionsRequest=QueryTestablePermissionsRequest
+  Operation=Operation
+  UndeleteServiceAccountRequest=UndeleteServiceAccountRequest
+  GoogleIamAdminV1WorkforcePoolProviderOidcClientSecret=GoogleIamAdminV1WorkforcePoolProviderOidcClientSecret
+  PermissionDelta=PermissionDelta
+  QueryAuditableServicesRequest=QueryAuditableServicesRequest
+  ListServiceAccountsResponse=ListServiceAccountsResponse
+  AuditData=AuditData
+  UndeleteRoleRequest=UndeleteRoleRequest
+  QueryGrantableRolesResponse=QueryGrantableRolesResponse
+  EnableServiceAccountRequest=EnableServiceAccountRequest
+  Expr=Expr
+  Role=Role
+  UploadServiceAccountKeyRequest=UploadServiceAccountKeyRequest
+  LintPolicyResponse=LintPolicyResponse
+  ListWorkloadIdentityPoolProvidersResponse=ListWorkloadIdentityPoolProvidersResponse
+  ListWorkforcePoolProviderKeysResponse=ListWorkforcePoolProviderKeysResponse
+  Status=Status
+  SignJwtResponse=SignJwtResponse
+  AuditConfig=AuditConfig
+}
+export schemas

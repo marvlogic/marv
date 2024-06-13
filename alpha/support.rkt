@@ -1,14 +1,16 @@
 #lang racket/base
 
 (require racket/hash)
-(require racket/string)
-(require racket/pretty)
+(require racket/format)
+(require racket/match)
 (require marv/log)
 (require marv/core/values)
 (require marv/utils/hash)
+(require marv/utils/uri)
 (require marv/core/globals)
 (require marv/core/drivers)
 (require marv/utils/base64)
+(require marv/core/resources)
 
 
 (require (prefix-in core: marv/core/resources))
@@ -17,13 +19,16 @@
 (provide gen-resources getenv-or-raise
          def-res
          with-src-handlers
-         drv:current-driver-set
-         drv:register-type
          set-return
+         send-to-driver
          module-call
          b64enc b64dec
+         handle-override
          config-overlay config-reduce handle-ref
          with-module-ctx
+         uri-vars
+         uri-template
+         find-function
          get-param)
 
 (define (error:excn msg)
@@ -31,13 +36,13 @@
 
 (define (init-resources) (list null (hash)))
 
-
 (define (add-resource id res)
   (define idx (car (RESOURCES)))
   (define hs (cadr (RESOURCES)))
   (when (hash-has-key? hs id) (error:excn (format "~a is already defined" id)))
   (RESOURCES (list (cons id idx) (hash-set hs id res)))
   res)
+
 (define (ordered-resource-ids) (reverse (car (RESOURCES))))
 (define (get-resource id) (hash-ref (cadr (RESOURCES)) id))
 
@@ -57,10 +62,19 @@
                             (error:excn (format "Parameter '~a' has not been assigned" p)))])
   (hash-ref (PARAMS) p def))
 
-(define (def-res id drv attr v)
-  (define type (join-symbols attr))
-  (define r (hash-set* v '$driver drv '$type type))
-  (add-resource id ((current-driver) drv 'validate r)))
+(define (def-res type-fn id res)
+  ;(type-fn 'validate res)
+  ; Temporarily storing ref to the type-fn in the configuration, it will
+  ; be removed later when creating a resource
+  (define rtyped (hash-set res '$type-fn type-fn))
+  (add-resource id rtyped))
+
+; (define/contract (prepare-for-driver driver-spec config)
+;   (driver-id/c symbol? driver-cmd/c config/c . -> . driver-resp/c)
+;   (log-marv-debug "prepare-for-driver: ~a ~a" driver-spec config)
+;   (define reply (hash 'config cfg 'origin (format "~a:~a" driver-id type-id)))
+;   (log-marv-debug "support-send-to-driver: reply: ~a" reply)
+;   reply)
 
 (define (with-src-handlers src-locn expected given thunk)
   (define (handle-exn e)
@@ -88,40 +102,46 @@
                    (lambda() (log-marv-warn "future-ref not yet resolved (~a)" id)(future-ref id))))
   (hash-ref (RETURNS) id fail))
 
-(define (resource? res) (and (hash? res) (hash-has-key? res '$driver)))
 
 (struct future-ref (ref) #:prefab)
 
 (define (module-call var-id mod-proc params)
   (log-marv-debug "Registering future invocation of ~a=~a(~a)" (prefix-mod-id var-id) mod-proc params)
-  (add-resource var-id (lambda(id-prefix mkres)
+  (add-resource var-id (lambda(_)
                          (log-marv-debug "calling ~a (~a)" var-id mod-proc)
-                         (mod-proc (prefix-mod-id var-id) mkres params)))
+                         (mod-proc (prefix-mod-id var-id) params)))
   (future-ref #f))
 
-(define (config-overlay left right) (hash-union left right #:combine (lambda (v0 _) v0)))
+(define (config-overlay top bottom) (hash-union top bottom #:combine (lambda (t _) t)))
+
 (define (config-reduce cfg attrs) (hash-take cfg attrs))
 
 (define (make-full-ref full-id attrs)
   (string->symbol (format "~a/~a" full-id attrs)))
 
-(define (handle-ref tgt id . ks)
-  (log-marv-debug "handle-ref ~a.~a -> ~a" id ks tgt)
-  (define ksx (map syntax-e ks))
-  (define (full-ref) (make-full-ref (prefix-mod-id id) (core:list->id ksx)))
+(define (handle-override base op verb confex)
+  (case op
+    ['equals confex]
+    ['overlay (config-overlay confex (base verb))]))
+
+(define (handle-ref tgt id path)
+  (log-marv-debug "handle-ref ~a.~a -> ~a" id path tgt)
+  (define (full-ref) (make-full-ref (prefix-mod-id id) (core:list->id path)))
+
+  (define (resource? res) (and (hash? res) (hash-has-key? res '$type-fn)))
 
   (cond [(resource? tgt) (ref (full-ref))]
-        [(hash? tgt) (hash-nref tgt ksx)]
+        [(hash? tgt) (hash-nref tgt path)]
         [(future-ref? tgt)
          (define resolved (try-resolve-future-ref (full-ref)))
          (log-marv-debug "(future-ref, being re-linked to ~a)" resolved)
          resolved]
         [else (raise "unsupported ref type")]))
 
-(define (gen-resources mkres)
+(define (gen-resources)
   (log-marv-debug "gen-resources called for these visible resources: ~a" (RESOURCES))
 
-  (define (handle-future-ref k v)
+  (define (handle-future-ref _ v)
     (update-val v (lambda(uv)
                     (if (future-ref? uv)
                         (try-resolve-future-ref (future-ref-ref uv) #:fail-on-missing #t)
@@ -129,12 +149,35 @@
 
   (define (make-resource v)
     (log-marv-debug "  generating ~a" v)
-    (mkres (hash-ref v '$driver) (hash-apply (hash-remove v '$driver) handle-future-ref)))
+    (define type-fn (hash-ref v '$type-fn))
+    (define res-ident ((type-fn 'identity) (hash-remove v '$type-fn)))
+    (log-marv-debug "  identity ~a" res-ident)
+    (resource type-fn (hash-apply res-ident handle-future-ref)))
 
   (for/fold ([rs (hash)])
             ([k (in-list (ordered-resource-ids))])
     (define res (get-resource k))
-    (cond [(resource? res)
+    (cond [(hash? res)
            (hash-set rs (prefix-mod-id k) (make-resource res))]
           [(procedure? res)
-           (hash-union rs (res (prefix-mod-id k) mkres))])))
+           ; Calling a module
+           (hash-union rs (res (prefix-mod-id k)))])))
+
+(define (uri-vars str) (uri-vars str))
+(define (uri-template str cfg) (expand-uri str cfg))
+
+(define (find-function root fst rst)
+  (log-marv-debug "find-function: ~a.~a" fst rst)
+  (define func
+    (match/values
+     (values root rst)
+     [((? procedure? proc) (? null? _) )
+      (log-marv-debug "  ->func: ~a" proc)proc]
+     [((? procedure? proc) (list r))
+      (log-marv-debug "  ->func ~a in type ~a" r proc)
+      (proc r)]
+     [((? hash? hsh) lst)
+      (log-marv-debug "  ->func in hash")
+      (hash-nref hsh lst)]
+     [(_ _) (raise "unsupported function reference")]))
+  (if (procedure? func) func (raise (~a "expected a function, got: " func))))

@@ -1,6 +1,6 @@
 #lang marv
 
-import types/gcp/compute
+import types/gcp/compute as compute
 
 module instance-group(defaults name zone="b" vpc subnet) {
     node-disks = [ {
@@ -32,8 +32,8 @@ module instance-group(defaults name zone="b" vpc subnet) {
             tags = { items = [ "load-balanced-backend" ] }
             networkInterfaces = [ 
                 {
-                    network = imm:vpc
-                    subnetwork = imm:subnet
+                    network = imm: vpc
+                    subnetwork = imm: subnet
                     accessConfigs = [ { type = "ONE_TO_ONE_NAT" } ] 
                 } 
             ]
@@ -41,7 +41,7 @@ module instance-group(defaults name zone="b" vpc subnet) {
         }
     }
 
-    instance-template = gcp:compute.instanceTemplate f-instance-template("f1-micro") <- { name = "instance-template1"}
+    instance-template = compute:instanceTemplate f-instance-template("f1-micro") <- { name = "instance-template1"}
 
     ################################################################################
     # Multiple parameters are space-separated
@@ -55,7 +55,7 @@ module instance-group(defaults name zone="b" vpc subnet) {
         targetSize = size
     }
 
-    igm = gcp:compute.instanceGroupManager 
+    igm = compute:instanceGroupManager 
         f-instance-group-manager(strf("~a-igm" name) 4 strf("~a-~a" defaults.region zone) instance-template.selfLink) <- {
     #          statefulPolicy = {
     #               preservedState = {
@@ -69,13 +69,13 @@ module instance-group(defaults name zone="b" vpc subnet) {
     ################################################################################
     # The rest of the example is straight-forward declarations
 
-    lb-basic-check = gcp:compute.regionHealthCheck defaults <- {
+    lb-basic-check = compute:regionHealthCheck defaults <- {
         name = "lb-basic-check"
         type = "HTTP"
         httpHealthCheck = { portSpecification = "USE_SERVING_PORT" }
     }
 
-    region-backend-service = gcp:compute.regionBackendService defaults <- {
+    region-backend-service = compute:regionBackendService defaults <- {
         name = "backend-service"
         backends = {
             group = imm: igm.selfLink
@@ -85,17 +85,17 @@ module instance-group(defaults name zone="b" vpc subnet) {
         loadBalancingScheme = "EXTERNAL_MANAGED"
     }
 
-    region-url-map = gcp:compute.regionUrlMap defaults <- {
+    region-url-map = compute:regionUrlMap defaults <- {
         name = "urlmap"
         defaultService = imm: region-backend-service.selfLink
     }
 
-    region-target-proxies = gcp:compute.regionTargetHttpProxy defaults <- {
+    region-target-proxies = compute:regionTargetHttpProxy defaults <- {
         name = "proxy"
         urlMap = imm: region-url-map.selfLink
     }
 
-    forwarding-rule = gcp:compute.forwardingRule defaults <- {
+    forwarding-rule = compute:forwardingRule defaults <- {
         name = "forwarding-rule"
         ipAddress = "10.0.1.99" # backend SN1
         ipProtocol = "TCP"

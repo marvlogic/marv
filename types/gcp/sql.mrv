@@ -1,73 +1,46 @@
 #lang marv
-import "../common.mrv"
 
-type gcp:sql.sslCert = {
-  create = sql.sslCerts.insert { identity identity }
-  read = sql.sslCerts.get { identity identity }
-  update = sql.sslCerts.patch { identity identity }
-  delete = sql.sslCerts.delete { identity identity }
+# WARNING: This shim file is incomplete. You need to define an 'API' type
+# relevant to the API being imported, and then remove this warning.
+
+import types/gcp/_auto/sql as _auto
+
+# Modify this example per API
+
+delete-self(state, oapi) = {
+  api= oapi.api <- { url=state.selfLink }
+  config = {}
 }
 
-type gcp:sql.connect = {
-  create = sql.connect.insert { identity identity }
-  read = sql.connect.get { identity identity }
-  update = sql.connect.patch { identity identity }
-  delete = sql.connect.delete { identity identity }
+type API<T> = {
+ post-create(original, state) = state <- { project=original.project  region=original.region }
+ post-read(o, cfg) = post-create(o, cfg)
+ post-update(original, cfg)=post-create(original, cfg)
+ delete(state) = delete-self(state, T.delete(state))
+ * = T.*
 }
 
-type gcp:sql.instance = {
-  create = sql.instances.insert { identity identity }
-  read = sql.instances.get { identity identity }
-  update = sql.instances.patch { identity identity }
-  delete = sql.instances.delete { identity identity }
-}
+type database=API<_auto:databases>
+export database
 
-type gcp:sql.project.instance = {
-  create = sql.projects.instances.insert { identity identity }
-  read = sql.projects.instances.get { identity identity }
-  update = sql.projects.instances.patch { identity identity }
-  delete = sql.projects.instances.delete { identity identity }
-}
+type tier=API<_auto:tiers>
+export tier
 
-type gcp:sql.user = {
-  create = sql.users.insert { identity identity }
-  read = sql.users.get { identity identity }
-  update = sql.users.patch { identity identity }
-  delete = sql.users.delete { identity identity }
-}
+type instance=API<_auto:instances>
+export instance
 
-type gcp:sql.tier = {
-  create = sql.tiers.insert { identity identity }
-  read = sql.tiers.get { identity identity }
-  update = sql.tiers.patch { identity identity }
-  delete = sql.tiers.delete { identity identity }
-}
+type backupRun=API<_auto:backupRuns>
+export backupRun
 
-type gcp:sql.operation = {
-  create = sql.operations.insert { identity identity }
-  read = sql.operations.get { identity identity }
-  update = sql.operations.patch { identity identity }
-  delete = sql.operations.delete { identity identity }
-}
+type connect=API<_auto:connect>
+export connect
 
-type gcp:sql.database = {
-  create = sql.databases.insert { identity identity }
-  read = sql.databases.get { identity identity }
-  update = sql.databases.patch { identity identity }
-  delete = sql.databases.delete { identity identity }
-}
+type sslCert=API<_auto:sslCerts>
+export sslCert
 
-type gcp:sql.backupRun = {
-  create = sql.backupRuns.insert { identity identity }
-  read = sql.backupRuns.get { identity identity }
-  update = sql.backupRuns.patch { identity identity }
-  delete = sql.backupRuns.delete { identity identity }
-}
+# TODO41 - GCP replies with wrong targetLink following user-create
+type user=API<_auto:users>
+export user
 
-type gcp:sql.flag = {
-  create = sql.flags.insert { identity identity }
-  read = sql.flags.get { identity identity }
-  update = sql.flags.patch { identity identity }
-  delete = sql.flags.delete { identity identity }
-}
-
+type flag=API<_auto:flags>
+export flag

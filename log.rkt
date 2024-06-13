@@ -2,7 +2,7 @@
 
 (require racket/pretty)
 
-(provide log-marv-debug log-marv-warn log-marv-error log-marv-info)
+(provide log-marv-debug log-marv-warn log-marv-error log-marv-info log-equal?)
 
 (define (get-fn lvl)
   (define levels
@@ -27,3 +27,5 @@
 
 (define (log-marv-error fstr . vs)
   ((get-fn 'error) (apply format (string-append "ERROR: " fstr) vs)))
+
+(define (log-equal? a b) (log-marv-debug "equal?: ~a ~a" a b) (equal? a b))

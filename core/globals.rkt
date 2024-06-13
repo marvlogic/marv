@@ -10,6 +10,7 @@
          workspace-path
          split-symbol
          join-symbols
+         symbols->string
          with-workspace-file
          getenv-or-raise)
 
@@ -34,6 +35,10 @@
 (define/contract (join-symbols syms [joiner "."])
   (((listof symbol?)) (string?) . ->* . symbol?)
   (string->symbol (string-join (map symbol->string syms) joiner)))
+
+(define/contract (symbols->string symbols)
+  ((listof symbol?) . -> . string?)
+  (string-join (map symbol->string symbols) " "))
 
 (define (getenv-or-raise e)
   (or (getenv e) (raise (format "ERROR: ~a must be defined in environment" e))))

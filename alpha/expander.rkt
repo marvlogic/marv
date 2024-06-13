@@ -2,12 +2,13 @@
 
 (require racket/string)
 (require racket/syntax)
-(require (for-syntax racket/base racket/syntax syntax/parse racket/pretty))
+(require (for-syntax racket/base racket/syntax syntax/parse racket/pretty marv/core/globals))
 
 (require racket/pretty)
 
 (require marv/alpha/support)
 (require marv/core/values)
+(require marv/core/globals)
 (require marv/log)
 
 ; (require (for-syntax marv/core/values))
@@ -35,8 +36,17 @@
       [else (raise "nowt-outer-decl")]))
 
   (define (m-module-export stx)
+
+    (define-splicing-syntax-class export-spec
+      #:description "export specification"
+      #:attributes (spec)
+      (pattern (~seq src-name:id "as" export-alias)
+        #:attr spec #'(rename-out [src-name export-alias]))
+      (pattern (~seq src-name:id)
+        #:attr spec #'src-name))
+
     (syntax-parse stx
-      [(_ IDS ...) (syntax/loc stx (provide IDS ...))]
+      [(_ spec:export-spec ...) (syntax/loc stx (provide spec.spec ...))]
       [else (raise "nowt-module-export")]))
 
   (define (m-marv-module stx)
@@ -50,14 +60,14 @@
        #:with MAYBE-PRIVATE (if (attribute private?) #'(void) #'(provide mod-id))
        (syntax/loc stx
          (begin
-           (define (mod-id resid-prefix mkres params)
+           (define (mod-id resid-prefix params)
              (log-marv-debug "** Generating module: ~a=~a(~a)" resid-prefix 'mod-id params)
              (define rs
                (with-module-ctx resid-prefix params
                  (lambda ()
                    PARAMS ...
                    STMT ...
-                   (define rs (gen-resources mkres))
+                   (define rs (gen-resources))
                    RETURN
                    rs
                    )))
@@ -78,10 +88,22 @@
 
   (define (m-module-import stx)
     (syntax-parse stx
-      ; TODO - this shorthand form doesn't always work; the provided identifiers aren't seen by the consumer
-      [(_ MOD-ID:id) #`(require (lib #,(format "marv/~a.mrv" (syntax->datum #`MOD-ID))))]
+      ; this fix comes courtesy of replies to this:
+      ; https://stackoverflow.com/questions/77621776/hard-coded-require-from-a-racket-macro-doesnt-bind-provided-identifiers
+      [(_ MOD-ID:id)
+       (define mpath (format "marv/~a.mrv" (syntax-e #'MOD-ID)))
+       (datum->syntax stx `(require (lib ,mpath)))]
+
+      [(_ MOD-ID:id "as" ALIAS)
+       (define mpath (format "marv/~a.mrv" (syntax-e #'MOD-ID)))
+       (define alias (format-id #f "~a:" (syntax-e #'ALIAS)))
+       (datum->syntax stx `(require (prefix-in ,alias (lib ,mpath)))) ]
+
       [(_ FILENAME:string) (syntax/loc stx (require FILENAME)) ]
-      [(_ FILENAME "as" ALIAS) #`(require (prefix-in #,(format-id #f "~a/" #`ALIAS) FILENAME)) ]
+      [(_ FILENAME:string "as" ALIAS)
+       (define alias (format-id #f "~a:" (syntax-e #'ALIAS)))
+       (define filename (syntax-e #'FILENAME))
+       (datum->syntax stx `(require (prefix-in ,alias ,filename))) ]
       [else (raise "m-import")]))
 
   (define (m-return-parameter stx)
@@ -110,42 +132,94 @@
          (define (id param ...) CONF-OBJ))]
       [else (raise "config-func-decl")]))
 
-  (define (m-config-func-call stx)
+  (define (m-func-call stx)
     (syntax-parse stx
-      [(_ func:id param ...)
-       (syntax/loc stx (func param ...))]
-      [else (raise "config-func-call")]))
+      [(_ func param ...) (syntax/loc stx (func param ...))]
+      [else (raise "func-call")]))
+
+  (define (m-func-ident stx)
+    (syntax-parse stx
+      [(_ ident)
+       (define id-parts (split-symbol (syntax-e #'ident)))
+       (define root (format-id stx "~a" (car id-parts)))
+       (define rst (datum->syntax stx (cdr id-parts)))
+       (with-syntax ([root root]
+                     [rst rst])
+         (syntax/loc stx (find-function root 'root 'rst)))]
+      [else (raise "func-ident")]))
+
+  (define (m-func-decl stx)
+    (syntax-parse stx
+      [(_ id:expr param ... BODY)
+       (syntax/loc stx
+         (define (id param ...) BODY))]
+      [else (raise "func-decl")]))
+
+  (define-splicing-syntax-class m-type-id
+    #:description "type id"
+    (pattern (~seq (~literal type-id) tid:id)))
+
+  (define-splicing-syntax-class m-type-parameters
+    #:description "type parameters"
+    #:literals (type-parameters type-id)
+    (pattern (type-parameters tid:type-id ident:id ... )))
+
+  (define-splicing-syntax-class type-body
+    #:description "body declaration"
+    #:literals (func-decl expression)
+    (pattern (func-decl func-id:id param-id ... (expression confex))))
 
   (define (m-type-decl stx)
     (syntax-parse stx
-      [(_ ((~literal driver-id) did:expr)
-          ((~literal driver-attr) datr:expr) body)
-       (syntax/loc stx (drv:register-type 'did 'datr (make-immutable-hash body)))]))
+      #:datum-literals (type-parameters type-wild type-id)
+      [(_ (type-id tid:expr) body:type-body ... (type-wild wildcard) ...)
+       (with-syntax ([srcloc (src-location stx)])
+         (syntax/loc stx
+           (begin
+             (define (tid func-id [allow-missing? #f])
+               (log-marv-debug "type-fn ~a.~a:~a called" 'tid func-id srcloc)
+               (define (body.func-id body.param-id ... ) body.confex) ...
+               (case func-id
+                 ['type 'tid]
+                 ['body.func-id body.func-id] ...
+                 [else
+                  (define (fin)
+                    (if allow-missing? #f
+                        (raise (format "exception in type ~a, method ~a not found" 'tid func-id))))
+                  (log-marv-debug "looking in wildcards:")
+                  (log-marv-debug "  ~a" wildcard) ...
+                  (or (wildcard func-id #t) ... (fin))])
+               ))))]
+      [(_ (type-id tid) (type-parameters (type-id base-tid) params ...))
+       (syntax/loc stx
+         (begin
+           (define (tid func-id [allow-missing? #f]) (base-tid func-id params ... allow-missing?))
+           ))]
+      ))
 
-  (define (m-type-body stx)
+  (define (m-type-template stx)
     (syntax-parse stx
-      [(_ crud-decl ...) (syntax/loc stx (list crud-decl ...))]))
+      #:datum-literals (type-parameters type-id type-wild)
+      [(_ (type-parameters (type-id tid) params ...) body:type-body ... (type-wild wildcard) ...)
+       (syntax/loc stx
+         (begin
+           (define (tid func-id params ... [allow-missing? #f])
+             (log-marv-debug "type-template ~a" 'tid)
+             (define (body.func-id body.param-id ...) body.confex) ...
+             (case func-id
+               ['type 'tid]
+               ['body.func-id body.func-id] ...
+               [else
+                (define (final)
+                  (if allow-missing? #f
+                      (raise (format "exception in type ~a, method ~a not found" 'tid func-id))))
+                (log-marv-debug "looking in wildcards:")
+                (log-marv-debug "  ~a" wildcard) ...
+                (or (wildcard func-id #t) ... (final))])
+             )))]
+      ))
 
-  (define (m-type-crud-decl stx)
-    (syntax-parse stx
-      [(_ "create" SPEC) (syntax/loc stx (cons 'create SPEC))]
-      [(_ "read" SPEC) (syntax/loc stx (cons 'read SPEC))]
-      [(_ "update" SPEC) (syntax/loc stx (cons 'update SPEC))]
-      [(_ "delete" SPEC) (syntax/loc stx (cons 'delete SPEC))]))
-
-  (define (m-type-api-spec stx)
-    (syntax-parse stx
-      [(_ ((~literal driver-attr) drv-attr:expr) req-xform-id:identifier resp-xform-id:identifier)
-       (syntax/loc stx `(drv-attr ,req-xform-id ,resp-xform-id))]
-      [else (raise "api-spec")]))
-
-  ; (define (m-config-func-param stx)
-  ;   (syntax-parse stx
-  ;     [(_ id:expr)
-  ;      (syntax/loc stx
-  ;        (define id EXPR))]
-  ;     [else (raise "nowt-var-decl")]))
-
+  (define (m-generic-placeholder stx)stx)
 
   (define (m-built-in stx)
     (syntax-parse stx
@@ -161,6 +235,16 @@
     (syntax-parse stx
       [(_ str:string expr ... ) (syntax/loc stx (format str expr ...))]
       [else (raise "m-strf")]))
+
+  (define (m-urivars stx)
+    (syntax-parse stx
+      [(_ str:expr) (syntax/loc stx (uri-vars str))]
+      [else (raise "m-urivars")]))
+
+  (define (m-uritemplate stx)
+    (syntax-parse stx
+      [(_ str:expr CFG) (syntax/loc stx (uri-template str CFG))]
+      [else (raise "m-uritemplate")]))
 
   (define (m-base64encode stx)
     (syntax-parse stx
@@ -180,6 +264,17 @@
     (syntax-parse stx
       [(_ passthru) (syntax/loc stx passthru)]
       ))
+
+  (define (m-parens-expr stx)
+    (syntax-parse stx
+      [(_ passthru) (syntax/loc stx passthru)]
+      ))
+
+  (define (m-try-alternate stx)
+    (syntax-parse stx
+      [(_ expr1 expr2)
+       (syntax/loc stx
+         (with-handlers ([exn:fail? (lambda(_) expr2)]) expr1))]))
 
   (define (m-boolean stx)
     (syntax-parse stx
@@ -213,7 +308,7 @@
        ;  #'(let* ([attr.tname attr.raw-expr] ... )
        ;      (make-immutable-hasheq (list (cons 'attr.name attr.expr) ...))) ]
        #'(make-immutable-hasheq (list (cons 'attr.name attr.expr) ...)) ]
-      [else (raise "m-config-object")]))
+      [else (displayln stx)(raise "m-config-object")]))
 
   (define (m-alist stx)
     (syntax-parse stx
@@ -221,10 +316,18 @@
        (syntax/loc stx (list EXPR ...))]
       [else (raise "m-alist")]))
 
+  (define (m-attribute-name stx)
+    (syntax-parse stx
+      [(_ sname:string)
+       (define id (format-id #f "~a" (syntax-e #'sname)))
+       (with-syntax ([name id]) (syntax/loc stx 'name))]
+      [(_ name:id) (syntax/loc stx 'name)]
+      [else (raise "m-attribute-name")]))
+
   (define (m-list-attr stx)
     (syntax-parse stx
       [(_ ATTR ...)
-       (syntax/loc stx (list 'ATTR ...))]
+       (syntax/loc stx (list ATTR ...))]
       [else (raise "m-list-attr")]))
 
   (define (m-config-expr stx)
@@ -254,24 +357,22 @@
 
   (define (m-reference stx)
     (syntax-parse stx
-      [(_ (tgt:id key ...)) (syntax/loc stx (handle-ref tgt 'tgt #'key ...))]
-      ))
+      [(_ ref:id)
+       (define splitref (split-symbol (syntax-e #'ref)))
+       (define root (format-id stx "~a" (car splitref)))
+       (define tail (datum->syntax stx (cdr splitref)))
+       ; RAW version:  #`(handle-ref #,r0 'r '#,rs)
+       (with-syntax
+           ([root root]
+            [tail tail])
+         (syntax/loc stx (handle-ref root 'root 'tail)))]))
 
   (define (m-res-decl stx)
     (syntax-parse stx
-      [(_ name:expr
-          ((~literal driver-id) did:expr)
-          ((~literal driver-attr) dad:expr) cfg)
+      [(_ name:expr ((~literal type-id) tid:id) cfg)
        #`(define name
-           (with-src-handlers #,(src-location stx)  "valid type" 'dad
-             (lambda()(def-res 'name 'did 'dad cfg))))]
-      ;  #`(define name (def-res 'name 'did 'dad cfg))]
-
-      ; [(_ name:string
-      ;     ((~literal loop-ident) lid:string)
-      ;     ((~literal driver-id) did:string)
-      ;     ((~literal driver-attr) dad:string) cfg)
-      ;  (syntax/loc stx (set-res (loop-res-name name lid) did dad cfg))]
+           (with-src-handlers #,(src-location stx)  "valid type" 'tid
+             (lambda()(def-res tid 'name cfg))))]
       ))
 
   (define (m-module-invoke stx)
@@ -300,25 +401,28 @@
 (define-syntax decl m-decl)
 (define-syntax var-decl m-var-decl)
 (define-syntax config-func-decl m-config-func-decl)
-
+(define-syntax func-decl m-func-decl)
 (define-syntax type-decl m-type-decl)
-(define-syntax type-body m-type-body)
-(define-syntax type-crud-decl m-type-crud-decl)
-(define-syntax type-api-spec m-type-api-spec)
-
+(define-syntax type-template m-type-template)
 (define-syntax res-decl m-res-decl)
 (define-syntax module-invoke m-module-invoke)
 (define-syntax named-parameter m-named-parameter)
-(define-syntax config-func-call m-config-func-call)
+(define-syntax func-call m-func-call)
+(define-syntax func-ident m-func-ident)
 (define-syntax expression m-expression)
+(define-syntax parens-expr m-parens-expr)
+(define-syntax try-alternate m-try-alternate)
 (define-syntax reference m-reference)
 (define-syntax config-object m-config-object)
 (define-syntax alist m-alist)
 (define-syntax list-attr m-list-attr)
+(define-syntax attribute-name m-attribute-name)
 (define-syntax keyword m-keyword)
 (define-syntax built-in m-built-in)
 (define-syntax env-read m-env-read)
 (define-syntax strf m-strf)
+(define-syntax urivars m-urivars)
+(define-syntax uritemplate m-uritemplate)
 (define-syntax base64encode m-base64encode)
 (define-syntax base64decode m-base64decode)
 (define-syntax pprint m-pprint)
@@ -328,13 +432,20 @@
 (define-syntax config-take m-config-take)
 (define-syntax config-ident m-config-ident)
 
+(define-syntax api-id m-generic-placeholder)
+(define-syntax transformer-id m-generic-placeholder)
+(define-syntax type-id m-generic-placeholder)
+(define-syntax func-id m-generic-placeholder)
+(define-syntax type-parameters m-generic-placeholder)
+(define-syntax type-wild m-generic-placeholder)
+
 (provide marv-spec outer-decl marv-module module-parameter decl var-decl res-decl
          module-invoke named-parameter module-return return-parameter
          module-import
          module-export
-         config-func-call config-func-decl
-         type-decl type-body type-crud-decl type-api-spec
-         expression reference statement config-object alist list-attr
+         api-id transformer-id type-id
+         func-call func-ident config-func-decl func-decl type-decl type-template
+         expression parens-expr try-alternate reference statement config-object alist list-attr attribute-name
          config-expr config-merge config-ident config-take
-         keyword built-in env-read pprint strf base64encode base64decode
+         keyword built-in env-read pprint strf urivars uritemplate base64encode base64decode
          boolean)

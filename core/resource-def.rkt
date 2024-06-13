@@ -12,25 +12,25 @@
 (require marv/core/drivers)
 (require marv/core/resources)
 (require marv/core/values)
+(require marv/core/config)
 (require marv/utils/hash)
 (require marv/log)
 
 (provide init-module get-module
-         resource-keys resource-ref
+         resource-keys
+         resource-ref
          module-ref
-         mod-ref-driver?
-         get-resource-params validate-params
+         get-resource-params
+         validate-params
          resource-refs
          unpack-value
          update-val
          unwrap-values
          (struct-out ref)
          (struct-out value)
-         mod-id->id
          ival ival?
          iref iref?
          match-resource-attr?
-         deref-resource
          (struct-out params))
 
 (struct params (required accepted))
@@ -45,13 +45,10 @@
   (void))
 
 (define/contract (get-module params purge?)
-  ((hash/c symbol? string?) boolean? . -> . rmodule/c)
+  ((hash/c symbol? string?) boolean? . -> . resource-set/c)
   ; (validate-params params)
-  (with-drivers (current-driver-set)
-    (lambda()
-      (define (mk-resource driver-id config) (resource driver-id ((current-driver) driver-id 'validate config)))
-      (define resources ((RESOURCES) 'main mk-resource params))
-      (mk-rmodule (current-driver-set) (if purge? (hash) resources)))))
+  (define resources ((RESOURCES) 'main params))
+  (if purge? (hash) resources))
 
 (define (make-keyword-params params)
   ; TODO: test for check that #t (sorting) works
@@ -77,21 +74,17 @@
 ; TODO - tighten the contracts
 (define/contract (resource-keys rs)
   (any/c . -> . (listof any/c))
-  (hash-keys (rmodule-resources rs)))
+  (hash-keys rs))
 
 (define/contract (resource-ref mod k)
-  (rmodule/c res-id/c . -> . resource/c)
-  (hash-ref (rmodule-resources mod) k))
+  (resource-set/c res-id/c . -> . resource/c)
+  (hash-ref mod k))
 
 ; module-ref returns the resource, or the driver-config if a driver
 (define/contract (module-ref mod k)
   (any/c any/c . -> . any/c)
   (define ref-spec (map string->symbol (string-split (symbol->string k) ".")))
   (hash-nref mod ref-spec))
-
-(define (mod-ref-driver? ref)
-  (define ref-spec (map string->symbol (string-split (symbol->string ref) ".")))
-  (eq? '$drivers (car ref-spec)))
 
 (define/contract (resource-refs res)
   (resource/c . -> . (listof (cons/c any/c ref?)))
@@ -102,29 +95,6 @@
 (define (match-resource-attr? res matchf) (hash-match? res matchf))
 
 (define/contract (unwrap-values res)
-  (resource/c . -> . resource/c)
-  (define (unwrap k v)  (unpack-value v))
-  (resource (resource-driver-id res) (hash-apply (resource-config res) unwrap)))
-
-; TODO - NB, the $resources/$drivers definition stuff has been left in for now,
-; not sure if it will be needed in future.
-
-(define (mod-id->id mid)
-  (string->symbol
-   (match (string-split (symbol->string mid) ".")
-     [(list "$resources" id _ ...) id]
-     [(list "$drivers" id _ ...) id]
-     [(list id _ ...) (format "~a" mid)]
-     [else (raise (format "~a: Bad reference format" (ref-path ref)))])))
-
-(define/contract (deref-resource mod r)
-  (rmodule/c resource/c . -> . resource/c)
-
-  (define (get-ref ref)
-    (define-values (res-id attr) (ref-split ref))
-    (unpack-value (hash-nref (resource-config (resource-ref mod res-id)) (id->list attr))))
-
-  (define (deref-attr _ a)
-    (update-val a (lambda (v) (if (ref? v) (get-ref v) v))))
-
-  (resource (resource-driver-id r) (hash-apply (resource-config r) deref-attr)))
+  (config/c . -> . config/c)
+  (define (unwrap _ v)  (unpack-value v))
+  (hash-apply res unwrap))

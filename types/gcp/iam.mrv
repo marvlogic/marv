@@ -1,33 +1,41 @@
 #lang marv
 
-import "../common.mrv"
+# WARNING: This shim file is incomplete. You need to define an 'API' type
+# relevant to the API being imported, and then remove this warning.
 
-create-sa-name(cfg) = cfg <- { 
-    name = strf("projects/~a" cfg.project)
+import types/gcp/_auto/iam as _auto
+import types/marv/marshalls
+import types/marv/base
+
+# TODO41 lifecycle/origin?
+
+type MserviceAccount = {
+  identity(cfg) = cfg << [ name, project, description, displayName ]
+  create(cfg) = cfg <- { 
+    name=strf("projects/~a" cfg.project), 
+    accountId=cfg.name, 
+    serviceAccount={ displayName=cfg.displayName, description=cfg.description }
+  }
+  post-create(o, state) = state <- { name=o.name, project=o.project }
+
+  read(state) = { name=strf("projects/~a/serviceAccounts/~a" state.project state.email)}
+  post-read(o, state)  = post-create(o, state)
+  delete(state) = state << [ name ]
 }
 
-type gcp:iam.serviceAccount = {
-    create = iam.projects.serviceAccounts.create { create-sa-name identity }
-    read = iam.projects.serviceAccounts.get { identity identity }
-    update = iam.projects.serviceAccounts.patch { identity identity }
-    delete = iam.projects.serviceAccounts.delete { identity identity }
+type serviceAccount=M1<MserviceAccount, _auto:projects_serviceAccounts>
+export serviceAccount
+
+type MserviceAccountKey = {
+  identity(cfg) = cfg << [ project, serviceAccountEmail ]
+  create(cfg) = { name=strf("projects/~a/serviceAccounts/~a" cfg.project, cfg.serviceAccountEmail) }
+  post-create(o, state) = state <- { project=o.project, serviceAccountEmail=o.serviceAccountEmail }
+
+  # read(state) = { name=strf("projects/~a/serviceAccounts/~a" state.project state.email)}
+  read(state) = state
+  post-read(o, state)  = post-create(o, state)
+  delete(state) = state << [ name ]
 }
 
-create-sa-key-name(cfg) = cfg <- {
-    name = cfg.service-account
-}
-
-type gcp:iam.serviceAccountKey = {
-    create = iam.projects.serviceAccounts.keys.create { create-sa-key-name identity }
-    read = iam.projects.serviceAccounts.keys.read { identity identity }
-    update = iam.projects.serviceAccounts.keys.patch { identity identity }
-    delete = iam.projects.serviceAccounts.keys.delete { identity identity }
-}
-
-# TODO25 - debug
-type gcp:iam.role = {
-    create = iam.role.create { identity identity }
-    read = iam.role.get { identity identity }
-    update = iam.role.patch { identity identity }
-    delete = iam.role.delete { identity identity }
-}
+type serviceAccountKey=M1<MserviceAccountKey, _auto:projects_serviceAccounts_keys>
+export serviceAccountKey

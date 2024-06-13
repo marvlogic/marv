@@ -1,10 +1,12 @@
 #lang racket/base
 
 (require racket/contract)
+(require racket/string)
 (require marv/utils/hash)
 
 (provide compute-api-operation-handler
          iam-api-operation-handler
+         sql-api-operation-handler
          (struct-out op-status)
          op-status-flag)
 
@@ -20,38 +22,66 @@
     [else 'running]))
 
 (define (compute-api-operation-handler response-type resp)
-  (define is-operation? (equal? "Operation" response-type))
+  (define is-operation? (equal? "compute.schemas.Operation" response-type))
   (cond
     [is-operation?
      (define done? (equal? "DONE" (hash-ref resp 'status)))
+     (define delete? (string-suffix? (hash-ref resp 'operationType #f) "delete"))
      (define errors (hash-nref resp '(error items) #f))
      (define poll-next
        (and (not done?)
             (lambda(http)
               (compute-api-operation-handler
-               "Operation"
+               response-type
                (http 'GET (hash-ref resp 'selfLink) '())))))
-     (define completed (and done?
-                            (not errors)
-                            (lambda(http) (http 'GET (hash-ref resp 'targetLink) '()))))
-     (op-status done?  errors poll-next completed)]
+     (define completed
+       (and done?
+            (not errors)
+            (if delete? (lambda(_)(hash))
+                (lambda(http) (http 'GET (hash-ref resp 'targetLink) '())))))
+     (op-status done? errors poll-next completed)]
     [else (op-success resp)]))
 
 ; TODO - same code?
 (define (iam-api-operation-handler response-type resp)
-  (define is-operation? (equal? "Operation" response-type))
+  (define is-operation? (equal? "iam.schemas.Operation" response-type))
   (cond
     [is-operation?
      (define done? (equal? "DONE" (hash-ref resp 'status)))
+     (define delete? (string-suffix? (hash-ref resp 'operationType #f) "delete"))
      (define errors (hash-nref resp '(error items) #f))
      (define poll-next
        (and (not done?)
             (lambda(http)
-              (compute-api-operation-handler
-               "Operation"
+              (iam-api-operation-handler
+               response-type
                (http 'GET (hash-ref resp 'selfLink) '())))))
-     (define completed (and done?
-                            (not errors)
-                            (lambda(http) (http 'GET (hash-ref resp 'targetLink) '()))))
+     (define completed
+       (and done?
+            (not errors)
+            (if delete? (lambda(_)(hash))
+                (lambda(http) (http 'GET (hash-ref resp 'targetLink) '())))))
+
      (op-status done?  errors poll-next completed)]
+    [else (op-success resp)]))
+
+(define (sql-api-operation-handler response-type resp)
+  (define is-operation? (equal? "sql.schemas.Operation" response-type))
+  (cond
+    [is-operation?
+     (define done? (equal? "DONE" (hash-ref resp 'status)))
+     (define delete? (string-suffix? (hash-ref resp 'operationType #f) "delete"))
+     (define errors (hash-nref resp '(error items) #f))
+     (define poll-next
+       (and (not done?)
+            (lambda(http)
+              (sql-api-operation-handler
+               response-type
+               (http 'GET (hash-ref resp 'selfLink) '())))))
+     (define completed
+       (and done?
+            (not errors)
+            (if delete? (lambda(_)(hash))
+                (lambda(http) (http 'GET (hash-ref resp 'targetLink) '())))))
+     (op-status done? errors poll-next completed)]
     [else (op-success resp)]))

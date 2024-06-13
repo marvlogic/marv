@@ -1,38 +1,25 @@
 #lang racket/base
 (require racket/contract)
+(require racket/string)
 
 (require marv/core/config)
-(require marv/drivers/utils)
+(require marv/drivers/types)
+(require marv/log)
 
 (provide init-dev-driver)
 
-(define (init-dev-driver interface-id)
+(define (init-dev-driver _)
 
-  (define/contract (create resource)
-    (config/c . -> . config/c)
-    (displayln ". DONE")
-    (hash-set* resource
-               'selfLink (format "dev:~a:~a" (hash-ref resource '$type)
-                                 (hash-ref resource 'name 'no-name))))
+  (define/contract (routing driver-spec)
+    (driver-cmd/c . -> . driver-resp/c)
+    (define api (driver-spec-api driver-spec))
+    (define config (hash-ref driver-spec 'config))
+    (log-marv-debug "dev-routing driver:~a config:~a" driver-spec config)
+    (define resp (http-transport (format "https://local/~a" api) config))
+    resp)
 
-  (define/contract (readr resource-state)
-    (config/c . -> . config/c)
-    resource-state)
+  routing)
 
-  (define/contract (update resource-state)
-    (config/c . -> . config/c)
-    (displayln ". DONE")
-    resource-state)
-
-  (define/contract (delete resource-state)
-    (config/c . -> . config/c)
-    (displayln ". DONE")
-    resource-state)
-
-  (define/contract (validate res)
-    (config/c . -> . config/c)
-    res)
-
-  (define (http-transport method url res)(displayln (format "~a: ~a\n~a" method url res)))
-
-  (make-driver-crud-fn validate create readr update delete))
+(define (http-transport url res)
+  (displayln (format "FAKE-HTTP ~a: ~a" url res))
+  (hash-set res 'selfLink (format "~a" url)))

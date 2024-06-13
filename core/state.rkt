@@ -1,17 +1,23 @@
 #lang racket/base
-(require racket/hash)
 (require racket/contract)
 (require marv/core/resources)
+(require marv/core/config)
 
 (provide load-state
          save-state
          state-keys
-         state-set-ref
          state-ref
+         state-ref-config
+         state-ref-origin
          state-ref-serial
+         state-ref-destructor
+         state-entry-origin
+         state-entry-driver
+         state-entry-config
          state-get
-         state-merge
-         mk-id->state
+         state-set/c
+         state-get-state-set
+         state-set-ref
          state-delete
          state-for-each)
 
@@ -25,7 +31,12 @@
   (STATE (hash-set (STATE) 'serial next))
   next)
 
-(struct state-entry (serial resource) #:prefab)
+(struct state-entry (serial origin destructor config) #:prefab)
+
+(define state-set/c (hash/c res-id/c state-entry? ))
+
+; TODO - set required fields in contract
+(define state-destructor/c hash?)
 
 (define (load-state f)
   (cond
@@ -37,33 +48,48 @@
   (with-output-to-file f #:mode 'text #:exists 'replace
     (lambda () (write (STATE)))))
 
-(define/contract (state-set-ref key res)
-  (res-id/c resource/c . -> . void)
+(define/contract (state-set-ref key origin destructor config)
+  (res-id/c origin/c state-destructor/c config/c . -> . void)
   (define resources (RESOURCES))
   (define serial
     (cond [(hash-has-key? resources key) (state-entry-serial(hash-ref resources key))]
           [else (next-serial) ]))
   (STATE (hash-set (STATE)
-                   'resources (hash-set resources key (state-entry serial res))))
+                   'resources (hash-set resources key (state-entry serial origin destructor config))))
   void)
 
 (define/contract (state-ref k)
-  (res-id/c . -> . resource/c)
-  (state-entry-resource (hash-ref (RESOURCES) k)))
+  (res-id/c . -> . state-entry?)
+  (hash-ref (RESOURCES) k))
+
+(define (state-ref-serial k) (state-entry-serial (hash-ref (RESOURCES) k)))
+
+(define/contract (state-ref-origin k)
+  (res-id/c . -> . origin/c)
+  (state-entry-origin (hash-ref (RESOURCES) k)))
+
+(define/contract (state-ref-destructor k)
+  (res-id/c . -> . state-destructor/c)
+  (state-entry-destructor (hash-ref (RESOURCES) k)))
+
+(define/contract (state-ref-config k)
+  (res-id/c . -> . config/c)
+  (state-entry-config (hash-ref (RESOURCES) k)))
+
+(define (state-entry-driver st)
+  (hash-ref (state-entry-origin st) 'driver))
 
 (define (state-get) (STATE))
 (define (state-keys) (hash-keys (RESOURCES)))
 
-(define (state-ref-serial k) (state-entry-serial (hash-ref (RESOURCES) k)))
-
-(define/contract (mk-id->state)
-  (-> (hash/c res-id/c resource/c))
-  (make-immutable-hash
-   (hash-map (RESOURCES) (lambda (k v)
-                           (cons k (state-entry-resource v))))))
+(define/contract (state-get-state-set)
+  (-> state-set/c)
+  (RESOURCES))
+; (make-immutable-hash
+;  (hash-map (RESOURCES) (lambda (k v) (cons k (state-entry-config v))))))
 
 (define (state-for-each proc)
-  (define (meta-def-proc k v) (proc k (state-entry-resource v)))
+  (define (meta-def-proc k v) (proc k (state-entry-config v)))
   (hash-for-each (RESOURCES) meta-def-proc))
 
 ; TODO - just booms out
@@ -73,16 +99,4 @@
   (resource-exists? m)
   (STATE (hash-set (STATE) 'resources (hash-remove (RESOURCES) m))))
 
-; (Deep) Merge a state record (rs) into an existing state, where rs overwrites st
-(define/contract (state-merge st rs)
-  (any/c resource/c . -> . resource/c)
-
-  (define (combine-hash s r)
-    (hash-union s r #:combine merge-em))
-
-  (define (merge-em s r)
-    (cond [(and (hash? r) (hash? s)) (combine-hash s r)]
-          [else r]))
-
-  (if (not st) rs
-      (resource (resource-driver-id rs) (combine-hash (resource-config st) (resource-config rs)))))
+; (Deep) Merge a resource's config (rs) into an existing state, where rs overwrites st

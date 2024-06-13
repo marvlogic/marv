@@ -20,13 +20,13 @@ Start by copy/pasting this code into a new file `hello-world.mrv`:
 ```
 #lang marv
 
-import types/gcp/storage
+import types/gcp/storage as storage
 
 module main {
 
     my-project = env("MARV_GCP_PROJECT")
 
-    hello-bucket = gcp:storage.bucket {
+    hello-bucket = storage:bucket {
         project = my-project
         region = env("MARV_GCP_REGION")
         name = imm: strf("~a-hello-world" my-project)
@@ -47,7 +47,10 @@ Marv should report that it will create the bucket and you can go ahead and deplo
 
     marv --apply hello-world.mrv
 
-Your new bucket is now ready for action! You will also notice that marv has created a **state file** in your current directory - this file is important as it holds details on the resources that have been created, and what attributes were configured.
+Your new bucket is now ready for action! You will also notice that marv has
+created a **state file** in your current directory - this file is important as
+it holds details on the resources that have been created, and what attributes
+were configured.
 
 ## Break it down...
 
@@ -55,16 +58,19 @@ The first line of a marv file  tells the Racket interpreter to invoke Marv's DSL
 
     #lang marv
 
-Next we need to import the types for the GCP storage API - the types have to be imported (or declared) before they can be used by a module:
+Next we need to import the types for the GCP storage API - the types have to be
+imported (or declared) before they can be used by a module. Importing a module
+`as <alias>` will require all of its resources to be prefixed with `<alias>:`
 
-    import types/gcp/storage
+    import types/gcp/storage as storage
 
 
-> ## Note
-> The type system is a central part of what makes marv different from other
-IAC tools; this will be covered in a separate tutorial.
+> ### Note
+> The type system is a part of what makes marv a bit different from other IAC
+tools; this will be covered in a separate tutorial.
 
-All resources must be declared inside a module, and there must be a `main` module declared in the top-level file passed on the command line:
+All resources must be declared inside a module, and there must be a `main`
+module declared in the top-level file passed on the command line:
 
     module main {...}
 
@@ -73,17 +79,18 @@ environment variable:
 
     my-project = env("MARV_GCP_PROJECT")
 
-Now we come to our bucket’s resource declaration,  in which `hello-bucket`  is a `storage.bucket` resource that is managed by the `GCP` driver:
+Now we come to our bucket’s resource declaration: `hello-bucket` is a `bucket`
+resource (from the `storage` module, imported earlier):
 
-    hello-bucket = gcp:storage.bucket ...
+    hello-bucket = storage:bucket ...
 
 > ## Note
 > A resource declaration is generally of the form:
 > 
->     name = driver:type config-object
+>     name = type { config... }
 >   
-> A `driver` targets a specific cloud-provider's API; marv currently only supports `dev` and `gcp` (Google Cloud Platform).  `type` is the kind of resource supported by the cloud provider, such as `compute.instance` or `secret-manager.secret` (NB this isn't *strictly* true, but
-it suffices for now!)
+> `type` is the kind of resource supported by the cloud provider, such as
+`instance` or `secret` (NB this isn't *strictly* true, but it suffices for now!)
 
 Finally, we have the body of our resource declaration:
 
@@ -101,17 +108,24 @@ This is a `config-object` which is basically a set of `name=value` attributes, e
 value of the `project`, which is from the `MARV_GCP_PROJECT` environment
 variable.
 
-`imm:` is a marker to indicate to marv that the `name` attribute is **immutable** -  this means if it changes then the bucket must be recreated.
+`imm:` is a hint for marv that the `name` attribute is **immutable** -  this
+means if it changes then the bucket must be recreated.
 
-> ## Note
-> We are working on auto-discovering which fields are immutable so (hopefully) you won't need to do as much of this manual tagging in a future release.
+> ## Note 
+> We are working on auto-discovering which fields are immutable so
+you won't need to do as much of this manual tagging in a future
+release.
 
 # Next steps
 
-That completes our first steps with `marv` - in the next section we'll cover more of the language features. However, if you want to stop and delete all the resources for now you can run the purge command:
+That completes our first steps with `marv` - in the next section we'll cover
+more of the language features. However, if you want to stop and delete all the
+resources for now you can run the purge command:
 
     marv --purge --apply hello-world.mrv
 
 # MORE TUTORIALS COMING SOON
 
-In the meantime, you can look at the [examples](https://github.com/marvlogic/marv/tree/main/examples/gcp) for more information.
+In the meantime, you can look at the
+[examples](https://github.com/marvlogic/marv/tree/main/examples/gcp) for more
+information.

@@ -1,0 +1,17 @@
+#lang marv
+
+type lifecycle = {
+    origin(cfg) = cfg
+    identity(cfg) = cfg
+    create(cfg) = cfg
+    post-create(o, cfg) = cfg
+
+    read(cfg) = cfg
+    post-read(o, cfg) = cfg
+
+    update(cfg) = cfg
+    post-update(o, cfg) = cfg
+    
+    delete(cfg) = cfg
+}
+export lifecycle
