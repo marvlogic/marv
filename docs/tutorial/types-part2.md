@@ -247,7 +247,7 @@ module main {
 
 ## Common Type Library
 
-This is a lot of code to just label 4 resources in a common way. However, what we have here is the beginnings of our own **common type library**. Let's do this in a file called `lib/types.mrv`, which is just the top part of our original module:
+This is a lot of code to just label 4 resources in a common way. However, we have the beginnings of our own **common type library**. Let's do this in a file called `lib/types.mrv`, which is just the top part of our original module:
 
 ```
 #lang marv
