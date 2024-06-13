@@ -76,7 +76,7 @@ This works, but once again look at the repetition - `labelledSecret` is virtuall
 
 ## Type Templates
 
-Type templates are an abstraction that allow us to factor-out the common parts of types, and fill in the blanks later on to create a **concrete type** - this is a type that you can actually use to define a resource:
+Type templates are an abstraction that allow us to factor-out the common parts of types, and fill in the blanks later on to create a **concrete type**, which is a type that you can actually use to define a resource.
 
 A type-template declaration looks like this:
 

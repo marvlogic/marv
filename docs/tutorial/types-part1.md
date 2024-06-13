@@ -4,7 +4,8 @@
 
 Let's start from the bucket example in the last tutorial, and add a second bucket:
 
-```#lang marv
+```
+#lang marv
 
 import types/gcp/storage as storage
 
@@ -44,7 +45,8 @@ bucket2 = storage:bucket defaults <- {
 }
 ...
 ```
-That's better. But now let's add some common labels to the buckets. There are a few different ways to do this, but they all have shortcomings. One idea is simply adding an attribute to the `defaults`:
+
+That's better. Now let's add some common labels to the buckets. There are a few different ways to do this, but they all have shortcomings. One idea is simply adding an attribute to the `defaults`:
 
 ```
 defaults = {
@@ -54,7 +56,7 @@ defaults = {
 }
 ```
 
-But this wouldn't work if we wanted our buckets to have other labels as well:
+However, this wouldn't work if we wanted our buckets to have other labels as well:
 
 ```
 bucket1 = storage:bucket defaults <- {
@@ -74,7 +76,7 @@ bucket1 = storage:bucket defaults <- {
 }
 ```
 
-This works, but we're back to repeating ourselves, as well as having a cognitive burden - we need to remember to add those default labels for every bucket or resource that needs them.
+This works, but we're back to repeating ourselves, as well as introducing a cognitive burden - we need to remember to add those default labels for every bucket or resource that needs them.
 
 ## Types
 
@@ -94,7 +96,7 @@ This isn't complete, we'll get to that in a moment. We do need to cover that `id
 
 **Answer: A type is a collection of functions.**
 
-Basically, all resources in `marv` have a corresponding type defined for them - when you `import type/gcp/storage` you are actually importing the types in that module, in our case we use `storage:bucket`.
+Basically, all resources in `marv` have a corresponding type defined for them - when you `import types/gcp/storage` you are importing the types exported by that module, and in our case we use `storage:bucket`.
 
 When you declare a resource in marv, you are associating the type to the data inside the `{...}`. 
 
@@ -122,7 +124,7 @@ type labelledBucket = {
 
 (NB we're not going to cover all those functions in this tutorial; only `identity` is important for now)
 
-Now, that's a lot of boilerplate, and we don't like boilerplate. So `marv` has a shortcut that accomplishes the same thing:
+That's a lot of boilerplate, and we don't like boilerplate. So `marv` has a shortcut that accomplishes the same thing:
 
 ```
 type labelledBucket = {
@@ -133,7 +135,7 @@ type labelledBucket = {
 }
 ```
 
-So now, `identity` is defined in `labelledBucket` and all other functions are found by looking at the functions defined by `storage:bucket`.
+So `identity` is defined in `labelledBucket` and all other functions are found by looking at the functions defined by `storage:bucket`.
 
 At this point our complete module looks like this:
 
