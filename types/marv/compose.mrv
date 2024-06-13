@@ -1,29 +1,28 @@
 #lang marv
 
-type C1<C1, R> = {
+type C2<C1, R> = {
     identity(cfg) = R.identity(C1.identity(cfg))
     * = R.*
 }
 
-type C2<C1, C2, R> = {
+type C3<C1, C2, R> = {
     identity(cfg) = R.identity(C2.identity(C1.identity(cfg)))
     * = R.*
 }
 
-type C3<C1, C2, C3, R> = {
+type C4<C1, C2, C3, R> = {
     identity(cfg) = R.identity(C3.identity(C2.identity(C1.identity(cfg))))
     * = R.*
 }
 
-type C4<C1, C2, C3, C4, R> = {
+type C5<C1, C2, C3, C4, R> = {
     identity(cfg) = R.identity(C4.identity(C3.identity(C2.identity(C1.identity(cfg)))))
     * = R.*
 }
 
-type C5<C1, C2, C3, C4, C5 R> = {
+type C6<C1, C2, C3, C4, C5 R> = {
     identity(cfg) = R.identity(C5.identity(C4.identity(C3.identity(C2.identity(C1.identity(cfg))))))
     * = R.*
 }
 
-
-export C1 C2 C3 C4 C5
+export C2 C3 C4 C5 C6

@@ -191,12 +191,63 @@ type secret = Combine<Label, Defaults, secret:secret>
 
 ```
 
-This is a better approach because the `Compose` type template is generic and re-usable. In fact, Marv's type library already has these defined for up to 5 combinations:
+This is a better approach because the `Compose` type template is generic and re-usable. In fact, Marv's type library already has these defined for 2 to 6 combinations:
 
 
 ```
-import types/marv/compositions
+import types/marv/compose
 ...
-type bucket = C2<Label, Defaults, storage:bucket>
-type secret = C2<Label, Defaults, secret:secret>
+type bucket = C3<Label, Defaults, storage:bucket>
+type secret = C3<Label, Defaults, secret:secret>
+```
+
+So our final module:
+
+```
+#lang marv
+
+import types/gcp/storage as storage
+import types/gcp/secretmanager as secret
+import types/marv/compose
+
+type Label = {
+    identity(cfg) = cfg <- { labels = (cfg.labels | {} ) <- { costcentre = "abc123", environment="uat" }}
+}
+
+type Defaults = {
+    identity(cfg) = cfg <- {
+        project = defaults.project
+        region = defaults.region
+    }
+}
+
+type bucket = C3<Label, Defaults, storage:bucket>
+type secret = C3<Label, Defaults, secret:secret>
+
+defaults = {
+    project = env("MARV_GCP_PROJECT") 
+    region = env("MARV_GCP_REGION") 
+}
+
+module main {
+
+    bucket1 = bucket {
+        name = strf("~a-hello-world1" defaults.project)
+    }
+
+    bucket2 = bucket {
+        name = strf("~a-hello-world2" defaults.project)
+    }
+    
+    secret1 = secret {
+        name = "my-little-secret1"
+        replication = { automatic = {} }
+    }
+
+    secret2 = secret {
+        name = "my-little-secret2"
+        replication = { automatic = {} }
+    }
+
+}
 ```
