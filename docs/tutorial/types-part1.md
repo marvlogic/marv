@@ -1,9 +1,8 @@
-# Types
+# Types Tutorial - Part 1
 
 ## Introduction
 
-
-Let's start from the bucket example, and add a second bucket:
+Let's start from the bucket example in the last tutorial, and add a second bucket:
 
 ```#lang marv
 
@@ -91,18 +90,19 @@ type labelledBucket = {
 
 This isn't complete, we'll get to that in a moment. We do need to cover that `identity(cfg)` thing first, and types in general.  We'll take a little diversion at this point, so we can explain some foundational things about types.
 
-### What is a type?
+## Question: What is a type?
 
-**A type is just a collection of functions.**
+**Answer: A type is a collection of functions.**
 
-Basically, all resources in `marv` have a corresponding type defined for them - when you `import type/gcp/storage` you are actually importing the types in that module, in our case `storage:bucket`.
+Basically, all resources in `marv` have a corresponding type defined for them - when you `import type/gcp/storage` you are actually importing the types in that module, in our case we use `storage:bucket`.
 
 When you declare a resource in marv, you are associating the type to the data inside the `{...}`. 
 
-Marv's resource mangement system expects types to define certain functions, one of these is `identity`. This function gets called very early on in the processing, and receives the resource's configuration in the `cfg` parameter. The function can update this - if it wants to. The result of the function is passed back to marv.
+    bucket1 = storage:bucket { ... }
 
-So looking back at our `labelledBucket` type, above, we can see that the `identity` function is setting a labels attribute in the `cfg` that it's
-given. But we still need to do more for this to work - as mentioned, marv is expecting our type to define certain other functions related to resource management. The original `storage:bucket` type already has these defined, so we can call those functions from our type:
+Marv's resource mangement system expects types to define certain functions so that it can manage the lifecycle of resources. One of these functions is `identity`. This function gets called very early on in the processing, and receives the resource's configuration (the config inside `{ ... }` ) in the `cfg` parameter. The function can update this - if it wants to. The result of the function is passed back to marv.
+
+So looking back at our `labelledBucket` type, above, we can see that the `identity` function is setting a `labels` attribute in the `cfg` that it's given. But we still need to do more for this to work - as mentioned, marv is expecting our type to define certain other functions related to resource management. The original `storage:bucket` type already has these defined, so we can call those functions from our type:
 
 ```
 type labelledBucket = {
@@ -122,7 +122,7 @@ type labelledBucket = {
 
 (NB we're not going to cover all those functions in this tutorial; only `identity` is important for now)
 
-Now, that's a lot of boilerplate and we don't like boilerplate. So `marv` has a shortcut that accomplishes the same thing:
+Now, that's a lot of boilerplate, and we don't like boilerplate. So `marv` has a shortcut that accomplishes the same thing:
 
 ```
 type labelledBucket = {
@@ -136,8 +136,6 @@ type labelledBucket = {
 So now, `identity` is defined in `labelledBucket` and all other functions are found by looking at the functions defined by `storage:bucket`.
 
 At this point our complete module looks like this:
-
-TODO41 - cfg.labels - needs to default to empty?
 
 ```
 #lang marv
@@ -168,3 +166,5 @@ module main {
     
 }
 ```
+
+That's the end of this part, but there's a lot more to Marv's type system. Carry on to [part 2](/docs/tutorial/types-part2.md) to learn more advanced things about types.
