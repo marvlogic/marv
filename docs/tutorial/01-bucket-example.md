@@ -29,7 +29,7 @@ module main {
     hello-bucket = storage:bucket {
         project = my-project
         region = env("MARV_GCP_REGION")
-        name = imm: strf("~a-hello-world" my-project)
+        name = strf("~a-hello-world" my-project)
     }
 }
 ```
@@ -98,7 +98,7 @@ Finally, we have the body of our resource declaration:
 {
     project = my-project
     region = env("MARV_GCP_REGION")
-    name = imm: strf("~a-hello-world" my-project)
+    name = strf("~a-hello-world" my-project)
 }
 ```
 
@@ -107,9 +107,6 @@ This is a `config-object` which is basically a set of `name=value` attributes, e
 `name` is assigned the results of the `strf` function which replaces `~a` by the
 value of the `project`, which is from the `MARV_GCP_PROJECT` environment
 variable.
-
-`imm:` is a hint for marv that the `name` attribute is **immutable** -  this
-means if it changes then the bucket must be recreated.
 
 > ## Note 
 > We are working on auto-discovering which fields are immutable so
