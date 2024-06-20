@@ -8,20 +8,21 @@
 (require marv/drivers/types)
 
 (require marv/drivers/gcp/operation-handler)
-(require (prefix-in generic: marv/drivers/gcp/generic-api))
-(require (prefix-in sm: marv/drivers/gcp/patches/secret-manager))
-(require (prefix-in sql: marv/drivers/gcp/patches/sql))
+(require marv/drivers/gcp/generic-request-handler)
 
 (provide init-gcp gcp-http-transport)
+
+(define (init-api  http OPERATION-HANDLER)
+  (mk-request-handler OPERATION-HANDLER))
 
 (define (init-gcp http-transport)
   (define apis
     (hash
-     "compute" (generic:init-api http-transport compute-api-operation-handler)
-     "iam" (generic:init-api  http-transport iam-api-operation-handler)
-     "storage" (generic:init-api  http-transport compute-api-operation-handler)
-     "secretmanager" (generic:init-api  http-transport iam-api-operation-handler)
-     "sql" (generic:init-api http-transport sql-api-operation-handler)
+     "compute" (init-api http-transport compute-api-operation-handler)
+     "iam" (init-api  http-transport iam-api-operation-handler)
+     "storage" (init-api  http-transport compute-api-operation-handler)
+     "secretmanager" (init-api  http-transport iam-api-operation-handler)
+     "sql" (init-api http-transport sql-api-operation-handler)
      ))
 
   (define/contract (routing driver-cmd)
