@@ -30,10 +30,10 @@ boolean: "true" | "false"
 type-id: IDENTIFIER
 api-id: DOTTY-IDENT
 
-expression: term [ @operator term ]
-term: boolean | INTEGER | STRING | IDENTIFIER | built-in | func-call | reference | alist | config-object | parens-expr | expression
-operator: "<-" | "->" | "|" | "<<" | "+" | "-" | "/" | "*"
-parens-expr: /"(" expression /")"
+expression: term [ operator term ]
+@term: boolean | INTEGER | STRING | IDENTIFIER | built-in | func-call | reference | alist | config-object | parens-expr | expression
+@operator: "<-" | "->" | "|" | "<<" | "+" | "-" | "/" | "*"
+@parens-expr: /"(" expression /")"
 
 attribute-name: ( STRING | IDENTIFIER | "type" )
 
