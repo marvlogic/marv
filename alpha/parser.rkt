@@ -26,17 +26,14 @@ func-decl: IDENTIFIER /"(" (IDENTIFIER [ /"," ])+ /")" /"=" expression
 func-call: func-ident /"(" (expression [ /"," ])+ /")"
 func-ident: (DOTTY-IDENT | IDENTIFIER)
 
-verb: IDENTIFIER
+boolean: "true" | "false"
 type-id: IDENTIFIER
-transformer-id: IDENTIFIER
 api-id: DOTTY-IDENT
 
-expression: INTEGER | STRING | IDENTIFIER | func-call | try-alternate | boolean | config-expr | reference | alist | built-in | parens-expr
-try-alternate: expression /"|" expression
+expression: term [ @operator term ]
+term: boolean | INTEGER | STRING | IDENTIFIER | built-in | func-call | reference | alist | config-object | parens-expr | expression
+operator: "<-" | "->" | "|" | "<<" | "+" | "-" | "/" | "*"
 parens-expr: /"(" expression /")"
-string-expression: STRING | expression
-
-boolean: "true" | "false"
 
 attribute-name: ( STRING | IDENTIFIER | "type" )
 
@@ -47,18 +44,18 @@ list-attr: /"[" ( attribute-name [ /"," ] )* /"]"
 
 built-in: env-read | strf | base64encode | base64decode | urivars | uritemplate
 env-read: /"env" /"(" STRING /")"
+strf: /"strf" /"(" string-expression [ /"," ]( expression [ /"," ] ) + /")"
+base64encode: /"base64encode" /"(" string-expression /")"
+base64decode: /"base64decode" /"(" string-expression /")"
+urivars: /"strvars" /"(" string-expression /")"
+uritemplate: /"expandvars" /"(" expression [ /"," ] config-expr /")"
 
-strf: /"strf" /"(" STRING [ /"," ]( expression [ /"," ] ) + /")"
-urivars: /"strvars" /"(" expression /")"
+string-expression: expression
 
-uritemplate: /"expandvars" /"(" expression config-expr /")"
-base64encode: /"base64encode" /"(" expression /")"
-base64decode: /"base64decode" /"(" expression /")"
-
-config-expr: reference | config-object | config-ident | config-merge | config-take | func-call
-config-merge: expression ("<-" | "->") expression
-config-ident: IDENTIFIER
-config-take: expression /"<<" ( urivars | list-attr )
+config-expr: expression
+;config-merge: expression ("<-" | "->") expression
+;config-ident: IDENTIFIER
+;config-take: expression /"<<" ( urivars | list-attr )
 
 reference: DOTTY-IDENT
 

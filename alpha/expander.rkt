@@ -260,10 +260,36 @@
     (syntax-parse stx
       [(_ ident:expr) (syntax/loc stx (pretty-print ident))]))
 
+  (define (check-expression-terms stx test? op term1 term2)
+    (with-syntax ([locn (src-location stx)]
+                  [test? test?]
+                  [op op]
+                  [term1 term1]
+                  [term2 term2])
+      (syntax/loc stx (check-operator-types locn test? op term2 term1))))
+
   (define (m-expression stx)
     (syntax-parse stx
-      [(_ passthru) (syntax/loc stx passthru)]
+      [(_ term) (syntax/loc stx term)]
+      ; [(_ term1 "<-" term2) (check-apply stx hash? 'config-overlay 'term2 'term1)]
+      ; [(_ term1 "<-" term2)
+      ;  (with-syntax ([locn (src-location stx)])
+      ;    (syntax/loc stx
+      ;      (check-apply-types locn hash? config-overlay term2 term1)))]
+      [(_ term1 "<-" term2) (check-expression-terms stx #'hash? #'config-overlay #'term2 #'term1)]
+      [(_ term1 "<-" term2) (syntax/loc stx (check-operator-types (src-location stx) hash? config-overlay term2 term1))]
+      [(_ term1 "->" term2) (syntax/loc stx (check-operator-types (src-location stx) hash? config-overlay term1 term2))]
+      [(_ term1 "<<" term2) (syntax/loc stx (check-operator-types (src-location stx) hash? config-reduce term1 term2))]
+      [(_ term1 "+" term2) (syntax/loc stx (+ term1 term2))]
+      [(_ term1 "-" term2) (syntax/loc stx (- term1 term2))]
+      [(_ term1 "*" term2) (syntax/loc stx (* term1 term2))]
+      [(_ term1 "/" term2) (syntax/loc stx (/ term1 term2))]
+      [(_ term1 "|" term2) (syntax/loc stx (with-handlers ([exn:fail? (lambda(_) term2)]) term1))]
       ))
+
+  (define (m-term stx)
+    (syntax-parse stx
+      [(_ term) (syntax/loc stx term)]))
 
   (define (m-parens-expr stx)
     (syntax-parse stx
@@ -273,8 +299,7 @@
   (define (m-try-alternate stx)
     (syntax-parse stx
       [(_ expr1 expr2)
-       (syntax/loc stx
-         (with-handlers ([exn:fail? (lambda(_) expr2)]) expr1))]))
+       (syntax/loc stx (with-handlers ([exn:fail? (lambda(_) expr2)]) expr1))]))
 
   (define (m-boolean stx)
     (syntax-parse stx
@@ -287,20 +312,15 @@
 
     (define-splicing-syntax-class attr-decl
       #:description "attribute declaration"
-      #:literals (expression)
-      #:attributes (name tname expr raw-expr)
-      (pattern (~seq name:id (expression e))
-        #:attr tname (this-name #'name)
-        #:attr expr #'e
-        #:attr raw-expr #'e)
-      (pattern (~seq aname:string (expression expr))
+      #:attributes (name tname expr)
+      (pattern (~seq name:id expr)
+        #:attr tname (this-name #'name))
+      (pattern (~seq aname:string expr)
         #:attr name (format-id #f "~a" (syntax-e #'aname))
-        #:attr tname (this-name #'aname)
-        #:attr raw-expr #'expr)
-      (pattern (~seq name:id "imm:" (expression e))
+        #:attr tname (this-name #'aname))
+      (pattern (~seq name:id "imm:" iexpr)
         #:attr tname (this-name #'name)
-        #:attr expr #'(ival e)
-        #:attr raw-expr #'e))
+        #:attr expr #'(ival iexpr)))
 
     (syntax-parse stx
       [(_ attr:attr-decl ...)
@@ -410,6 +430,7 @@
 (define-syntax func-call m-func-call)
 (define-syntax func-ident m-func-ident)
 (define-syntax expression m-expression)
+(define-syntax term m-term)
 (define-syntax parens-expr m-parens-expr)
 (define-syntax try-alternate m-try-alternate)
 (define-syntax reference m-reference)
@@ -445,7 +466,7 @@
          module-export
          api-id transformer-id type-id
          func-call func-ident config-func-decl func-decl type-decl type-template
-         expression parens-expr try-alternate reference statement config-object alist list-attr attribute-name
+         expression term parens-expr try-alternate reference statement config-object alist list-attr attribute-name
          config-expr config-merge config-ident config-take
          keyword built-in env-read pprint strf urivars uritemplate base64encode base64decode
          boolean)

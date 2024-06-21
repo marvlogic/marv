@@ -7,7 +7,8 @@
 
 (define-lex-abbrev digits (:+ (char-set "0123456789")))
 
-(define-lex-abbrev filename (:+ (:or digits alphabetic (char-set "-_/"))))
+;TODO43 - filenames vs identifiers
+(define-lex-abbrev filename (:seq (:= 1 (:or "_" alphabetic)) (:+ (:or digits alphabetic (char-set "-_/")))))
 
 (define-lex-abbrev module-identifier (:seq (:= 1 alphabetic)
                                            (:* (:or digits alphabetic (char-set "-_/")))))
@@ -20,7 +21,7 @@
 (define basic-lexer
   (lexer-srcloc
    ;    ["\n" (token 'NEWLINE lexeme)]
-   [(:or "for/list" "->" "<-" "<<" ">>" "<" ">" "*" "."
+   [(:or "for/list" "->" "<-" "<<" ">>" "<" ">" "*" "-" "+" "/" "."
          "module" "private" "import" "export" "as" "return" "strf"
          "strvars" "expandvars" "base64encode" "base64decode" "using" "overlays" "abstracts"
          "type" "in" "pprint" "env" "true" "false"
