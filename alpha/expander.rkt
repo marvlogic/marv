@@ -261,23 +261,34 @@
       [(_ ident:expr) (syntax/loc stx (pretty-print ident))]))
 
   (define (m-expression stx)
+    (syntax-parse stx
+      [(_ term) (syntax/loc stx term)]
+      [(_ term1 "|" term2) (syntax/loc stx (with-handlers ([exn:fail? (lambda(_) term2)]) term1))]
+      ))
 
-    (define (check-terms stx test? op term1 term2)
-      (with-syntax
-          ([locn (src-location stx)]
-           [test? test?] [op op] [term1 term1] [term2 term2])
-        (syntax/loc stx (check-operator-types locn test? op term2 term1))))
+  (define (m-num-expression stx)
 
     (syntax-parse stx
       [(_ term) (syntax/loc stx term)]
-      [(_ term1 "<-" term2) (check-terms stx #'hash? #'config-overlay #'term2 #'term1)]
-      [(_ term1 "->" term2) (syntax/loc stx (check-operator-types (src-location stx) hash? config-overlay term1 term2))]
-      [(_ term1 "<<" term2) (syntax/loc stx (check-operator-types (src-location stx) hash? config-reduce term1 term2))]
       [(_ term1 "+" term2) (syntax/loc stx (+ term1 term2))]
       [(_ term1 "-" term2) (syntax/loc stx (- term1 term2))]
       [(_ term1 "*" term2) (syntax/loc stx (* term1 term2))]
       [(_ term1 "/" term2) (syntax/loc stx (/ term1 term2))]
-      [(_ term1 "|" term2) (syntax/loc stx (with-handlers ([exn:fail? (lambda(_) term2)]) term1))]
+      ))
+
+  (define (m-map-expression stx)
+
+    (define (check-terms stx test1? test2? op term1 term2)
+      (with-syntax
+          ([locn (src-location stx)]
+           [test1? test1?] [test2? test2?] [op op] [term1 term1] [term2 term2])
+        (syntax/loc stx (check-operator-types locn test1? test2? op term1 term2))))
+
+    (syntax-parse stx
+      [(_ term) (syntax/loc stx term)]
+      [(_ term1 "<-" term2) (check-terms stx #'hash? #'hash? #'config-overlay #'term2 #'term1)]
+      [(_ term1 "<-" term2) (check-terms stx #'hash? #'hash? #'config-overlay #'term1 #'term2)]
+      [(_ term1 "<<" term2) (check-terms stx #'hash? #'list? #'config-reduce #'term1 #'term2)]
       ))
 
   (define (m-boolean stx)
@@ -285,7 +296,7 @@
       [(_ "true") (syntax/loc stx val) #'#t]
       [(_ "false") (syntax/loc stx val) #'#f]))
 
-  (define (m-config-object stx)
+  (define (m-map-spec stx)
 
     (define (this-name stx) (format-id #f "this_~a" (syntax-e stx)))
 
@@ -307,7 +318,7 @@
        ;  #'(let* ([attr.tname attr.raw-expr] ... )
        ;      (make-immutable-hasheq (list (cons 'attr.name attr.expr) ...))) ]
        #'(make-immutable-hasheq (list (cons 'attr.name attr.expr) ...)) ]
-      [else (displayln stx)(raise "m-config-object")]))
+      [else (displayln stx)(raise "m-map-spec")]))
 
   (define (m-alist stx)
     (syntax-parse stx
@@ -323,11 +334,11 @@
       [(_ name:id) (syntax/loc stx 'name)]
       [else (raise "m-attribute-name")]))
 
-  (define (m-list-attr stx)
+  (define (m-attr-list stx)
     (syntax-parse stx
       [(_ ATTR ...)
        (syntax/loc stx (list ATTR ...))]
-      [else (raise "m-list-attr")]))
+      [else (raise "m-attr-list")]))
 
   (define (m-config-expr stx)
     (syntax-parse stx
@@ -409,10 +420,12 @@
 (define-syntax func-call m-func-call)
 (define-syntax func-ident m-func-ident)
 (define-syntax expression m-expression)
+(define-syntax map-expression m-map-expression)
+(define-syntax num-expression m-num-expression)
 (define-syntax reference m-reference)
-(define-syntax config-object m-config-object)
+(define-syntax map-spec m-map-spec)
 (define-syntax alist m-alist)
-(define-syntax list-attr m-list-attr)
+(define-syntax attr-list m-attr-list)
 (define-syntax attribute-name m-attribute-name)
 (define-syntax keyword m-keyword)
 (define-syntax built-in m-built-in)
@@ -442,7 +455,7 @@
          module-export
          api-id transformer-id type-id
          func-call func-ident config-func-decl func-decl type-decl type-template
-         expression reference statement config-object alist list-attr attribute-name
+         expression num-expression map-expression reference statement map-spec alist attr-list attribute-name
          config-expr config-merge config-ident config-take
          keyword built-in env-read pprint strf urivars uritemplate base64encode base64decode
          boolean)

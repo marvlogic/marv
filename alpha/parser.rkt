@@ -30,17 +30,28 @@ boolean: "true" | "false"
 type-id: IDENTIFIER
 api-id: DOTTY-IDENT
 
-expression: term [ operator term ]
-@term: boolean | INTEGER | STRING | IDENTIFIER | built-in | func-call | reference | alist | config-object | parens-expr | expression
-@operator: "<-" | "->" | "|" | "<<" | "+" | "-" | "/" | "*"
-@parens-expr: /"(" expression /")"
+expression: string-expression | num-expression | map-expression | alternate-expression
+
+@string-expression: STRING | IDENTIFIER | built-in | func-call | reference
+
+num-expression: num-term [ num-operator num-term ]
+@num-term: INTEGER | IDENTIFIER | built-in | func-call | reference | num-parens-expr
+@num-operator: '+' | '-' | '/' | '*'
+@num-parens-expr: /"(" num-expression /")"
+
+map-expression: map-term [ map-operator map-term ]
+@map-term: map-spec | IDENTIFIER | func-call | reference | map-parens-expr | map-expression | attr-list
+@map-operator: "<-" | "->" | "<<"
+@map-parens-expr: /"(" map-expression /")"
+
+@alternate-expression: expression '|' expression | /'(' expression '|' expression /')'
 
 attribute-name: ( STRING | IDENTIFIER | "type" )
 
-config-object: /"{" [( STRING | IDENTIFIER | "type" ) /"=" [ "imm:" ] expression [ /"," ]]* /"}"
-alist: /"[" expression* /"]"
+map-spec: /"{" [( STRING | IDENTIFIER | "type" ) /"=" [ "imm:" ] expression [ /"," ]]* /"}"
+alist: /"[" (expression [ /"," ])* /"]"
 
-list-attr: /"[" ( attribute-name [ /"," ] )* /"]"
+attr-list: /"[" ( attribute-name [ /"," ] )* /"]"
 
 built-in: env-read | strf | base64encode | base64decode | urivars | uritemplate
 env-read: /"env" /"(" STRING /")"
@@ -48,18 +59,12 @@ strf: /"strf" /"(" string-expression [ /"," ]( expression [ /"," ] ) + /")"
 base64encode: /"base64encode" /"(" string-expression /")"
 base64decode: /"base64decode" /"(" string-expression /")"
 urivars: /"strvars" /"(" string-expression /")"
-uritemplate: /"expandvars" /"(" expression [ /"," ] config-expr /")"
+uritemplate: /"expandvars" /"(" expression [ /"," ] map-expression /")"
 
-string-expression: expression
-
-config-expr: expression
-;config-merge: expression ("<-" | "->") expression
-;config-ident: IDENTIFIER
-;config-take: expression /"<<" ( urivars | list-attr )
 
 reference: DOTTY-IDENT
 
-res-decl: IDENTIFIER /"=" type-id config-expr
+res-decl: IDENTIFIER /"=" type-id map-expression
 module-invoke: IDENTIFIER /"=" ( MODULE-IDENTIFIER | IDENTIFIER ) /"(" (named-parameter [ /"," ] )* /")"
 
 ; type is explicitly allowed as it's common, and we need 'type' as a lexical token

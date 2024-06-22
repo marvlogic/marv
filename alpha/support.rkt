@@ -186,8 +186,6 @@
 
 (define (src-location s) (format "~a:~a" (syntax-source s) (syntax-line s)))
 
-(define (check-operator-types locn test? op term1 term2)
-  ;TODO43 - pretty sure this indirection isn't needed, term1 & 2 should have been evaluated by now
-  (define t1 term1)
-  (define t2 term2)
-  (if (and (test? t1) (test? t2)) (op t1 t2) (raise (~a "terms not valid:" locn))))
+(define (check-operator-types locn test1? test2? op term1 term2)
+  ;TODO43 - check that indirection isn't needed, term1 & 2 should have been evaluated by now
+  (if (and (test1? term1) (test2? term2)) (op term1 term2) (raise (~a "terms not valid at:" locn "~n got " term1 "~n and " term2))))
