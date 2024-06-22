@@ -2,9 +2,10 @@
 
 (require racket/string)
 (require racket/syntax)
-(require (for-syntax racket/base racket/syntax syntax/parse racket/pretty marv/core/globals))
+(require (for-syntax racket/base racket/syntax  syntax/parse racket/pretty marv/core/globals))
 
 (require racket/pretty)
+(require racket/contract)
 
 (require marv/alpha/support)
 (require marv/core/values)
@@ -288,7 +289,7 @@
       [(_ term) (syntax/loc stx term)]
       [(_ term1 "<-" term2) (check-terms stx #'hash? #'hash? #'config-overlay #'term2 #'term1)]
       [(_ term1 "<-" term2) (check-terms stx #'hash? #'hash? #'config-overlay #'term1 #'term2)]
-      [(_ term1 "<<" term2) (check-terms stx #'hash? #'list? #'config-reduce #'term1 #'term2)]
+      [(_ term1 "<<" term2) (check-terms stx #'hash? #'(listof symbol?) #'config-reduce #'term1 #'term2)]
       ))
 
   (define (m-boolean stx)

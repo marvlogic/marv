@@ -31,6 +31,7 @@ type-id: IDENTIFIER
 api-id: DOTTY-IDENT
 
 expression: string-expression | num-expression | map-expression | alternate-expression
+expr-list: /"[" (expression [ /"," ])* /"]"
 
 @string-expression: STRING | IDENTIFIER | built-in | func-call | reference
 
@@ -40,18 +41,15 @@ num-expression: num-term [ num-operator num-term ]
 @num-parens-expr: /"(" num-expression /")"
 
 map-expression: map-term [ map-operator map-term ]
-@map-term: map-spec | IDENTIFIER | func-call | reference | map-parens-expr | map-expression | attr-list
 @map-operator: "<-" | "->" | "<<"
+@map-term: map-spec | IDENTIFIER | func-call | reference | map-parens-expr | map-expression | attr-list
+map-spec: /"{" [( STRING | IDENTIFIER | "type" ) /"=" [ "imm:" ] expression [ /"," ]]* /"}"
 @map-parens-expr: /"(" map-expression /")"
 
-@alternate-expression: expression '|' expression | /'(' expression '|' expression /')'
-
+attr-list: /"[" ( attribute-name [ /"," ] )* /"]"
 attribute-name: ( STRING | IDENTIFIER | "type" )
 
-map-spec: /"{" [( STRING | IDENTIFIER | "type" ) /"=" [ "imm:" ] expression [ /"," ]]* /"}"
-alist: /"[" (expression [ /"," ])* /"]"
-
-attr-list: /"[" ( attribute-name [ /"," ] )* /"]"
+@alternate-expression: expression '|' expression | /'(' expression '|' expression /')'
 
 built-in: env-read | strf | base64encode | base64decode | urivars | uritemplate
 env-read: /"env" /"(" STRING /")"
@@ -60,7 +58,6 @@ base64encode: /"base64encode" /"(" string-expression /")"
 base64decode: /"base64decode" /"(" string-expression /")"
 urivars: /"strvars" /"(" string-expression /")"
 uritemplate: /"expandvars" /"(" expression [ /"," ] map-expression /")"
-
 
 reference: DOTTY-IDENT
 
