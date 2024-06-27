@@ -30,8 +30,8 @@ boolean: "true" | "false"
 type-id: IDENTIFIER
 api-id: DOTTY-IDENT
 
-expression: string-expression | num-expression | map-expression | alternate-expression
-expr-list: /"[" (expression [ /"," ])* /"]"
+expression: boolean | string-expression | num-expression | map-expression | alternate-expression | expr-list
+@expr-list: "[" (expression [ /"," ])* "]"
 
 @string-expression: STRING | IDENTIFIER | built-in | func-call | reference
 
@@ -40,9 +40,9 @@ num-expression: num-term [ num-operator num-term ]
 @num-operator: '+' | '-' | '/' | '*'
 @num-parens-expr: /"(" num-expression /")"
 
-map-expression: map-term [ map-operator map-term ]
-@map-operator: "<-" | "->" | "<<"
-@map-term: map-spec | IDENTIFIER | func-call | reference | map-parens-expr | map-expression | attr-list
+map-expression: map-term ( [ map-operator map-term ] | "<<" attr-list )
+@map-operator: "<-" | "->"
+@map-term: map-spec | IDENTIFIER | func-call | reference | map-parens-expr | map-expression
 map-spec: /"{" [( STRING | IDENTIFIER | "type" ) /"=" [ "imm:" ] expression [ /"," ]]* /"}"
 @map-parens-expr: /"(" map-expression /")"
 

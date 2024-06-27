@@ -263,12 +263,16 @@
 
   (define (m-expression stx)
     (syntax-parse stx
-      [(_ term) (syntax/loc stx term)]
       [(_ term1 "|" term2) (syntax/loc stx (with-handlers ([exn:fail? (lambda(_) term2)]) term1))]
+      [(_ "[" terms ... "]") (syntax/loc stx (list terms ...))]
+      ; TODO - add type checking
+      [(_ term:string) (syntax/loc stx term)]
+      [(_ term) (syntax/loc stx term)]
       ))
 
-  (define (m-num-expression stx)
+  (define (m-string-expression stx) (syntax-parse stx [(_ str) (syntax/loc stx str)]))
 
+  (define (m-num-expression stx)
     (syntax-parse stx
       [(_ term) (syntax/loc stx term)]
       [(_ term1 "+" term2) (syntax/loc stx (+ term1 term2))]
@@ -328,6 +332,7 @@
       [else (raise "m-alist")]))
 
   (define (m-attribute-name stx)
+    (displayln stx)
     (syntax-parse stx
       [(_ sname:string)
        (define id (format-id #f "~a" (syntax-e #'sname)))
@@ -421,6 +426,7 @@
 (define-syntax func-call m-func-call)
 (define-syntax func-ident m-func-ident)
 (define-syntax expression m-expression)
+(define-syntax string-expression m-string-expression)
 (define-syntax map-expression m-map-expression)
 (define-syntax num-expression m-num-expression)
 (define-syntax reference m-reference)
@@ -456,7 +462,7 @@
          module-export
          api-id transformer-id type-id
          func-call func-ident config-func-decl func-decl type-decl type-template
-         expression num-expression map-expression reference statement map-spec alist attr-list attribute-name
+         expression string-expression num-expression map-expression reference statement map-spec alist attr-list attribute-name
          config-expr config-merge config-ident config-take
          keyword built-in env-read pprint strf urivars uritemplate base64encode base64decode
          boolean)

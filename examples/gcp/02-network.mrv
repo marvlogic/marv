@@ -36,7 +36,7 @@ module main {
         role = "ACTIVE"
     }
 
-    google-source-range = [ "130.211.0.0/22" "35.191.0.0/16" ]
+    google-source-range = [ "130.211.0.0/22", "35.191.0.0/16" ]
     
     fw-health-check = compute:firewall defaults <- {
         name = strf("~a-fw-allow-health-check" name)
@@ -55,6 +55,5 @@ module main {
                     { IPProtocol = "tcp" ports = [ "8080" ] } ]
         direction = "INGRESS"
     }
-
-
+pprint(defaults << [project])
 }
