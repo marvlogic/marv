@@ -55,5 +55,4 @@ module main {
                     { IPProtocol = "tcp" ports = [ "8080" ] } ]
         direction = "INGRESS"
     }
-pprint(defaults << [project])
 }
