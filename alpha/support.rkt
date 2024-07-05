@@ -29,7 +29,9 @@
          uri-vars
          uri-template
          find-function
-         get-param)
+         get-param
+         src-location
+         check-operator-types)
 
 (define (error:excn msg)
   (raise (format "ERROR at ~a:~a :  ~a" 1 2 msg))) ;(syntax-source stx) (syntax-line stx)))
@@ -181,3 +183,9 @@
       (hash-nref hsh lst)]
      [(_ _) (raise "unsupported function reference")]))
   (if (procedure? func) func (raise (~a "expected a function, got: " func))))
+
+(define (src-location s) (format "~a:~a" (syntax-source s) (syntax-line s)))
+
+(define (check-operator-types locn test1? test2? op term1 term2)
+  ;TODO43 - check that indirection isn't needed, term1 & 2 should have been evaluated by now
+  (if (and (test1? term1) (test2? term2)) (op term1 term2) (raise (~a "terms not valid at:" locn "~n got " term1 "~n and " term2))))

@@ -2,9 +2,10 @@
 
 (require racket/string)
 (require racket/syntax)
-(require (for-syntax racket/base racket/syntax syntax/parse racket/pretty marv/core/globals))
+(require (for-syntax racket/base racket/syntax  syntax/parse racket/pretty marv/core/globals))
 
 (require racket/pretty)
+(require racket/contract)
 
 (require marv/alpha/support)
 (require marv/core/values)
@@ -262,45 +263,59 @@
 
   (define (m-expression stx)
     (syntax-parse stx
-      [(_ passthru) (syntax/loc stx passthru)]
+      [(_ term1 "|" term2) (syntax/loc stx (with-handlers ([exn:fail? (lambda(_) term2)]) term1))]
+      [(_ "[" terms ... "]") (syntax/loc stx (list terms ...))]
+      ; TODO - add type checking
+      [(_ term:string) (syntax/loc stx term)]
+      [(_ term) (syntax/loc stx term)]
       ))
 
-  (define (m-parens-expr stx)
+  (define (m-string-expression stx) (syntax-parse stx [(_ str) (syntax/loc stx str)]))
+
+  (define (m-num-expression stx)
     (syntax-parse stx
-      [(_ passthru) (syntax/loc stx passthru)]
+      [(_ term) (syntax/loc stx term)]
+      [(_ term1 "+" term2) (syntax/loc stx (+ term1 term2))]
+      [(_ term1 "-" term2) (syntax/loc stx (- term1 term2))]
+      [(_ term1 "*" term2) (syntax/loc stx (* term1 term2))]
+      [(_ term1 "/" term2) (syntax/loc stx (/ term1 term2))]
       ))
 
-  (define (m-try-alternate stx)
+  (define (m-map-expression stx)
+
+    (define (check-terms stx test1? test2? op term1 term2)
+      (with-syntax
+          ([locn (src-location stx)]
+           [test1? test1?] [test2? test2?] [op op] [term1 term1] [term2 term2])
+        (syntax/loc stx (check-operator-types locn test1? test2? op term1 term2))))
+
     (syntax-parse stx
-      [(_ expr1 expr2)
-       (syntax/loc stx
-         (with-handlers ([exn:fail? (lambda(_) expr2)]) expr1))]))
+      [(_ term) (syntax/loc stx term)]
+      [(_ term1 "<-" term2) (check-terms stx #'hash? #'hash? #'config-overlay #'term2 #'term1)]
+      [(_ term1 "<-" term2) (check-terms stx #'hash? #'hash? #'config-overlay #'term1 #'term2)]
+      [(_ term1 "<<" term2) (check-terms stx #'hash? #'(listof symbol?) #'config-reduce #'term1 #'term2)]
+      ))
 
   (define (m-boolean stx)
     (syntax-parse stx
       [(_ "true") (syntax/loc stx val) #'#t]
       [(_ "false") (syntax/loc stx val) #'#f]))
 
-  (define (m-config-object stx)
+  (define (m-map-spec stx)
 
     (define (this-name stx) (format-id #f "this_~a" (syntax-e stx)))
 
     (define-splicing-syntax-class attr-decl
       #:description "attribute declaration"
-      #:literals (expression)
-      #:attributes (name tname expr raw-expr)
-      (pattern (~seq name:id (expression e))
-        #:attr tname (this-name #'name)
-        #:attr expr #'e
-        #:attr raw-expr #'e)
-      (pattern (~seq aname:string (expression expr))
+      #:attributes (name tname expr)
+      (pattern (~seq name:id expr)
+        #:attr tname (this-name #'name))
+      (pattern (~seq aname:string expr)
         #:attr name (format-id #f "~a" (syntax-e #'aname))
-        #:attr tname (this-name #'aname)
-        #:attr raw-expr #'expr)
-      (pattern (~seq name:id "imm:" (expression e))
+        #:attr tname (this-name #'aname))
+      (pattern (~seq name:id "imm:" iexpr)
         #:attr tname (this-name #'name)
-        #:attr expr #'(ival e)
-        #:attr raw-expr #'e))
+        #:attr expr #'(ival iexpr)))
 
     (syntax-parse stx
       [(_ attr:attr-decl ...)
@@ -308,7 +323,7 @@
        ;  #'(let* ([attr.tname attr.raw-expr] ... )
        ;      (make-immutable-hasheq (list (cons 'attr.name attr.expr) ...))) ]
        #'(make-immutable-hasheq (list (cons 'attr.name attr.expr) ...)) ]
-      [else (displayln stx)(raise "m-config-object")]))
+      [else (displayln stx)(raise "m-map-spec")]))
 
   (define (m-alist stx)
     (syntax-parse stx
@@ -317,6 +332,7 @@
       [else (raise "m-alist")]))
 
   (define (m-attribute-name stx)
+    (displayln stx)
     (syntax-parse stx
       [(_ sname:string)
        (define id (format-id #f "~a" (syntax-e #'sname)))
@@ -324,11 +340,11 @@
       [(_ name:id) (syntax/loc stx 'name)]
       [else (raise "m-attribute-name")]))
 
-  (define (m-list-attr stx)
+  (define (m-attr-list stx)
     (syntax-parse stx
       [(_ ATTR ...)
        (syntax/loc stx (list ATTR ...))]
-      [else (raise "m-list-attr")]))
+      [else (raise "m-attr-list")]))
 
   (define (m-config-expr stx)
     (syntax-parse stx
@@ -410,12 +426,13 @@
 (define-syntax func-call m-func-call)
 (define-syntax func-ident m-func-ident)
 (define-syntax expression m-expression)
-(define-syntax parens-expr m-parens-expr)
-(define-syntax try-alternate m-try-alternate)
+(define-syntax string-expression m-string-expression)
+(define-syntax map-expression m-map-expression)
+(define-syntax num-expression m-num-expression)
 (define-syntax reference m-reference)
-(define-syntax config-object m-config-object)
+(define-syntax map-spec m-map-spec)
 (define-syntax alist m-alist)
-(define-syntax list-attr m-list-attr)
+(define-syntax attr-list m-attr-list)
 (define-syntax attribute-name m-attribute-name)
 (define-syntax keyword m-keyword)
 (define-syntax built-in m-built-in)
@@ -445,7 +462,7 @@
          module-export
          api-id transformer-id type-id
          func-call func-ident config-func-decl func-decl type-decl type-template
-         expression parens-expr try-alternate reference statement config-object alist list-attr attribute-name
+         expression string-expression num-expression map-expression reference statement map-spec alist attr-list attribute-name
          config-expr config-merge config-ident config-take
          keyword built-in env-read pprint strf urivars uritemplate base64encode base64decode
          boolean)
