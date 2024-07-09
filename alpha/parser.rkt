@@ -35,7 +35,8 @@ opt-comma: [ /"," ]
 expression: boolean-expression | string-expression | num-expression | map-expression | alternate-expression | complex-ident | expr-list
 @expr-list: "[" (expression [ /"," ])* "]"
 
-boolean-expression: "true" | "false" | ( expression comparison-operator expression)
+boolean-expression: boolean | ( expression comparison-operator expression )
+@boolean: "true" | "false"
 @comparison-operator: "==" | "!="
 
 @string-expression: STRING | IDENTIFIER | built-in | func-call

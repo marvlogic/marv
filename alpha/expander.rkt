@@ -247,7 +247,7 @@
                (~a "assertion failure: '" expr1 "' " op " '" expr2 "'"))))))
 
     (syntax-parse stx
-      [(_ expr1 "=" expr2) (assert "does not equal" equal? #'expr1 #'expr2)]
+      [(_ expr1 "==" expr2) (assert "does not equal" equal? #'expr1 #'expr2)]
       [(_ expr1 "!=" expr2) (assert "equals" (compose1 not equal?) #'expr1 #'expr2)]
       [_ (raise "m-assertion")]))
 
@@ -291,6 +291,8 @@
 
   (define (m-boolean-expression stx)
     (syntax-parse stx
+      [(_ "true") (syntax/loc stx #t)]
+      [(_ "false") (syntax/loc stx #f)]
       [(_ expr1 "==" expr2 ) (syntax/loc stx (equal? expr1 expr2))]
       [(_ expr1 "!=" expr2 ) (syntax/loc stx (not(equal? expr1 expr2)))]
       ))
@@ -325,11 +327,6 @@
     (syntax-parse stx
       [(_ map-expr ident:id) (syntax/loc stx (hash-ref map-expr 'ident))]
       [(_ map-expr ident:id params) (syntax/loc stx ((hash-ref map-expr 'ident) params))]))
-
-  (define (m-boolean stx)
-    (syntax-parse stx
-      [(_ "true") (syntax/loc stx val) #'#t]
-      [(_ "false") (syntax/loc stx val) #'#f]))
 
   (define (m-map-spec stx)
 
@@ -475,7 +472,6 @@
 (define-syntax base64encode m-base64encode)
 (define-syntax base64decode m-base64decode)
 (define-syntax pprint m-pprint)
-(define-syntax boolean m-boolean)
 (define-syntax config-expr m-config-expr)
 (define-syntax config-merge m-config-merge)
 (define-syntax config-take m-config-take)
@@ -496,5 +492,4 @@
          func-call func-ident config-func-decl func-decl type-decl type-template
          expression boolean-expression string-expression num-expression map-expression dot-expression statement map-spec alist attr-list attribute-name
          config-expr config-merge config-ident config-take
-         keyword built-in assertion env-read pprint strf urivars uritemplate  base64encode base64decode
-         boolean)
+         keyword built-in assertion env-read pprint strf urivars uritemplate  base64encode base64decode)
