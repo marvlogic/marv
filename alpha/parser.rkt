@@ -20,29 +20,30 @@ pprint: /"pprint" expression
 comment: COMMENT
 var-decl: IDENTIFIER /"=" expression
 
-# TODO - mandatory at least one parameter, or func calls of e.g. C2.xxx(C1.yyy(B.zzz))
-# may fail to parse correctly.
+; TODO - mandatory at least one parameter, or func calls of e.g. C2.xxx(C1.yyy(B.zzz))
+; may fail to parse correctly.
 func-decl: IDENTIFIER /"(" (IDENTIFIER [ /"," ])+ /")" /"=" expression
-func-call: func-ident /"(" (expression [ /"," ])+ /")"
-func-ident: (DOTTY-IDENT | IDENTIFIER)
+func-call: IDENTIFIER @func-call-parameters
+
+func-call-parameters: /"(" (expression [ /"," ])+ /")"
 
 boolean: "true" | "false"
 type-id: IDENTIFIER
-api-id: DOTTY-IDENT
+; api-id: DOTTY-IDENT
 
-expression: boolean | string-expression | num-expression | map-expression | alternate-expression | expr-list
+expression: boolean | string-expression | num-expression | map-expression | alternate-expression | dot-expression | expr-list
 @expr-list: "[" (expression [ /"," ])* "]"
 
-@string-expression: STRING | IDENTIFIER | built-in | func-call | reference
+@string-expression: STRING | IDENTIFIER | built-in | func-call
 
 num-expression: num-term [ num-operator num-term ]
-@num-term: INTEGER | IDENTIFIER | built-in | func-call | reference | num-parens-expr
+@num-term: INTEGER | IDENTIFIER | built-in | func-call | num-parens-expr
 @num-operator: '+' | '-' | '/' | '*'
 @num-parens-expr: /"(" num-expression /")"
 
 map-expression: map-term ( [ map-operator map-term ] | "<<" attr-list )
 @map-operator: "<-" | "->"
-@map-term: map-spec | IDENTIFIER | func-call | reference | map-parens-expr | map-expression
+@map-term: map-spec | IDENTIFIER | func-call | map-parens-expr | map-expression | dot-expression
 map-spec: /"{" [( STRING | IDENTIFIER | "type" ) /"=" [ "imm:" ] expression [ /"," ]]* /"}"
 @map-parens-expr: /"(" map-expression /")"
 
@@ -50,6 +51,9 @@ attr-list: /"[" ( attribute-name [ /"," ] )* /"]"
 attribute-name: ( STRING | IDENTIFIER | "type" )
 
 @alternate-expression: expression '|' expression | /'(' expression '|' expression /')'
+
+dot-expression: map-term /"." IDENTIFIER [ @func-call-parameters ]
+@dot-term: (IDENTIFIER | func-call)
 
 built-in: env-read | strf | base64encode | base64decode | urivars | uritemplate
 env-read: /"env" /"(" STRING /")"
@@ -59,7 +63,7 @@ base64decode: /"base64decode" /"(" string-expression /")"
 urivars: /"strvars" /"(" string-expression /")"
 uritemplate: /"expandvars" /"(" expression [ /"," ] map-expression /")"
 
-reference: DOTTY-IDENT
+; reference: DOTTY-IDENT
 
 res-decl: IDENTIFIER /"=" type-id map-expression
 module-invoke: IDENTIFIER /"=" ( MODULE-IDENTIFIER | IDENTIFIER ) /"(" (named-parameter [ /"," ] )* /")"
@@ -68,8 +72,8 @@ module-invoke: IDENTIFIER /"=" ( MODULE-IDENTIFIER | IDENTIFIER ) /"(" (named-pa
 ; also allow STRING to allow user to avoid marv keywords
 named-parameter: ( STRING | IDENTIFIER | "type" ) /"=" expression
 
-type-parameters: type-id /"<" ( IDENTIFIER [/","] )+ /">"
-type-template: /"type" type-parameters /"=" /"{" func-decl+ [ type-wild ]* /"}"
-
 type-decl: /"type" type-id /"=" ( /"{" func-decl+ [ type-wild ]* /"}" | type-parameters )
 type-wild: /"*" /"=" IDENTIFIER /"." /"*"
+
+type-parameters: type-id /"<" ( IDENTIFIER [/","] )+ /">"
+type-template: /"type" type-parameters /"=" /"{" func-decl+ [ type-wild ]* /"}"

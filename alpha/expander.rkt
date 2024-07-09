@@ -296,6 +296,17 @@
       [(_ term1 "<<" term2) (check-terms stx #'hash? #'(listof symbol?) #'config-reduce #'term1 #'term2)]
       ))
 
+  (define (m-dot-expression stx)
+    (syntax-parse stx
+      [(_ map-expr ident:id) (syntax/loc stx (hash-ref map-expr 'ident))]
+      [(_ map-expr ident:id params) (syntax/loc stx ((hash-ref map-expr 'ident) params))]))
+
+  ; (define (m-dot-term stx)
+  ;   (syntax-parse stx
+  ;     #:literals (func-call)
+  ;     [(_ term:id) #'term]
+  ;     [(_ (func-call fid params ...) (syntax/loc stx ()))
+  ;      )
   (define (m-boolean stx)
     (syntax-parse stx
       [(_ "true") (syntax/loc stx val) #'#t]
@@ -429,7 +440,7 @@
 (define-syntax string-expression m-string-expression)
 (define-syntax map-expression m-map-expression)
 (define-syntax num-expression m-num-expression)
-(define-syntax reference m-reference)
+(define-syntax dot-expression m-dot-expression)
 (define-syntax map-spec m-map-spec)
 (define-syntax alist m-alist)
 (define-syntax attr-list m-attr-list)
@@ -462,7 +473,7 @@
          module-export
          api-id transformer-id type-id
          func-call func-ident config-func-decl func-decl type-decl type-template
-         expression string-expression num-expression map-expression reference statement map-spec alist attr-list attribute-name
+         expression string-expression num-expression map-expression dot-expression statement map-spec alist attr-list attribute-name
          config-expr config-merge config-ident config-take
          keyword built-in env-read pprint strf urivars uritemplate base64encode base64decode
          boolean)

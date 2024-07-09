@@ -16,7 +16,7 @@
 (define-lex-abbrev identifier (:seq (:= 1 (:or "_" alphabetic))
                                     (:* (:or digits alphabetic (char-set "-_:")))))
 
-(define-lex-abbrev dotty-ident (:seq (:= 1 identifier) (:+ (:seq "." identifier))))
+;(define-lex-abbrev dotty-ident (:seq (:= 1 identifier) (:+ (:seq "." identifier))))
 
 (define basic-lexer
   (lexer-srcloc
@@ -33,7 +33,7 @@
    [identifier (token 'IDENTIFIER (string->symbol lexeme)) ]
    [module-identifier (token 'MODULE-IDENTIFIER (string->symbol lexeme)) ]
    [filename (token 'FILENAME (string->symbol lexeme)) ]
-   [dotty-ident (token 'DOTTY-IDENT (string->symbol lexeme)) ]
+   ;   [dotty-ident (token 'DOTTY-IDENT (string->symbol lexeme)) ]
    [(from/stop-before "#" "\n") (token lexeme #:skip? #t)]
    ;    [(:or "print" "goto" "end"
    ;  "+" ":" ";") (token lexeme lexeme)]
