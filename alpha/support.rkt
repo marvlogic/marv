@@ -31,6 +31,7 @@
          find-function
          get-param
          src-location
+         raise/src
          check-operator-types)
 
 (define (error:excn msg)
@@ -185,6 +186,8 @@
   (if (procedure? func) func (raise (~a "expected a function, got: " func))))
 
 (define (src-location s) (format "~a:~a" (syntax-source s) (syntax-line s)))
+
+(define (raise/src locn msg) (raise (~a "Error:" msg " at " locn) ))
 
 (define (check-operator-types locn test1? test2? op term1 term2)
   ;TODO43 - check that indirection isn't needed, term1 & 2 should have been evaluated by now

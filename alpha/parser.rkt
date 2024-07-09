@@ -13,7 +13,7 @@ module-parameter: IDENTIFIER [ "=" expression ]
 module-return: "return" /"{" return-parameter+ /"}"
 return-parameter: ( STRING | IDENTIFIER | "type" ) /"=" expression
 
-statement: decl | pprint
+statement: decl | pprint | assertion
 decl: var-decl | res-decl | module-invoke | func-decl
 
 pprint: /"pprint" expression
@@ -27,23 +27,27 @@ func-call: IDENTIFIER @func-call-parameters
 
 func-call-parameters: /"(" (expression [ /"," ])+ /")"
 
-boolean: "true" | "false"
 type-id: IDENTIFIER
-; api-id: DOTTY-IDENT
 
-expression: boolean | string-expression | num-expression | map-expression | alternate-expression | dot-expression | expr-list
+@complex-ident: IDENTIFIER | dot-expression
+opt-comma: [ /"," ]
+
+expression: boolean-expression | string-expression | num-expression | map-expression | alternate-expression | complex-ident | expr-list
 @expr-list: "[" (expression [ /"," ])* "]"
+
+boolean-expression: "true" | "false" | ( expression comparison-operator expression)
+@comparison-operator: "==" | "!="
 
 @string-expression: STRING | IDENTIFIER | built-in | func-call
 
 num-expression: num-term [ num-operator num-term ]
-@num-term: INTEGER | IDENTIFIER | built-in | func-call | num-parens-expr
+@num-term: INTEGER | complex-ident | built-in | func-call | num-parens-expr
 @num-operator: '+' | '-' | '/' | '*'
 @num-parens-expr: /"(" num-expression /")"
 
 map-expression: map-term ( [ map-operator map-term ] | "<<" attr-list )
 @map-operator: "<-" | "->"
-@map-term: map-spec | IDENTIFIER | func-call | map-parens-expr | map-expression | dot-expression
+@map-term: map-spec | complex-ident | func-call | map-parens-expr | map-expression | dot-expression
 map-spec: /"{" [( STRING | IDENTIFIER | "type" ) /"=" [ "imm:" ] expression [ /"," ]]* /"}"
 @map-parens-expr: /"(" map-expression /")"
 
@@ -55,15 +59,14 @@ attribute-name: ( STRING | IDENTIFIER | "type" )
 dot-expression: map-term /"." IDENTIFIER [ @func-call-parameters ]
 @dot-term: (IDENTIFIER | func-call)
 
-built-in: env-read | strf | base64encode | base64decode | urivars | uritemplate
+built-in: env-read | strf | base64encode | base64decode | urivars | uritemplate |assertion
 env-read: /"env" /"(" STRING /")"
 strf: /"strf" /"(" string-expression [ /"," ]( expression [ /"," ] ) + /")"
 base64encode: /"base64encode" /"(" string-expression /")"
 base64decode: /"base64decode" /"(" string-expression /")"
 urivars: /"strvars" /"(" string-expression /")"
-uritemplate: /"expandvars" /"(" expression [ /"," ] map-expression /")"
-
-; reference: DOTTY-IDENT
+uritemplate: /"expandvars" /"(" expression @opt-comma map-expression /")"
+assertion: /"assert" /"(" expression comparison-operator expression /")"
 
 res-decl: IDENTIFIER /"=" type-id map-expression
 module-invoke: IDENTIFIER /"=" ( MODULE-IDENTIFIER | IDENTIFIER ) /"(" (named-parameter [ /"," ] )* /")"
