@@ -1,0 +1,44 @@
+#lang marv
+
+func1(p) = { result=p }
+
+x = { 
+    a = "string-a", 
+    b ={ c = "c" }, 
+    f=func1,
+    y = true,
+    z = false
+}
+
+type t1 = {
+    identity(i) = i <- { extra="extra" }
+    create(c) = { config = c }
+}
+
+type t2 = {
+    identity(i) = t1.identity(i)
+    create(c) = t1.create(c)
+}
+
+type t3 = {
+    create(c) = { t2config = c }
+    * = t1.*
+}
+
+type template1<P1> = {
+    identity(i) = P1.identity(i) <- { template="template"}
+    * = P1.*
+}
+
+type t4=template1<t1>
+
+module main {
+    assert(t1.identity(x).extra == "extra")
+    assert(t2.identity(x).extra == "extra")
+    assert(t3.create(x).t2config == x)
+    assert(t3.identity(x) == t1.identity(x))
+
+    assert(t4.identity(x) != t1.identity(x))
+    assert(t4.identity(x).template == "template")
+    assert(t4.create(x) == t1.create(x))
+}

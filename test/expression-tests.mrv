@@ -1,0 +1,23 @@
+#lang marv
+
+
+func1(p) = { result=p }
+
+x = { 
+    a = "string-a", 
+    b ={ c = "c" }, 
+    f=func1,
+    y = true,
+    z = false
+}
+
+module main {
+    assert(x.y == true)
+    assert(x.z == false)
+    assert(x.a == "string-a")
+    assert(x.b.c == "c" )
+    assert(func1("help").result == "help")
+    assert(x.f == func1)
+    assert(x.f("help2").result == "help2")
+    assert(x.f("help2") == func1("help2"))
+}

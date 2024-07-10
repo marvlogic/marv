@@ -175,48 +175,30 @@
       [(_ (type-id tid:expr) body:type-body ... (type-wild wildcard) ...)
        (with-syntax ([srcloc (src-location stx)])
          (syntax/loc stx
-           (begin
-             (define (tid func-id [allow-missing? #f])
-               (log-marv-debug "type-fn ~a.~a:~a called" 'tid func-id srcloc)
-               (define (body.func-id body.param-id ... ) body.confex) ...
-               (case func-id
-                 ['type 'tid]
-                 ['body.func-id body.func-id] ...
-                 [else
-                  (define (fin)
-                    (if allow-missing? #f
-                        (raise (format "exception in type ~a, method ~a not found" 'tid func-id))))
-                  (log-marv-debug "looking in wildcards:")
-                  (log-marv-debug "  ~a" wildcard) ...
-                  (or (wildcard func-id #t) ... (fin))])
-               ))))]
-      [(_ (type-id tid) (type-parameters (type-id base-tid) params ...))
-       (syntax/loc stx
-         (begin
-           (define (tid func-id [allow-missing? #f]) (base-tid func-id params ... allow-missing?))
-           ))]
+           (define tid
+             (make-immutable-hasheq
+              (append
+               (hash->list wildcard) ...
+               (list
+                (cons '$type 'tid)
+                (cons 'body.func-id (lambda(body.param-id ...) body.confex)) ...))))))]
+      [(_ (type-id tid) (type-parameters (type-id template-id) params ...))
+       (syntax/loc stx (define tid (template-id params ... )))]
       ))
 
   (define (m-type-template stx)
     (syntax-parse stx
       #:datum-literals (type-parameters type-id type-wild)
-      [(_ (type-parameters (type-id tid) params ...) body:type-body ... (type-wild wildcard) ...)
+      [(_ (type-parameters (type-id template-id) params ...) body:type-body ... (type-wild wildcard) ...)
        (syntax/loc stx
-         (begin
-           (define (tid func-id params ... [allow-missing? #f])
-             (log-marv-debug "type-template ~a" 'tid)
-             (define (body.func-id body.param-id ...) body.confex) ...
-             (case func-id
-               ['type 'tid]
-               ['body.func-id body.func-id] ...
-               [else
-                (define (final)
-                  (if allow-missing? #f
-                      (raise (format "exception in type ~a, method ~a not found" 'tid func-id))))
-                (log-marv-debug "looking in wildcards:")
-                (log-marv-debug "  ~a" wildcard) ...
-                (or (wildcard func-id #t) ... (final))])
-             )))]
+         (define (template-id params ... [allow-missing? #f])
+           (log-marv-debug "type-template ~a" 'template-id)
+           (make-immutable-hasheq
+            (append
+             (hash->list wildcard) ...
+             (list
+              (cons '$type 'tid)
+              (cons 'body.func-id (lambda(body.param-id ...) body.confex)) ...)))))]
       ))
 
   (define (m-generic-placeholder stx)stx)

@@ -58,7 +58,6 @@ attribute-name: ( STRING | IDENTIFIER | "type" )
 @alternate-expression: expression '|' expression | /'(' expression '|' expression /')'
 
 dot-expression: map-term /"." IDENTIFIER [ @func-call-parameters ]
-@dot-term: (IDENTIFIER | func-call)
 
 built-in: env-read | strf | base64encode | base64decode | urivars | uritemplate |assertion
 env-read: /"env" /"(" STRING /")"
