@@ -65,11 +65,13 @@
                             (error:excn (format "Parameter '~a' has not been assigned" p)))])
   (hash-ref (PARAMS) p def))
 
-(define (def-res type-fn id res)
+(define type-id-key 'type-id)
+
+(define (def-res type-id id res)
   ;(type-fn 'validate res)
   ; Temporarily storing ref to the type-fn in the configuration, it will
   ; be removed later when creating a resource
-  (define rtyped (hash-set res '$type-fn type-fn))
+  (define rtyped (hash-set res type-id-key type-id))
   (add-resource id rtyped))
 
 ; (define/contract (prepare-for-driver driver-spec config)
@@ -131,7 +133,7 @@
   (log-marv-debug "handle-ref ~a.~a -> ~a" id path tgt)
   (define (full-ref) (make-full-ref (prefix-mod-id id) (core:list->id path)))
 
-  (define (resource? res) (and (hash? res) (hash-has-key? res '$type-fn)))
+  (define (resource? res) (and (hash? res) (hash-has-key? res type-id-key)))
 
   (cond [(resource? tgt) (ref (full-ref))]
         [(hash? tgt) (hash-nref tgt path)]
@@ -152,8 +154,8 @@
 
   (define (make-resource v)
     (log-marv-debug "  generating ~a" v)
-    (define type-fn (hash-ref v '$type-fn))
-    (define res-ident ((type-fn 'identity) (hash-remove v '$type-fn)))
+    (define (type-fn verb) (hash-ref (hash-ref v type-id-key) verb))
+    (define res-ident ((type-fn 'identity) (hash-remove v type-id-key)))
     (log-marv-debug "  identity ~a" res-ident)
     (resource type-fn (hash-apply res-ident handle-future-ref)))
 

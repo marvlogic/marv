@@ -22,6 +22,7 @@ type t2 = {
 
 type t3 = {
     create(c) = { t2config = c }
+    copy(c) = create(c)
     * = t1.*
 }
 
@@ -37,6 +38,8 @@ module main {
     assert(t2.identity(x).extra == "extra")
     assert(t3.create(x).t2config == x)
     assert(t3.identity(x) == t1.identity(x))
+
+    assert(t3.copy(x) == t3.create(x))
 
     assert(t4.identity(x) != t1.identity(x))
     assert(t4.identity(x).template == "template")

@@ -155,15 +155,6 @@
          (define (id param ...) BODY))]
       [_ (raise "func-decl")]))
 
-  (define-splicing-syntax-class m-type-id
-    #:description "type id"
-    (pattern (~seq (~literal type-id) tid:id)))
-
-  (define-splicing-syntax-class m-type-parameters
-    #:description "type parameters"
-    #:literals (type-parameters type-id)
-    (pattern (type-parameters tid:type-id ident:id ... )))
-
   (define-splicing-syntax-class type-body
     #:description "body declaration"
     #:literals (func-decl expression)
@@ -176,12 +167,13 @@
        (with-syntax ([srcloc (src-location stx)])
          (syntax/loc stx
            (define tid
-             (make-immutable-hasheq
-              (append
-               (hash->list wildcard) ...
-               (list
-                (cons '$type 'tid)
-                (cons 'body.func-id (lambda(body.param-id ...) body.confex)) ...))))))]
+             (let* ([ body.func-id (lambda(body.param-id ...) body.confex) ] ...)
+               (make-immutable-hasheq
+                (append
+                 (hash->list wildcard) ...
+                 (list
+                  (cons '$type 'tid)
+                  (cons 'body.func-id body.func-id) ...)))))))]
       [(_ (type-id tid) (type-parameters (type-id template-id) params ...))
        (syntax/loc stx (define tid (template-id params ... )))]
       ))
@@ -193,12 +185,13 @@
        (syntax/loc stx
          (define (template-id params ... [allow-missing? #f])
            (log-marv-debug "type-template ~a" 'template-id)
+           (define (body.func-id body.param-id ...) body.confex) ...
            (make-immutable-hasheq
             (append
              (hash->list wildcard) ...
              (list
               (cons '$type 'tid)
-              (cons 'body.func-id (lambda(body.param-id ...) body.confex)) ...)))))]
+              (cons 'body.func-id body.func-id) ...)))))]
       ))
 
   (define (m-generic-placeholder stx)stx)
@@ -341,7 +334,6 @@
       [_ (raise "m-alist")]))
 
   (define (m-attribute-name stx)
-    (displayln stx)
     (syntax-parse stx
       [(_ sname:string)
        (define id (format-id #f "~a" (syntax-e #'sname)))
