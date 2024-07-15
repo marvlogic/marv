@@ -9,7 +9,8 @@
          unpack-value
          update-val
          ival ival?
-         iref iref? vref?
+         ;  iref
+         iref? vref?
          ref-split
          ref->id)
 
@@ -34,7 +35,7 @@
       (fn v)))
 
 (struct ref (path)  #:prefab)
-(define (iref r) (ival (ref r)))
+; (define (iref r) (ival (ref r)))
 (define (iref? v) (and (ival? v) (ref? (unpack-value v))))
 
 (define (vref? v) (ref? (unpack-value v)))
@@ -43,7 +44,7 @@
   (vref? . -> . (values symbol? symbol?))
   (match (map string->symbol (string-split (symbol->string (ref-path (unpack-value r))) "/"))
     [(list id attrs) (values id attrs)]
-    [else (raise (format "Bad reference format:~a" r))]))
+    [else (raise (format "Bad reference format:~a" (ref-path r)))]))
 
 (define/contract (ref->id ref)
   (vref? . -> . symbol?)

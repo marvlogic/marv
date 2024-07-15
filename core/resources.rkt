@@ -14,19 +14,25 @@
          resource/c
          origin/c
          resource-set/c
+         resource-type-fn
          (struct-out resource)
          (struct-out attribute))
 
 (struct attribute (name value) #:prefab)
-(struct resource (type-fn config) #:prefab)
+
+(struct resource (gid type config) #:prefab)
 
 (define res-id/c symbol?)
 
 (define origin/c hash?)
 
+(define/contract (resource-type-fn res)
+  (resource? . -> . any/c)
+  (lambda(verb config)(hash-ref (resource-type res) verb) config))
+
 (define/contract (resource-call verb res)
   (symbol? resource? . -> . any/c)
-  (((resource-type-fn res) verb) (resource-config res)))
+  ((hash-ref (resource-type res) verb) (resource-config res)))
 
 (define/contract (resource-origin res)
   (resource? . -> . origin/c)
@@ -44,7 +50,7 @@
   ((listof symbol?) . -> . res-id/c)
   (string->symbol (string-join (map symbol->string lst) ".")))
 
-(define resource/c (struct/c resource procedure? config/c))
+(define resource/c (struct/c resource symbol? procedure? config/c))
 
 (define resource-set/c (hash/c res-id/c resource/c))
 

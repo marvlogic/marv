@@ -9,6 +9,7 @@
 (require marv/alpha/support)
 (require marv/core/values)
 (require marv/core/globals)
+(require marv/core/modules)
 (require marv/log)
 
 ; (require (for-syntax marv/core/values))
@@ -60,19 +61,26 @@
        #:with MAYBE-PRIVATE (if (attribute private?) #'(void) #'(provide mod-id))
        (syntax/loc stx
          (begin
-           (define (mod-id resid-prefix params)
-             (log-marv-debug "** Generating module: ~a=~a(~a)" resid-prefix 'mod-id params)
-             (define rs
-               (with-module-ctx resid-prefix params
-                 (lambda ()
-                   PARAMS ...
-                   STMT ...
-                   (define rs (gen-resources))
-                   RETURN
-                   rs
-                   )))
-             (log-marv-debug "** generation completed for ~a.~a" resid-prefix 'mod-id)
-             rs)
+           (define mod-id
+             (let
+                 ((modfn
+                   (lambda(params)
+                     (define resid-prefix (get-resource-prefix))
+                     (log-marv-debug "** Generating module: ~a=~a(~a)" resid-prefix 'mod-id params)
+                     (define rs
+                       (with-module-ctx params
+                         (lambda ()
+                           PARAMS ...
+                           STMT ...
+                           (define rs (gen-resources))
+                           RETURN
+                           rs
+                           )))
+                     (log-marv-debug "** generation completed for ~a.~a" resid-prefix 'mod-id)
+                     (log-marv-debug "-> resources: ~a" rs)
+                     rs)))
+               modfn))
+           ;  (mmodule 'prefix modfn)))
            MAYBE-PRIVATE))]
       [_ (raise "invalid module spec m-marv-module")]))
 
@@ -122,7 +130,9 @@
 
   (define (m-var-decl stx)
     (syntax-parse stx
-      [(_ id:expr EXPR) (syntax/loc stx (define id EXPR))]
+      [(_ id:expr EXPR)
+       (syntax/loc stx
+         (define id (with-resource-prefix 'id (lambda()EXPR))))]
       [_ (raise "nowt-var-decl")]))
 
   (define (m-config-func-decl stx)
@@ -172,6 +182,7 @@
                 (append
                  (hash->list wildcard) ...
                  (list
+                  ; TODO45 'tid is wrong
                   (cons '$type 'tid)
                   (cons 'body.func-id body.func-id) ...)))))))]
       [(_ (type-id tid) (type-parameters (type-id template-id) params ...))
@@ -300,7 +311,8 @@
 
   (define (m-dot-expression stx)
     (syntax-parse stx
-      [(_ map-expr ident:id) (syntax/loc stx (hash-ref map-expr 'ident))]
+      ; [(_ map-expr ident:id) (syntax/loc stx (hash-ref map-expr 'ident))]
+      [(_ map-expr ident:id) (syntax/loc stx (handle-ref map-expr 'ident))]
       [(_ map-expr ident:id params) (syntax/loc stx ((hash-ref map-expr 'ident) params))]))
 
   (define (m-map-spec stx)
@@ -386,7 +398,7 @@
 
   (define (m-res-decl stx)
     (syntax-parse stx
-      [(_ name:expr ((~literal type-id) tid:id) cfg)
+      [(_ name:id ((~literal type-id) tid:id) cfg)
        #`(define name
            (with-src-handlers #,(src-location stx)  "valid type" 'tid
              (lambda()(def-res tid 'name cfg))))]

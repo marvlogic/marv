@@ -11,6 +11,7 @@
 (require marv/core/drivers)
 (require marv/utils/base64)
 (require marv/core/resources)
+(require marv/core/modules)
 
 
 (require (prefix-in core: marv/core/resources))
@@ -26,6 +27,8 @@
          handle-override
          config-overlay config-reduce handle-ref
          with-module-ctx
+         with-resource-prefix
+         get-resource-prefix
          uri-vars
          uri-template
          find-function
@@ -38,27 +41,32 @@
   (raise (format "ERROR at ~a:~a :  ~a" 1 2 msg))) ;(syntax-source stx) (syntax-line stx)))
 
 (define (init-resources) (list null (hash)))
-
+(define RESOURCES (make-parameter (init-resources)))
 (define (add-resource id res)
   (define idx (car (RESOURCES)))
   (define hs (cadr (RESOURCES)))
   (when (hash-has-key? hs id) (error:excn (format "~a is already defined" id)))
   (RESOURCES (list (cons id idx) (hash-set hs id res)))
   res)
-
 (define (ordered-resource-ids) (reverse (car (RESOURCES))))
 (define (get-resource id) (hash-ref (cadr (RESOURCES)) id))
 
-(define RESOURCES (make-parameter (init-resources)))
+(define MODULE-PREFIX (make-parameter 'main))
 
-(define MODULE-PREFIX (make-parameter #f))
 (define (prefix-mod-id i) (core:prefix-id (MODULE-PREFIX) i))
-(define (with-module-ctx id-prefix params proc)
-  (log-marv-debug "Switching into module-context ~a" id-prefix)
+(define (with-module-ctx params proc)
+  (log-marv-debug "Switching into module-context: ~a" (MODULE-PREFIX))
   (parameterize ([PARAMS params]
-                 [RESOURCES (init-resources)]
-                 [MODULE-PREFIX id-prefix ])
+                 [RESOURCES (init-resources)])
     (proc)))
+
+(define (with-resource-prefix id proc)
+  (define new-prefix (join-symbols (list (MODULE-PREFIX) id)))
+  (log-marv-debug "Setting resource prefix: ~a" new-prefix)
+  (parameterize ([MODULE-PREFIX new-prefix])
+    (proc)))
+
+(define (get-resource-prefix) (MODULE-PREFIX))
 
 (define PARAMS (make-parameter (hash)))
 (define (get-param p [def (lambda()
@@ -68,18 +76,12 @@
 (define type-id-key 'type-id)
 
 (define (def-res type-id id res)
-  ;(type-fn 'validate res)
   ; Temporarily storing ref to the type-fn in the configuration, it will
   ; be removed later when creating a resource
-  (define rtyped (hash-set res type-id-key type-id))
-  (add-resource id rtyped))
-
-; (define/contract (prepare-for-driver driver-spec config)
-;   (driver-id/c symbol? driver-cmd/c config/c . -> . driver-resp/c)
-;   (log-marv-debug "prepare-for-driver: ~a ~a" driver-spec config)
-;   (define reply (hash 'config cfg 'origin (format "~a:~a" driver-id type-id)))
-;   (log-marv-debug "support-send-to-driver: reply: ~a" reply)
-;   reply)
+  ; (define rtyped (hash-set res type-id-key type-id))
+  (define gid (join-symbols (list (get-resource-prefix) id)))
+  (log-marv-debug "Defining resource: ~a" gid)
+  (add-resource id (resource gid type-id res)))
 
 (define (with-src-handlers src-locn expected given thunk)
   (define (handle-exn e)
@@ -129,22 +131,21 @@
     ['equals confex]
     ['overlay (config-overlay confex (base verb))]))
 
-(define (handle-ref tgt id path)
-  (log-marv-debug "handle-ref ~a.~a -> ~a" id path tgt)
-  (define (full-ref) (make-full-ref (prefix-mod-id id) (core:list->id path)))
-
-  (define (resource? res) (and (hash? res) (hash-has-key? res type-id-key)))
-
-  (cond [(resource? tgt) (ref (full-ref))]
-        [(hash? tgt) (hash-nref tgt path)]
+(define (handle-ref tgt attr)
+  (log-marv-debug "handle-ref ~a -> ~a" tgt attr)
+  (cond [(resource? tgt) (ref (join-symbols (list (resource-gid tgt) attr)))] ;(ref tgt (make-full-ref 'main attr))]
+        ; Needs to be invoked at compile-time? Module-calls aren't right, atm.
+        ; [(mmodule? tgt) (module-call tgt (mmodule-res-fn tgt) attr)]
+        [(hash? tgt) (hash-ref tgt attr)]
         [(future-ref? tgt)
-         (define resolved (try-resolve-future-ref (full-ref)))
+         (define resolved (try-resolve-future-ref attr))
          (log-marv-debug "(future-ref, being re-linked to ~a)" resolved)
          resolved]
         [else (raise "unsupported ref type")]))
 
 (define (gen-resources)
-  (log-marv-debug "gen-resources called for these visible resources: ~a" (RESOURCES))
+  (log-marv-debug "gen-resources called for these visible resources: ~a" (ordered-resource-ids))
+  (log-marv-debug "-> ~a" (RESOURCES))
 
   (define (handle-future-ref _ v)
     (update-val v (lambda(uv)
@@ -152,21 +153,22 @@
                         (try-resolve-future-ref (future-ref-ref uv) #:fail-on-missing #t)
                         uv))))
 
-  (define (make-resource v)
-    (log-marv-debug "  generating ~a" v)
-    (define (type-fn verb) (hash-ref (hash-ref v type-id-key) verb))
-    (define res-ident ((type-fn 'identity) (hash-remove v type-id-key)))
+  (define (make-resource res)
+    (log-marv-debug "  generating ~a" res)
+    (define res-ident (resource-call 'identity res))
     (log-marv-debug "  identity ~a" res-ident)
-    (resource type-fn (hash-apply res-ident handle-future-ref)))
+    (resource (resource-gid res) (resource-type-fn res) (hash-apply res-ident handle-future-ref)))
 
   (for/fold ([rs (hash)])
             ([k (in-list (ordered-resource-ids))])
     (define res (get-resource k))
-    (cond [(hash? res)
-           (hash-set rs (prefix-mod-id k) (make-resource res))]
-          [(procedure? res)
-           ; Calling a module
-           (hash-union rs (res (prefix-mod-id k)))])))
+    (log-marv-debug "looking at ~a"  k )
+    (cond [(resource? res) (hash-set rs (resource-gid res) (make-resource res))]
+          ; [(hash? res) (hash-set rs (prefix-mod-id k) (make-resource res))]
+          [else (raise "unsupported reference/resource stuff")])))
+; [(procedure? res)
+;  ; Calling a module
+;  (hash-union rs (res (prefix-mod-id k)))])))
 
 (define (uri-vars str) (uri-vars str))
 (define (uri-template str cfg) (expand-uri str cfg))

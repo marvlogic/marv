@@ -11,6 +11,7 @@
 
 (require marv/core/drivers)
 (require marv/core/resources)
+(require marv/core/modules)
 (require marv/core/values)
 (require marv/core/config)
 (require marv/utils/hash)
@@ -28,8 +29,8 @@
          unwrap-values
          (struct-out ref)
          (struct-out value)
-         ival ival?
-         iref iref?
+         ival ival?  iref?
+         ;iref
          match-resource-attr?
          (struct-out params))
 
@@ -47,7 +48,8 @@
 (define/contract (get-module params purge?)
   ((hash/c symbol? string?) boolean? . -> . resource-set/c)
   ; (validate-params params)
-  (define resources ((RESOURCES) 'main params))
+  ; TODO - 'main?
+  (define resources ((RESOURCES) params))
   (if purge? (hash) resources))
 
 (define (make-keyword-params params)

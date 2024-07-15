@@ -20,6 +20,8 @@ pprint: /"pprint" expression
 comment: COMMENT
 var-decl: IDENTIFIER /"=" expression
 
+res-decl: IDENTIFIER /":=" type-id map-expression
+
 ; TODO - mandatory at least one parameter, or func calls of e.g. C2.xxx(C1.yyy(B.zzz))
 ; may fail to parse correctly.
 func-decl: IDENTIFIER /"(" (IDENTIFIER [ /"," ])+ /")" /"=" expression
@@ -68,7 +70,6 @@ urivars: /"strvars" /"(" string-expression /")"
 uritemplate: /"expandvars" /"(" expression @opt-comma map-expression /")"
 assertion: /"assert" /"(" expression comparison-operator expression /")"
 
-res-decl: IDENTIFIER /"=" type-id map-expression
 module-invoke: IDENTIFIER /"=" ( MODULE-IDENTIFIER | IDENTIFIER ) /"(" (named-parameter [ /"," ] )* /")"
 
 ; type is explicitly allowed as it's common, and we need 'type' as a lexical token
