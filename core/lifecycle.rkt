@@ -36,8 +36,7 @@
   (get-plan-for mod refresh?))
 
 (define (resource-origin res)
-  (define (type-fn verb . args) (apply ((resource-type-fn res) verb) args))
-  (type-fn 'origin (resource-config res)))
+  ((resource-type-fn res) 'origin (resource-config res)))
 
 (define/contract (get-plan-for rsset refresh?)
   (resource-set/c boolean? . -> . plan?)
@@ -99,7 +98,7 @@
     (displayln (format "Refreshing ~a" k))
 
     (define res (resource-ref rsset k))
-    (define (type-fn verb . args) (apply ((resource-type-fn res) verb) args))
+    (define type-fn (resource-type-fn res))
     (define driver-id (string->symbol(state-entry-driver (state-ref k))))
     (define cmd (type-fn 'read (state-ref-config k)))
     (define reply-cfg (send-to-driver driver-id cmd))
@@ -131,7 +130,7 @@
     (display (format "CREATING ~a" id))
     (flush-output)
     (define res (deref-resource id))
-    (define (type-fn verb . args) (apply ((resource-type-fn res) verb) args))
+    (define type-fn (resource-type-fn res))
     (define res-cfg (resource-config res))
     (define driver-id (get-driver-id type-fn res))
     (define cmd (type-fn 'create res-cfg))
@@ -157,7 +156,7 @@
     (display (format "UPDATING ~a" id))
     (flush-output)
     (define res (deref-resource id))
-    (define (type-fn verb . args) (apply ((resource-type-fn res) verb) args))
+    (define type-fn (resource-type-fn res))
     (define res-cfg (resource-config res))
     (define driver-id (get-driver-id type-fn res))
     (define cmd (type-fn 'update res-cfg))
@@ -167,7 +166,7 @@
 
   (define (deref-resource id)
     (define res (hash-ref mod id))
-    (resource (resource-type-fn res)
+    (resource (resource-gid res) (resource-type res)
               (unwrap-values (deref-config (resource-config res)))))
   (define plan (get-plan-for mod refresh?))
 

@@ -29,6 +29,8 @@
          with-module-ctx
          with-resource-prefix
          get-resource-prefix
+         get-resources
+         ordered-resource-ids
          uri-vars
          uri-template
          find-function
@@ -40,6 +42,9 @@
 (define (error:excn msg)
   (raise (format "ERROR at ~a:~a :  ~a" 1 2 msg))) ;(syntax-source stx) (syntax-line stx)))
 
+; TODO45 - simplification of resource assembly probably means code to manage
+; namespace stuff isn't needed.
+
 (define (init-resources) (list null (hash)))
 (define RESOURCES (make-parameter (init-resources)))
 (define (add-resource id res)
@@ -50,14 +55,19 @@
   res)
 (define (ordered-resource-ids) (reverse (car (RESOURCES))))
 (define (get-resource id) (hash-ref (cadr (RESOURCES)) id))
+(define (get-resources) (cadr (RESOURCES)))
 
 (define MODULE-PREFIX (make-parameter 'main))
 
 (define (prefix-mod-id i) (core:prefix-id (MODULE-PREFIX) i))
+
+; TODO45 - module calls are simplified?
+
 (define (with-module-ctx params proc)
   (log-marv-debug "Switching into module-context: ~a" (MODULE-PREFIX))
   (parameterize ([PARAMS params]
-                 [RESOURCES (init-resources)])
+                 )
+    ;  [RESOURCES (init-resources)])
     (proc)))
 
 (define (with-resource-prefix id proc)
@@ -81,7 +91,7 @@
   ; (define rtyped (hash-set res type-id-key type-id))
   (define gid (join-symbols (list (get-resource-prefix) id)))
   (log-marv-debug "Defining resource: ~a" gid)
-  (add-resource id (resource gid type-id res)))
+  (add-resource gid (resource gid type-id res)))
 
 (define (with-src-handlers src-locn expected given thunk)
   (define (handle-exn e)
@@ -90,6 +100,7 @@
      (format "~a at ~a~nActual exception:~n~a~n)" expected src-locn e) given))
   (with-handlers ([exn? handle-exn]) (thunk)))
 
+; TODO45 module returns simpler
 (define RETURNS (make-parameter (hash)))
 (define (set-return v)
   (log-marv-debug "** CURRENT RETURNS: ~a" (RETURNS))
@@ -102,6 +113,7 @@
              (hash-set hs new-id val)
              )))
 
+; TODO45 - review if future-refs are still needed?
 (define (try-resolve-future-ref id #:fail-on-missing (fail-on-missing #f))
   (define fail (if fail-on-missing
                    (lambda() (log-marv-error "future-ref not found: ~a~n  in ~a" id (RETURNS))
@@ -112,6 +124,7 @@
 
 (struct future-ref (ref) #:prefab)
 
+; TODO45 - is this still needed?
 (define (module-call var-id mod-proc params)
   (log-marv-debug "Registering future invocation of ~a=~a(~a)" (prefix-mod-id var-id) mod-proc params)
   (add-resource var-id (lambda(_)
@@ -157,7 +170,7 @@
     (log-marv-debug "  generating ~a" res)
     (define res-ident (resource-call 'identity res))
     (log-marv-debug "  identity ~a" res-ident)
-    (resource (resource-gid res) (resource-type-fn res) (hash-apply res-ident handle-future-ref)))
+    (resource (resource-gid res) (resource-type res) (hash-apply res-ident handle-future-ref)))
 
   (for/fold ([rs (hash)])
             ([k (in-list (ordered-resource-ids))])

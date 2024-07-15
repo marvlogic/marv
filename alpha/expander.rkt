@@ -77,8 +77,8 @@
                            rs
                            )))
                      (log-marv-debug "** generation completed for ~a.~a" resid-prefix 'mod-id)
-                     (log-marv-debug "-> resources: ~a" rs)
-                     rs)))
+                     (log-marv-debug "-> resources: ~a" (ordered-resource-ids))
+                     (get-resources))))
                modfn))
            ;  (mmodule 'prefix modfn)))
            MAYBE-PRIVATE))]
@@ -91,6 +91,7 @@
 
   (define (m-module-return stx)
     (syntax-parse stx
+      ; TODO45 - module returns can be simpler
       [(_ "return" RETURNS ...) (syntax/loc stx (set-return (make-immutable-hasheq (list RETURNS ...))))]
       [_ (raise "m-module-return f*")]))
 

@@ -26,9 +26,10 @@
 
 (define origin/c hash?)
 
+; TODO45 - resource-type stuff/names and consolidate (vs lifecycle)
 (define/contract (resource-type-fn res)
   (resource? . -> . any/c)
-  (lambda(verb config)(hash-ref (resource-type res) verb) config))
+  (lambda(verb . args)(apply (hash-ref (resource-type res) verb) args)))
 
 (define/contract (resource-call verb res)
   (symbol? resource? . -> . any/c)
@@ -50,7 +51,10 @@
   ((listof symbol?) . -> . res-id/c)
   (string->symbol (string-join (map symbol->string lst) ".")))
 
-(define resource/c (struct/c resource symbol? procedure? config/c))
+; TODO45
+(define type? hash?)
+
+(define resource/c (struct/c resource symbol? type? config/c))
 
 (define resource-set/c (hash/c res-id/c resource/c))
 
