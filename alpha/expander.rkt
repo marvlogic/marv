@@ -234,7 +234,9 @@
 
   (define (m-strf stx)
     (syntax-parse stx
-      [(_ str:string expr ... ) (syntax/loc stx (format str expr ...))]
+      [(_ str:expr expr ... )
+       (syntax/loc stx
+         (with-resource-prefix 'strf (lambda()(format str expr ...))))]
       [_ (raise "m-strf")]))
 
   (define (m-urivars stx)
@@ -269,7 +271,7 @@
       [(_ "[" terms ... "]") (syntax/loc stx (list (resolve-expr terms) ...))]
       ; TODO - add type checking
       [(_ term:string) (syntax/loc stx term)]
-      [(_ term) (syntax/loc stx (resolve-expr term))]
+      [(_ term) (syntax/loc stx term)]
       ))
 
   (define (m-boolean-expression stx)
@@ -285,7 +287,7 @@
   (define (m-num-expression stx)
     (syntax-parse stx
       [(_ term) (syntax/loc stx term)]
-      [(_ term1 "+" term2) (syntax/loc stx (+ term1 term2))]
+      [(_ term1 "+" term2) (syntax/loc stx (resolve-terms + term1 term2))]
       [(_ term1 "-" term2) (syntax/loc stx (- term1 term2))]
       [(_ term1 "*" term2) (syntax/loc stx (* term1 term2))]
       [(_ term1 "/" term2) (syntax/loc stx (/ term1 term2))]

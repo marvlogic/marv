@@ -45,13 +45,14 @@ boolean-expression: boolean | ( expression comparison-operator expression )
 @string-expression: STRING | IDENTIFIER | built-in | func-call
 
 num-expression: num-term [ num-operator num-term ]
-@num-term: INTEGER | complex-ident | built-in | func-call | num-parens-expr
+@num-term: INTEGER | complex-ident | built-in | func-call | num-expression | num-parens-expr
 @num-operator: '+' | '-' | '/' | '*'
 @num-parens-expr: /"(" num-expression /")"
 
 map-expression: map-term ( [ map-operator map-term ] | "<<" attr-list )
 @map-operator: "<-" | "->"
 @map-term: map-spec | complex-ident | func-call | map-parens-expr | map-expression | dot-expression
+; TODO45 - complex-ident not dot-expression?
 map-spec: /"{" [( STRING | IDENTIFIER | "type" ) /"=" [ "imm:" ] expression [ /"," ]]* /"}"
 @map-parens-expr: /"(" map-expression /")"
 

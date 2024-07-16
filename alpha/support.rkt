@@ -28,6 +28,8 @@
          config-overlay config-reduce
          handle-ref
          resolve-expr
+         resolve-terms
+         add-dep get-deps
          with-module-ctx
          with-resource-prefix
          get-resource-prefix
@@ -61,6 +63,10 @@
 
 (define MODULE-PREFIX (make-parameter 'main))
 
+(define VAR-DEPS (make-parameter (list)))
+(define (add-dep d) (VAR-DEPS (cons d (VAR-DEPS))))
+(define (get-deps) (VAR-DEPS))
+
 (define (prefix-mod-id i) (core:prefix-id (MODULE-PREFIX) i))
 
 ; TODO45 - module calls are simplified?
@@ -75,8 +81,12 @@
 (define (with-resource-prefix id proc)
   (define new-prefix (join-symbols (list (MODULE-PREFIX) id)))
   (log-marv-debug "Setting resource prefix: ~a" new-prefix)
-  (parameterize ([MODULE-PREFIX new-prefix])
-    (proc)))
+  (parameterize
+      ([MODULE-PREFIX new-prefix]
+       [VAR-DEPS (list)])
+    (define r (proc))
+    (displayln (~a id " depends on "(get-deps)))
+    r))
 
 (define (get-resource-prefix) (MODULE-PREFIX))
 
@@ -150,22 +160,47 @@
 
 (define (handle-ref tgt attr)
   (log-marv-debug "handle-ref ~a -> ~a" tgt attr)
-  (cond
-    [(resource? tgt) (ref (resource-gid tgt) attr)] ;(join-symbols (list (resource-gid tgt) attr)))]
-    [(hash? tgt) (hash-ref tgt attr)]
-    [(future-ref? tgt)
-     (define resolved (try-resolve-future-ref attr))
-     (log-marv-debug "(future-ref, being re-linked to ~a)" resolved)
-     resolved]
-    [else (raise "unsupported ref type")]))
+  (define r
+    (cond
+      [(resource? tgt) (ref (resource-gid tgt) attr)]
+      [(hash? tgt) (hash-ref tgt attr)]
+      [(future-ref? tgt)
+       (define resolved (try-resolve-future-ref attr))
+       (log-marv-debug "(future-ref, being re-linked to ~a)" resolved)
+       resolved]
+      [else (raise "unsupported ref type")]))
+  (when (ref? r) (add-dep r))
+  r)
 
-(define (resolve-expr e)
+(define (resolve-expr e [out-str #t])
   (define (resolve-ref r)
     (hash-nref
      (resource-config(hash-ref (get-resources) (ref-gid r)))
      (id->list (ref-path r))
      (~a "${" (ref-gid r) "/" (ref-path r) "}")))
-  (if ( ref? e ) (resolve-ref e) e))
+  ; (if (ref? e) (resolve-ref e) e))
+  e)
+
+(struct resolve (op t1 t2) #:prefab)
+
+(define (resolve-terms op term1 term2)
+
+  (define (try-resolve e)
+
+    (define (resolve-ref r)
+      (hash-nref
+       (resource-config(hash-ref (get-resources) (ref-gid r)))
+       (id->list (ref-path r))
+       r))
+
+    (if (ref? e) (resolve-ref e) e))
+
+  (define t1 (try-resolve term1))
+  (define t2 (try-resolve term2))
+  (cond [(or(ref? t1) (ref? t2) (resolve? t1) (resolve? t2))
+         (resolve op t1 t2)]
+        [else (op t1 t2)]
+        ))
 
 ; TODO45 - not sure if this step is needed, can resources be defined in-line?
 (define (gen-resources)
