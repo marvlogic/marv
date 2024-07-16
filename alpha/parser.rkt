@@ -1,5 +1,6 @@
 #lang brag
 
+
 marv-spec: module-import* outer-decl* marv-module*
 
 module-import: /"import" [ STRING | MODULE-IDENTIFIER ] [ "as" IDENTIFIER ]
@@ -8,17 +9,18 @@ outer-decl: func-decl | type-decl | type-template | var-decl | module-export
 
 module-export: /"export" [ IDENTIFIER+ [ "as" IDENTIFIER ] ]+
 
-marv-module: [ "private" ] /"module" IDENTIFIER ["(" module-parameter+ ")"] /"{" statement* [ module-return ] /"}"
+marv-module: [ "private" ] /"module" IDENTIFIER ["(" module-parameter+ ")"] /"{" statement+ [ module-return ] /"}"
 module-parameter: IDENTIFIER [ "=" expression ]
-module-return: "return" /"{" return-parameter+ /"}"
+module-return: /"return" /"{" (return-parameter /opt-comma)+ /"}"
 return-parameter: ( STRING | IDENTIFIER | "type" ) /"=" expression
 
 statement: decl | pprint | assertion
-decl: var-decl | res-decl | module-invoke | func-decl
+decl: var-decl | res-decl | func-decl
 
 pprint: /"pprint" expression
 comment: COMMENT
 var-decl: IDENTIFIER /"=" expression
+opt-comma: [ /"," ]
 
 res-decl: IDENTIFIER /":=" type-id map-expression
 
@@ -32,7 +34,6 @@ func-call-parameters: /"(" (expression [ /"," ])+ /")"
 type-id: IDENTIFIER
 
 @complex-ident: IDENTIFIER | dot-expression
-opt-comma: [ /"," ]
 
 expression: boolean-expression | string-expression | num-expression | map-expression | alternate-expression | complex-ident | expr-list
 @expr-list: "[" (expression [ /"," ])* "]"

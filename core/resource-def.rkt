@@ -45,11 +45,13 @@
   (RESOURCES (dynamic-require rel-mod 'main))
   (void))
 
+(require marv/alpha/support)
 (define/contract (get-module params purge?)
   ((hash/c symbol? string?) boolean? . -> . resource-set/c)
   ; (validate-params params)
   ; TODO - 'main?
-  (define resources ((RESOURCES) params))
+  (define returns ((RESOURCES) params))
+  (define resources (get-resources))
   (if purge? (hash) resources))
 
 (define (make-keyword-params params)

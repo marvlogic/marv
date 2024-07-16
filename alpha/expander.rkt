@@ -51,38 +51,32 @@
       [_ (raise "nowt-module-export")]))
 
   (define (m-marv-module stx)
-    (syntax-parse stx
+    (syntax-parse stx #:datum-literals (statement module-return)
       [(_ (~optional (~and private? "private"))
           mod-id:expr (~optional (~seq "(" PARAMS ... ")")
                                  #:defaults ([(PARAMS 1) null]))
-          STMT ...
-          (~optional (~seq "return" RETURN)
-                     #:defaults ([RETURN #'void])))
+          (statement STMT) ...
+          (~optional RETURN #:defaults ([RETURN #'(hash)])))
        #:with MAYBE-PRIVATE (if (attribute private?) #'(void) #'(provide mod-id))
        (syntax/loc stx
          (begin
-           (define mod-id
-             (let
-                 ((modfn
-                   (lambda(params)
-                     (define resid-prefix (get-resource-prefix))
-                     (log-marv-debug "** Generating module: ~a=~a(~a)" resid-prefix 'mod-id params)
-                     (define rs
-                       (with-module-ctx params
-                         (lambda ()
-                           PARAMS ...
-                           STMT ...
-                           (define rs (gen-resources))
-                           RETURN
-                           rs
-                           )))
-                     (log-marv-debug "** generation completed for ~a.~a" resid-prefix 'mod-id)
-                     (log-marv-debug "-> resources: ~a" (ordered-resource-ids))
-                     (get-resources))))
-               modfn))
-           ;  (mmodule 'prefix modfn)))
+           (define (mod-id params)
+             (define resid-prefix (get-resource-prefix))
+             (log-marv-debug "** Invoking module: ~a=~a(~a)" resid-prefix 'mod-id params)
+             (define returns
+               (with-module-ctx params
+                 (lambda ()
+                   PARAMS ...
+                   STMT ...
+                   ;   (gen-resources)
+                   RETURN
+                   )))
+             (log-marv-debug "** module invocation completed for ~a.~a" resid-prefix 'mod-id)
+             (log-marv-debug "-> resources: ~a" (ordered-resource-ids))
+             (log-marv-debug "-> returns: ~a" returns)
+             returns)
            MAYBE-PRIVATE))]
-      [_ (raise "invalid module spec m-marv-module")]))
+      [_ (displayln stx)(raise "invalid module spec m-marv-module")]))
 
   (define (m-module-parameter stx)
     (syntax-parse stx
@@ -92,8 +86,12 @@
   (define (m-module-return stx)
     (syntax-parse stx
       ; TODO45 - module returns can be simpler
-      [(_ "return" RETURNS ...) (syntax/loc stx (set-return (make-immutable-hasheq (list RETURNS ...))))]
+      [(_ RETURNS ...) (syntax/loc stx (make-immutable-hasheq (list RETURNS ...)))]
       [_ (raise "m-module-return f*")]))
+
+  (define (m-return-parameter stx)
+    (syntax-parse stx
+      [(_ NAME VALUE) (syntax/loc stx (cons 'NAME VALUE))]))
 
   (define (m-module-import stx)
     (syntax-parse stx
@@ -114,10 +112,6 @@
        (define filename (syntax-e #'FILENAME))
        (datum->syntax stx `(require (prefix-in ,alias ,filename))) ]
       [_ (raise "m-import")]))
-
-  (define (m-return-parameter stx)
-    (syntax-parse stx
-      [(_ NAME VALUE) (syntax/loc stx (cons 'NAME VALUE))]))
 
   (define (m-statement stx)
     (syntax-parse stx
@@ -265,7 +259,7 @@
 
   (define (m-pprint stx)
     (syntax-parse stx
-      [(_ ident:expr) (syntax/loc stx (pretty-print ident))]))
+      [(_ ident:expr) (syntax/loc stx (pretty-print (resolve-expr ident)))]))
 
   (define (m-expression stx)
     (syntax-parse stx

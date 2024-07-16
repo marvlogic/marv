@@ -25,7 +25,9 @@
          module-call
          b64enc b64dec
          handle-override
-         config-overlay config-reduce handle-ref
+         config-overlay config-reduce
+         handle-ref
+         resolve-expr
          with-module-ctx
          with-resource-prefix
          get-resource-prefix
@@ -144,11 +146,16 @@
     ['equals confex]
     ['overlay (config-overlay confex (base verb))]))
 
+(define STATE (make-parameter (hash)))
+
 (define (handle-ref tgt attr)
   (log-marv-debug "handle-ref ~a -> ~a" tgt attr)
-  (cond [(resource? tgt) (ref (join-symbols (list (resource-gid tgt) attr)))] ;(ref tgt (make-full-ref 'main attr))]
-        ; Needs to be invoked at compile-time? Module-calls aren't right, atm.
-        ; [(mmodule? tgt) (module-call tgt (mmodule-res-fn tgt) attr)]
+  (define (make-ref-fn sym)
+    (lambda()
+      (hash-nref
+       (resource-config
+        (hash-ref (get-resources) (resource-gid tgt))) (id->list attr) (~a sym ":unknown"))))
+  (cond [(resource? tgt) (make-ref-fn (join-symbols (list (resource-gid tgt) attr)))]
         [(hash? tgt) (hash-ref tgt attr)]
         [(future-ref? tgt)
          (define resolved (try-resolve-future-ref attr))
@@ -156,6 +163,9 @@
          resolved]
         [else (raise "unsupported ref type")]))
 
+(define (resolve-expr e) (if ( procedure? e ) (e) e))
+
+; TODO45 - not sure if this step is needed, can resources be defined in-line?
 (define (gen-resources)
   (log-marv-debug "gen-resources called for these visible resources: ~a" (ordered-resource-ids))
   (log-marv-debug "-> ~a" (RESOURCES))
