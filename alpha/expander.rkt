@@ -259,15 +259,17 @@
 
   (define (m-pprint stx)
     (syntax-parse stx
-      [(_ ident:expr) (syntax/loc stx (pretty-print (resolve-expr ident)))]))
+      [(_ exp:expr) (syntax/loc stx (pretty-print (resolve-expr exp)))]))
 
   (define (m-expression stx)
     (syntax-parse stx
-      [(_ term1 "|" term2) (syntax/loc stx (with-handlers ([exn:fail? (lambda(_) term2)]) term1))]
-      [(_ "[" terms ... "]") (syntax/loc stx (list terms ...))]
+      [(_ term1 "|" term2)
+       (syntax/loc stx
+         (with-handlers ([exn:fail? (lambda(_) (resolve-expr term2))]) (resolve-expr term1)))]
+      [(_ "[" terms ... "]") (syntax/loc stx (list (resolve-expr terms) ...))]
       ; TODO - add type checking
       [(_ term:string) (syntax/loc stx term)]
-      [(_ term) (syntax/loc stx term)]
+      [(_ term) (syntax/loc stx (resolve-expr term))]
       ))
 
   (define (m-boolean-expression stx)

@@ -150,20 +150,22 @@
 
 (define (handle-ref tgt attr)
   (log-marv-debug "handle-ref ~a -> ~a" tgt attr)
-  (define (make-ref-fn sym)
-    (lambda()
-      (hash-nref
-       (resource-config
-        (hash-ref (get-resources) (resource-gid tgt))) (id->list attr) (~a sym ":unknown"))))
-  (cond [(resource? tgt) (make-ref-fn (join-symbols (list (resource-gid tgt) attr)))]
-        [(hash? tgt) (hash-ref tgt attr)]
-        [(future-ref? tgt)
-         (define resolved (try-resolve-future-ref attr))
-         (log-marv-debug "(future-ref, being re-linked to ~a)" resolved)
-         resolved]
-        [else (raise "unsupported ref type")]))
+  (cond
+    [(resource? tgt) (ref (resource-gid tgt) attr)] ;(join-symbols (list (resource-gid tgt) attr)))]
+    [(hash? tgt) (hash-ref tgt attr)]
+    [(future-ref? tgt)
+     (define resolved (try-resolve-future-ref attr))
+     (log-marv-debug "(future-ref, being re-linked to ~a)" resolved)
+     resolved]
+    [else (raise "unsupported ref type")]))
 
-(define (resolve-expr e) (if ( procedure? e ) (e) e))
+(define (resolve-expr e)
+  (define (resolve-ref r)
+    (hash-nref
+     (resource-config(hash-ref (get-resources) (ref-gid r)))
+     (id->list (ref-path r))
+     (~a "${" (ref-gid r) "/" (ref-path r) "}")))
+  (if ( ref? e ) (resolve-ref e) e))
 
 ; TODO45 - not sure if this step is needed, can resources be defined in-line?
 (define (gen-resources)

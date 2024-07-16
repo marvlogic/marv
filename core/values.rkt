@@ -34,7 +34,7 @@
       (value (fn (value-val v)) (value-flags v))
       (fn v)))
 
-(struct ref (path)  #:prefab)
+(struct ref (gid path)  #:prefab)
 ; (define (iref r) (ival (ref r)))
 (define (iref? v) (and (ival? v) (ref? (unpack-value v))))
 
