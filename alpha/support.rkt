@@ -97,8 +97,6 @@
                             (error:excn (format "Parameter '~a' has not been assigned" p)))])
   (hash-ref (PARAMS) p def))
 
-(define type-id-key 'type-id)
-
 (define (def-res type-id res)
   ; Temporarily storing ref to the type-fn in the configuration, it will
   ; be removed later when creating a resource
@@ -178,8 +176,6 @@
   (log-marv-debug "-> checking ref: ~a" term)
   (when (ref? term) (add-dep term))
   term)
-
-(struct deferred (op term1 term2) #:prefab)
 
 (define (resolve-terms op term1 term2)
 

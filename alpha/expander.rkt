@@ -268,7 +268,6 @@
       [(_ exp:expr) (syntax/loc stx (pretty-print exp))]))
 
   (define (m-expression stx)
-
     (syntax-parse stx
       [(_ term1 "|" term2)
        (syntax/loc stx
@@ -292,6 +291,7 @@
     (syntax-parse stx
       [(_ str1 "++" str2) (syntax/loc stx (resolve-terms string-append str1 str2))]
       [(_ str) (syntax/loc stx str)]
+      [_ (raise "string-expr")]
       ))
 
   (define (m-num-expression stx)

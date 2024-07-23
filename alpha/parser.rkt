@@ -44,7 +44,7 @@ boolean-expression: boolean | ( expression comparison-operator expression )
 
 string-expression: string-term [ string-operator string-term ]
 @string-operator: '++'
-@string-term: (STRING | IDENTIFIER | built-in | func-call)
+@string-term: (STRING | complex-ident | built-in | func-call)
 
 num-expression: num-term [ num-operator num-term ]
 @num-term: INTEGER | complex-ident | built-in | func-call | num-expression | num-parens-expr
