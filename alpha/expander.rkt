@@ -416,7 +416,7 @@
            (with-src-handlers #,(src-location stx)  "valid type" 'tid
              (lambda()
                (with-resource-prefix 'name
-                 (lambda() (def-res tid 'name cfg))))))]
+                 (lambda() (def-res tid cfg))))))]
       ))
 
   (define (m-module-invoke stx)

@@ -99,11 +99,11 @@
 
 (define type-id-key 'type-id)
 
-(define (def-res type-id id res)
+(define (def-res type-id res)
   ; Temporarily storing ref to the type-fn in the configuration, it will
   ; be removed later when creating a resource
   ; (define rtyped (hash-set res type-id-key type-id))
-  (define gid (join-symbols (list (get-resource-prefix) id)))
+  (define gid (get-resource-prefix))
   (log-marv-debug "Defining resource: ~a" gid)
   (add-resource gid (resource gid type-id (get-deps) res)))
 
