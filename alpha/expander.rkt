@@ -261,14 +261,15 @@
 
   (define (m-pprint stx)
     (syntax-parse stx
-      [(_ exp:expr) (syntax/loc stx (pretty-print (resolve-expr exp)))]))
+      [(_ exp:expr) (syntax/loc stx (pretty-print exp))]))
 
   (define (m-expression stx)
     (syntax-parse stx
       [(_ term1 "|" term2)
        (syntax/loc stx
-         (with-handlers ([exn:fail? (lambda(_) (resolve-expr term2))]) (resolve-expr term1)))]
-      [(_ "[" terms ... "]") (syntax/loc stx (list (resolve-expr terms) ...))]
+         (with-handlers
+             ([exn:fail? (lambda(_) term2)]) term1))]
+      [(_ "[" terms ... "]") (syntax/loc stx (list terms ...))]
       ; TODO - add type checking
       [(_ term:string) (syntax/loc stx term)]
       [(_ term) (syntax/loc stx term)]
@@ -299,19 +300,23 @@
       (with-syntax
           ([locn (src-location stx)]
            [test1? test1?] [test2? test2?] [op op] [term1 term1] [term2 term2])
-        (syntax/loc stx (check-operator-types locn test1? test2? op term1 term2))))
+        (syntax/loc stx
+          (begin
+            ; TODO43- reinstate type checking
+            ; (check-operator-types locn test1? test2? term1 term2)
+            (resolve-terms op term1 term2)))))
 
     (syntax-parse stx
       [(_ term) (syntax/loc stx term)]
       [(_ term1 "<-" term2) (check-terms stx #'hash? #'hash? #'config-overlay #'term2 #'term1)]
-      [(_ term1 "<-" term2) (check-terms stx #'hash? #'hash? #'config-overlay #'term1 #'term2)]
+      [(_ term1 "->" term2) (check-terms stx #'hash? #'hash? #'config-overlay #'term1 #'term2)]
       [(_ term1 "<<" term2) (check-terms stx #'hash? #'(listof symbol?) #'config-reduce #'term1 #'term2)]
       ))
 
   (define (m-dot-expression stx)
     (syntax-parse stx
       ; [(_ map-expr ident:id) (syntax/loc stx (hash-ref map-expr 'ident))]
-      [(_ map-expr ident:id) (syntax/loc stx (handle-ref map-expr 'ident))]
+      [(_ map-expr ident:id) (syntax/loc stx (resolve-terms dot-op map-expr 'ident))]
       [(_ map-expr ident:id params) (syntax/loc stx ((hash-ref map-expr 'ident) params))]))
 
   (define (m-map-spec stx)
@@ -393,14 +398,14 @@
        (with-syntax
            ([root root]
             [tail tail])
-         (syntax/loc stx (handle-ref root 'root 'tail)))]))
+         (syntax/loc stx (dot-op root 'root 'tail)))]))
 
   (define (m-res-decl stx)
     (syntax-parse stx
       [(_ name:id ((~literal type-id) tid:id) cfg)
        #`(define name
            (with-src-handlers #,(src-location stx)  "valid type" 'tid
-             (lambda()(def-res tid 'name cfg))))]
+             (lambda()(with-resource-prefix 'name (lambda()(def-res tid 'name cfg))))))]
       ))
 
   (define (m-module-invoke stx)

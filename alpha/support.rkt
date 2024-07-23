@@ -26,8 +26,7 @@
          b64enc b64dec
          handle-override
          config-overlay config-reduce
-         handle-ref
-         resolve-expr
+         dot-op
          resolve-terms
          add-dep get-deps
          with-module-ctx
@@ -158,8 +157,8 @@
 
 (define STATE (make-parameter (hash)))
 
-(define (handle-ref tgt attr)
-  (log-marv-debug "handle-ref ~a -> ~a" tgt attr)
+(define (dot-op tgt attr)
+  (log-marv-debug "dot-op: ~a . ~a" tgt attr)
   (define r
     (cond
       [(resource? tgt) (ref (resource-gid tgt) attr)]
@@ -172,22 +171,15 @@
   (when (ref? r) (add-dep r))
   r)
 
-(define (resolve-expr e [out-str #t])
-  (define (resolve-ref r)
-    (hash-nref
-     (resource-config(hash-ref (get-resources) (ref-gid r)))
-     (id->list (ref-path r))
-     (~a "${" (ref-gid r) "/" (ref-path r) "}")))
-  ; (if (ref? e) (resolve-ref e) e))
-  e)
-
-(struct resolve (op t1 t2) #:prefab)
+(struct deferred (op term1 term2) #:prefab)
 
 (define (resolve-terms op term1 term2)
 
+  (log-marv-debug "Resolving: ~a:~a:~a" op term1 term2)
   (define (try-resolve e)
 
     (define (resolve-ref r)
+      (log-marv-debug "-> attempting to resolve: ~a" r)
       (hash-nref
        (resource-config(hash-ref (get-resources) (ref-gid r)))
        (id->list (ref-path r))
@@ -197,9 +189,15 @@
 
   (define t1 (try-resolve term1))
   (define t2 (try-resolve term2))
-  (cond [(or(ref? t1) (ref? t2) (resolve? t1) (resolve? t2))
-         (resolve op t1 t2)]
-        [else (op t1 t2)]
+  (log-marv-debug "-> t1: ~a t2: ~a" t1 t2)
+  (cond [(or (ref? t1) (ref? t2) (deferred? t1) (deferred? t2))
+         (log-marv-debug "-> couldn't resolve, deferred (t1:~a t2:~a)" t1 t2)
+         (deferred op t1 t2)]
+        [else
+         (log-marv-debug "-> resolved, invoking operation: ~a" op)
+         (define r (op t1 t2))
+         (log-marv-debug "<- finished resolving: ~a" r)
+         r ]
         ))
 
 ; TODO45 - not sure if this step is needed, can resources be defined in-line?
@@ -253,6 +251,6 @@
 
 (define (raise/src locn msg) (raise (~a "Error:" msg " at " locn) ))
 
-(define (check-operator-types locn test1? test2? op term1 term2)
+(define (check-operator-types locn test1? test2? term1 term2)
   ;TODO43 - check that indirection isn't needed, term1 & 2 should have been evaluated by now
-  (if (and (test1? term1) (test2? term2)) (op term1 term2) (raise (~a "terms not valid at:" locn "~n got " term1 "~n and " term2))))
+  (unless (and (test1? term1) (test2? term2)) (raise (~a "terms not valid at:" locn "~n got " term1 "~n and " term2))))
