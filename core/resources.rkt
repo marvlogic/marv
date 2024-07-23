@@ -20,7 +20,7 @@
 
 (struct attribute (name value) #:prefab)
 
-(struct resource (gid type config) #:prefab)
+(struct resource (gid type deps config) #:prefab)
 
 (define res-id/c symbol?)
 
@@ -54,7 +54,7 @@
 ; TODO45
 (define type? hash?)
 
-(define resource/c (struct/c resource symbol? type? config/c))
+(define resource/c (struct/c resource symbol? type? list? config/c))
 
 (define resource-set/c (hash/c res-id/c resource/c))
 

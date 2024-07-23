@@ -1,7 +1,11 @@
 #lang racket/base
 
 (require racket/format)
-(require (for-syntax racket/base racket/syntax  syntax/parse racket/pretty marv/core/globals))
+(require (for-syntax racket/base
+                     racket/syntax
+                     syntax/parse
+                     racket/pretty
+                     marv/core/globals))
 
 (require racket/pretty)
 (require racket/contract)
@@ -236,7 +240,7 @@
     (syntax-parse stx
       [(_ str:expr expr ... )
        (syntax/loc stx
-         (with-resource-prefix 'strf (lambda()(format str expr ...))))]
+         (format str expr ...))]
       [_ (raise "m-strf")]))
 
   (define (m-urivars stx)
@@ -264,6 +268,7 @@
       [(_ exp:expr) (syntax/loc stx (pretty-print exp))]))
 
   (define (m-expression stx)
+
     (syntax-parse stx
       [(_ term1 "|" term2)
        (syntax/loc stx
@@ -272,7 +277,7 @@
       [(_ "[" terms ... "]") (syntax/loc stx (list terms ...))]
       ; TODO - add type checking
       [(_ term:string) (syntax/loc stx term)]
-      [(_ term) (syntax/loc stx term)]
+      [(_ term) (syntax/loc stx (check-for-ref term))]
       ))
 
   (define (m-boolean-expression stx)
@@ -302,7 +307,7 @@
            [test1? test1?] [test2? test2?] [op op] [term1 term1] [term2 term2])
         (syntax/loc stx
           (begin
-            ; TODO43- reinstate type checking
+            ; TODO45- reinstate type checking
             ; (check-operator-types locn test1? test2? term1 term2)
             (resolve-terms op term1 term2)))))
 
@@ -405,7 +410,9 @@
       [(_ name:id ((~literal type-id) tid:id) cfg)
        #`(define name
            (with-src-handlers #,(src-location stx)  "valid type" 'tid
-             (lambda()(with-resource-prefix 'name (lambda()(def-res tid 'name cfg))))))]
+             (lambda()
+               (with-resource-prefix 'name
+                 (lambda() (def-res tid 'name cfg))))))]
       ))
 
   (define (m-module-invoke stx)

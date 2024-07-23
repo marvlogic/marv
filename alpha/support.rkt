@@ -3,6 +3,7 @@
 (require racket/hash)
 (require racket/format)
 (require racket/match)
+(require racket/set)
 (require marv/log)
 (require marv/core/values)
 (require marv/utils/hash)
@@ -27,6 +28,7 @@
          handle-override
          config-overlay config-reduce
          dot-op
+         check-for-ref
          resolve-terms
          add-dep get-deps
          with-module-ctx
@@ -62,9 +64,10 @@
 
 (define MODULE-PREFIX (make-parameter 'main))
 
-(define VAR-DEPS (make-parameter (list)))
-(define (add-dep d) (VAR-DEPS (cons d (VAR-DEPS))))
-(define (get-deps) (VAR-DEPS))
+(define init-var-deps set)
+(define VAR-DEPS (make-parameter (init-var-deps)))
+(define (add-dep d) (VAR-DEPS (set-add (VAR-DEPS) d)))
+(define (get-deps) (set->list(VAR-DEPS)))
 
 (define (prefix-mod-id i) (core:prefix-id (MODULE-PREFIX) i))
 
@@ -82,9 +85,9 @@
   (log-marv-debug "Setting resource prefix: ~a" new-prefix)
   (parameterize
       ([MODULE-PREFIX new-prefix]
-       [VAR-DEPS (list)])
+       [VAR-DEPS (init-var-deps)])
     (define r (proc))
-    (displayln (~a id " depends on "(get-deps)))
+    (log-marv-debug "~a depends on ~a" id (get-deps))
     r))
 
 (define (get-resource-prefix) (MODULE-PREFIX))
@@ -102,7 +105,7 @@
   ; (define rtyped (hash-set res type-id-key type-id))
   (define gid (join-symbols (list (get-resource-prefix) id)))
   (log-marv-debug "Defining resource: ~a" gid)
-  (add-resource gid (resource gid type-id res)))
+  (add-resource gid (resource gid type-id (get-deps) res)))
 
 (define (with-src-handlers src-locn expected given thunk)
   (define (handle-exn e)
@@ -170,6 +173,11 @@
       [else (raise "unsupported ref type")]))
   (when (ref? r) (add-dep r))
   r)
+
+(define (check-for-ref term)
+  (log-marv-debug "-> checking ref: ~a" term)
+  (when (ref? term) (add-dep term))
+  term)
 
 (struct deferred (op term1 term2) #:prefab)
 
@@ -252,5 +260,5 @@
 (define (raise/src locn msg) (raise (~a "Error:" msg " at " locn) ))
 
 (define (check-operator-types locn test1? test2? term1 term2)
-  ;TODO43 - check that indirection isn't needed, term1 & 2 should have been evaluated by now
+  ;TODO45 - check that indirection isn't needed, term1 & 2 should have been evaluated by now
   (unless (and (test1? term1) (test2? term2)) (raise (~a "terms not valid at:" locn "~n got " term1 "~n and " term2))))
