@@ -193,7 +193,8 @@
        (id->list (ref-path r))
        r))
 
-    (if (ref? e) (resolve-ref e) e))
+    (cond [(ref? e) (add-dep e) (resolve-ref e)]
+          [else e]))
 
   (define t1 (try-resolve term1))
   (define t2 (try-resolve term2))

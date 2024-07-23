@@ -21,6 +21,7 @@
   (lexer-srcloc
    ;    ["\n" (token 'NEWLINE lexeme)]
    [(:or "for/list" "->" "<-" "<<" ">>" "<" ">" "*" "-" "+" "/" "." "==" "!=" ":="
+         "++"
          "module" "private" "import" "export" "as" "return" "strf"
          "strvars" "expandvars" "base64encode" "base64decode" "using" "overlays" "abstracts" "assert"
          "type" "in" "pprint" "env" "true" "false"

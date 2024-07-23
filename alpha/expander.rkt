@@ -288,7 +288,11 @@
       [(_ expr1 "!=" expr2 ) (syntax/loc stx (not(equal? expr1 expr2)))]
       ))
 
-  (define (m-string-expression stx) (syntax-parse stx [(_ str) (syntax/loc stx str)]))
+  (define (m-string-expression stx)
+    (syntax-parse stx
+      [(_ str1 "++" str2) (syntax/loc stx (resolve-terms string-append str1 str2))]
+      [(_ str) (syntax/loc stx str)]
+      ))
 
   (define (m-num-expression stx)
     (syntax-parse stx

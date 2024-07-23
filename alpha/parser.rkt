@@ -42,7 +42,9 @@ boolean-expression: boolean | ( expression comparison-operator expression )
 @boolean: "true" | "false"
 @comparison-operator: "==" | "!="
 
-@string-expression: STRING | IDENTIFIER | built-in | func-call
+string-expression: string-term [ string-operator string-term ]
+@string-operator: '++'
+@string-term: (STRING | IDENTIFIER | built-in | func-call)
 
 num-expression: num-term [ num-operator num-term ]
 @num-term: INTEGER | complex-ident | built-in | func-call | num-expression | num-parens-expr
