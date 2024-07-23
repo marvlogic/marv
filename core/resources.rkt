@@ -17,7 +17,7 @@
          origin/c
          resource-set/c
          resource-type-fn
-         resource-resolve
+         config-resolve
          (struct-out resource)
          (struct-out attribute))
 
@@ -80,38 +80,32 @@
 
   (foldl flat '() attrs))
 
-(define (resolve-ref r resources)
+(define (resolve-ref r get-by-gid)
   ; (log-marv-debug "-> attempting to resolve: ~a" r)
   (if (ref? r)
-      (hash-nref
-       (resource-config (hash-ref resources (ref-gid r)))
-       (id->list (ref-path r))
-       r)
+      (hash-nref (get-by-gid (ref-gid r)) (id->list (ref-path r)) r)
       r))
 
-(define (resolve-deferred d resources)
+(define (resolve-deferred d get-by-gid)
 
   ; (log-marv-debug "Resolving: ~a:~a:~a" op term1 term2)
 
   (define (handle-term t)
-    (define tr (resolve-ref t resources))
-    (if (deferred? tr) (resolve-deferred tr resources) tr))
+    (define tr (resolve-ref t get-by-gid))
+    (if (deferred? tr) (resolve-deferred tr get-by-gid) tr))
 
   (define t1 (handle-term (deferred-term1 d)))
   (define t2 (handle-term (deferred-term2 d)))
   ; (log-marv-debug "-> t1: ~a t2: ~a" t1 t2)
-  (cond [(or  (deferred? t1) (deferred? t2))
-         ;  (log-marv-debug "-> couldn't resolve, deferred (t1:~a t2:~a)" t1 t2)
-         (raise "aiiiieee")]
-        [else ((deferred-op d) t1 t2)]))
+  (when (or  (deferred? t1) (deferred? t2))
+    ;  (log-marv-debug "-> couldn't resolve, deferred (t1:~a t2:~a)" t1 t2)
+    (raise "aiiiieee"))
+  ((deferred-op d) t1 t2))
 
-(define (resource-resolve res resources)
-
+(define (config-resolve cfg get-by-gid)
   (define (process _ v)
-    (if (deferred? v) (resolve-deferred v resources) (resolve-ref v resources)))
-
-  (resource (resource-gid res) (resource-type res) (resource-deps res)
-            (hash-apply (resource-config res) process)))
+    (if (deferred? v) (resolve-deferred v get-by-gid) (resolve-ref v get-by-gid)))
+  (hash-apply cfg process))
 
 
 (define deferred2 (deferred string-append "name" (ref 'main.bucket1 'name)))
@@ -126,6 +120,8 @@
 (define b3 (resource 'main.bucket3 (hash) '() (hash 'name deferred3)))
 (define all (hash 'main.bucket1 b1 'main.bucket2 b2 'main.bucket3 b3))
 
-(resource-resolve b1 all)
-(resource-resolve b2 all)
-(resource-resolve b3 all)
+(define (gbid id) (resource-config (hash-ref all id)))
+
+(config-resolve (resource-config b1) gbid)
+(config-resolve (resource-config b2) gbid)
+(config-resolve (resource-config b3) gbid)

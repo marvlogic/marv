@@ -113,16 +113,7 @@
 
 (define/contract (deref-config cfg)
   (config/c . -> . config/c)
-
-  (define (get-ref ref)
-    (define-values (res-id attr) (ref-split ref))
-    (unpack-value (hash-nref (state-ref-config res-id) (id->list attr))))
-
-  (define (deref-attr _ a)
-    (update-val a (lambda (v) (if (ref? v) (get-ref v) v))))
-
-  ; TODO - refactor to resource-update-config-fn
-  (hash-apply cfg deref-attr))
+  (config-resolve cfg state-ref-config))
 
 (define (apply-changes mod (refresh? #t))
 
