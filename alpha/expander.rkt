@@ -267,14 +267,28 @@
     (syntax-parse stx
       [(_ exp:expr) (syntax/loc stx (pretty-print exp))]))
 
+  (define (m-indexed-identifier stx)
+    (displayln stx)
+    (syntax-parse stx
+      [(_ ident:id "[" expr "]" )
+       (syntax/loc stx
+         (resolve-terms list-ref ident expr))]
+      [(_ ident) (syntax/loc stx ident)]
+      ))
+
   (define (m-expression stx)
+    ; TODO45 - operator precedence, probably have to collapse everything
+    ; into this function
     (syntax-parse stx
       [(_ term1 "|" term2)
        (syntax/loc stx
          (with-handlers
              ([exn:fail? (lambda(_) term2)]) term1))]
       [(_ "[" terms ... "]") (syntax/loc stx (list terms ...))]
-      ; TODO - add type checking
+      [(_ (expression e) "[" (num-expression ne) "]")
+       (syntax/loc stx (resolve-terms list-ref e ne))]
+
+      ; TODO45 - add type checking
       [(_ term:string) (syntax/loc stx term)]
       [(_ term) (syntax/loc stx (check-for-ref term))]
       ))
@@ -283,8 +297,8 @@
     (syntax-parse stx
       [(_ "true") (syntax/loc stx #t)]
       [(_ "false") (syntax/loc stx #f)]
-      [(_ expr1 "==" expr2 ) (syntax/loc stx (equal? expr1 expr2))]
-      [(_ expr1 "!=" expr2 ) (syntax/loc stx (not(equal? expr1 expr2)))]
+      [(_ expr1 "==" expr2 ) (syntax/loc stx (resolve-terms equal? expr1 expr2))]
+      [(_ expr1 "!=" expr2 ) (syntax/loc stx (resolve-terms (compose1 not equal?) expr1 expr2))]
       ))
 
   (define (m-string-expression stx)
@@ -298,9 +312,9 @@
     (syntax-parse stx
       [(_ term) (syntax/loc stx term)]
       [(_ term1 "+" term2) (syntax/loc stx (resolve-terms + term1 term2))]
-      [(_ term1 "-" term2) (syntax/loc stx (- term1 term2))]
-      [(_ term1 "*" term2) (syntax/loc stx (* term1 term2))]
-      [(_ term1 "/" term2) (syntax/loc stx (/ term1 term2))]
+      [(_ term1 "-" term2) (syntax/loc stx (resolve-terms - term1 term2))]
+      [(_ term1 "*" term2) (syntax/loc stx (resolve-terms * term1 term2))]
+      [(_ term1 "/" term2) (syntax/loc stx (resolve-terms / term1 term2))]
       ))
 
   (define (m-map-expression stx)
@@ -326,6 +340,10 @@
     (syntax-parse stx
       ; [(_ map-expr ident:id) (syntax/loc stx (hash-ref map-expr 'ident))]
       [(_ map-expr ident:id) (syntax/loc stx (resolve-terms dot-op map-expr 'ident))]
+      [(_ map-expr ident:id "[" idx "]")
+       (syntax/loc stx (resolve-terms
+                        list-ref
+                        (resolve-terms dot-op map-expr 'ident) idx))]
       [(_ map-expr ident:id params) (syntax/loc stx ((hash-ref map-expr 'ident) params))]))
 
   (define (m-map-spec stx)
@@ -453,6 +471,7 @@
 (define-syntax named-parameter m-named-parameter)
 (define-syntax func-call m-func-call)
 (define-syntax func-ident m-func-ident)
+(define-syntax indexed-identifier m-indexed-identifier)
 (define-syntax expression m-expression)
 (define-syntax boolean-expression m-boolean-expression)
 (define-syntax string-expression m-string-expression)
@@ -491,6 +510,7 @@
          module-export
          api-id transformer-id type-id
          func-call func-ident config-func-decl func-decl type-decl type-template
+         indexed-identifier
          expression boolean-expression string-expression num-expression map-expression dot-expression statement map-spec alist attr-list attribute-name
          config-expr config-merge config-ident config-take
          keyword built-in assertion env-read pprint strf urivars uritemplate  base64encode base64decode)

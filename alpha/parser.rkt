@@ -33,10 +33,13 @@ func-call-parameters: /"(" (expression [ /"," ])+ /")"
 
 type-id: IDENTIFIER
 
-@complex-ident: IDENTIFIER | dot-expression
+@complex-ident: IDENTIFIER | indexed-identifier | dot-expression
+indexed-identifier: IDENTIFIER "[" @num-expression "]"
 
 expression: boolean-expression | string-expression | num-expression | map-expression | alternate-expression | complex-ident | expr-list
 @expr-list: "[" (expression [ /"," ])* "]"
+
+@list-expression: expression "[" num-expression "]"
 
 boolean-expression: boolean | ( expression comparison-operator expression )
 @boolean: "true" | "false"
@@ -63,7 +66,7 @@ attribute-name: ( STRING | IDENTIFIER | "type" )
 
 @alternate-expression: expression '|' expression | /'(' expression '|' expression /')'
 
-dot-expression: map-term /"." IDENTIFIER [ @func-call-parameters ]
+dot-expression: map-term /"." [ IDENTIFIER | @indexed-identifier ] [ @func-call-parameters ]
 
 built-in: env-read | strf | base64encode | base64decode | urivars | uritemplate |assertion
 env-read: /"env" /"(" STRING /")"

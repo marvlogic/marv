@@ -20,13 +20,13 @@
 (define basic-lexer
   (lexer-srcloc
    ;    ["\n" (token 'NEWLINE lexeme)]
-   [(:or "for/list" "->" "<-" "<<" ">>" "<" ">" "*" "-" "+" "/" "." "==" "!=" ":="
-         "++"
-         "module" "private" "import" "export" "as" "return" "strf"
+   [(:or "->" "<-" "<<" ">>" "<" ">"
+         "==" "!=" ":=" "++"
+         "for/list"  "module" "private" "import" "export" "as" "return" "strf"
          "strvars" "expandvars" "base64encode" "base64decode" "using" "overlays" "abstracts" "assert"
          "type" "in" "pprint" "env" "true" "false"
          "imm:" ) (token lexeme lexeme)]
-   [(:= 1 (char-set "[](){}=:,|")) lexeme]
+   [(:= 1 (char-set "+-/*.[](){}=:,|")) lexeme]
    [digits (token 'INTEGER (string->number lexeme))]
    [whitespace (token lexeme #:skip? #t)]
    [";" (token lexeme #:skip? #t)]
