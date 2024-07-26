@@ -284,7 +284,7 @@
        (syntax/loc stx
          (with-handlers
              ([exn:fail? (lambda(_) term2)]) term1))]
-      [(_ "[" terms ... "]") (syntax/loc stx (list terms ...))]
+      [(_ "[" terms ... "]") (syntax/loc stx (resolve-terms list terms ...))]
       [(_ (expression e) "[" (num-expression ne) "]")
        (syntax/loc stx (resolve-terms list-ref e ne))]
 
@@ -349,6 +349,7 @@
   (define (m-map-spec stx)
 
     (define (this-name stx) (format-id #f "this_~a" (syntax-e stx)))
+    (define (xid x)x)
 
     (define-splicing-syntax-class attr-decl
       #:description "attribute declaration"
@@ -364,10 +365,9 @@
 
     (syntax-parse stx
       [(_ attr:attr-decl ...)
-       ; TODO - this_* declarations don't work when referenced
-       ;  #'(let* ([attr.tname attr.raw-expr] ... )
-       ;      (make-immutable-hasheq (list (cons 'attr.name attr.expr) ...))) ]
-       #'(make-immutable-hasheq (list (cons 'attr.name attr.expr) ...)) ]
+       ; TODO45 - should resolve-terms wrap make-imm-hash and 'list'?
+       #'(make-immutable-hasheq
+          (list (cons 'attr.name (resolve-terms (lambda(x)x) attr.expr)) ...)) ]
       [_ (displayln stx)(raise "m-map-spec")]))
 
   (define (m-alist stx)

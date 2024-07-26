@@ -68,6 +68,7 @@
 (define VAR-DEPS (make-parameter (init-var-deps)))
 (define (add-dep d) (VAR-DEPS (set-add (VAR-DEPS) d)))
 (define (get-deps) (set->list(VAR-DEPS)))
+(define (get-deps-set) (VAR-DEPS))
 
 (define (prefix-mod-id i) (core:prefix-id (MODULE-PREFIX) i))
 
@@ -177,9 +178,8 @@
   (when (ref? term) (add-dep term))
   term)
 
-(define (resolve-terms op term1 term2)
+(define (resolve-terms op . terms)
 
-  (log-marv-debug "Resolving: ~a:~a:~a" op term1 term2)
   (define (try-resolve e)
 
     (define (resolve-ref r)
@@ -189,18 +189,30 @@
        (id->list (ref-path r))
        r))
 
-    (cond [(ref? e) (add-dep e) (resolve-ref e)]
-          [else e]))
+    (cond
+      [(ref? e) (add-dep e) (resolve-ref e)]
+      [else e]))
 
-  (define t1 (try-resolve term1))
-  (define t2 (try-resolve term2))
-  (log-marv-debug "-> t1: ~a t2: ~a" t1 t2)
-  (cond [(or (ref? t1) (ref? t2) (deferred? t1) (deferred? t2))
-         (log-marv-debug "-> couldn't resolve, deferred (t1:~a t2:~a)" t1 t2)
-         (deferred op t1 t2)]
+  (define term (car terms))
+  (define terms-cdr (cdr terms))
+  (log-marv-debug "Resolving: ~a:~a:~a" op term terms-cdr)
+  (define resolved-terms (map try-resolve terms))
+  (log-marv-debug "-> terms: ~a" resolved-terms)
+
+  (define all-deferred-deps
+    (for/fold
+     ([acc (get-deps)])
+     ([rt resolved-terms]
+      #:when (deferred? rt))
+      (set-union acc (deferred-deps rt))))
+
+  (displayln all-deferred-deps)
+  (cond [(memf (lambda(x) (or (ref? x)  (deferred? x))) resolved-terms)
+         (log-marv-debug "-> couldn't resolve, deferred")
+         (deferred op all-deferred-deps resolved-terms)]
         [else
          (log-marv-debug "-> resolved, invoking operation: ~a" op)
-         (define r (op t1 t2))
+         (define r (apply op resolved-terms))
          (log-marv-debug "<- finished resolving: ~a" r)
          r ]
         ))

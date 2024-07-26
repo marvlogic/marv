@@ -6,7 +6,9 @@
 
 (provide (struct-out value)
          (struct-out ref)
-         (struct-out deferred)
+         deferred
+         deferred-op deferred-terms deferred-deps
+         deferred?
          unpack-value
          update-val
          ival ival?
@@ -37,7 +39,12 @@
 
 (struct ref (gid path)  #:prefab)
 
-(struct deferred (op term1 term2) #:prefab)
+(struct _deferred (op deps terms) #:prefab)
+(define (deferred op deps . terms) (_deferred op deps terms))
+(define deferred? _deferred?)
+(define deferred-op _deferred-op)
+(define deferred-deps _deferred-deps)
+(define deferred-terms _deferred-terms)
 
 ; (define (iref r) (ival (ref r)))
 (define (iref? v) (and (ival? v) (ref? (unpack-value v))))

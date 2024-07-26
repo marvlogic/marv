@@ -94,13 +94,11 @@
     (define tr (resolve-ref t get-by-gid))
     (if (deferred? tr) (resolve-deferred tr get-by-gid) tr))
 
-  (define t1 (handle-term (deferred-term1 d)))
-  (define t2 (handle-term (deferred-term2 d)))
-  ; (log-marv-debug "-> t1: ~a t2: ~a" t1 t2)
-  (when (or  (deferred? t1) (deferred? t2))
+  (define resolved (map handle-term (deferred-terms d)))
+  (when (memf deferred? resolved)
     ;  (log-marv-debug "-> couldn't resolve, deferred (t1:~a t2:~a)" t1 t2)
     (raise "aiiiieee"))
-  ((deferred-op d) t1 t2))
+  (apply (deferred-op d) resolved))
 
 (define (config-resolve cfg get-by-gid)
   (define (process _ v)
@@ -108,15 +106,16 @@
   (hash-apply cfg process))
 
 
-(define deferred2 (deferred string-append "name" (ref 'main.bucket1 'name)))
-
 (define b1 (resource 'main.bucket1 (hash) '() (hash 'name "buck1")))
+
+(define deferred2 (deferred string-append "buck2" (ref 'main.bucket1 'name)))
+
 (define b2 (resource 'main.bucket2 (hash) '() (hash 'name deferred2)))
 
 (define deferred3
   (deferred string-append
     (deferred string-append (ref 'main.bucket1 'name) (ref 'main.bucket2 'name))
-    "-xyz"))
+    "-buck3"))
 (define b3 (resource 'main.bucket3 (hash) '() (hash 'name deferred3)))
 (define all (hash 'main.bucket1 b1 'main.bucket2 b2 'main.bucket3 b3))
 
