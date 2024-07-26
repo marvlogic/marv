@@ -199,16 +199,14 @@
   (define resolved-terms (map try-resolve terms))
   (log-marv-debug "-> terms: ~a" resolved-terms)
 
-  (define all-deferred-deps
-    (for/fold
-     ([acc (get-deps)])
-     ([rt resolved-terms]
-      #:when (deferred? rt))
-      (set-union acc (deferred-deps rt))))
-
-  (displayln all-deferred-deps)
-  (cond [(memf (lambda(x) (or (ref? x)  (deferred? x))) resolved-terms)
+  (cond [(memf (lambda(x) (or (ref? x) (deferred? x))) resolved-terms)
          (log-marv-debug "-> couldn't resolve, deferred")
+         (define all-deferred-deps
+           (for/fold
+            ([acc (get-deps)])
+            ([rt resolved-terms]
+             #:when (deferred? rt))
+             (set-union acc (deferred-deps rt))))
          (deferred op all-deferred-deps resolved-terms)]
         [else
          (log-marv-debug "-> resolved, invoking operation: ~a" op)
