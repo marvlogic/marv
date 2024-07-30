@@ -1,6 +1,7 @@
 #lang racket/base
 
 (require racket/hash)
+(require racket/list)
 (require racket/format)
 (require racket/match)
 (require racket/set)
@@ -99,9 +100,6 @@
   (hash-ref (PARAMS) p def))
 
 (define (def-res type-id res)
-  ; Temporarily storing ref to the type-fn in the configuration, it will
-  ; be removed later when creating a resource
-  ; (define rtyped (hash-set res type-id-key type-id))
   (define gid (get-resource-prefix))
   (log-marv-debug "Defining resource: ~a" gid)
   (add-resource gid (resource gid type-id (get-deps) res)))
@@ -175,7 +173,9 @@
 
 (define (check-for-ref term)
   (log-marv-debug "-> checking ref: ~a" term)
-  (when (ref? term) (add-dep term))
+  (cond
+    [(ref? term) (add-dep term)]
+    [(deferred? term) (map add-dep (deferred-deps term))])
   term)
 
 (define (resolve-terms op . terms)
@@ -185,7 +185,7 @@
     (define (resolve-ref r)
       (log-marv-debug "-> attempting to resolve: ~a" r)
       (hash-nref
-       (resource-config(hash-ref (get-resources) (ref-gid r)))
+       (resource-config (hash-ref (get-resources) (ref-gid r)))
        (id->list (ref-path r))
        r))
 
@@ -193,9 +193,7 @@
       [(ref? e) (add-dep e) (resolve-ref e)]
       [else e]))
 
-  (define term (car terms))
-  (define terms-cdr (cdr terms))
-  (log-marv-debug "Resolving: ~a:~a:~a" op term terms-cdr)
+  (log-marv-debug "Resolving terms: ~a ~a" op terms)
   (define resolved-terms (map try-resolve terms))
   (log-marv-debug "-> terms: ~a" resolved-terms)
 
@@ -207,7 +205,7 @@
             ([rt resolved-terms]
              #:when (deferred? rt))
              (set-union acc (deferred-deps rt))))
-         (deferred op all-deferred-deps resolved-terms)]
+         (apply deferred op all-deferred-deps resolved-terms)]
         [else
          (log-marv-debug "-> resolved, invoking operation: ~a" op)
          (define r (apply op resolved-terms))
