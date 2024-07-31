@@ -208,6 +208,8 @@
 
   (define (m-built-in stx)
     (syntax-parse stx
+      [(_ "lowercase" expr ) (syntax/loc stx (resolve-terms string-downcase expr))]
+      [(_ "uppercase" expr ) (syntax/loc stx (resolve-terms string-downcase expr))]
       [(_ BUILTIN) (syntax/loc stx BUILTIN)]
       [_ (raise "nowt-builtin")]))
 

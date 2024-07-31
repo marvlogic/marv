@@ -69,6 +69,9 @@ attribute-name: ( STRING | IDENTIFIER | "type" )
 dot-expression: map-term /"." [ IDENTIFIER | @indexed-identifier ] [ @func-call-parameters ]
 
 built-in: env-read | strf | base64encode | base64decode | urivars | uritemplate |assertion
+        | "lowercase" /"(" string-expression /")"
+        | "uppercase" /"(" string-expression /")"
+
 env-read: /"env" /"(" STRING /")"
 strf: /"strf" /"(" string-expression [ /"," ]( expression [ /"," ] ) + /")"
 base64encode: /"base64encode" /"(" string-expression /")"
