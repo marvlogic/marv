@@ -13,10 +13,7 @@
 (require marv/alpha/support)
 (require marv/core/values)
 (require marv/core/globals)
-(require marv/core/modules)
 (require marv/log)
-
-; (require (for-syntax marv/core/values))
 
 ; TODO - swap prefix usage to m- on the provided (define a macro?)
 
@@ -240,9 +237,7 @@
 
   (define (m-strf stx)
     (syntax-parse stx
-      [(_ str:expr expr ... )
-       (syntax/loc stx
-         (format str expr ...))]
+      [(_ str:expr expr ... ) (syntax/loc stx (resolve-terms format str expr ...))]
       [_ (raise "m-strf")]))
 
   (define (m-urivars stx)
@@ -272,9 +267,7 @@
   (define (m-indexed-identifier stx)
     (displayln stx)
     (syntax-parse stx
-      [(_ ident:id "[" expr "]" )
-       (syntax/loc stx
-         (resolve-terms list-ref ident expr))]
+      [(_ ident:id "[" expr "]" ) (syntax/loc stx (resolve-terms list-ref ident expr))]
       [(_ ident) (syntax/loc stx ident)]
       ))
 
@@ -287,8 +280,7 @@
          (with-handlers
              ([exn:fail? (lambda(_) term2)]) term1))]
       [(_ "[" terms ... "]") (syntax/loc stx (resolve-terms list terms ...))]
-      [(_ (expression e) "[" (num-expression ne) "]")
-       (syntax/loc stx (resolve-terms list-ref e ne))]
+      [(_ (expression e) "[" (num-expression ne) "]") (syntax/loc stx (resolve-terms list-ref e ne))]
 
       ; TODO45 - add type checking
       [(_ term:string) (syntax/loc stx term)]
@@ -346,7 +338,7 @@
        (syntax/loc stx (resolve-terms
                         list-ref
                         (resolve-terms dot-op map-expr 'ident) idx))]
-      [(_ map-expr ident:id params) (syntax/loc stx ((hash-ref map-expr 'ident) params))]))
+      [(_ map-expr ident:id params ...) (syntax/loc stx ((hash-ref map-expr 'ident) params ...))]))
 
   (define (m-map-spec stx)
 
@@ -397,37 +389,9 @@
       [(_ CFEXPR) #'CFEXPR]
       [_ (raise "m-config-expr")]))
 
-  (define (m-config-merge stx)
-    (syntax-parse stx
-      [(_ LEFT "->" RIGHT) (syntax/loc stx (config-overlay LEFT RIGHT))]
-      [(_ LEFT "<-" RIGHT) (syntax/loc stx (config-overlay RIGHT LEFT))]
-      [_ (raise "m-config-merge")]))
-
-  (define (m-config-take stx)
-    (syntax-parse stx
-      [(_ CFEXPR ATTRLIST) (syntax/loc stx (config-reduce CFEXPR ATTRLIST))]
-      [_ (raise "m-config-take")]))
-
-  (define (m-config-ident stx)
-    (syntax-parse stx
-      [(_ CFIDENT) (syntax/loc stx CFIDENT)]
-      [_ (raise "m-config-ident")]))
-
   (define (m-keyword stx)
     (syntax-parse stx
       [(_ keyword) (syntax/loc stx keyword)]))
-
-  (define (m-reference stx)
-    (syntax-parse stx
-      [(_ ref:id)
-       (define splitref (split-symbol (syntax-e #'ref)))
-       (define root (format-id stx "~a" (car splitref)))
-       (define tail (datum->syntax stx (cdr splitref)))
-       ; RAW version:  #`(handle-ref #,r0 'r '#,rs)
-       (with-syntax
-           ([root root]
-            [tail tail])
-         (syntax/loc stx (dot-op root 'root 'tail)))]))
 
   (define (m-res-decl stx)
     (syntax-parse stx
@@ -495,9 +459,6 @@
 (define-syntax base64decode m-base64decode)
 (define-syntax pprint m-pprint)
 (define-syntax config-expr m-config-expr)
-(define-syntax config-merge m-config-merge)
-(define-syntax config-take m-config-take)
-(define-syntax config-ident m-config-ident)
 
 (define-syntax api-id m-generic-placeholder)
 (define-syntax transformer-id m-generic-placeholder)
@@ -514,5 +475,5 @@
          func-call func-ident config-func-decl func-decl type-decl type-template
          indexed-identifier
          expression boolean-expression string-expression num-expression map-expression dot-expression statement map-spec alist attr-list attribute-name
-         config-expr config-merge config-ident config-take
+         config-expr
          keyword built-in assertion env-read pprint strf urivars uritemplate  base64encode base64decode)

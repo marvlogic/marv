@@ -99,10 +99,11 @@
                             (error:excn (format "Parameter '~a' has not been assigned" p)))])
   (hash-ref (PARAMS) p def))
 
-(define (def-res type-id res)
+(define (def-res type-id cfg)
   (define gid (get-resource-prefix))
   (log-marv-debug "Defining resource: ~a" gid)
-  (add-resource gid (resource gid type-id (get-deps) res)))
+  (define base-resource (resource gid type-id (get-deps) cfg))
+  (add-resource gid (resource gid type-id (get-deps) (resource-call 'identity base-resource))))
 
 (define (with-src-handlers src-locn expected given thunk)
   (define (handle-exn e)
