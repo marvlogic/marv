@@ -1,6 +1,5 @@
 #lang brag
 
-
 marv-spec: module-import* outer-decl* marv-module*
 
 module-import: /"import" [ STRING | MODULE-IDENTIFIER ] [ "as" IDENTIFIER ]
@@ -49,14 +48,14 @@ string-expression: string-term [ string-operator string-term ]
 @string-operator: '++'
 @string-term: (STRING | complex-ident | built-in | func-call)
 
-num-expression: num-term [ num-operator num-term ]
-@num-term: INTEGER | complex-ident | built-in | func-call | num-expression | num-parens-expr
-@num-operator: '+' | '-' | '/' | '*'
-@num-parens-expr: /"(" num-expression /")"
+num-expression: num-term ( "+" | "-" ) num-expression | num-term
+num-term: num-primary ( "*" | "/" ) num-term | num-primary
+@num-primary: /"(" num-expression /")" | INTEGER | complex-ident | built-in | func-call
 
 map-expression: map-term ( [ map-operator map-term ] | "<<" attr-list )
 @map-operator: "<-" | "->"
 @map-term: map-spec | complex-ident | func-call | map-parens-expr | map-expression | dot-expression
+
 ; TODO45 - complex-ident not dot-expression?
 map-spec: /"{" [( STRING | IDENTIFIER | "type" ) /"=" [ "imm:" ] expression [ /"," ]]* /"}"
 @map-parens-expr: /"(" map-expression /")"

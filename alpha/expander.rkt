@@ -307,6 +307,11 @@
       [(_ term) (syntax/loc stx term)]
       [(_ term1 "+" term2) (syntax/loc stx (resolve-terms + term1 term2))]
       [(_ term1 "-" term2) (syntax/loc stx (resolve-terms - term1 term2))]
+      ))
+
+  (define (m-num-term stx)
+    (syntax-parse stx
+      [(_ term) (syntax/loc stx term)]
       [(_ term1 "*" term2) (syntax/loc stx (resolve-terms * term1 term2))]
       [(_ term1 "/" term2) (syntax/loc stx (resolve-terms / term1 term2))]
       ))
@@ -443,6 +448,7 @@
 (define-syntax string-expression m-string-expression)
 (define-syntax map-expression m-map-expression)
 (define-syntax num-expression m-num-expression)
+(define-syntax num-term m-num-term)
 (define-syntax dot-expression m-dot-expression)
 (define-syntax map-spec m-map-spec)
 (define-syntax alist m-alist)
@@ -474,6 +480,7 @@
          api-id transformer-id type-id
          func-call func-ident config-func-decl func-decl type-decl type-template
          indexed-identifier
-         expression boolean-expression string-expression num-expression map-expression dot-expression statement map-spec alist attr-list attribute-name
+         expression boolean-expression string-expression num-expression num-term
+         map-expression dot-expression statement map-spec alist attr-list attribute-name
          config-expr
          keyword built-in assertion env-read pprint strf urivars uritemplate  base64encode base64decode)
