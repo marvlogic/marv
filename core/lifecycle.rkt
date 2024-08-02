@@ -157,8 +157,8 @@
 
   (define (deref-resource id)
     (define res (hash-ref mod id))
-    (resource (resource-gid res) (resource-type res) (resource-deps res)
-              (unwrap-values (deref-config (resource-config res)))))
+    (update-resource-config res (unwrap-values (deref-config (resource-config res)))))
+
   (define plan (get-plan-for mod refresh?))
 
   (define (delete-replacements res-op)

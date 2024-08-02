@@ -11,20 +11,30 @@
 (provide hash->attribute
          flat-attributes
          res-id/c prefix-id list->id id->list
-         resource
          resource-call
+         resource-type-fn
          resource-origin
          resource/c
          origin/c
          resource-set/c
-         resource-type-fn
          config-resolve
-         (struct-out resource)
+         resource? resource-gid resource-type resource-deps resource-config
+         mk-resource update-resource-config
          (struct-out attribute))
 
 (struct attribute (name value) #:prefab)
 
+; Don't provide 'resource' to clients; we want them to use mk-resource.
 (struct resource (gid type deps config) #:prefab)
+
+(define (mk-resource gid type deps config)
+  (resource gid type deps (type-call type 'identity config)))
+
+(define (type-call type verb . args)
+  (apply (hash-ref type verb) args))
+
+(define (update-resource-config r new-config)
+  (resource (resource-gid r) (resource-type r) (resource-deps r) new-config))
 
 (define res-id/c symbol?)
 
@@ -33,11 +43,11 @@
 ; TODO45 - resource-type stuff/names and consolidate (vs lifecycle)
 (define/contract (resource-type-fn res)
   (resource? . -> . any/c)
-  (lambda(verb . args)(apply (hash-ref (resource-type res) verb) args)))
+  (lambda(verb . args)(apply type-call (resource-type res) verb args)))
 
 (define/contract (resource-call verb res)
   (symbol? resource? . -> . any/c)
-  ((hash-ref (resource-type res) verb) (resource-config res)))
+  (type-call (resource-type res) verb (resource-config res)))
 
 (define/contract (resource-origin res)
   (resource? . -> . origin/c)

@@ -265,7 +265,6 @@
       [(_ exp:expr) (syntax/loc stx (pretty-print exp))]))
 
   (define (m-indexed-identifier stx)
-    (displayln stx)
     (syntax-parse stx
       [(_ ident:id "[" expr "]" ) (syntax/loc stx (resolve-terms list-ref ident expr))]
       [(_ ident) (syntax/loc stx ident)]
@@ -280,7 +279,7 @@
          (with-handlers
              ([exn:fail? (lambda(_) term2)]) term1))]
       [(_ "[" terms ... "]") (syntax/loc stx (resolve-terms list terms ...))]
-      [(_ (expression e) "[" (num-expression ne) "]") (syntax/loc stx (resolve-terms list-ref e ne))]
+      ; [(_ (expression e) "[" (num-expression ne) "]") (syntax/loc stx (resolve-terms list-ref e ne))]
 
       ; TODO45 - add type checking
       [(_ term:string) (syntax/loc stx term)]

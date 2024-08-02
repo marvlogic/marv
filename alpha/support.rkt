@@ -19,7 +19,7 @@
 (require (prefix-in core: marv/core/resources))
 (require (prefix-in drv: marv/core/drivers))
 
-(provide gen-resources getenv-or-raise
+(provide getenv-or-raise
          def-res
          with-src-handlers
          set-return
@@ -102,8 +102,7 @@
 (define (def-res type-id cfg)
   (define gid (get-resource-prefix))
   (log-marv-debug "Defining resource: ~a" gid)
-  (define base-resource (resource gid type-id (get-deps) cfg))
-  (add-resource gid (resource gid type-id (get-deps) (resource-call 'identity base-resource))))
+  (add-resource gid (mk-resource gid type-id (get-deps) cfg)))
 
 (define (with-src-handlers src-locn expected given thunk)
   (define (handle-exn e)
@@ -213,34 +212,6 @@
          (log-marv-debug "<- finished resolving: ~a" r)
          r ]
         ))
-
-; TODO45 - not sure if this step is needed, can resources be defined in-line?
-(define (gen-resources)
-  (log-marv-debug "gen-resources called for these visible resources: ~a" (ordered-resource-ids))
-  (log-marv-debug "-> ~a" (RESOURCES))
-
-  (define (handle-future-ref _ v)
-    (update-val v (lambda(uv)
-                    (if (future-ref? uv)
-                        (try-resolve-future-ref (future-ref-ref uv) #:fail-on-missing #t)
-                        uv))))
-
-  (define (make-resource res)
-    (log-marv-debug "  generating ~a" res)
-    (define res-ident (resource-call 'identity res))
-    (log-marv-debug "  identity ~a" res-ident)
-    (resource (resource-gid res) (resource-type res) (hash-apply res-ident handle-future-ref)))
-
-  (for/fold ([rs (hash)])
-            ([k (in-list (ordered-resource-ids))])
-    (define res (get-resource k))
-    (log-marv-debug "looking at ~a"  k )
-    (cond [(resource? res) (hash-set rs (resource-gid res) (make-resource res))]
-          ; [(hash? res) (hash-set rs (prefix-mod-id k) (make-resource res))]
-          [else (raise "unsupported reference/resource stuff")])))
-; [(procedure? res)
-;  ; Calling a module
-;  (hash-union rs (res (prefix-mod-id k)))])))
 
 (define (uri-vars str) (uri-vars str))
 (define (uri-template str cfg) (expand-uri str cfg))
