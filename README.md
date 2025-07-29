@@ -1,3 +1,9 @@
+# Update - 29/7/2025
+
+This version of Marv is not being developed any further; there is a new version
+that is being built from scratch in another repository. The new repository will
+take place of this one once the code there reaches a good level of maturity.
+
 # Introduction
 
 `marv` is an Infrastructure-as-Code tool for declaring and managing cloud
